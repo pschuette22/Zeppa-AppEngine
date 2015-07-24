@@ -1,0 +1,45 @@
+06:03:03,277 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+06:03:03,643 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+06:03:04,269 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/DeviceInfo.class" with enhanced definition
+06:03:04,289 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/EventComment.class" with enhanced definition
+06:03:04,304 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/EventTag.class" with enhanced definition
+06:03:04,320 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/EventTagFollow.class" with enhanced definition
+06:03:04,329 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/PhotoInfo.class" with enhanced definition
+06:03:04,346 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaEvent.class" with enhanced definition
+06:03:04,357 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaEventToUserRelationship.class" with enhanced definition
+06:03:04,377 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaFeedback.class" with enhanced definition
+06:03:04,388 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaNotification.class" with enhanced definition
+06:03:04,395 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaUser.class" with enhanced definition
+06:03:04,404 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaUserInfo.class" with enhanced definition
+06:03:04,411 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/common/dataobject/ZeppaUserToUserRelationship.class" with enhanced definition
+06:03:04,413 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=545 ms, enhance=221 ms, total=766 ms. Consult the log for full details
+06:20:06,903 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+06:20:07,163 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+06:20:07,606 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/DeviceInfo.class" with enhanced definition
+06:20:07,615 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/EventComment.class" with enhanced definition
+06:20:07,623 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/EventTag.class" with enhanced definition
+06:20:07,632 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/EventTagFollow.class" with enhanced definition
+06:20:07,639 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/PhotoInfo.class" with enhanced definition
+06:20:07,651 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaEvent.class" with enhanced definition
+06:20:07,661 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaEventToUserRelationship.class" with enhanced definition
+06:20:07,672 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaFeedback.class" with enhanced definition
+06:20:07,679 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaNotification.class" with enhanced definition
+06:20:07,685 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaUser.class" with enhanced definition
+06:20:07,692 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaUserInfo.class" with enhanced definition
+06:20:07,698 (main) INFO  [DataNucleus.Enhancer] - Writing class file "/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/classes/com/minook/zeppa/ZeppaUserToUserRelationship.class" with enhanced definition
+06:20:07,698 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=382 ms, enhance=151 ms, total=533 ms. Consult the log for full details
+07:21:28,134 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+07:21:28,470 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+07:21:28,985 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+07:21:28,987 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+07:21:28,989 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+07:21:28,990 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+07:21:28,991 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+07:21:28,993 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+07:21:28,995 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+07:21:28,997 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+07:21:28,999 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+07:21:29,001 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+07:21:29,002 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+07:21:29,004 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+07:21:29,005 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=477 ms, enhance=54 ms, total=531 ms. Consult the log for full details

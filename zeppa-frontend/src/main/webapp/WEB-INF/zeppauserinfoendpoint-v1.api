@@ -1,0 +1,251 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://zeppa-cloud-1821.appspot.com/_ah/api",
+  "name" : "zeppauserinfoendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://zeppa-cloud-1821.appspot.com/_ah/spi",
+    "deadline" : 65.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "methods" : {
+    "zeppauserinfoendpoint.fetchZeppaUserInfoByParentId" : {
+      "path" : "fetchZeppaUserInfoByParentId/{requestedParentId}",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserInfoEndpoint.fetchZeppaUserInfoByParentId",
+      "request" : {
+        "parameters" : {
+          "requestedParentId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserinfoendpoint.getZeppaUserInfo" : {
+      "path" : "zeppauserinfo/{id}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserInfoEndpoint.getZeppaUserInfo",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserinfoendpoint.insertZeppaUserInfo" : {
+      "path" : "zeppauserinfo",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserInfoEndpoint.insertZeppaUserInfo",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserinfoendpoint.updateZeppaUserInfo" : {
+      "path" : "zeppauserinfo",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserInfoEndpoint.updateZeppaUserInfo",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserinfoendpoint.listZeppaUserInfo" : {
+      "path" : "zeppauserinfo",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserInfoEndpoint.listZeppaUserInfo",
+      "request" : {
+        "parameters" : {
+          "filter" : {
+            "type" : "string",
+            "required" : false
+          },
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "ordering" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "ZeppaUserInfo" : {
+        "id" : "ZeppaUserInfo",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "$ref" : "Key"
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "givenName" : {
+            "type" : "string"
+          },
+          "familyName" : {
+            "type" : "string"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "googleAccountEmail" : {
+            "type" : "string"
+          },
+          "primaryUnformattedNumber" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "Key" : {
+        "id" : "Key",
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "appId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "Key"
+          },
+          "namespace" : {
+            "type" : "string"
+          },
+          "complete" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "CollectionResponse_ZeppaUserInfo" : {
+        "id" : "CollectionResponse_ZeppaUserInfo",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "ZeppaUserInfo"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.minook.zeppa.ZeppaUserInfoEndpoint.fetchZeppaUserInfoByParentId" : {
+        "response" : {
+          "$ref" : "ZeppaUserInfo"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserInfoEndpoint.getZeppaUserInfo" : {
+        "response" : {
+          "$ref" : "ZeppaUserInfo"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserInfoEndpoint.insertZeppaUserInfo" : {
+        "request" : {
+          "$ref" : "ZeppaUserInfo"
+        },
+        "response" : {
+          "$ref" : "ZeppaUserInfo"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserInfoEndpoint.updateZeppaUserInfo" : {
+        "request" : {
+          "$ref" : "ZeppaUserInfo"
+        },
+        "response" : {
+          "$ref" : "ZeppaUserInfo"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserInfoEndpoint.listZeppaUserInfo" : {
+        "response" : {
+          "$ref" : "CollectionResponse_ZeppaUserInfo"
+        }
+      }
+    }
+  }
+}

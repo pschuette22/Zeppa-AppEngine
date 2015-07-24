@@ -1,0 +1,245 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://zeppa-cloud-1821.appspot.com/_ah/api",
+  "name" : "eventtagfollowendpoint",
+  "version" : "v1",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://zeppa-cloud-1821.appspot.com/_ah/spi",
+    "deadline" : 65.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "methods" : {
+    "eventtagfollowendpoint.updateEventTagFollow" : {
+      "path" : "eventtagfollow",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.getEventTagFollow" : {
+      "path" : "eventtagfollow/{id}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.getEventTagFollow",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.listEventTagFollow" : {
+      "path" : "eventtagfollow",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.listEventTagFollow",
+      "request" : {
+        "parameters" : {
+          "filter" : {
+            "type" : "string",
+            "required" : false
+          },
+          "cursor" : {
+            "type" : "string",
+            "required" : false
+          },
+          "ordering" : {
+            "type" : "string",
+            "required" : false
+          },
+          "limit" : {
+            "type" : "int32",
+            "required" : false
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.insertEventTagFollow" : {
+      "path" : "eventtagfollow",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.insertEventTagFollow",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.removeEventTagFollow" : {
+      "path" : "eventtagfollow/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "EventTagFollow" : {
+        "id" : "EventTagFollow",
+        "type" : "object",
+        "properties" : {
+          "key" : {
+            "$ref" : "Key"
+          },
+          "created" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "updated" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "tagId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "tagOwnerId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "followerId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "Key" : {
+        "id" : "Key",
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "appId" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "parent" : {
+            "$ref" : "Key"
+          },
+          "namespace" : {
+            "type" : "string"
+          },
+          "complete" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "CollectionResponse_EventTagFollow" : {
+        "id" : "CollectionResponse_EventTagFollow",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "EventTagFollow"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "methods" : {
+      "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow" : {
+        "request" : {
+          "$ref" : "EventTagFollow"
+        },
+        "response" : {
+          "$ref" : "EventTagFollow"
+        }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.getEventTagFollow" : {
+        "response" : {
+          "$ref" : "EventTagFollow"
+        }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.listEventTagFollow" : {
+        "response" : {
+          "$ref" : "CollectionResponse_EventTagFollow"
+        }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.insertEventTagFollow" : {
+        "request" : {
+          "$ref" : "EventTagFollow"
+        },
+        "response" : {
+          "$ref" : "EventTagFollow"
+        }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow" : {
+      }
+    }
+  }
+}

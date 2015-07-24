@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+
+	<!-- Schedule to clean up notifications -->
+	<cron>
+		<url>/notifications/notifications/cleanup</url>
+		<description>Clean up sent notification records every 24 hrs
+		</description>
+		<schedule>every day 05:45</schedule>
+		<timezone>America/New_York</timezone>
+	</cron>
+
+</cronentries>

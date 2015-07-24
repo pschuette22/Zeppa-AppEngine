@@ -13,3 +13,12 @@ hs_err_pid*
 .project
 .settings
 .classpath
+
+# Generated files
+target/
+build/
+datanucleus.log
+.DS_STORE
+out
+
+

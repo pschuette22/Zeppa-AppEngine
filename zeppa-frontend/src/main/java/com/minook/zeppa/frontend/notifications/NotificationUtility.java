@@ -16,8 +16,8 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.google.gson.Gson;
 import com.minook.zeppa.DeviceInfo;
-import com.minook.zeppa.DeviceInfo.DeviceType;
 import com.minook.zeppa.PMF;
+import com.minook.zeppa.DeviceInfo.DeviceType;
 
 public class NotificationUtility {
 
@@ -92,21 +92,13 @@ public class NotificationUtility {
 	 * @param deviceType
 	 */
 	public static void enqueueNotificationDeliveryToDevices(String payload,
-			List<String> registrationIds, DeviceType deviceType) {
+			List<String> registrationIds, String deviceType) {
 
 		String[] registrationIdArray = registrationIds
 				.toArray(new String[registrationIds.size()]);
 		String devicesAsJson = new Gson().toJson(registrationIdArray);
 
-//		String type = null;
-//		if(deviceType.compareTo(DeviceType.ANDROID) == 0){
-//			type = "ANDROID";
-//		} else if (deviceType.compareTo(DeviceType.iOS) == 0){
-//			type = "iOS";
-//		} else {
-//			return;
-//		}
-		
+
 		Queue notificationQueue = QueueFactory
 				.getQueue("notification-delivery");
 		// Add notification to the appropriate queue
@@ -114,7 +106,7 @@ public class NotificationUtility {
 				.withMethod(TaskOptions.Method.PULL)
 				.param("payload", payload)
 				.param("devices", devicesAsJson)
-				.param("deviceType", deviceType.toString()));
+				.param("deviceType", deviceType));
 
 	}
 
@@ -140,8 +132,8 @@ public class NotificationUtility {
 		PersistenceManager mgr = getPersistenceManager();
 
 		List<String> androidDeviceTokens = new ArrayList<String>();
-		List<String> iOSDeviceTokens = new ArrayList<String>();
-
+		List<String> iosDeviceTokens = new ArrayList<String>();
+		
 		log.info("Processing notification to: " + recipientId + ", payload: "
 				+ payload);
 
@@ -158,14 +150,12 @@ public class NotificationUtility {
 				// is
 				// logged in, send notification
 				// Must have an updated version of the app
-				log.info("Iteration on device: " + device.getRegistrationId());
 				if (device.getLoggedIn() != null
 						&& device.getLoggedIn().booleanValue()) {
-					if (device.getPhoneType() == DeviceType.iOS) {
-						iOSDeviceTokens.add(device.getRegistrationId());
-					} else if (device.getPhoneType() == DeviceType.ANDROID) {
+					if(device.getPhoneType() == DeviceType.ANDROID){
 						androidDeviceTokens.add(device.getRegistrationId());
-					}
+					} else if (device.getPhoneType() == DeviceType.iOS)
+						iosDeviceTokens.add(device.getRegistrationId());	
 				} else {
 					log.info("device not logged in or not most recent type");
 				}
@@ -177,20 +167,19 @@ public class NotificationUtility {
 
 		}
 
-		// enqueue Android notifications
+		// enqueue notifications if user has logged in devices
 		if (!androidDeviceTokens.isEmpty()) {
 			log.info("enqueueing notfication to android devices");
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
-					androidDeviceTokens, DeviceType.ANDROID);
+					androidDeviceTokens, "ANDROID");
 		}
-
-		// enqueue iOS notifications
-		if (!iOSDeviceTokens.isEmpty()) {
-			log.info("enqueueing notfication to iOS devices");
-
+		
+		if(!iosDeviceTokens.isEmpty()){
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
-					iOSDeviceTokens, DeviceType.iOS);
+					iosDeviceTokens, "iOS");
 		}
+
+
 
 	}
 

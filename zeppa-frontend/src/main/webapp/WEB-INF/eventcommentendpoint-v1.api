@@ -24,34 +24,13 @@
     "maxAge" : 0
   },
   "methods" : {
-    "eventcommentendpoint.removeEventComment" : {
-      "path" : "eventcomment/{id}",
-      "httpMethod" : "DELETE",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.EventCommentEndpoint.removeEventComment",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
-      }
-    },
     "eventcommentendpoint.listEventComment" : {
       "path" : "eventcomment",
       "httpMethod" : "GET",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
       "rosyMethod" : "com.minook.zeppa.EventCommentEndpoint.listEventComment",
       "request" : {
         "parameters" : {
@@ -84,7 +63,7 @@
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
       "rosyMethod" : "com.minook.zeppa.EventCommentEndpoint.getEventComment",
       "request" : {
         "parameters" : {
@@ -105,7 +84,7 @@
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
       "rosyMethod" : "com.minook.zeppa.EventCommentEndpoint.insertEventComment",
       "request" : {
         "body" : "autoTemplate(backendRequest)",
@@ -113,6 +92,27 @@
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventcommentendpoint.removeEventComment" : {
+      "path" : "eventcomment/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventCommentEndpoint.removeEventComment",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
       }
     }
   },
@@ -195,8 +195,6 @@
       }
     },
     "methods" : {
-      "com.minook.zeppa.EventCommentEndpoint.removeEventComment" : {
-      },
       "com.minook.zeppa.EventCommentEndpoint.listEventComment" : {
         "response" : {
           "$ref" : "CollectionResponse_EventComment"
@@ -214,6 +212,8 @@
         "response" : {
           "$ref" : "EventComment"
         }
+      },
+      "com.minook.zeppa.EventCommentEndpoint.removeEventComment" : {
       }
     }
   }

@@ -1627,3 +1627,438 @@ java.lang.NoSuchMethodError: org.datanucleus.util.Localiser.getInstance(Ljava/la
 07:03:34,266 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
 07:03:34,280 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
 07:03:34,281 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=1163 ms, enhance=126 ms, total=1289 ms. Consult the log for full details
+02:31:54,298 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+02:31:54,596 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+02:31:55,160 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+02:31:55,163 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+02:31:55,165 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+02:31:55,167 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+02:31:55,169 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+02:31:55,172 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+02:31:55,174 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+02:31:55,175 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+02:31:55,178 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+02:31:55,181 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+02:31:55,183 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+02:31:55,185 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+02:31:55,185 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=521 ms, enhance=66 ms, total=587 ms. Consult the log for full details
+07:57:52,186 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+07:57:52,487 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+07:57:53,011 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+07:57:53,013 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+07:57:53,014 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+07:57:53,016 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+07:57:53,017 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+07:57:53,019 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+07:57:53,021 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+07:57:53,023 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+07:57:53,025 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+07:57:53,028 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+07:57:53,030 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+07:57:53,032 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+07:57:53,032 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=485 ms, enhance=57 ms, total=542 ms. Consult the log for full details
+08:06:38,495 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+08:06:38,832 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+08:06:39,528 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+08:06:39,529 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+08:06:39,531 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+08:06:39,532 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+08:06:39,534 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+08:06:39,536 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+08:06:39,538 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+08:06:39,539 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+08:06:39,542 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+08:06:39,544 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+08:06:39,546 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+08:06:39,548 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+08:06:39,548 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=634 ms, enhance=79 ms, total=713 ms. Consult the log for full details
+08:24:20,024 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+08:24:20,349 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+08:24:20,941 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+08:24:20,943 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+08:24:20,946 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+08:24:20,948 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+08:24:20,949 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+08:24:20,951 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+08:24:20,953 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+08:24:20,955 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+08:24:20,958 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+08:24:20,961 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+08:24:20,964 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+08:24:20,966 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+08:24:20,966 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=554 ms, enhance=61 ms, total=615 ms. Consult the log for full details
+10:36:45,357 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+10:36:45,687 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+10:36:46,249 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+10:36:46,250 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+10:36:46,252 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+10:36:46,254 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+10:36:46,256 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+10:36:46,259 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+10:36:46,261 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+10:36:46,263 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+10:36:46,266 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+10:36:46,268 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+10:36:46,271 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+10:36:46,272 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+10:36:46,272 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=523 ms, enhance=57 ms, total=580 ms. Consult the log for full details
+12:29:02,822 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+12:29:03,265 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+12:29:04,058 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+12:29:04,067 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+12:29:04,070 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+12:29:04,074 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+12:29:04,077 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+12:29:04,081 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+12:29:04,085 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+12:29:04,091 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+12:29:04,099 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+12:29:04,102 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+12:29:04,107 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+12:29:04,111 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+12:29:04,112 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=703 ms, enhance=139 ms, total=842 ms. Consult the log for full details
+12:42:27,788 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+12:42:28,115 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+12:42:28,744 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+12:42:28,745 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+12:42:28,748 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+12:42:28,750 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+12:42:28,752 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+12:42:28,754 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+12:42:28,755 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+12:42:28,757 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+12:42:28,758 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+12:42:28,761 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+12:42:28,763 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+12:42:28,765 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+12:42:28,765 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=575 ms, enhance=71 ms, total=646 ms. Consult the log for full details
+13:35:54,719 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+13:35:55,058 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+13:35:55,664 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+13:35:55,666 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+13:35:55,669 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+13:35:55,671 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+13:35:55,672 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+13:35:55,674 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+13:35:55,676 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+13:35:55,678 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+13:35:55,680 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+13:35:55,682 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+13:35:55,684 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+13:35:55,686 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+13:35:55,687 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=561 ms, enhance=64 ms, total=625 ms. Consult the log for full details
+13:53:23,172 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+13:53:23,516 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+13:53:24,146 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+13:53:24,148 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+13:53:24,149 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+13:53:24,152 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+13:53:24,154 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+13:53:24,157 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+13:53:24,159 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+13:53:24,162 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+13:53:24,163 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+13:53:24,165 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+13:53:24,167 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+13:53:24,168 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+13:53:24,168 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=584 ms, enhance=66 ms, total=650 ms. Consult the log for full details
+23:48:53,281 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+23:48:53,605 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+23:48:54,240 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+23:48:54,242 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+23:48:54,244 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+23:48:54,247 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+23:48:54,248 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+23:48:54,250 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+23:48:54,252 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+23:48:54,255 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+23:48:54,257 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+23:48:54,260 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+23:48:54,262 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+23:48:54,264 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+23:48:54,265 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=595 ms, enhance=61 ms, total=656 ms. Consult the log for full details
+00:22:45,611 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+00:22:46,022 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+00:22:46,692 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+00:22:46,695 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+00:22:46,697 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+00:22:46,699 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+00:22:46,702 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+00:22:46,705 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+00:22:46,707 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+00:22:46,709 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+00:22:46,711 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+00:22:46,714 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+00:22:46,716 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+00:22:46,717 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+00:22:46,717 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=624 ms, enhance=68 ms, total=692 ms. Consult the log for full details
+00:27:46,252 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+00:27:46,537 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+00:27:47,145 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+00:27:47,147 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+00:27:47,148 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+00:27:47,150 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+00:27:47,155 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+00:27:47,157 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+00:27:47,159 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+00:27:47,160 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+00:27:47,162 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+00:27:47,164 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+00:27:47,166 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+00:27:47,167 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+00:27:47,167 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=569 ms, enhance=59 ms, total=628 ms. Consult the log for full details
+00:34:15,414 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+00:34:15,731 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+00:34:16,375 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+00:34:16,376 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+00:34:16,378 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+00:34:16,380 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+00:34:16,381 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+00:34:16,384 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+00:34:16,386 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+00:34:16,387 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+00:34:16,389 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+00:34:16,393 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+00:34:16,395 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+00:34:16,396 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+00:34:16,396 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=589 ms, enhance=73 ms, total=662 ms. Consult the log for full details
+00:58:01,598 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+00:58:01,911 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+00:58:02,486 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+00:58:02,488 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+00:58:02,490 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+00:58:02,492 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+00:58:02,495 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+00:58:02,497 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+00:58:02,499 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+00:58:02,501 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+00:58:02,502 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+00:58:02,504 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+00:58:02,506 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+00:58:02,507 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+00:58:02,507 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=535 ms, enhance=58 ms, total=593 ms. Consult the log for full details
+01:07:47,926 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+01:07:48,245 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+01:07:48,846 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+01:07:48,848 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+01:07:48,851 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+01:07:48,854 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+01:07:48,856 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+01:07:48,859 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+01:07:48,861 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+01:07:48,862 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+01:07:48,865 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+01:07:48,867 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+01:07:48,869 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+01:07:48,871 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+01:07:48,872 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=559 ms, enhance=65 ms, total=624 ms. Consult the log for full details
+01:18:09,651 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+01:18:09,976 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+01:18:10,588 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+01:18:10,590 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+01:18:10,592 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+01:18:10,594 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+01:18:10,596 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+01:18:10,598 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+01:18:10,601 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+01:18:10,603 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+01:18:10,606 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+01:18:10,615 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+01:18:10,617 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+01:18:10,619 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+01:18:10,620 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=570 ms, enhance=70 ms, total=640 ms. Consult the log for full details
+15:03:57,562 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+15:03:57,886 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+15:03:58,499 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+15:03:58,501 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+15:03:58,504 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+15:03:58,505 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+15:03:58,507 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+15:03:58,509 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+15:03:58,511 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+15:03:58,512 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+15:03:58,515 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+15:03:58,518 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+15:03:58,520 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+15:03:58,522 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+15:03:58,522 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=569 ms, enhance=63 ms, total=632 ms. Consult the log for full details
+16:28:52,508 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+16:28:53,011 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+16:28:54,486 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+16:28:54,488 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+16:28:54,493 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+16:28:54,499 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+16:28:54,502 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+16:28:54,506 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+16:28:54,508 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+16:28:54,511 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+16:28:54,515 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+16:28:54,519 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+16:28:54,532 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+16:28:54,535 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+16:28:54,539 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=1374 ms, enhance=146 ms, total=1520 ms. Consult the log for full details
+16:44:55,793 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+16:44:56,150 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+16:44:56,897 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+16:44:56,899 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+16:44:56,902 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+16:44:56,906 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+16:44:56,907 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+16:44:56,909 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+16:44:56,911 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+16:44:56,913 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+16:44:56,915 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+16:44:56,918 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+16:44:56,920 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+16:44:56,921 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+16:44:56,922 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=690 ms, enhance=79 ms, total=769 ms. Consult the log for full details
+16:57:13,985 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+16:57:14,305 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+16:57:14,871 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+16:57:14,873 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+16:57:14,875 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+16:57:14,876 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+16:57:14,878 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+16:57:14,880 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+16:57:14,882 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+16:57:14,883 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+16:57:14,885 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+16:57:14,887 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+16:57:14,888 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+16:57:14,891 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+16:57:14,891 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=523 ms, enhance=60 ms, total=583 ms. Consult the log for full details
+17:10:43,660 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+17:10:44,005 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+17:10:44,682 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+17:10:44,684 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+17:10:44,685 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+17:10:44,687 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+17:10:44,688 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+17:10:44,691 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+17:10:44,692 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+17:10:44,694 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+17:10:44,696 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+17:10:44,699 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+17:10:44,702 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+17:10:44,704 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+17:10:44,705 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=629 ms, enhance=66 ms, total=695 ms. Consult the log for full details
+17:15:51,864 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+17:15:52,186 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+17:15:52,801 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+17:15:52,803 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+17:15:52,804 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+17:15:52,806 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+17:15:52,814 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+17:15:52,816 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+17:15:52,818 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+17:15:52,821 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+17:15:52,823 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+17:15:52,825 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+17:15:52,827 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+17:15:52,829 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+17:15:52,830 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=573 ms, enhance=68 ms, total=641 ms. Consult the log for full details
+17:52:45,316 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+17:52:45,645 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+17:52:46,255 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+17:52:46,257 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+17:52:46,258 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+17:52:46,260 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+17:52:46,262 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+17:52:46,264 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+17:52:46,266 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+17:52:46,268 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+17:52:46,269 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+17:52:46,271 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+17:52:46,272 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+17:52:46,274 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+17:52:46,274 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=565 ms, enhance=61 ms, total=626 ms. Consult the log for full details
+18:01:55,438 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+18:01:55,764 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+18:01:56,386 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+18:01:56,387 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+18:01:56,389 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+18:01:56,390 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+18:01:56,392 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+18:01:56,395 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+18:01:56,397 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+18:01:56,399 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+18:01:56,401 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+18:01:56,403 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+18:01:56,405 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+18:01:56,407 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+18:01:56,407 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=572 ms, enhance=68 ms, total=640 ms. Consult the log for full details
+18:13:21,350 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+18:13:21,685 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+18:13:22,312 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+18:13:22,314 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+18:13:22,317 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+18:13:22,319 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+18:13:22,322 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+18:13:22,325 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+18:13:22,328 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+18:13:22,330 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+18:13:22,331 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+18:13:22,333 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+18:13:22,335 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+18:13:22,336 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+18:13:22,337 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=580 ms, enhance=69 ms, total=649 ms. Consult the log for full details
+14:38:14,836 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+14:38:15,155 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+14:38:15,747 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+14:38:15,749 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+14:38:15,751 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+14:38:15,753 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+14:38:15,755 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+14:38:15,759 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+14:38:15,761 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+14:38:15,762 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+14:38:15,764 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+14:38:15,765 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+14:38:15,767 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+14:38:15,768 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+14:38:15,768 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=552 ms, enhance=57 ms, total=609 ms. Consult the log for full details
+22:40:53,840 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+22:40:54,181 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+22:40:54,916 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+22:40:54,919 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+22:40:54,921 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+22:40:54,924 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+22:40:54,926 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+22:40:54,930 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+22:40:54,933 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+22:40:54,935 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+22:40:54,937 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+22:40:54,940 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+22:40:54,945 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+22:40:54,951 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+22:40:54,952 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=625 ms, enhance=142 ms, total=767 ms. Consult the log for full details
+22:58:35,872 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+22:58:36,194 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+22:58:36,778 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+22:58:36,780 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+22:58:36,782 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+22:58:36,783 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+22:58:36,784 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+22:58:36,786 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+22:58:36,788 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+22:58:36,790 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+22:58:36,792 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+22:58:36,795 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+22:58:36,797 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+22:58:36,800 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+22:58:36,800 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=543 ms, enhance=61 ms, total=604 ms. Consult the log for full details
+23:04:35,617 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+23:04:35,900 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+23:04:36,505 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.DeviceInfo" is already enhanced.
+23:04:36,507 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventComment" is already enhanced.
+23:04:36,509 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTag" is already enhanced.
+23:04:36,511 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.EventTagFollow" is already enhanced.
+23:04:36,513 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.PhotoInfo" is already enhanced.
+23:04:36,516 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEvent" is already enhanced.
+23:04:36,519 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaEventToUserRelationship" is already enhanced.
+23:04:36,522 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaFeedback" is already enhanced.
+23:04:36,524 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaNotification" is already enhanced.
+23:04:36,527 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUser" is already enhanced.
+23:04:36,528 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserInfo" is already enhanced.
+23:04:36,529 (main) INFO  [DataNucleus.Enhancer] - Class "com.minook.zeppa.ZeppaUserToUserRelationship" is already enhanced.
+23:04:36,530 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 12 classes. Timings : input=565 ms, enhance=63 ms, total=628 ms. Consult the log for full details

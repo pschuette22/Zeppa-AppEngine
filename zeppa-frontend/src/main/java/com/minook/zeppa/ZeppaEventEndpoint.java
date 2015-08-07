@@ -24,8 +24,8 @@ import com.minook.zeppa.frontend.tasks.TaskUtility;
 
 @Api(name = "zeppaeventendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_CLIENT_ID,
-		Constants.AGICENT_CLIENT_ID, Constants.AGICENT_CLIENT_ID2 }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
+		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaEventEndpoint {
 
 	// private static final String cursorString = null;

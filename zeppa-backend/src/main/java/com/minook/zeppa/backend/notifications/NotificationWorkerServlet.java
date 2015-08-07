@@ -31,8 +31,9 @@ public class NotificationWorkerServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private static final int MAX_WORKER_COUNT = 5;
-	private static final int MILLISECONDS_TO_WAIT_WHEN_NO_TASKS_LEASED = 2500;
-	private static final int TEN_MINUTES = (10 * 60 * 1000);
+	private static final int MILLISECONDS_TO_WAIT_WHEN_NO_TASKS_LEASED = 1500;
+	// Stay idle for 5 minutes max
+	private static final int MILLISECONDS_TO_STAY_IDLE = (5 * 60 * 1000); 
 
 	private static SyncCounter counter;
 	private static ClassLoader cl;
@@ -76,17 +77,14 @@ public class NotificationWorkerServlet extends HttpServlet {
 			counter = new SyncCounter();
 		}
 		
-		logMessage(0, "Starting to build workers");
 
 		for (int workerNo = counter.value(); workerNo < MAX_WORKER_COUNT; workerNo++) {
 
-			logMessage(0, "Checking if more notification workers are needed");
 			// Get the current queue to check it's statistics
 			Queue notificationQueue = QueueFactory
 					.getQueue("notification-delivery");
 			if (notificationQueue.fetchStatistics().getNumTasks() > 30 * counter.value()) {
 				
-				logMessage(0, "Starting thread for worker: " + workerNo);
 				counter.increment();
 				
 				cl = getClass().getClassLoader();
@@ -119,34 +117,34 @@ public class NotificationWorkerServlet extends HttpServlet {
 	/**
 	 * poll the task queue and lease the tasks
 	 * 
-	 * Wait for up to 10 minutes for tasks to be added to queue before killing
-	 * tasks
+	 * If there are no tasks in queue, wait up to specified time
 	 * 
 	 */
 	private void doPolling() {
-		logMessage(0, "Doing pulling");
 
+		NotificationWorker worker = null;
 		try {
 
 			int loopsWithoutProcessedTasks = 0;
 			Queue notificationQueue = QueueFactory
 					.getQueue("notification-delivery");
-			NotificationWorker worker = new NotificationWorker(
+			worker = new NotificationWorker(
 					notificationQueue);
 
 			while (!LifecycleManager.getInstance().isShuttingDown()) {
 				boolean tasksProcessed = worker.processBatchOfTasks();
 				ApiProxy.flushLogs();
 
-				if (!tasksProcessed) {
-					logMessage(0, "waiting for tasks");
+				if (tasksProcessed) {
+					loopsWithoutProcessedTasks = 0;
 
+				} else {
 					// Wait before trying to lease tasks again.
 					try {
 						loopsWithoutProcessedTasks++;
 
-						// If worker hasn't had any tasks for 10 min, kill it.
-						if (loopsWithoutProcessedTasks >= (TEN_MINUTES / MILLISECONDS_TO_WAIT_WHEN_NO_TASKS_LEASED)) {
+						// If worker hasn't had any tasks idle timeout time, kill it
+						if (loopsWithoutProcessedTasks >= (MILLISECONDS_TO_STAY_IDLE / MILLISECONDS_TO_WAIT_WHEN_NO_TASKS_LEASED)) {
 							break;
 						} else {
 							// Else, wait and try again (to avoid tearing down
@@ -155,12 +153,8 @@ public class NotificationWorkerServlet extends HttpServlet {
 						}
 
 					} catch (InterruptedException e) {
-						logMessage(0, "Notification worker thread interrupted");
 						break;
 					}
-				} else {
-					logMessage(0, "processed batch of tasks");
-					loopsWithoutProcessedTasks = 0;
 				}
 			}
 		} catch (Exception e) {
@@ -169,7 +163,16 @@ public class NotificationWorkerServlet extends HttpServlet {
 					"Exception caught and handled in notification worker: "
 							+ e.getLocalizedMessage());
 		} finally {
+			
+			// Retire the worker
+			if(worker != null){
+				logMessage(1, "Worker is retiring");
+				worker.retire();
+			}
+			
+			// Decrement the counter
 			counter.decrement();
+			
 		}
 
 		logMessage(0, "Instance is shutting down");
@@ -177,6 +180,11 @@ public class NotificationWorkerServlet extends HttpServlet {
 		
 	}
 
+	/**
+	 * Log a message in sync
+	 * @param level
+	 * @param message
+	 */
 	private synchronized void logMessage(int level, String message) {
 //		Logger log = Logger
 //				.getLogger(NotificationWorkerServlet.class.getName());

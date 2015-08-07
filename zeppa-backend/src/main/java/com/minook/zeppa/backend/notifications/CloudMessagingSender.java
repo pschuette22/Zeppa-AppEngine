@@ -20,7 +20,7 @@ public class CloudMessagingSender {
 
 	}
 
-	public MulticastResult sendMessageToAndroidDevices(Message message, String[] registrationIds) {
+	public MulticastResult sendMessageToDevice(Message message, String[] registrationIds) {
 
 		// Build the message
 		MulticastResult result = null;
@@ -35,7 +35,7 @@ public class CloudMessagingSender {
 			int success = result.getSuccess();
 			int failed = result.getFailure();
 
-			LOG.info(success + " Success/ " + failed + " Failed");
+			LOG.warning("Sent cloud messages: " + success + " Success/ " + failed + " Failed");
 
 		} catch (IOException e) {
 			e.printStackTrace();

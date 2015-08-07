@@ -24,13 +24,66 @@
     "maxAge" : 0
   },
   "methods" : {
+    "zeppauserendpoint.getZeppaUser" : {
+      "path" : "zeppauser/{userId}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.getZeppaUser",
+      "request" : {
+        "parameters" : {
+          "userId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserendpoint.updateZeppaUser" : {
+      "path" : "zeppauser",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.updateZeppaUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppauserendpoint.insertZeppaUser" : {
+      "path" : "zeppauser",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.insertZeppaUser",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "zeppauserendpoint.listZeppaUser" : {
       "path" : "zeppauser",
       "httpMethod" : "GET",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
       "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.listZeppaUser",
       "request" : {
         "parameters" : {
@@ -57,81 +110,13 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
-    "zeppauserendpoint.insertZeppaUser" : {
-      "path" : "zeppauser",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.insertZeppaUser",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppauserendpoint.updateZeppaUser" : {
-      "path" : "zeppauser",
-      "httpMethod" : "PUT",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.updateZeppaUser",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppauserendpoint.fetchCurrentZeppaUser" : {
-      "path" : "fetchCurrentZeppaUser",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.fetchCurrentZeppaUser",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppauserendpoint.getZeppaUser" : {
-      "path" : "zeppauser/{userId}",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.getZeppaUser",
-      "request" : {
-        "parameters" : {
-          "userId" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "zeppauserendpoint.removeZeppaUser" : {
       "path" : "zeppauser/{id}",
       "httpMethod" : "DELETE",
       "authLevel" : "NONE",
       "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
       "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com", "587859844920-eo2hccah1bc40q7ba3s1gci3c5qcdgev.apps.googleusercontent.com", "587859844920-377evocp3ver0a6uskooijpmfmq4a6nj.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
       "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.removeZeppaUser",
       "request" : {
         "parameters" : {
@@ -145,25 +130,25 @@
       "response" : {
         "body" : "empty"
       }
+    },
+    "zeppauserendpoint.fetchCurrentZeppaUser" : {
+      "path" : "fetchCurrentZeppaUser",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserEndpoint.fetchCurrentZeppaUser",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
     }
   },
   "descriptor" : {
     "schemas" : {
-      "CollectionResponse_ZeppaUser" : {
-        "id" : "CollectionResponse_ZeppaUser",
-        "type" : "object",
-        "properties" : {
-          "items" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "ZeppaUser"
-            }
-          },
-          "nextPageToken" : {
-            "type" : "string"
-          }
-        }
-      },
       "ZeppaUser" : {
         "id" : "ZeppaUser",
         "type" : "object",
@@ -260,18 +245,25 @@
             "format" : "int64"
           }
         }
+      },
+      "CollectionResponse_ZeppaUser" : {
+        "id" : "CollectionResponse_ZeppaUser",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "ZeppaUser"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
       }
     },
     "methods" : {
-      "com.minook.zeppa.ZeppaUserEndpoint.listZeppaUser" : {
-        "response" : {
-          "$ref" : "CollectionResponse_ZeppaUser"
-        }
-      },
-      "com.minook.zeppa.ZeppaUserEndpoint.insertZeppaUser" : {
-        "request" : {
-          "$ref" : "ZeppaUser"
-        },
+      "com.minook.zeppa.ZeppaUserEndpoint.getZeppaUser" : {
         "response" : {
           "$ref" : "ZeppaUser"
         }
@@ -284,17 +276,25 @@
           "$ref" : "ZeppaUser"
         }
       },
+      "com.minook.zeppa.ZeppaUserEndpoint.insertZeppaUser" : {
+        "request" : {
+          "$ref" : "ZeppaUser"
+        },
+        "response" : {
+          "$ref" : "ZeppaUser"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserEndpoint.listZeppaUser" : {
+        "response" : {
+          "$ref" : "CollectionResponse_ZeppaUser"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserEndpoint.removeZeppaUser" : {
+      },
       "com.minook.zeppa.ZeppaUserEndpoint.fetchCurrentZeppaUser" : {
         "response" : {
           "$ref" : "ZeppaUser"
         }
-      },
-      "com.minook.zeppa.ZeppaUserEndpoint.getZeppaUser" : {
-        "response" : {
-          "$ref" : "ZeppaUser"
-        }
-      },
-      "com.minook.zeppa.ZeppaUserEndpoint.removeZeppaUser" : {
       }
     }
   }

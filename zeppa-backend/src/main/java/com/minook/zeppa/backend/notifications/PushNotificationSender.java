@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import javapns.communication.exceptions.CommunicationException;
 import javapns.communication.exceptions.KeystoreException;
 import javapns.devices.Device;
@@ -17,10 +16,11 @@ import javapns.devices.exceptions.InvalidDeviceTokenFormatException;
 import javapns.devices.implementations.basic.BasicDevice;
 import javapns.notification.AppleNotificationServer;
 import javapns.notification.AppleNotificationServerBasicImpl;
-import javapns.notification.Payload;
 import javapns.notification.PushNotificationManager;
+import javapns.notification.PushNotificationPayload;
 import javapns.notification.PushedNotification;
 import javapns.notification.PushedNotifications;
+import javapns.notification.ResponsePacket;
 
 class PushNotificationSender {
 
@@ -28,13 +28,14 @@ class PushNotificationSender {
 			.getLogger(PushNotificationSender.class.getName());
 
 	// /Zeppa-AppEngine/war/WEB-INF/
-	private static final String CERTIFICATE_NAME = "zeppaPushNotification.p12";
+	private static final boolean PRODUCTION = false;
+	private static String CERTIFICATE_NAME = PRODUCTION ? "zeppaProduction.p12"
+			: "zeppaDevelopment.p12";
 
 	private PushNotificationManager pushManager;
 	private Object keystore;
 	private static byte[] certificateBytes;
-	private static final String PASSWORD = "agicent";
-	private boolean production = true;
+	private static final String PASSWORD = "zepp@m0bile";
 	private boolean isConnected = false;
 	Method processedFailedNotificationsMethod = null;
 
@@ -59,10 +60,12 @@ class PushNotificationSender {
 			processedFailedNotificationsMethod.setAccessible(true);
 
 		} catch (NoSuchMethodException e) {
-			log.log(Level.SEVERE, "Incompatible JavaPNS library.", e);
+			log.severe("Incompatible JavaPNS library."
+					+ e.getLocalizedMessage());
 		} catch (SecurityException e) {
-			log.log(Level.SEVERE, "This code requires reflection permission.",
-					e);
+			log.severe("Required Reflection Permission."
+					+ e.getLocalizedMessage());
+
 		}
 
 	}
@@ -88,10 +91,7 @@ class PushNotificationSender {
 						outputStream.write(buffer, 0, bytesRead);
 					}
 				} catch (IOException e) {
-					Logger.getLogger(
-							PushNotificationSender.class.getCanonicalName())
-							.log(Level.SEVERE, "Error reading the certificate",
-									e);
+					log.log(Level.SEVERE, "Error reading the certificate", e);
 				}
 
 				certificateBytes = outputStream.toByteArray();
@@ -110,7 +110,7 @@ class PushNotificationSender {
 			CommunicationException {
 		if (keystore != null) {
 			AppleNotificationServer server = new AppleNotificationServerBasicImpl(
-					keystore, PASSWORD, production);
+					keystore, PASSWORD, PRODUCTION);
 
 			pushManager.initializeConnection(server);
 			isConnected = true;
@@ -146,15 +146,10 @@ class PushNotificationSender {
 	 *            should be sent
 	 * @return a list of pushed notifications that contain details on
 	 *         transmission results.
-	 * @throws CommunicationException
-	 *             thrown if an error occurred while communicating with the
-	 *             target server even after a few retries.
-	 * @throws KeystoreException
-	 *             thrown if an error occurs with using the certificate.
+	 * @throws Exception
 	 */
-	public PushedNotifications sendPayload(Payload payload,
-			String[] deviceTokens) throws CommunicationException,
-			KeystoreException {
+	public PushedNotifications sendPayload(PushNotificationPayload payload,
+			String[] deviceTokens) throws Exception {
 		PushedNotifications notifications = new PushedNotifications();
 
 		if (payload == null) {
@@ -169,17 +164,59 @@ class PushNotificationSender {
 			List<Device> deviceList = Devices.asDevices(deviceTokens);
 			notifications.setMaxRetained(deviceList.size());
 			for (Device device : deviceList) {
+				PushedNotification notification = null;
 				try {
+					// Deliver the notifications
 					BasicDevice.validateTokenFormat(device.getToken());
-					PushedNotification notification = pushManager
-							.sendNotification(device, payload, false);
-					notifications.add(notification);
+					notification = pushManager.sendNotification(device,
+							payload, false);
+
+					// Add delivered notification instance to array
+
+					log.warning("iOS Notification: " + payload.toString()
+							+ " \nTo device: " + device.toString());
+
+					if (notification.isSuccessful()) {
+						try {
+							log.warning("Delivery Succcess: payload size "
+									+ payload.getPayloadSize() + " / "
+									+ payload.getMaximumPayloadSize());
+						} catch (Exception e) {
+							log.warning("Delivery Success but couldn't retrieve size");
+						}
+					} else {
+						log.warning("Notification was not delivered successfully");
+
+						Exception theProblem = notification.getException();
+						log.warning(theProblem.getMessage());
+						log.warning(theProblem.toString());
+
+						/*
+						 * If the problem was an error-response packet returned
+						 * by Apple, get it
+						 */
+						ResponsePacket theErrorResponse = notification
+								.getResponse();
+						if (theErrorResponse != null) {
+							log.warning(theErrorResponse.getMessage());
+						}
+
+					}
 
 				} catch (InvalidDeviceTokenFormatException e) {
-					notifications
-							.add(new PushedNotification(device, payload, e));
+					notification = new PushedNotification(device, payload, e);
+					log.warning("Error Sending notificaiton to device "
+							+ device.toString());
+
+					/* Find out more about what the problem was */
+
 				}
+				// Add result notification to pushed notifications list result
+				notifications.add(notification);
 			}
+
+			// Push.payload(payload, notifications, PASSWORD, production,
+			// devices)
 		} catch (CommunicationException e) {
 			stopConnection();
 			throw e;

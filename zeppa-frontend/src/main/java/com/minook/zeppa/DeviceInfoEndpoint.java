@@ -7,6 +7,9 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
@@ -20,8 +23,8 @@ import com.minook.zeppa.common.Utils;
 
 @Api(name = "deviceinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_CLIENT_ID,
-		Constants.AGICENT_CLIENT_ID, Constants.AGICENT_CLIENT_ID2 }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
+		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class DeviceInfoEndpoint {
 
 	/**
@@ -54,9 +57,6 @@ public class DeviceInfoEndpoint {
 			Query query = mgr.newQuery(DeviceInfo.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
-				HashMap<String, Object> extensionMap = new HashMap<String, Object>();
-				extensionMap.put(JDOCursorHelper.CURSOR_EXTENSION, cursor);
-				query.setExtensions(extensionMap);
 			}
 
 			if (Utils.isWebSafe(filterString)) {
@@ -93,6 +93,35 @@ public class DeviceInfoEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
+//	/**
+//	 * This method lists devices based on a list of items.
+//	 * Assumes an ArrayList<String> was passed as a JSON Object
+//	 * 
+//	 * @param jsonList - json list of items
+//	 * @param itemType - email or phone
+//	 * @param user auth object
+//	 * @return collection of DeviceInfo with matching 
+//	 */
+//	@ApiMethod(name = "listDeviceInfo")
+//	public CollectionResponse<DeviceInfo> listDeviceInfo(
+//			@Nullable @Named("jsonList") String jsonList,
+//			@Nullable @Named("itemType") String itemType, User user) throws JSONException, OAuthRequestException {
+//
+//		JSONObject json = new JSONObject(jsonList);
+//		List<String> items = (List<String>) json.get("list");
+//		
+//		if (Constants.PRODUCTION && user == null) {
+//			throw new OAuthRequestException("Unauthorized call");
+//		}
+//
+//		PersistenceManager mgr = null;
+//		Cursor cursor = null;
+//		List<DeviceInfo> execute = null;
+//		
+//		
+//		return null;
+//	}
+
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
 	 * method.
@@ -127,7 +156,7 @@ public class DeviceInfoEndpoint {
 	 * 
 	 * @param deviceinfo
 	 *            the entity to be inserted.
-	 * @return The inserted entity.
+	 * @return The inserted entity or null.
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
@@ -138,27 +167,68 @@ public class DeviceInfoEndpoint {
 			throw new OAuthRequestException("Unauthorized call");
 		}
 
-		if (deviceinfo.getOwnerId() == null) {
+		if (deviceinfo.getOwnerId() == null
+				|| deviceinfo.getRegistrationId() == null) {
 			throw new NullPointerException();
 		}
 
+		DeviceInfo result = null;
 		PersistenceManager mgr = getPersistenceManager();
 
+		// Try to fetch an instance of device info with a matching token and
+		// user id
 		try {
+			String filter = "ownerId == " + deviceinfo.getOwnerId()
+					+ " && registrationId == '"
+					+ deviceinfo.getRegistrationId() + "'";
 
-			deviceinfo.setCreated(System.currentTimeMillis());
-			deviceinfo.setUpdated(System.currentTimeMillis());
+			Query q = mgr.newQuery(DeviceInfo.class, filter);
 
-			mgr.makePersistent(deviceinfo);
+			// Does not check that this is a safe cast... it is.
+			@SuppressWarnings("unchecked")
+			List<DeviceInfo> response = (List<DeviceInfo>) q.execute();
 
-		} catch (javax.jdo.JDOObjectNotFoundException e) {
+			// If there are already matching devices, update them
+			if (response == null || response.isEmpty()) {
+				deviceinfo.setCreated(System.currentTimeMillis());
+				deviceinfo.setUpdated(System.currentTimeMillis());
+			} else {
+
+				// get and remove the first object
+				DeviceInfo current = response.get(0);
+				response.remove(0);
+
+				// Set version information
+				current.setBugfix(deviceinfo.getBugfix());
+				current.setUpdate(deviceinfo.getUpdate());
+				current.setVersion(deviceinfo.getVersion());
+
+				// set login info/ set updated
+				current.setLastLogin(deviceinfo.getLastLogin());
+				current.setLoggedIn(deviceinfo.getLoggedIn());
+				current.setUpdated(System.currentTimeMillis());
+
+				// passed device info is set to held info with updated values
+				deviceinfo = current;
+
+				// If there are more than one instances of this object, delete
+				// the extras
+				if (!response.isEmpty()) {
+					mgr.deletePersistentAll(response);
+				}
+			}
+
+			// Make it persistent
+			result = mgr.makePersistent(deviceinfo);
+
+		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
-			deviceinfo = null;
 		} finally {
 			mgr.close();
 		}
 
-		return deviceinfo;
+		// Return the inserted item or null if an error occured.
+		return result;
 	}
 
 	/**

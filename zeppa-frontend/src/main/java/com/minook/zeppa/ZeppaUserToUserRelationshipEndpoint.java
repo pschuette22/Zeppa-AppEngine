@@ -10,7 +10,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
@@ -26,8 +25,8 @@ import com.minook.zeppa.frontend.tasks.TaskUtility;
 
 @Api(name = "zeppausertouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_CLIENT_ID,
-		Constants.AGICENT_CLIENT_ID, Constants.AGICENT_CLIENT_ID2 }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
+		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserToUserRelationshipEndpoint {
 
 	// private static final Logger log = Logger

@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import javapns.communication.exceptions.CommunicationException;
 import javapns.communication.exceptions.KeystoreException;
-import javapns.notification.Payload;
 import javapns.notification.PushNotificationPayload;
 import javapns.notification.PushedNotifications;
 
@@ -60,6 +59,24 @@ public class NotificationWorker {
 		cache.setErrorHandler(ErrorHandlers
 				.getConsistentLogAndContinue(Level.INFO));
 
+	}
+	
+	/**
+	 * Gracefully clean up this worker.
+	 * What happens:
+	 * - Stops connection for pushNotificationSender
+	 * 
+	 */
+	public void retire(){
+		try {
+			pushNotificationSender.stopConnection();
+		} catch (CommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeystoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected boolean processBatchOfTasks() {
@@ -150,9 +167,9 @@ public class NotificationWorker {
 
 		long messagesAndNotificationCount = 0;
 
-		Map<String, PushedNotifications> pushedNotificationsForTasks = new HashMap<String, PushedNotifications>();
 		Map<String, MulticastResult> sentMessagesForTasks = new HashMap<String, MulticastResult>();
-
+		Map<String, PushedNotifications> pushedNotificationsForTasks = new HashMap<String, PushedNotifications>();
+		
 		boolean backOff = false;
 
 		for (TaskHandle task : tasks) {
@@ -172,27 +189,30 @@ public class NotificationWorker {
 
 				Object result = processLeasedTask(task);
 
-				if (result instanceof MulticastResult) {
+				if(result == null){
+					log.warning("Error processing task: " + task.getName()
+							+ ", not notifications were sent on its' behalf");
+					continue;
+				} else if (result instanceof MulticastResult) {
 
 					MulticastResult multicastResult = (MulticastResult) result;
 					sentMessagesForTasks.put(task.getName(), multicastResult);
 					messagesAndNotificationCount += multicastResult.getTotal();
 
-				} else if (result instanceof PushedNotifications) {
-
-					PushedNotifications pushedNotifications = (PushedNotifications) result;
-					pushedNotificationsForTasks.put(task.getName(),
-							pushedNotifications);
-					messagesAndNotificationCount += pushedNotifications.size();
-
-				} else {
-					// returned null
-					log.warning("Error processing task: " + task.getName()
-							+ ", not notifications were sent on its' behalf");
-					continue;
+				} else if (result instanceof PushedNotifications){
+					
+					PushedNotifications notifications = (PushedNotifications) result;
+					pushedNotificationsForTasks.put(task.getName(), notifications);
+					
+					messagesAndNotificationCount+=notifications.size();
+					
+					
+					
 				}
 
 				if (messagesAndNotificationCount >= 1000) {
+					deleteTasks(processedTasks);
+					processedTasks.clear();
 					messagesAndNotificationCount = 0;
 					// TODO: enqueue removing failed device counts
 				}
@@ -261,13 +281,15 @@ public class NotificationWorker {
 	private Object processLeasedTask(TaskHandle task)
 			throws CommunicationException, KeystoreException {
 
+		// Method variables
 		String payload = null;
-		String[] deviceTokens = null;
 		String deviceType = null;
+		String[] deviceTokens = null;
 		List<Entry<String, String>> params = null;
 
-		log.warning("processing leased task");
+		// log.warning("processing leased task");
 
+		// attempt to extract params. Error out if unsuccessful
 		try {
 			params = task.extractParams();
 		} catch (UnsupportedEncodingException e) {
@@ -278,6 +300,7 @@ public class NotificationWorker {
 			return null;
 		}
 
+		// Iterate through params and populate method variables
 		for (Entry<String, String> param : params) {
 			String paramKey = param.getKey();
 			String paramVal = param.getValue();
@@ -290,32 +313,24 @@ public class NotificationWorker {
 			}
 		}
 
-		log.warning("params: payload - " + payload + " // devices - "
-				+ deviceTokens + " // deviceType - " + deviceType);
-
 		if (payload == null || deviceTokens == null || deviceType == null) {
 			log.warning("issue with params");
 			return null;
-		}
-
-		if (deviceType.equalsIgnoreCase("iOS")) {
-			log.warning("pushing iOS notifications");
-			PushedNotifications notifications = sendPushNotficationsToiOSDevices(
-					payload, deviceTokens);
-
-			return notifications;
 		} else if (deviceType.equalsIgnoreCase("ANDROID")) {
-			log.warning("pushing android notifications");
-			MulticastResult result = sendCloudMessageToAndroidDevices(payload,
-					deviceTokens);
 
+			// Send the payload to the devices.
+			MulticastResult result = sendPayloadToDevices(payload, deviceTokens);
+
+			// TODO: handle failed delivery
 			return result;
+		} else if (deviceType.equalsIgnoreCase("iOS")) {
+
+			PushedNotifications notifications = sendPushNotficationsToiOSDevices(payload, deviceTokens);
+			
+			return notifications;
 		} else {
-			log.warning("device type not recognized: " + deviceType);
+			return null;
 		}
-
-		return null;
-
 	}
 
 	/**
@@ -325,13 +340,16 @@ public class NotificationWorker {
 	 * @param registrationIds
 	 * @return MulticastResult of delivered notifications
 	 */
-	private MulticastResult sendCloudMessageToAndroidDevices(String payload,
+	private MulticastResult sendPayloadToDevices(String jsonPayload,
 			String[] registrationIds) {
 
 		Message.Builder builder = new Message.Builder();
 
 		try {
-			JSONObject json = new JSONObject(payload);
+			// Rebuild JSON payload
+			JSONObject json = new JSONObject(jsonPayload);
+
+			// builder.addData("content_available", "true");
 			String purpose = json.getString("purpose");
 			builder.addData("purpose", purpose);
 
@@ -360,11 +378,13 @@ public class NotificationWorker {
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return null;
 		}
 
 		Message message = builder.build();
-		MulticastResult result = cloudMessagingSender
-				.sendMessageToAndroidDevices(message, registrationIds);
+
+		MulticastResult result = cloudMessagingSender.sendMessageToDevice(
+				message, registrationIds);
 
 		// try {
 		// List<Result> results = result.getResults();
@@ -379,6 +399,8 @@ public class NotificationWorker {
 		return result;
 	}
 
+	// Removed because IOS notifications are being delivered via GCM
+	// Kept in case we revert back due to unforseen circumstances.
 	/**
 	 * Handles sending push notifications to iOS devices
 	 * 
@@ -391,22 +413,25 @@ public class NotificationWorker {
 	private PushedNotifications sendPushNotficationsToiOSDevices(
 			String payload, String[] deviceTokens) {
 
-		Payload pnPayload = PushNotificationPayload.complex();
+		PushNotificationPayload pnPayload = PushNotificationPayload.complex();
 		try {
 			JSONObject json = new JSONObject(payload);
 
+//			json.put("content_available", new Boolean(true));
+			
+			
 			String purpose = json.getString("purpose");
-
 			pnPayload.addCustomDictionary("purpose", purpose);
 
 			if (purpose.equals("zeppaNotification")) {
 
+				
 				pnPayload.addCustomDictionary("notificationId",
 						json.getString("notificationId"));
-				pnPayload.addCustomDictionary("senderId",
-						json.getString("senderId"));
-				pnPayload.addCustomDictionary("eventId",
-						json.getString("eventId"));
+//				pnPayload.addCustomDictionary("senderId",
+//						json.getString("senderId"));
+//				pnPayload.addCustomDictionary("eventId",
+//						json.getString("eventId"));
 				pnPayload.addCustomDictionary("expires",
 						json.getString("expires"));
 
@@ -420,12 +445,17 @@ public class NotificationWorker {
 				pnPayload.addCustomDictionary("eventId",
 						json.getString("eventId"));
 			}
-
+			
+			// set content available value
+			JSONObject apsDictionary = (JSONObject) pnPayload.getPayload().get("aps");
+			apsDictionary.put("content-available", 1);
+			
+			
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
 		}
-
+		
 		PushedNotifications notifications = null;
 		try {
 			notifications = pushNotificationSender.sendPayload(pnPayload,
@@ -434,6 +464,8 @@ public class NotificationWorker {
 		} catch (CommunicationException e) {
 			e.printStackTrace();
 		} catch (KeystoreException e) {
+			e.printStackTrace();
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 

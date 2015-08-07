@@ -22,10 +22,16 @@
 
 	<repositories>
 		<repository>
-			<id>gcm-server-repository</id>
-			<url>https://raw.githubusercontent.com/slorber/gcm-server-repository/master/releases/</url>
+			<id>gcmutils-repo-releases</id>
+			<url>http://gcmutils.googlecode.com/svn/trunk/repository/releases</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>gcmutils-pluginrepo-releases</id>
+			<url>http://gcmutils.googlecode.com/svn/trunk/repository/releases</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 		<!-- Compile/runtime dependencies -->
@@ -84,21 +90,30 @@
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
 		</dependency>
+		
+		<!-- Maven Artifact for APNS -->
 		<dependency>
 			<groupId>com.github.fernandospr</groupId>
 			<artifactId>javapns-jdk16</artifactId>
 			<version>2.2.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.ganyo</groupId>
+			<artifactId>gcm-server</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20141113</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.google.android.gcm</groupId>
 			<artifactId>gcm-server</artifactId>
 			<version>1.0.2</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- GWT dependencies -->
 		<dependency>
@@ -141,8 +156,8 @@
 							<targetPath>WEB-INF</targetPath>
 						</resource>
 					</webResources>
-<!-- 					<webXml>${basedir}/target/zeppa-backend-1/WEB-INF</webXml>
- -->				</configuration>
+					<!-- <webXml>${basedir}/target/zeppa-backend-1/WEB-INF</webXml> -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

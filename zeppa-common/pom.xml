@@ -263,6 +263,6 @@
 		</plugins>
 	</build>
 	<reporting>
-		<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/target/site</outputDirectory>
+		<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-common/src/main/webapp/WEB-INF/classes</outputDirectory>
 	</reporting>
 </project>

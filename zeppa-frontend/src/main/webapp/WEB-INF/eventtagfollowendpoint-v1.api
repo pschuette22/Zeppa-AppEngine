@@ -24,59 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "eventtagfollowendpoint.updateEventTagFollow" : {
-      "path" : "eventtagfollow",
-      "httpMethod" : "PUT",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "eventtagfollowendpoint.insertEventTagFollow" : {
-      "path" : "eventtagfollow",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.insertEventTagFollow",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "eventtagfollowendpoint.removeEventTagFollow" : {
-      "path" : "eventtagfollow/{id}",
-      "httpMethod" : "DELETE",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow",
-      "request" : {
-        "parameters" : {
-          "id" : {
-            "type" : "int64",
-            "required" : true
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "empty"
-      }
-    },
     "eventtagfollowendpoint.getEventTagFollow" : {
       "path" : "eventtagfollow/{id}",
       "httpMethod" : "GET",
@@ -126,6 +73,59 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.removeEventTagFollow" : {
+      "path" : "eventtagfollow/{id}",
+      "httpMethod" : "DELETE",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "eventtagfollowendpoint.insertEventTagFollow" : {
+      "path" : "eventtagfollow",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.insertEventTagFollow",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "eventtagfollowendpoint.updateEventTagFollow" : {
+      "path" : "eventtagfollow",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -187,11 +187,11 @@
           "parent" : {
             "$ref" : "Key"
           },
-          "namespace" : {
-            "type" : "string"
-          },
           "complete" : {
             "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
           }
         }
       },
@@ -212,13 +212,17 @@
       }
     },
     "methods" : {
-      "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow" : {
-        "request" : {
-          "$ref" : "EventTagFollow"
-        },
+      "com.minook.zeppa.EventTagFollowEndpoint.getEventTagFollow" : {
         "response" : {
           "$ref" : "EventTagFollow"
         }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.listEventTagFollow" : {
+        "response" : {
+          "$ref" : "CollectionResponse_EventTagFollow"
+        }
+      },
+      "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow" : {
       },
       "com.minook.zeppa.EventTagFollowEndpoint.insertEventTagFollow" : {
         "request" : {
@@ -228,16 +232,12 @@
           "$ref" : "EventTagFollow"
         }
       },
-      "com.minook.zeppa.EventTagFollowEndpoint.removeEventTagFollow" : {
-      },
-      "com.minook.zeppa.EventTagFollowEndpoint.getEventTagFollow" : {
+      "com.minook.zeppa.EventTagFollowEndpoint.updateEventTagFollow" : {
+        "request" : {
+          "$ref" : "EventTagFollow"
+        },
         "response" : {
           "$ref" : "EventTagFollow"
-        }
-      },
-      "com.minook.zeppa.EventTagFollowEndpoint.listEventTagFollow" : {
-        "response" : {
-          "$ref" : "CollectionResponse_EventTagFollow"
         }
       }
     }

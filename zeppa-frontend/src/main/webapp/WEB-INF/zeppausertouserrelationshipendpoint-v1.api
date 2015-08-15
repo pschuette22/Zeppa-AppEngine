@@ -24,22 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "zeppausertouserrelationshipendpoint.updateZeppaUserToUserRelationship" : {
-      "path" : "zeppausertouserrelationship",
-      "httpMethod" : "PUT",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.updateZeppaUserToUserRelationship",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "zeppausertouserrelationshipendpoint.listZeppaUserToUserRelationship" : {
       "path" : "zeppausertouserrelationship",
       "httpMethod" : "GET",
@@ -65,27 +49,6 @@
           "limit" : {
             "type" : "int32",
             "required" : false
-          }
-        },
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppausertouserrelationshipendpoint.getZeppaUserToUserRelationship" : {
-      "path" : "zeppausertouserrelationship/{relationshipId}",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.getZeppaUserToUserRelationship",
-      "request" : {
-        "parameters" : {
-          "relationshipId" : {
-            "type" : "int64",
-            "required" : true
           }
         },
         "body" : "empty"
@@ -130,10 +93,62 @@
       "response" : {
         "body" : "empty"
       }
+    },
+    "zeppausertouserrelationshipendpoint.updateZeppaUserToUserRelationship" : {
+      "path" : "zeppausertouserrelationship",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.updateZeppaUserToUserRelationship",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppausertouserrelationshipendpoint.getZeppaUserToUserRelationship" : {
+      "path" : "zeppausertouserrelationship/{relationshipId}",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.getZeppaUserToUserRelationship",
+      "request" : {
+        "parameters" : {
+          "relationshipId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
     }
   },
   "descriptor" : {
     "schemas" : {
+      "CollectionResponse_ZeppaUserToUserRelationship" : {
+        "id" : "CollectionResponse_ZeppaUserToUserRelationship",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "ZeppaUserToUserRelationship"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
+      },
       "ZeppaUserToUserRelationship" : {
         "id" : "ZeppaUserToUserRelationship",
         "type" : "object",
@@ -186,11 +201,11 @@
           "parent" : {
             "$ref" : "Key"
           },
-          "namespace" : {
-            "type" : "string"
-          },
           "complete" : {
             "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
           }
         }
       },
@@ -198,40 +213,12 @@
         "id" : "UserRelationshipType",
         "type" : "string",
         "enum" : [ "PENDING_REQUEST", "MINGLING" ]
-      },
-      "CollectionResponse_ZeppaUserToUserRelationship" : {
-        "id" : "CollectionResponse_ZeppaUserToUserRelationship",
-        "type" : "object",
-        "properties" : {
-          "items" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "ZeppaUserToUserRelationship"
-            }
-          },
-          "nextPageToken" : {
-            "type" : "string"
-          }
-        }
       }
     },
     "methods" : {
-      "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.updateZeppaUserToUserRelationship" : {
-        "request" : {
-          "$ref" : "ZeppaUserToUserRelationship"
-        },
-        "response" : {
-          "$ref" : "ZeppaUserToUserRelationship"
-        }
-      },
       "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.listZeppaUserToUserRelationship" : {
         "response" : {
           "$ref" : "CollectionResponse_ZeppaUserToUserRelationship"
-        }
-      },
-      "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.getZeppaUserToUserRelationship" : {
-        "response" : {
-          "$ref" : "ZeppaUserToUserRelationship"
         }
       },
       "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.insertZeppaUserToUserRelationship" : {
@@ -243,6 +230,19 @@
         }
       },
       "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.removeZeppaUserToUserRelationship" : {
+      },
+      "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.updateZeppaUserToUserRelationship" : {
+        "request" : {
+          "$ref" : "ZeppaUserToUserRelationship"
+        },
+        "response" : {
+          "$ref" : "ZeppaUserToUserRelationship"
+        }
+      },
+      "com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint.getZeppaUserToUserRelationship" : {
+        "response" : {
+          "$ref" : "ZeppaUserToUserRelationship"
+        }
       }
     }
   }

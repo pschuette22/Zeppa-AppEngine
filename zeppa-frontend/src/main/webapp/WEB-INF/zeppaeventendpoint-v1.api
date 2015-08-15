@@ -24,22 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "zeppaeventendpoint.insertZeppaEvent" : {
-      "path" : "zeppaevent",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaEventEndpoint.insertZeppaEvent",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "zeppaeventendpoint.getZeppaEvent" : {
       "path" : "zeppaevent/{id}",
       "httpMethod" : "GET",
@@ -56,6 +40,22 @@
           }
         },
         "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "zeppaeventendpoint.insertZeppaEvent" : {
+      "path" : "zeppaevent",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaEventEndpoint.insertZeppaEvent",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -228,11 +228,11 @@
           "parent" : {
             "$ref" : "Key"
           },
-          "namespace" : {
-            "type" : "string"
-          },
           "complete" : {
             "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
           }
         }
       },
@@ -258,15 +258,15 @@
       }
     },
     "methods" : {
-      "com.minook.zeppa.ZeppaEventEndpoint.insertZeppaEvent" : {
-        "request" : {
-          "$ref" : "ZeppaEvent"
-        },
+      "com.minook.zeppa.ZeppaEventEndpoint.getZeppaEvent" : {
         "response" : {
           "$ref" : "ZeppaEvent"
         }
       },
-      "com.minook.zeppa.ZeppaEventEndpoint.getZeppaEvent" : {
+      "com.minook.zeppa.ZeppaEventEndpoint.insertZeppaEvent" : {
+        "request" : {
+          "$ref" : "ZeppaEvent"
+        },
         "response" : {
           "$ref" : "ZeppaEvent"
         }

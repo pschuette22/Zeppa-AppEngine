@@ -24,6 +24,22 @@
     "maxAge" : 0
   },
   "methods" : {
+    "zeppanotificationendpoint.insertZeppaNotification" : {
+      "path" : "zeppanotification",
+      "httpMethod" : "POST",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaNotificationEndpoint.insertZeppaNotification",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "zeppanotificationendpoint.listZeppaNotification" : {
       "path" : "zeppanotification",
       "httpMethod" : "GET",
@@ -57,6 +73,22 @@
         "body" : "autoTemplate(backendResponse)"
       }
     },
+    "zeppanotificationendpoint.updateZeppaNotification" : {
+      "path" : "zeppanotification",
+      "httpMethod" : "PUT",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.minook.zeppa.ZeppaNotificationEndpoint.updateZeppaNotification",
+      "request" : {
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
     "zeppanotificationendpoint.getZeppaNotification" : {
       "path" : "zeppanotification/{id}",
       "httpMethod" : "GET",
@@ -73,38 +105,6 @@
           }
         },
         "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppanotificationendpoint.insertZeppaNotification" : {
-      "path" : "zeppanotification",
-      "httpMethod" : "POST",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaNotificationEndpoint.insertZeppaNotification",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
-    "zeppanotificationendpoint.updateZeppaNotification" : {
-      "path" : "zeppanotification",
-      "httpMethod" : "PUT",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com", "587859844920-nntv7duprkooi09urrsigsvia4kcu6s5.apps.googleusercontent.com", "587859844920-mk76ab83am6tmgu8aedvddn7rqgjikp1.apps.googleusercontent.com", "587859844920-7eie3deskfrbhmkm800jarhbq95h7ejl.apps.googleusercontent.com", "587859844920-gv8jpk5r0bk1esvg4bnsra91ks87bcn9.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.minook.zeppa.ZeppaNotificationEndpoint.updateZeppaNotification",
-      "request" : {
-        "body" : "autoTemplate(backendRequest)",
-        "bodyName" : "resource"
       },
       "response" : {
         "body" : "autoTemplate(backendResponse)"
@@ -134,21 +134,6 @@
   },
   "descriptor" : {
     "schemas" : {
-      "CollectionResponse_ZeppaNotification" : {
-        "id" : "CollectionResponse_ZeppaNotification",
-        "type" : "object",
-        "properties" : {
-          "items" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "ZeppaNotification"
-            }
-          },
-          "nextPageToken" : {
-            "type" : "string"
-          }
-        }
-      },
       "ZeppaNotification" : {
         "id" : "ZeppaNotification",
         "type" : "object",
@@ -219,11 +204,11 @@
           "parent" : {
             "$ref" : "Key"
           },
-          "namespace" : {
-            "type" : "string"
-          },
           "complete" : {
             "type" : "boolean"
+          },
+          "namespace" : {
+            "type" : "string"
           }
         }
       },
@@ -231,19 +216,24 @@
         "id" : "NotificationType",
         "type" : "string",
         "enum" : [ "MINGLE_REQUEST", "MINGLE_ACCEPTED", "EVENT_RECOMMENDATION", "DIRECT_INVITE", "COMMENT_ON_POST", "EVENT_CANCELED", "EVENT_UPDATED", "USER_JOINED", "USER_LEAVING" ]
+      },
+      "CollectionResponse_ZeppaNotification" : {
+        "id" : "CollectionResponse_ZeppaNotification",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "ZeppaNotification"
+            }
+          },
+          "nextPageToken" : {
+            "type" : "string"
+          }
+        }
       }
     },
     "methods" : {
-      "com.minook.zeppa.ZeppaNotificationEndpoint.listZeppaNotification" : {
-        "response" : {
-          "$ref" : "CollectionResponse_ZeppaNotification"
-        }
-      },
-      "com.minook.zeppa.ZeppaNotificationEndpoint.getZeppaNotification" : {
-        "response" : {
-          "$ref" : "ZeppaNotification"
-        }
-      },
       "com.minook.zeppa.ZeppaNotificationEndpoint.insertZeppaNotification" : {
         "request" : {
           "$ref" : "ZeppaNotification"
@@ -252,10 +242,20 @@
           "$ref" : "ZeppaNotification"
         }
       },
+      "com.minook.zeppa.ZeppaNotificationEndpoint.listZeppaNotification" : {
+        "response" : {
+          "$ref" : "CollectionResponse_ZeppaNotification"
+        }
+      },
       "com.minook.zeppa.ZeppaNotificationEndpoint.updateZeppaNotification" : {
         "request" : {
           "$ref" : "ZeppaNotification"
         },
+        "response" : {
+          "$ref" : "ZeppaNotification"
+        }
+      },
+      "com.minook.zeppa.ZeppaNotificationEndpoint.getZeppaNotification" : {
         "response" : {
           "$ref" : "ZeppaNotification"
         }

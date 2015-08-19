@@ -22,9 +22,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventTagFollow;
 
 @Api(name = "eventtagfollowendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagFollowEndpoint {
 
 	/**
@@ -41,12 +40,7 @@ public class EventTagFollowEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -107,12 +101,7 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventTagFollow")
-	public EventTagFollow getEventTagFollow(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventTagFollow getEventTagFollow(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventTagFollow eventtagfollow = null;
@@ -135,12 +124,7 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventTagFollow")
-	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow,
-			User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow) {
 
 		if (eventtagfollow.getTagId() == null) {
 			throw new NullPointerException();
@@ -174,12 +158,7 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateEventTagFollow")
-	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow,
-			User user) throws EntityNotFoundException, OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow) {
 
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -201,12 +180,7 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventTagFollow")
-	public void removeEventTagFollow(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeEventTagFollow(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

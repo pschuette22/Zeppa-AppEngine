@@ -20,9 +20,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.DeviceInfo;
 
 @Api(name = "deviceinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class DeviceInfoEndpoint {
 
 	/**
@@ -39,12 +38,7 @@ public class DeviceInfoEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -91,34 +85,35 @@ public class DeviceInfoEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
-//	/**
-//	 * This method lists devices based on a list of items.
-//	 * Assumes an ArrayList<String> was passed as a JSON Object
-//	 * 
-//	 * @param jsonList - json list of items
-//	 * @param itemType - email or phone
-//	 * @param user auth object
-//	 * @return collection of DeviceInfo with matching 
-//	 */
-//	@ApiMethod(name = "listDeviceInfo")
-//	public CollectionResponse<DeviceInfo> listDeviceInfo(
-//			@Nullable @Named("jsonList") String jsonList,
-//			@Nullable @Named("itemType") String itemType, User user) throws JSONException, OAuthRequestException {
-//
-//		JSONObject json = new JSONObject(jsonList);
-//		List<String> items = (List<String>) json.get("list");
-//		
-//		if (Constants.PRODUCTION && user == null) {
-//			throw new OAuthRequestException("Unauthorized call");
-//		}
-//
-//		PersistenceManager mgr = null;
-//		Cursor cursor = null;
-//		List<DeviceInfo> execute = null;
-//		
-//		
-//		return null;
-//	}
+	// /**
+	// * This method lists devices based on a list of items.
+	// * Assumes an ArrayList<String> was passed as a JSON Object
+	// *
+	// * @param jsonList - json list of items
+	// * @param itemType - email or phone
+	// * @param user auth object
+	// * @return collection of DeviceInfo with matching
+	// */
+	// @ApiMethod(name = "listDeviceInfo")
+	// public CollectionResponse<DeviceInfo> listDeviceInfo(
+	// @Nullable @Named("jsonList") String jsonList,
+	// @Nullable @Named("itemType") String itemType, User user) throws
+	// JSONException, OAuthRequestException {
+	//
+	// JSONObject json = new JSONObject(jsonList);
+	// List<String> items = (List<String>) json.get("list");
+	//
+	// if (Constants.PRODUCTION && user == null) {
+	// throw new OAuthRequestException("Unauthorized call");
+	// }
+	//
+	// PersistenceManager mgr = null;
+	// Cursor cursor = null;
+	// List<DeviceInfo> execute = null;
+	//
+	//
+	// return null;
+	// }
 
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
@@ -130,12 +125,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getDeviceInfo")
-	public DeviceInfo getDeviceInfo(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public DeviceInfo getDeviceInfo(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		DeviceInfo deviceinfo = null;
@@ -158,12 +148,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
-	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo, User user) {
 
 		if (deviceinfo.getOwnerId() == null
 				|| deviceinfo.getRegistrationId() == null) {
@@ -240,12 +225,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateDeviceInfo")
-	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo, User user) {
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
@@ -278,12 +258,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeDeviceInfo")
-	public void removeDeviceInfo(DeviceInfo deviceinfo, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeDeviceInfo(DeviceInfo deviceinfo) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

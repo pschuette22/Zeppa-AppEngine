@@ -21,9 +21,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.ZeppaFeedback;
 
 @Api(name = "zeppafeedbackendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaFeedbackEndpoint {
 
 	/**
@@ -41,12 +40,7 @@ public class ZeppaFeedbackEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("parameterDeclaration") String paramDeclaration,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -110,12 +104,7 @@ public class ZeppaFeedbackEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaFeedback")
-	public ZeppaFeedback getZeppaFeedback(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaFeedback getZeppaFeedback(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaFeedback zeppafeedback = null;
@@ -140,12 +129,7 @@ public class ZeppaFeedbackEndpoint {
 	 */
 
 	@ApiMethod(name = "insertZeppaFeedback")
-	public ZeppaFeedback insertZeppaFeedback(ZeppaFeedback zeppafeedback,
-			User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaFeedback insertZeppaFeedback(ZeppaFeedback zeppafeedback) {
 
 		if (zeppafeedback.getUserId() == null) {
 			throw new NullPointerException("Null User Id");
@@ -175,14 +159,10 @@ public class ZeppaFeedbackEndpoint {
 	 * @param zeppafeedback
 	 *            the entity to be updated.
 	 * @return The updated entity.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaFeedback")
-	public ZeppaFeedback updateZeppaFeedback(ZeppaFeedback zeppafeedback, User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaFeedback updateZeppaFeedback(ZeppaFeedback zeppafeedback) {
 
 		zeppafeedback.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -202,16 +182,12 @@ public class ZeppaFeedbackEndpoint {
 	 * 
 	 * @param id
 	 *            the primary key of the entity to be deleted.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 
 	@ApiMethod(name = "removeZeppaFeedback")
-	public void removeZeppaFeedback(@Named("id") Long id, User user) throws OAuthRequestException {
-		
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
+	public void removeZeppaFeedback(@Named("id") Long id) {
+
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaFeedback zeppafeedback = mgr.getObjectById(
@@ -223,12 +199,8 @@ public class ZeppaFeedbackEndpoint {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void removeFeedbackForUser(Long userId, User user) throws OAuthRequestException {
-		
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
+	public static void removeFeedbackForUser(Long userId) {
+
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			Query query = mgr.newQuery(ZeppaFeedback.class);

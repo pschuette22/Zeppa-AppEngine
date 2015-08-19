@@ -84,10 +84,10 @@ public class GoogleCalendarUtils {
 	 * @param user
 	 * @return EventAttendee as created user
 	 */
-	public static EventAttendee getUserAsAttendee(ZeppaUser zeppaUser, User user) {
+	public static EventAttendee getUserAsAttendee(ZeppaUser zeppaUser) {
 
 		EventAttendee attendee = new EventAttendee();
-		attendee.setEmail(user.getEmail());
+		attendee.setEmail(zeppaUser.getAuthEmail());
 
 		ZeppaUserInfo userInfo = zeppaUser.getUserInfo();
 		attendee.setDisplayName(userInfo.getGivenName() + " " + userInfo.getFamilyName());

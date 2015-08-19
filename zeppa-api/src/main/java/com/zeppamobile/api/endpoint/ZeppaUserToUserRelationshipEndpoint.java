@@ -27,9 +27,8 @@ import com.zeppamobile.api.endpoint.Utils.PayloadBuilder;
 import com.zeppamobile.api.endpoint.Utils.TaskUtility;
 
 @Api(name = "zeppausertouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserToUserRelationshipEndpoint {
 
 	// private static final Logger log = Logger
@@ -50,12 +49,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -116,12 +110,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
-			@Named("relationshipId") Long relationshipId, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Named("relationshipId") Long relationshipId) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserToUserRelationship zeppausertouserrelationship;
@@ -146,12 +135,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "insertZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship insertZeppaUserToUserRelationship(
-			ZeppaUserToUserRelationship relationship, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			ZeppaUserToUserRelationship relationship) {
 
 		if (relationship.getCreatorId() == null) {
 			throw new NullPointerException("CreatorId not specified");
@@ -231,12 +215,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship updateZeppaUserToUserRelationship(
-			ZeppaUserToUserRelationship relationship, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			ZeppaUserToUserRelationship relationship) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		boolean didAcceptRequest = false;
@@ -281,22 +260,19 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 * 
 	 * @param id
 	 *            the primary key of the entity to be deleted.
-	 * @throws OAuthRequestException
+	 * 
 	 */
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
-	public void removeZeppaUserToUserRelationship(@Named("id") Long id,
-			User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeZeppaUserToUserRelationship(
+			@Named("relationshipId") Long relationshipId,
+			@Named("userId") Long userId) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		PersistenceManager umgr = getPersistenceManager();
 		try {
 
 			ZeppaUserToUserRelationship relationship = mgr.getObjectById(
-					ZeppaUserToUserRelationship.class, id);
+					ZeppaUserToUserRelationship.class, relationshipId);
 			if (relationship.getRelationshipType() == UserRelationshipType.MINGLING) {
 
 				try {
@@ -307,8 +283,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					TaskUtility.scheduleDeleteRelationshipsBetweenUsers(user1
 							.getId().longValue(), user2.getId().longValue());
 
-					if (user1.getUserInfo().getGoogleAccountEmail()
-							.equalsIgnoreCase(user.getEmail())) {
+					if (user1.getId().longValue() == userId.longValue()) {
 						String payload = PayloadBuilder
 								.silentUserRelationshipDeletedPayload(
 										user1.getId(), user2.getId());

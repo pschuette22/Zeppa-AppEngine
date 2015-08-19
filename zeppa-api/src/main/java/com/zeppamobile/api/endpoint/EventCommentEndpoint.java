@@ -13,7 +13,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
@@ -22,9 +21,8 @@ import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
 
 @Api(name = "eventcommentendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventCommentEndpoint {
 
 	/**
@@ -41,12 +39,7 @@ public class EventCommentEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -107,12 +100,7 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventComment")
-	public EventComment getEventComment(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventComment getEventComment(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventComment eventcomment = null;
@@ -135,12 +123,7 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventComment")
-	public EventComment insertEventComment(EventComment eventcomment, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventComment insertEventComment(EventComment eventcomment) {
 
 		if (eventcomment.getEventId() == null) {
 			throw new IllegalArgumentException("Event Id Not Set");
@@ -207,12 +190,7 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventComment")
-	public void removeEventComment(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeEventComment(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

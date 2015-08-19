@@ -29,9 +29,8 @@ import com.zeppamobile.api.endpoint.Utils.GoogleCalendarService;
 import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
 
 @Api(name = "zeppaeventtouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaEventToUserRelationshipEndpoint {
 
 	/**
@@ -48,12 +47,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -110,16 +104,12 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @param id
 	 *            the primary key of the java bean.
 	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
-			@Named("id") Long id, User user) throws OAuthRequestException {
+			@Named("id") Long id) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
 		try {
@@ -142,16 +132,12 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @param zeppaeventtouserrelationship
 	 *            the entity to be inserted.
 	 * @return The inserted entity.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship insertZeppaEventToUserRelationship(
-			ZeppaEventToUserRelationship relationship, User user) throws OAuthRequestException {
+			ZeppaEventToUserRelationship relationship) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
 		if (relationship.getEventId() == null) {
 			throw new NullPointerException("Null Event Id");
 		}
@@ -202,17 +188,12 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @return The updated entity.
 	 * @throws IOException
 	 * @throws GeneralSecurityException
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship updateZeppaEventToUserRelationship(
-			ZeppaEventToUserRelationship relationship, User user)
-			throws GeneralSecurityException, IOException, OAuthRequestException {
+			ZeppaEventToUserRelationship relationship) throws IOException {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent event = null;
 		try {
@@ -249,14 +230,14 @@ public class ZeppaEventToUserRelationshipEndpoint {
 				// User left event
 				action = Resources.UpdateEventRelationshipNotificationAction.USER_LEFT;
 
-				GoogleCalendarService.leaveEvent(event, zeppaUser, user);
+				GoogleCalendarService.leaveEvent(event, zeppaUser);
 
 			} else if (!current.getIsAttending()
 					&& relationship.getIsAttending()) {
 
 				// User joined event
 				action = Resources.UpdateEventRelationshipNotificationAction.USER_JOINED;
-				GoogleCalendarService.joinEvent(event, zeppaUser, user);
+				GoogleCalendarService.joinEvent(event, zeppaUser);
 			} else if (!current.getWasInvited() && relationship.getWasInvited()) {
 				action = Resources.UpdateEventRelationshipNotificationAction.USER_INVITED;
 			}
@@ -309,15 +290,16 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * 
 	 * @param id
 	 *            the primary key of the entity to be deleted.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEventToUserRelationship")
-	public void removeZeppaEventToUserRelationship(@Named("id") Long id, User user) throws OAuthRequestException {
-		
+	public void removeZeppaEventToUserRelationship(@Named("id") Long id,
+			User user) throws OAuthRequestException {
+
 		if (Constants.PRODUCTION && user == null) {
 			throw new OAuthRequestException("Unauthorized call");
 		}
-		
+
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaEventToUserRelationship zeppaeventtouserrelationship = mgr
@@ -345,9 +327,6 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		}
 		return contains;
 	}
-
-	
-
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

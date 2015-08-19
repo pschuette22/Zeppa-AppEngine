@@ -22,9 +22,8 @@ import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 
 @Api(name = "zeppauserinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserInfoEndpoint {
 
 	/**
@@ -41,12 +40,7 @@ public class ZeppaUserInfoEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -119,12 +113,7 @@ public class ZeppaUserInfoEndpoint {
 
 	@ApiMethod(name = "fetchZeppaUserInfoByParentId")
 	public ZeppaUserInfo fetchZeppaUserInfoByParentId(
-			@Named("requestedParentId") Long requestedUserId, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Named("requestedParentId") Long requestedUserId) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo result = null;
@@ -161,12 +150,7 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaUserInfo")
-	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
@@ -189,12 +173,7 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertZeppaUserInfo")
-	public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-			User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -217,17 +196,13 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaUserInfo")
-	public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-			User user) throws OAuthRequestException {
+	public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			ZeppaUserInfo current = mgr.getObjectById(
-					ZeppaUserInfo.class, zeppauserinfo.getId());
+			ZeppaUserInfo current = mgr.getObjectById(ZeppaUserInfo.class,
+					zeppauserinfo.getId());
 			current.setGivenName(zeppauserinfo.getGivenName());
 			current.setFamilyName(zeppauserinfo.getFamilyName());
 			current.setImageUrl(zeppauserinfo.getImageUrl());

@@ -36,7 +36,7 @@ public class GoogleCalendarService {
 	 * @throws IOException
 	 * @throws GeneralSecurityException
 	 */
-	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser, User user)
+	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser)
 			throws IOException {
 
 		if (!Constants.PRODUCTION) {
@@ -57,7 +57,7 @@ public class GoogleCalendarService {
 		AclRule userRule = new AclRule();
 		Scope userScope = new AclRule.Scope();
 		userScope.setType("user");
-		userScope.setValue(user.getEmail());
+		userScope.setValue(zeppaUser.getAuthEmail());
 		userRule.setRole("reader");
 		userRule.setScope(userScope);
 		userRule = service.acl().insert(calendar.getId(), userRule).execute();
@@ -78,7 +78,7 @@ public class GoogleCalendarService {
 	 * @throws GeneralSecurityException
 	 */
 	public static ZeppaEvent insertGCalEvent(ZeppaUser zeppaUser,
-			ZeppaEvent event, User user) throws IOException {
+			ZeppaEvent event) throws IOException {
 
 		if (!Constants.PRODUCTION) {
 			event.setGoogleCalendarId(zeppaUser.getZeppaCalendarId());
@@ -152,8 +152,8 @@ public class GoogleCalendarService {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static void joinEvent(ZeppaEvent zeppaEvent, ZeppaUser zeppaUser,
-			User user) throws IOException {
+	public static void joinEvent(ZeppaEvent zeppaEvent, ZeppaUser zeppaUser)
+			throws IOException {
 
 		if (!Constants.PRODUCTION) {
 			return;
@@ -187,7 +187,7 @@ public class GoogleCalendarService {
 
 		}
 		if (attendee == null) {
-			attendee = GoogleCalendarUtils.getUserAsAttendee(zeppaUser, user);
+			attendee = GoogleCalendarUtils.getUserAsAttendee(zeppaUser);
 		}
 
 		attendee.setResponseStatus("accepted");
@@ -218,8 +218,8 @@ public class GoogleCalendarService {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static boolean leaveEvent(ZeppaEvent event, ZeppaUser zeppaUser,
-			User user) throws IOException {
+	public static boolean leaveEvent(ZeppaEvent event, ZeppaUser zeppaUser)
+			throws IOException {
 
 		if (!Constants.PRODUCTION) {
 			return true;
@@ -267,7 +267,9 @@ public class GoogleCalendarService {
 		Acl acl = service.acl().list(zeppaUser.getZeppaCalendarId()).execute();
 		if (acl != null && !acl.getItems().isEmpty()) {
 			for (AclRule rule : acl.getItems()) {
-				service.acl().delete(zeppaUser.getZeppaCalendarId(), rule.getId()).execute();
+				service.acl()
+						.delete(zeppaUser.getZeppaCalendarId(), rule.getId())
+						.execute();
 			}
 		}
 

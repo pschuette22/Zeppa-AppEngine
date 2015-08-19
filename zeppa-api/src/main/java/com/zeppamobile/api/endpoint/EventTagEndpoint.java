@@ -21,8 +21,7 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.endpoint.Utils.TaskUtility;
 
-@Api(name = "eventtagendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
+@Api(name = "eventtagendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = { Constants.ANDROID_DEBUG_CLIENT_ID,
 		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
 		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagEndpoint {
@@ -41,12 +40,8 @@ public class EventTagEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
+			@Nullable @Named("limit") Integer limit) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -106,12 +101,7 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventTag")
-	public EventTag getEventTag(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public EventTag getEventTag(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventTag eventtag = null;
@@ -131,12 +121,8 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventTag")
-	public EventTag insertEventTag(EventTag eventtag, User user)
-			throws OAuthRequestException {
+	public EventTag insertEventTag(EventTag eventtag, User user) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
@@ -172,12 +158,7 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventTag")
-	public void removeEventTag(@Named("tagId") Long tagId, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeEventTag(@Named("tagId") Long tagId) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

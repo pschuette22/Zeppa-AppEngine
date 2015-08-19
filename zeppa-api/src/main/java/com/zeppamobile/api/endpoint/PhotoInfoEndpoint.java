@@ -20,9 +20,8 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.PhotoInfo;
 
 @Api(name = "photoinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class PhotoInfoEndpoint {
 
 	/**
@@ -37,12 +36,7 @@ public class PhotoInfoEndpoint {
 	@ApiMethod(name = "listPhotoInfo")
 	public CollectionResponse<PhotoInfo> listPhotoInfo(
 			@Nullable @Named("cursor") String cursorString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -87,15 +81,11 @@ public class PhotoInfoEndpoint {
 	 * @param id
 	 *            the primary key of the java bean.
 	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getPhotoInfo")
-	public PhotoInfo getPhotoInfo(@Named("id") Long id, User user) throws OAuthRequestException {
-		
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
+	public PhotoInfo getPhotoInfo(@Named("id") Long id) {
+
 		PersistenceManager mgr = getPersistenceManager();
 		PhotoInfo photoinfo = null;
 		try {
@@ -114,15 +104,11 @@ public class PhotoInfoEndpoint {
 	 * @param photoinfo
 	 *            the entity to be inserted.
 	 * @return The inserted entity.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertPhotoInfo")
-	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo, User user) throws OAuthRequestException {
-		
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
+	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo) {
+
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 
@@ -139,15 +125,11 @@ public class PhotoInfoEndpoint {
 	 * 
 	 * @param id
 	 *            the primary key of the entity to be deleted.
-	 * @throws OAuthRequestException 
+	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removePhotoInfo")
-	public void removePhotoInfo(@Named("id") Long id, User user) throws OAuthRequestException {
-		
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-		
+	public void removePhotoInfo(@Named("id") Long id) {
+
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);

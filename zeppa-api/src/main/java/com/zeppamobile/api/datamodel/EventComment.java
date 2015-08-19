@@ -29,19 +29,7 @@ public class EventComment {
 	@Persistent
 	private String text;
 
-	// For Guice
-	public EventComment(){}
 	
-//	public EventComment(Long commenterId, Long eventId, String text) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.commenterId = commenterId;
-//		this.eventId = eventId;
-//		this.text = text;
-//	}
-
-
 	public Long getCreated() {
 		return created;
 	}

@@ -21,9 +21,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
 
 @Api(name = "zeppanotificationendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaNotificationEndpoint {
 
 	/**
@@ -40,12 +39,7 @@ public class ZeppaNotificationEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -105,12 +99,7 @@ public class ZeppaNotificationEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaNotification")
-	public ZeppaNotification getZeppaNotification(@Named("id") Long id,
-			User user) throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaNotification getZeppaNotification(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaNotification zeppanotification = null;
@@ -137,12 +126,7 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "insertZeppaNotification")
 	public ZeppaNotification insertZeppaNotification(
-			ZeppaNotification zeppanotification, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			ZeppaNotification zeppanotification) {
 
 		if (zeppanotification.getSenderId() == null) {
 			throw new NullPointerException("Must Set User Id");
@@ -176,12 +160,7 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaNotification")
 	public ZeppaNotification updateZeppaNotification(
-			ZeppaNotification zeppanotification, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			ZeppaNotification zeppanotification) {
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -211,12 +190,7 @@ public class ZeppaNotificationEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaNotification")
-	public void removeZeppaNotification(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeZeppaNotification(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -244,7 +218,6 @@ public class ZeppaNotificationEndpoint {
 		}
 		return contains;
 	}
-
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

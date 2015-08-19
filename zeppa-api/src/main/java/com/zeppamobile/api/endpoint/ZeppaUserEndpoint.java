@@ -1,7 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,9 +27,8 @@ import com.zeppamobile.api.endpoint.Utils.GoogleCalendarService;
 import com.zeppamobile.api.endpoint.Utils.RelationshipUtility;
 
 @Api(name = "zeppauserendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserEndpoint {
 
 	// private static final Logger log =
@@ -51,13 +49,8 @@ public class ZeppaUserEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-
+			@Nullable @Named("limit") Integer limit) {
+		
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaUser> execute = null;
@@ -115,12 +108,8 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaUser")
-	public ZeppaUser getZeppaUser(@Named("userId") Long userId, User user)
-			throws OAuthRequestException {
+	public ZeppaUser getZeppaUser(@Named("userId") Long userId) {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUser zeppauser = null;
@@ -157,16 +146,11 @@ public class ZeppaUserEndpoint {
 	 */
 
 	@ApiMethod(name = "insertZeppaUser")
-	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser, User user)
-			throws IOException, GeneralSecurityException,
-			UnauthorizedException, OAuthRequestException {
+	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser) throws IOException {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		try {
-			ZeppaUser fetched = fetchCurrentZeppaUser(user);
+			ZeppaUser fetched = fetchUserByEmail(zeppaUser.getAuthEmail());
 			if (fetched != null) {
 				return fetched;
 			}
@@ -177,17 +161,16 @@ public class ZeppaUserEndpoint {
 
 		zeppaUser.setCreated(System.currentTimeMillis());
 		zeppaUser.setUpdated(System.currentTimeMillis());
-		zeppaUser.setAuthEmail(user.getEmail());
 
 		zeppaUser.getUserInfo().setCreated(System.currentTimeMillis());
 		zeppaUser.getUserInfo().setUpdated(System.currentTimeMillis());
 
-		zeppaUser = GoogleCalendarService.insertZeppaCalendar(zeppaUser, user);
+		zeppaUser = GoogleCalendarService.insertZeppaCalendar(zeppaUser);
 
 		PersistenceManager mgr = getPersistenceManager();
 
 		try {
-			mgr.makePersistent(zeppaUser);
+			zeppaUser = mgr.makePersistent(zeppaUser);
 
 		} finally {
 
@@ -294,18 +277,13 @@ public class ZeppaUserEndpoint {
 	 * */
 
 	@ApiMethod(name = "fetchCurrentZeppaUser")
-	public ZeppaUser fetchCurrentZeppaUser(User user)
-			throws javax.jdo.JDOObjectNotFoundException, OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaUser fetchUserByEmail(@Named("email")String email) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUser zeppaUser = null;
 		try {
 			Query query = mgr.newQuery(ZeppaUser.class,
-					"authEmail == '" + user.getEmail() + "'");
+					"authEmail == '" + email + "'");
 			query.setUnique(true);
 
 			zeppaUser = (ZeppaUser) query.execute();

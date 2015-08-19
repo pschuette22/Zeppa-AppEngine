@@ -15,7 +15,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
@@ -27,9 +26,8 @@ import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
 import com.zeppamobile.api.endpoint.Utils.TaskUtility;
 
 @Api(name = "zeppaeventendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
-		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
-		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
+		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaEventEndpoint {
 
 	// private static final String cursorString = null;
@@ -48,12 +46,7 @@ public class ZeppaEventEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+			@Nullable @Named("limit") Integer limit) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -113,12 +106,7 @@ public class ZeppaEventEndpoint {
 	 */
 
 	@ApiMethod(name = "getZeppaEvent")
-	public ZeppaEvent getZeppaEvent(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaEvent getZeppaEvent(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent zeppaevent = null;
@@ -145,12 +133,8 @@ public class ZeppaEventEndpoint {
 	 * @throws IOException
 	 */
 	@ApiMethod(name = "insertZeppaEvent")
-	public ZeppaEvent insertZeppaEvent(ZeppaEvent zeppaevent, User user)
-			throws OAuthRequestException, IOException, GeneralSecurityException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaEvent insertZeppaEvent(ZeppaEvent zeppaevent)
+			throws IOException {
 
 		if (zeppaevent.getHostId() == null) {
 			throw new NullPointerException("Null Host User Id");
@@ -171,8 +155,8 @@ public class ZeppaEventEndpoint {
 			ZeppaUser zeppaUser = umgr.getObjectById(ZeppaUser.class,
 					zeppaevent.getHostId());
 
-			zeppaevent = GoogleCalendarService
-					.insertGCalEvent(zeppaUser, zeppaevent, user);
+			zeppaevent = GoogleCalendarService.insertGCalEvent(zeppaUser,
+					zeppaevent);
 
 			// Persist Event
 			zeppaevent = emgr.makePersistent(zeppaevent);
@@ -202,12 +186,8 @@ public class ZeppaEventEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaEvent")
-	public ZeppaEvent updateZeppaEvent(ZeppaEvent zeppaevent, User user)
+	public ZeppaEvent updateZeppaEvent(ZeppaEvent zeppaevent)
 			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -239,12 +219,7 @@ public class ZeppaEventEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEvent")
-	public void removeZeppaEvent(@Named("id") Long id, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public void removeZeppaEvent(@Named("id") Long id) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -253,8 +228,7 @@ public class ZeppaEventEndpoint {
 					ZeppaEvent.class.getName(), zeppaevent.getId(),
 					"deletedEvent");
 
-			GoogleCalendarService
-					.deleteCalendarEvent(zeppaevent);
+			GoogleCalendarService.deleteCalendarEvent(zeppaevent);
 			mgr.deletePersistent(zeppaevent);
 
 		} catch (javax.jdo.JDOObjectNotFoundException | IOException ex) {

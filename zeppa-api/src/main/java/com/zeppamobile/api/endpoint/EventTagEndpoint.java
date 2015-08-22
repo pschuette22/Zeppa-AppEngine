@@ -19,7 +19,7 @@ import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventTag;
-import com.zeppamobile.api.endpoint.Utils.TaskUtility;
+import com.zeppamobile.api.endpoint.utils.TaskUtility;
 
 @Api(name = "eventtagendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = { Constants.ANDROID_DEBUG_CLIENT_ID,
 		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,

@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.tasks;
+package com.zeppamobile.api.endpoint.utils;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zeppamobile.api.datamodel.ZeppaEvent;
-import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
-import com.zeppamobile.api.endpoint.Utils.RelationshipUtility;
-import com.zeppamobile.frontend.servlets.ServletUtility;
 
 public class TaskServlet extends HttpServlet {
 

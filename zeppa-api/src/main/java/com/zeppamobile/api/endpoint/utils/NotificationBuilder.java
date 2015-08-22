@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.notifications;
+package com.zeppamobile.api.endpoint.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,8 +16,6 @@ import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
 import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType;
-import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
-import com.zeppamobile.api.endpoint.Utils.PayloadBuilder;
 
 public class NotificationBuilder {
 

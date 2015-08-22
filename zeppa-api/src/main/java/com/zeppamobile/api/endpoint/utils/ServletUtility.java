@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.servlets;
+package com.zeppamobile.api.endpoint.utils;
 
 import javax.servlet.http.HttpServletRequest;
 

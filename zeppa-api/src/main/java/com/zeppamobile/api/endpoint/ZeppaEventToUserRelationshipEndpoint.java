@@ -25,8 +25,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
-import com.zeppamobile.api.endpoint.Utils.GoogleCalendarService;
-import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
+import com.zeppamobile.api.endpoint.utils.GoogleCalendarService;
+import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 
 @Api(name = "zeppaeventtouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,

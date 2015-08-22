@@ -23,8 +23,8 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
-import com.zeppamobile.api.endpoint.Utils.GoogleCalendarService;
-import com.zeppamobile.api.endpoint.Utils.RelationshipUtility;
+import com.zeppamobile.api.endpoint.utils.GoogleCalendarService;
+import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
 
 @Api(name = "zeppauserendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,

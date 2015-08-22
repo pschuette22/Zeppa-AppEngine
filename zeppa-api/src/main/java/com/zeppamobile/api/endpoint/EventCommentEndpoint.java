@@ -18,7 +18,7 @@ import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventComment;
-import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
+import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 
 @Api(name = "eventcommentendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,

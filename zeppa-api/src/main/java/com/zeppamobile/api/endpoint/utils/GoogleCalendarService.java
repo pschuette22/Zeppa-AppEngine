@@ -1,4 +1,4 @@
-package com.zeppamobile.api.endpoint.Utils;
+package com.zeppamobile.api.endpoint.utils;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

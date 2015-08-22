@@ -23,31 +23,6 @@
 	</servlet-mapping>
 
 
-	<!-- Tasks Servlet manages general tasks for the backend -->
-	<servlet>
-		<servlet-name>TaskServlet</servlet-name>
-		<servlet-class>com.zeppamobile.frontend.tasks.TaskServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TaskServlet</servlet-name>
-		<url-pattern>/tasks/servlet/</url-pattern>
-	</servlet-mapping>
-
-
-
-	<!-- Notification Building Servlet -->
-
-	<servlet>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<servlet-class>com.zeppamobile.frontend.notifications.NotificationBuilderServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<url-pattern>/notifications/builder/</url-pattern>
-	</servlet-mapping>
-
-
-
 	<!-- Security contraints for managing backend transactions -->
 <!-- 	<security-constraint>
 		<web-resource-collection>

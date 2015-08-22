@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.notifications;
+package com.zeppamobile.api.endpoint.utils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,9 +16,6 @@ import com.google.appengine.api.modules.ModulesService;
 import com.google.appengine.api.modules.ModulesServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
-import com.zeppamobile.api.endpoint.Utils.NotificationUtility;
-import com.zeppamobile.api.endpoint.Utils.PayloadBuilder;
-import com.zeppamobile.api.endpoint.Utils.TaskUtility;
 
 public class NotificationBuilderServlet extends HttpServlet {
 

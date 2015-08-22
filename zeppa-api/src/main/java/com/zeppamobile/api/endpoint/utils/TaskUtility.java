@@ -1,4 +1,4 @@
-package com.zeppamobile.api.endpoint.Utils;
+package com.zeppamobile.api.endpoint.utils;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;

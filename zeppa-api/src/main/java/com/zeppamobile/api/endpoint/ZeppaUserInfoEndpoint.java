@@ -21,6 +21,8 @@ import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 
 @Api(name = "zeppauserinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
+
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserInfoEndpoint {
@@ -237,18 +239,18 @@ public class ZeppaUserInfoEndpoint {
 	// }
 	// }
 
-	private boolean containsZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(ZeppaUserInfo.class, zeppauserinfo.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+//	private boolean containsZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
+//		PersistenceManager mgr = getPersistenceManager();
+//		boolean contains = true;
+//		try {
+//			mgr.getObjectById(ZeppaUserInfo.class, zeppauserinfo.getKey());
+//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
+//			contains = false;
+//		} finally {
+//			mgr.close();
+//		}
+//		return contains;
+//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

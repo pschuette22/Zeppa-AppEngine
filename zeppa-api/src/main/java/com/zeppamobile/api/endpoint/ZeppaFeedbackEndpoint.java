@@ -20,6 +20,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.ZeppaFeedback;
 
 @Api(name = "zeppafeedbackendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
+
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaFeedbackEndpoint {
@@ -213,18 +215,18 @@ public class ZeppaFeedbackEndpoint {
 		}
 	}
 
-	private boolean containsZeppaFeedback(ZeppaFeedback zeppafeedback) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(ZeppaFeedback.class, zeppafeedback.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+//	private boolean containsZeppaFeedback(ZeppaFeedback zeppafeedback) {
+//		PersistenceManager mgr = getPersistenceManager();
+//		boolean contains = true;
+//		try {
+//			mgr.getObjectById(ZeppaFeedback.class, zeppafeedback.getKey());
+//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
+//			contains = false;
+//		} finally {
+//			mgr.close();
+//		}
+//		return contains;
+//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

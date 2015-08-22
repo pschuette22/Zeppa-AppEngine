@@ -12,7 +12,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
@@ -20,6 +19,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.DeviceInfo;
 
 @Api(name = "deviceinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.TYPE_OTHER_CLIENT_ID,
+		Constants.WEB_CLIENT_ID,
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class DeviceInfoEndpoint {
@@ -148,7 +149,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
-	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo, User user) {
+	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo) {
 
 		if (deviceinfo.getOwnerId() == null
 				|| deviceinfo.getRegistrationId() == null) {
@@ -225,7 +226,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateDeviceInfo")
-	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo, User user) {
+	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo) {
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
@@ -274,18 +275,18 @@ public class DeviceInfoEndpoint {
 	 * @param deviceinfo
 	 * @return true if deviceinfo exists
 	 */
-	private boolean containsDeviceInfo(DeviceInfo deviceinfo) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(DeviceInfo.class, deviceinfo.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+//	private boolean containsDeviceInfo(DeviceInfo deviceinfo) {
+//		PersistenceManager mgr = getPersistenceManager();
+//		boolean contains = true;
+//		try {
+//			mgr.getObjectById(DeviceInfo.class, deviceinfo.getKey());
+//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
+//			contains = false;
+//		} finally {
+//			mgr.close();
+//		}
+//		return contains;
+//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

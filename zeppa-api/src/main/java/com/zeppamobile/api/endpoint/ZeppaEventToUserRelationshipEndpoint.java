@@ -16,7 +16,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
@@ -29,6 +28,8 @@ import com.zeppamobile.api.endpoint.utils.GoogleCalendarService;
 import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 
 @Api(name = "zeppaeventtouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
+
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaEventToUserRelationshipEndpoint {
@@ -293,13 +294,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEventToUserRelationship")
-	public void removeZeppaEventToUserRelationship(@Named("id") Long id,
-			User user) throws OAuthRequestException {
+	public void removeZeppaEventToUserRelationship(@Named("id") Long id) throws OAuthRequestException {
 
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
-
+		
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaEventToUserRelationship zeppaeventtouserrelationship = mgr
@@ -313,20 +310,20 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		}
 	}
 
-	private boolean containsZeppaEventToUserRelationship(
-			ZeppaEventToUserRelationship zeppaeventtouserrelationship) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(ZeppaEventToUserRelationship.class,
-					zeppaeventtouserrelationship.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+//	private boolean containsZeppaEventToUserRelationship(
+//			ZeppaEventToUserRelationship zeppaeventtouserrelationship) {
+//		PersistenceManager mgr = getPersistenceManager();
+//		boolean contains = true;
+//		try {
+//			mgr.getObjectById(ZeppaEventToUserRelationship.class,
+//					zeppaeventtouserrelationship.getKey());
+//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
+//			contains = false;
+//		} finally {
+//			mgr.close();
+//		}
+//		return contains;
+//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

@@ -20,6 +20,8 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventTagFollow;
 
 @Api(name = "eventtagfollowendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,
+
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagFollowEndpoint {
@@ -194,18 +196,18 @@ public class EventTagFollowEndpoint {
 		}
 	}
 
-	private boolean containsEventTagFollow(EventTagFollow eventtagfollow) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(EventTagFollow.class, eventtagfollow.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+	// private boolean containsEventTagFollow(EventTagFollow eventtagfollow) {
+	// PersistenceManager mgr = getPersistenceManager();
+	// boolean contains = true;
+	// try {
+	// mgr.getObjectById(EventTagFollow.class, eventtagfollow.getKey());
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// contains = false;
+	// } finally {
+	// mgr.close();
+	// }
+	// return contains;
+	// }
 
 	// @SuppressWarnings("unchecked")
 	// public static void removeTagFollowersForTag(Long tagId) {

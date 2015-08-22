@@ -21,7 +21,9 @@ import com.zeppamobile.api.Utils;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 
-@Api(name = "eventtagendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = { Constants.ANDROID_DEBUG_CLIENT_ID,
+@Api(name = "eventtagendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.TYPE_OTHER_CLIENT_ID,
+		Constants.WEB_CLIENT_ID, Constants.ANDROID_DEBUG_CLIENT_ID,
 		Constants.ANDROID_RELEASE_CLIENT_ID, Constants.IOS_DEBUG_CLIENT_ID,
 		Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagEndpoint {
@@ -41,7 +43,6 @@ public class EventTagEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit) {
-
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -121,8 +122,7 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventTag")
-	public EventTag insertEventTag(EventTag eventtag, User user) {
-
+	public EventTag insertEventTag(EventTag eventtag) {
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");

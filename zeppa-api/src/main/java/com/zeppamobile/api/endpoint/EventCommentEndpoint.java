@@ -21,6 +21,7 @@ import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 
 @Api(name = "eventcommentendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
+		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventCommentEndpoint {
@@ -204,18 +205,19 @@ public class EventCommentEndpoint {
 		}
 	}
 
-	private boolean containsEventComment(EventComment eventcomment) {
-		PersistenceManager mgr = getPersistenceManager();
-		boolean contains = true;
-		try {
-			mgr.getObjectById(EventComment.class, eventcomment.getKey());
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			contains = false;
-		} finally {
-			mgr.close();
-		}
-		return contains;
-	}
+	//
+	// private boolean containsEventComment(EventComment eventcomment) {
+	// PersistenceManager mgr = getPersistenceManager();
+	// boolean contains = true;
+	// try {
+	// mgr.getObjectById(EventComment.class, eventcomment.getKey());
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// contains = false;
+	// } finally {
+	// mgr.close();
+	// }
+	// return contains;
+	// }
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

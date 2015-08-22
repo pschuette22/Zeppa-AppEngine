@@ -35,11 +35,6 @@
 		<!-- Compile/runtime dependencies -->
 		<!-- Common module dependency -->
 		<dependency>
-			<groupId>com.zeppamobile.appengine</groupId>
-			<artifactId>zeppa-api</artifactId>
-			<version>1</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>${appengine.target.version}</version>
@@ -51,13 +46,8 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Lombok 
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.14.8</version>
-			<scope>provided</scope>
-		</dependency> -->
+		<!-- Lombok <dependency> <groupId>org.projectlombok</groupId> <artifactId>lombok</artifactId> 
+			<version>1.14.8</version> <scope>provided</scope> </dependency> -->
 
 		<!-- Objectify -->
 
@@ -88,30 +78,27 @@
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
 		</dependency>
-		
+
 		<!-- Maven Artifact for APNS -->
 		<dependency>
 			<groupId>com.github.fernandospr</groupId>
 			<artifactId>javapns-jdk16</artifactId>
 			<version>2.2.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.ganyo</groupId>
 			<artifactId>gcm-server</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20141113</version>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>com.google.android.gcm</groupId>
-			<artifactId>gcm-server</artifactId>
-			<version>1.0.2</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.google.android.gcm</groupId> <artifactId>gcm-server</artifactId> 
+			<version>1.0.2</version> </dependency> -->
 
 		<!-- GWT dependencies -->
 		<dependency>

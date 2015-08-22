@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Sender;
-import com.zeppamobile.api.Constants;
 
 public class CloudMessagingSender {
 

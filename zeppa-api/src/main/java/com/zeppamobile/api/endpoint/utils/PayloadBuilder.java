@@ -1,7 +1,9 @@
 package com.zeppamobile.api.endpoint.utils;
 
-import com.google.appengine.labs.repackaged.org.json.JSONException;
-import com.google.appengine.labs.repackaged.org.json.JSONObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.zeppamobile.api.datamodel.ZeppaNotification;
 
 /**

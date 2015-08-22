@@ -14,8 +14,8 @@ import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
-import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType;
+import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 
 public class NotificationBuilder {
 

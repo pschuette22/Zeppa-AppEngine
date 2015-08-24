@@ -52,7 +52,7 @@
 			<version>20141113</version>
 		</dependency>
 
-		<!-- Zeppa API dependencies -->
+		<!-- Zeppa API dependency -->
 
 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>

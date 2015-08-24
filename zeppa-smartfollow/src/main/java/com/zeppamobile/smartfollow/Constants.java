@@ -1,5 +1,19 @@
 package com.zeppamobile.smartfollow;
 
-public class Constants {
+/**
+ * Constants for smartfollow
+ * 
+ * @author Pete Schuette
+ *
+ */
+public final class Constants {
 
+	/**
+	 * @Constructor private constructor as this is a constants file
+	 */
+	private Constants(){};
+	
+	
+	
+	
 }

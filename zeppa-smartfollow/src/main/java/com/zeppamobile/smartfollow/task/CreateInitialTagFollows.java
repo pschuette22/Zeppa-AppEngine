@@ -32,6 +32,8 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		 * execute task to create follows for user1
 		 */
 		
+		
+		
 		/*
 		 * execute task to create follows for user2
 		 */

@@ -10,7 +10,6 @@
 	</parent>
 	<artifactId>zeppa-smartfollow</artifactId>
 	<packaging>war</packaging>
-	<url>http://maven.apache.org</url>
 
 
 	<dependencies>
@@ -53,12 +52,19 @@
 		</dependency>
 
 		<!-- Zeppa API dependency -->
-
 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-api</artifactId>
 			<version>1</version>
 		</dependency>
+
+		<!-- Natrual Language Processing Library -->
+		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+
 
 		<!-- Google Calendar API Dependencies -->
 		<dependency>

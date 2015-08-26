@@ -19,13 +19,19 @@ public class UserAgent {
 	 */
 	private Long userId;
 	private List<ZeppaUserToUserRelationship> minglingRelationships = new ArrayList<ZeppaUserToUserRelationship>();
+	private List<ZeppaEventToUserRelationship> eventRelationships = new ArrayList<ZeppaEventToUserRelationship>();
 	private List<EventAgent> events = new ArrayList<EventAgent>();
+	private List<TagAgent> tags = new ArrayList<TagAgent>();
 
 	/*
 	 * Calculated popularity
 	 */
 
+	// Calculation determining if users are into the same stuff
+	private double similarIntestCalculation;
 	
+	// Calculated popularity of this user
+	private double calculatedPopularity;
 	
 	
 	/*
@@ -33,10 +39,22 @@ public class UserAgent {
 	 */
 	private List<EventTagFollow> result = new ArrayList<EventTagFollow>();
 
+	/**
+	 * UserAgent is a wrapper class for zeppaUser to calculate other user's interest in joining their stuff
+	 * @param userId
+	 * @param otherUserId
+	 */
 	public UserAgent(Long userId, Long otherUserId) {
 		this.userId = userId;
 		fetchMinglingRelationships(otherUserId);
 		fetchEvents();
+		fetchEventRelationships();
+	}
+	
+	
+	
+	public List<ZeppaUserToUserRelationship> getMinglingRelationships(){
+		return minglingRelationships;
 	}
 
 	/**
@@ -75,6 +93,17 @@ public class UserAgent {
 	}
 	
 	
+	/**
+	 * This fetches all the relationships this user has to other events.
+	 */
+	private void fetchEventRelationships(){
+		ZeppaEventToUserRelationshipEndpoint endpoint = new ZeppaEventToUserRelationshipEndpoint();
+		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint.listZeppaEventToUserRelationship("userId=="+userId.longValue(), null, null, null);
+		try {
+			eventRelationships.addAll(response.getItems());
+		} catch (NullPointerException e){
+		}
+	}
 
 	/**
 	 * Fetch events relative to other user and create agents

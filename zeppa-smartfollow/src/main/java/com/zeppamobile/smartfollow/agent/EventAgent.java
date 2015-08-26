@@ -3,8 +3,10 @@ package com.zeppamobile.smartfollow.agent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.api.server.spi.response.CollectionResponse;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint;
 
 /**
  * 
@@ -60,6 +62,27 @@ public class EventAgent {
 		relationships.removeAll(this.relationships);
 
 		return relationships;
+	}
+	
+	
+	/**
+	 * Fetch all event relationships for this event
+	 * 
+	 */
+	private void fetchEventRelationships(){
+
+		// Instantiate the event relationship endpoint
+		ZeppaEventToUserRelationshipEndpoint endpoint = new ZeppaEventToUserRelationshipEndpoint();
+		// No limit fetch events
+		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint.listZeppaEventToUserRelationship("eventId == " + event.getId(), null, null, null);
+		
+		
+		try {
+			relationships.addAll(response.getItems());
+		} catch (NullPointerException e){
+			// Fack
+		}
+		
 	}
 
 	/*

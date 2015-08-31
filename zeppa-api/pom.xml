@@ -10,7 +10,8 @@
 	</parent>
 	<artifactId>zeppa-api</artifactId>
 	<packaging>war</packaging>
-	<url></url>
+	<url>http://maven.apache.org</url>
+
 	<properties>
 		<appengine.app.name>zeppa-cloud-1821</appengine.app.name>
 		<java.version>1.7</java.version>
@@ -20,6 +21,13 @@
 	</properties>
 	<dependencies>
 
+		<!-- Dependent on common module -->
+		<dependency>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-common</artifactId>
+			<version>1</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

@@ -99,8 +99,9 @@
 
 	<build>
 
-		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
-		<!-- All details/versions/configurations are setup at the parent pom -->
+<!-- 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
+ -->		
+ <!-- All details/versions/configurations are setup at the parent pom -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -15,8 +15,8 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.Utils;
 import com.zeppamobile.common.datamodel.DeviceInfo;
+import com.zeppamobile.common.utils.Utils;
 
 @Api(name = "deviceinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.TYPE_OTHER_CLIENT_ID,

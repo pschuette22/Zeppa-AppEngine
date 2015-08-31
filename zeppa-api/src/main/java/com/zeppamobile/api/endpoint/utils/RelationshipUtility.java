@@ -11,7 +11,8 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.Utils;
+import com.zeppamobile.api.notifications.NotificationUtility;
+import com.zeppamobile.api.notifications.PayloadBuilder;
 import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.EventComment;
 import com.zeppamobile.common.datamodel.EventTag;
@@ -22,6 +23,7 @@ import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
+import com.zeppamobile.common.utils.Utils;
 
 public class RelationshipUtility {
 

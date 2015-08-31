@@ -1,4 +1,4 @@
-package com.zeppamobile.api.endpoint.utils;
+package com.zeppamobile.api.notifications;
 
 import java.io.IOException;
 import java.util.ArrayList;

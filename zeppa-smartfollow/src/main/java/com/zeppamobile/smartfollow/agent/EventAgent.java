@@ -10,9 +10,12 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONException;
+
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
-import com.zeppamobile.smartfollow.Configuration;
+import com.zeppamobile.common.utils.JSONUtils;
+import com.zeppamobile.common.utils.ModuleUtils;
 
 /**
  * 
@@ -39,7 +42,6 @@ public class EventAgent {
 	public EventAgent(ZeppaEvent event) {
 		this.event = event;
 		fetchEventRelationships();
-
 	}
 
 	/**
@@ -82,25 +84,22 @@ public class EventAgent {
 		params.put("filter", "eventId==" + event.getId());
 
 		try {
-			URL url = Configuration.getZeppaAPIUrl(
+			URL url = ModuleUtils.getZeppaAPIUrl(
 					"listZeppaEventToUserRelationshipJson/", params);
-			
-			BufferedReader reader = new BufferedReader(
-		            new InputStreamReader(url.openStream())); 
-			
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+
 			StringBuilder responseBuilder = new StringBuilder();
 			String line;
-			while((line = reader.readLine()) != null){
+			while ((line = reader.readLine()) != null) {
 				responseBuilder.append(line);
 			}
-			
-//			JSONArray array = new JSONArray(responseBuilder.toString());
-//			
-//			for(int i = 0; i < array.length(); i++){
-//				JSONObject obj = (JSONObject) array.get(i);
-////				ZeppaEventToUserRelationship  relationship = new ZeppaEventToUserRelationship(obj);
-//			}
-			
+
+			this.relationships = JSONUtils
+					.convertEventRelationshipListString(responseBuilder
+							.toString());
+
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,25 +107,15 @@ public class EventAgent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			// Network or auth error
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			// Bad response
+			// } catch (JSONException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// // Bad response
+		} catch (JSONException e) {
+			// issue with the JSON
+			// Treated as if there are no relationships to event
+			this.relationships = new ArrayList<ZeppaEventToUserRelationship>();
 		}
-
-		// // Instantiate the event relationship endpoint
-		// ZeppaEventToUserRelationshipEndpoint endpoint = new
-		// ZeppaEventToUserRelationshipEndpoint();
-		// // No limit fetch events
-		// CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
-		// .listZeppaEventToUserRelationship(
-		// , null, null, null);
-		//
-		// try {
-		// relationships.addAll(response.getItems());
-		// } catch (NullPointerException e) {
-		// // Fack
-		// }
 
 	}
 

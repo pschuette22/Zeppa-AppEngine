@@ -1,4 +1,4 @@
-package com.zeppamobile.api.endpoint.utils;
+package com.zeppamobile.api.notifications;
 
 import java.util.ArrayList;
 import java.util.Arrays;

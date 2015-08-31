@@ -1,4 +1,4 @@
-package com.zeppamobile.api;
+package com.zeppamobile.common.utils;
 
 import java.util.ArrayList;
 import java.util.Iterator;

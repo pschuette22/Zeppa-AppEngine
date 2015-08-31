@@ -1,4 +1,4 @@
-package com.zeppamobile.api.endpoint.utils;
+package com.zeppamobile.common.googlecalendar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -14,7 +14,6 @@ import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.zeppamobile.api.Constants;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
@@ -38,10 +37,6 @@ public class GoogleCalendarService {
 	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser)
 			throws IOException {
 
-		if (!Constants.PRODUCTION) {
-			zeppaUser.setZeppaCalendarId("Zeppa-Calendar-ID");
-			return zeppaUser;
-		}
 
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();
@@ -79,11 +74,6 @@ public class GoogleCalendarService {
 	public static ZeppaEvent insertGCalEvent(ZeppaUser zeppaUser,
 			ZeppaEvent event) throws IOException {
 
-		if (!Constants.PRODUCTION) {
-			event.setGoogleCalendarId(zeppaUser.getZeppaCalendarId());
-			event.setGoogleCalendarEventId("Calendar-Event-ID");
-			return event;
-		}
 
 		try {
 			com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
@@ -98,13 +88,6 @@ public class GoogleCalendarService {
 					.getMapsLocation() : event.getDisplayLocation());
 			calEvent.setOrganizer(GoogleCalendarUtils.getServiceAsOrganizer());
 
-			// Set this user as the public organizer
-			// EventAttendee attendee =
-			// GoogleCalendarUtils.getUserAsAttendee(zeppaUser, user);
-			// attendee.setOrganizer(true);
-			// attendee.setResponseStatus("accepted");
-			// attendee.setSelf(true);
-			// calEvent.setAttendees(Arrays.asList(attendee));
 
 			// Event Times
 			EventDateTime start = new EventDateTime();
@@ -121,9 +104,6 @@ public class GoogleCalendarService {
 			calEvent.setLocked(false);
 			calEvent.setGuestsCanSeeOtherGuests(true);
 
-			// Event.Reminders reminders = new Event.Reminders();
-			// reminders.setUseDefault(false);
-			// calEvent.setReminders(reminders);
 
 			// Insert and update object
 			calEvent = service.events()
@@ -154,11 +134,7 @@ public class GoogleCalendarService {
 	public static void joinEvent(ZeppaEvent zeppaEvent, ZeppaUser zeppaUser)
 			throws IOException {
 
-		if (!Constants.PRODUCTION) {
-			return;
-		}
 
-		// try {
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();
 
@@ -199,13 +175,6 @@ public class GoogleCalendarService {
 						zeppaEvent.getGoogleCalendarEventId(), calEvent)
 				.execute();
 
-		// Event calImport =
-		// service.events().calendarImport(zeppaUser.getZeppaCalendarId(),
-		// calEvent).execute();
-		//
-		// } catch (IOException e) {
-		// throw wrappedIOException(e);
-		// }
 	}
 
 	/**
@@ -219,10 +188,6 @@ public class GoogleCalendarService {
 	 */
 	public static boolean leaveEvent(ZeppaEvent event, ZeppaUser zeppaUser)
 			throws IOException {
-
-		if (!Constants.PRODUCTION) {
-			return true;
-		}
 
 		boolean success = false;
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
@@ -253,11 +218,12 @@ public class GoogleCalendarService {
 		return success;
 	}
 
+	/**
+	 * Delete the GoogleCalendar for this user
+	 * @param zeppaUser - ZeppaUser who's calendar should be deleted
+	 * @throws IOException
+	 */
 	public static void deleteCalendar(ZeppaUser zeppaUser) throws IOException {
-
-		if (!Constants.PRODUCTION) {
-			return;
-		}
 
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();
@@ -275,11 +241,12 @@ public class GoogleCalendarService {
 		service.calendars().delete(zeppaUser.getZeppaCalendarId()).execute();
 	}
 
+	/**
+	 * Remove Google Calendar event corresponding to ZeppaEvent
+	 * @param event - ZeppaEvent corresponding to Google Calendar Event to be removed
+	 * @throws IOException
+	 */
 	public static void deleteCalendarEvent(ZeppaEvent event) throws IOException {
-
-		if (!Constants.PRODUCTION) {
-			return;
-		}
 
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();

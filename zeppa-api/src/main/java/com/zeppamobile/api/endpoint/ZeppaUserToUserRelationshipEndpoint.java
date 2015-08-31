@@ -17,13 +17,13 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.Utils;
-import com.zeppamobile.api.endpoint.utils.NotificationUtility;
-import com.zeppamobile.api.endpoint.utils.PayloadBuilder;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.api.notifications.NotificationUtility;
+import com.zeppamobile.api.notifications.PayloadBuilder;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
+import com.zeppamobile.common.utils.Utils;
 
 @Api(name = "zeppausertouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,

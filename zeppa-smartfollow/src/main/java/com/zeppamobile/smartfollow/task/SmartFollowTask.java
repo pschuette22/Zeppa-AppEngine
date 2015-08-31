@@ -1,11 +1,8 @@
 package com.zeppamobile.smartfollow.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.smartfollow.agent.TagAgent;
-import com.zeppamobile.smartfollow.agent.UserAgent;
 
 /**
  * Base class for tasks associated with smartfollow

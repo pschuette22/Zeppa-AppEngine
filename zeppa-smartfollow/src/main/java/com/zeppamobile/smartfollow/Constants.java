@@ -17,6 +17,14 @@ public final class Constants {
 	private Constants() {
 	}
 	
+	/**
+	 * Compiler flag to check if unit testing
+	 */
+	public static boolean TESTING = false;
+	public static void setTesting(boolean testing){
+		TESTING = testing;
+	}
+	
 	
 	/*
 	 * Must determine this user is %65 interested in this tag to follow

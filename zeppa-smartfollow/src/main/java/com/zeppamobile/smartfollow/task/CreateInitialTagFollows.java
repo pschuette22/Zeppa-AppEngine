@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import com.zeppamobile.api.datamodel.EventTagFollow;
-import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.agent.TagAgent;
 import com.zeppamobile.smartfollow.agent.UserAgent;
 
@@ -338,11 +337,11 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 				calculationWeight += .2;
 			}
 
-			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-						userAgent2.getUserId());
-				result.add(follow);
-			}
+//			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
+//				EventTagFollow follow = new EventTagFollow(agent.getTag(),
+//						userAgent2.getUserId());
+//				result.add(follow);
+//			}
 
 		}
 
@@ -375,11 +374,11 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 				calculationWeight += .2;
 			}
 
-			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-						userAgent1.getUserId());
-				result.add(follow);
-			}
+//			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
+//				EventTagFollow follow = new EventTagFollow(agent.getTag(),
+//						userAgent1.getUserId());
+//				result.add(follow);
+//			}
 
 		}
 

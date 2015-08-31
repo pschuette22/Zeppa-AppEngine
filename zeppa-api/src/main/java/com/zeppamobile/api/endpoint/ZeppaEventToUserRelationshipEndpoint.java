@@ -28,7 +28,7 @@ import com.zeppamobile.api.endpoint.utils.GoogleCalendarService;
 import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 
 @Api(name = "zeppaeventtouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
+		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,
 
 		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
 		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
@@ -97,6 +97,34 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		return CollectionResponse.<ZeppaEventToUserRelationship> builder()
 				.setItems(execute).setNextPageToken(cursorString).build();
 	}
+
+//	@ApiMethod(name = "listZeppaEventToUserRelationshipJson")
+//	public JSONArray listZeppaEventToUserRelationshipJson(
+//			@Nullable @Named("filter") String filterString,
+//			@Nullable @Named("cursor") String cursorString,
+//			@Nullable @Named("ordering") String orderingString,
+//			@Nullable @Named("limit") Integer limit) {
+//
+//		CollectionResponse<ZeppaEventToUserRelationship> response = listZeppaEventToUserRelationship(
+//				filterString, cursorString, orderingString, limit);
+//
+//		// Json object to return
+//		JSONArray result = new JSONArray();
+//
+//		try {
+//			for (ZeppaEventToUserRelationship relationship : response
+//					.getItems()) {
+//				JSONObject obj = new JSONObject(relationship);
+//				result.put(obj);
+//			}
+//			// TODO:  put in cursors and such
+//			
+//		} catch (NullPointerException e) {
+//			// No relationships
+//		}
+//		
+//		return result;
+//	}
 
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
@@ -294,9 +322,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEventToUserRelationship")
-	public void removeZeppaEventToUserRelationship(@Named("id") Long id) throws OAuthRequestException {
+	public void removeZeppaEventToUserRelationship(@Named("id") Long id)
+			throws OAuthRequestException {
 
-		
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaEventToUserRelationship zeppaeventtouserrelationship = mgr
@@ -310,20 +338,20 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		}
 	}
 
-//	private boolean containsZeppaEventToUserRelationship(
-//			ZeppaEventToUserRelationship zeppaeventtouserrelationship) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		boolean contains = true;
-//		try {
-//			mgr.getObjectById(ZeppaEventToUserRelationship.class,
-//					zeppaeventtouserrelationship.getKey());
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			contains = false;
-//		} finally {
-//			mgr.close();
-//		}
-//		return contains;
-//	}
+	// private boolean containsZeppaEventToUserRelationship(
+	// ZeppaEventToUserRelationship zeppaeventtouserrelationship) {
+	// PersistenceManager mgr = getPersistenceManager();
+	// boolean contains = true;
+	// try {
+	// mgr.getObjectById(ZeppaEventToUserRelationship.class,
+	// zeppaeventtouserrelationship.getKey());
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// contains = false;
+	// } finally {
+	// mgr.close();
+	// }
+	// return contains;
+	// }
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

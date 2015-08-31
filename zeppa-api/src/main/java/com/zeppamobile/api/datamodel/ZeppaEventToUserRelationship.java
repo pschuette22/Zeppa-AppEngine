@@ -5,6 +5,9 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
@@ -47,13 +50,32 @@ public class ZeppaEventToUserRelationship {
 	@Persistent // Event holds a tag user follows
 	private Boolean isRecommended;
 
-
-	// For Guice
-	public ZeppaEventToUserRelationship() {
-
+	
+	/**
+	 * Rebuild this object from JSON obejct
+	 * @param json - object as JSON
+	 * @throws JSONException throws exception if there is an error converting
+	 */
+	public ZeppaEventToUserRelationship(JSONObject json) throws JSONException{
+		this.key = (Key) json.get("key");
+		this.created = (Long) json.get("created");
+		this.updated = (Long) json.get("updated");
+		this.eventId = (Long) json.get("eventId");
+		this.eventHostId = (Long) json.get("eventHostId");
+		this.userId = (Long) json.get("userId");
+		this.expires = (Long) json.get("expires");
+		this.isWatching = (Boolean) json.get("isWatching");
+		this.isAttending = (Boolean) json.get("isAttending");
+		this.wasInvited = (Boolean) json.get("wasInvited");
+		try {
+			this.invitedByUserId = (Long) json.get("invitedByUserId");
+		} catch (Exception e){
+			invitedByUserId = Long.valueOf(-1);
+		}
+		this.isRecommended = (Boolean) json.get("isRecommended");
 	}
 	
-	public void init(ZeppaEvent event, Long userId, Boolean wasInvited, Boolean isRecommended, Long invitedByUserId){
+	public ZeppaEventToUserRelationship(ZeppaEvent event, Long userId, Boolean wasInvited, Boolean isRecommended, Long invitedByUserId){
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.eventId = event.getId();

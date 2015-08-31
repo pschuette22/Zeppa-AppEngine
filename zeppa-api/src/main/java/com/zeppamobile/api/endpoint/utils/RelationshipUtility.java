@@ -25,7 +25,8 @@ import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship.UserRelationshi
 
 public class RelationshipUtility {
 
-	private static final Logger log = Logger.getLogger(RelationshipUtility.class.getName());
+	private static final Logger log = Logger
+			.getLogger(RelationshipUtility.class.getName());
 
 	/**
 	 * this method creates relationships/ notifications for event
@@ -35,7 +36,8 @@ public class RelationshipUtility {
 	 * @param user
 	 */
 	@SuppressWarnings("unchecked")
-	public static Collection<ZeppaEventToUserRelationship> createEventRelationships(long eventId) {
+	public static Collection<ZeppaEventToUserRelationship> createEventRelationships(
+			long eventId) {
 
 		ZeppaEvent event = null;
 		PersistenceManager emgr = getPersistenceManager();
@@ -65,14 +67,17 @@ public class RelationshipUtility {
 
 			try {
 				Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
-				query.setFilter("creatorId == " + event.getHostId().longValue() + " && relationshipType == '"
+				query.setFilter("creatorId == " + event.getHostId().longValue()
+						+ " && relationshipType == '"
 						+ UserRelationshipType.MINGLING.toString() + "'");
 
-				List<ZeppaUserToUserRelationship> connections = (List<ZeppaUserToUserRelationship>) query.execute();
+				List<ZeppaUserToUserRelationship> connections = (List<ZeppaUserToUserRelationship>) query
+						.execute();
 
 				if (!connections.isEmpty()) {
 
-					Iterator<ZeppaUserToUserRelationship> iterator = connections.iterator();
+					Iterator<ZeppaUserToUserRelationship> iterator = connections
+							.iterator();
 					while (iterator.hasNext()) {
 						userIds.add(iterator.next().getSubjectId());
 					}
@@ -80,14 +85,17 @@ public class RelationshipUtility {
 
 				// Execute new query to find all relationships user accepted
 				query = mgr.newQuery(ZeppaUserToUserRelationship.class);
-				query.setFilter("subjectId == " + event.getHostId().longValue() + " && relationshipType == '"
+				query.setFilter("subjectId == " + event.getHostId().longValue()
+						+ " && relationshipType == '"
 						+ UserRelationshipType.MINGLING.toString() + "'");
 
-				List<ZeppaUserToUserRelationship> connections2 = (List<ZeppaUserToUserRelationship>) query.execute();
+				List<ZeppaUserToUserRelationship> connections2 = (List<ZeppaUserToUserRelationship>) query
+						.execute();
 
 				if (!connections2.isEmpty()) {
 
-					Iterator<ZeppaUserToUserRelationship> iterator = connections2.iterator();
+					Iterator<ZeppaUserToUserRelationship> iterator = connections2
+							.iterator();
 					while (iterator.hasNext()) {
 						userIds.add(iterator.next().getCreatorId());
 					}
@@ -113,8 +121,9 @@ public class RelationshipUtility {
 					Long l = recipientIterator.next();
 					if (Utils.listContainsLong(userIds, l)) {
 
-						ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship();
-						relationship.init(event, l, Boolean.TRUE, Boolean.TRUE, event.getHostId());
+						ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship(
+								event, l, Boolean.TRUE, Boolean.TRUE,
+								event.getHostId());
 						result.add(relationship);
 						userIds.remove(l);
 					}
@@ -123,7 +132,8 @@ public class RelationshipUtility {
 			}
 
 			// Create relationships for users following tags
-			if (!userIds.isEmpty() && event.getTagIds() != null && !event.getTagIds().isEmpty()) {
+			if (!userIds.isEmpty() && event.getTagIds() != null
+					&& !event.getTagIds().isEmpty()) {
 				Iterator<Long> i = event.getTagIds().iterator();
 				StringBuilder filterBuilder = new StringBuilder();
 
@@ -141,15 +151,17 @@ public class RelationshipUtility {
 					Query query = mgr.newQuery(EventTagFollow.class);
 					query.setFilter(filterBuilder.toString());
 
-					List<EventTagFollow> follows = (List<EventTagFollow>) query.execute();
+					List<EventTagFollow> follows = (List<EventTagFollow>) query
+							.execute();
 
 					if (!follows.isEmpty()) {
 						Iterator<EventTagFollow> iterator = follows.iterator();
 						while (iterator.hasNext()) {
 							Long l = iterator.next().getFollowerId();
 							if (Utils.listContainsLong(userIds, l)) {
-								ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship();
-								relationship.init(event, l, Boolean.FALSE, Boolean.TRUE, Long.valueOf(-1));
+								ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship(
+										event, l, Boolean.FALSE, Boolean.TRUE,
+										Long.valueOf(-1));
 								result.add(relationship);
 								userIds.remove(l);
 							}
@@ -166,9 +178,10 @@ public class RelationshipUtility {
 			if (!userIds.isEmpty()) {
 				Iterator<Long> iterator = userIds.iterator();
 				while (iterator.hasNext()) {
-					ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship();
-					relationship.init(event, iterator.next().longValue(), Boolean.FALSE, Boolean.TRUE, Long.valueOf(-1));
-					
+					ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship(
+							event, iterator.next().longValue(), Boolean.FALSE,
+							Boolean.TRUE, Long.valueOf(-1));
+
 					result.add(relationship);
 				}
 			}
@@ -186,7 +199,8 @@ public class RelationshipUtility {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void createRelevantRelationshipsForUsers(Long userId1, Long userId2) {
+	public static void createRelevantRelationshipsForUsers(Long userId1,
+			Long userId2) {
 
 		List<ZeppaEventToUserRelationship> relationships = new ArrayList<ZeppaEventToUserRelationship>();
 
@@ -194,11 +208,13 @@ public class RelationshipUtility {
 		 * Create relationships between from all upcoming user2 hosted events to
 		 * user1
 		 */
-		String filter = "hostId == " + userId2 + " && end > " + System.currentTimeMillis() + " && privacy == 'CASUAL'";
+		String filter = "hostId == " + userId2 + " && end > "
+				+ System.currentTimeMillis() + " && privacy == 'CASUAL'";
 		PersistenceManager mgr = getPersistenceManager();
 
 		try {
-			List<ZeppaEvent> events = (List<ZeppaEvent>) mgr.newQuery(ZeppaEvent.class, filter).execute();
+			List<ZeppaEvent> events = (List<ZeppaEvent>) mgr.newQuery(
+					ZeppaEvent.class, filter).execute();
 
 			if (events != null && !events.isEmpty()) {
 
@@ -208,8 +224,13 @@ public class RelationshipUtility {
 					PersistenceManager emgr = getPersistenceManager();
 					ZeppaEventToUserRelationship relationship = null;
 					try {
-						relationship = (ZeppaEventToUserRelationship) emgr.newQuery(ZeppaEventToUserRelationship.class,
-								"eventId == " + event.getId().longValue() + " && userId == " + userId1.longValue())
+						relationship = (ZeppaEventToUserRelationship) emgr
+								.newQuery(
+										ZeppaEventToUserRelationship.class,
+										"eventId == "
+												+ event.getId().longValue()
+												+ " && userId == "
+												+ userId1.longValue())
 								.execute();
 
 					} catch (javax.jdo.JDOObjectNotFoundException e) {
@@ -219,8 +240,9 @@ public class RelationshipUtility {
 					}
 
 					if (relationship == null) {
-						relationship = new ZeppaEventToUserRelationship();
-						relationship.init(event, userId1, Boolean.FALSE, Boolean.TRUE, Long.valueOf(-1));
+						relationship = new ZeppaEventToUserRelationship(event,
+								userId1, Boolean.FALSE, Boolean.TRUE,
+								Long.valueOf(-1));
 						relationships.add(relationship);
 					}
 				}
@@ -231,8 +253,10 @@ public class RelationshipUtility {
 			 * Create relationships between from all upcoming user1 hosted
 			 * events to user2
 			 */
-			filter = "hostId == " + userId1 + " && end > " + System.currentTimeMillis() + " && privacy == 'CASUAL'";
-			events = (List<ZeppaEvent>) mgr.newQuery(ZeppaEvent.class, filter).execute();
+			filter = "hostId == " + userId1 + " && end > "
+					+ System.currentTimeMillis() + " && privacy == 'CASUAL'";
+			events = (List<ZeppaEvent>) mgr.newQuery(ZeppaEvent.class, filter)
+					.execute();
 
 			if (events != null && !events.isEmpty()) {
 
@@ -243,8 +267,13 @@ public class RelationshipUtility {
 					PersistenceManager emgr = getPersistenceManager();
 					ZeppaEventToUserRelationship relationship = null;
 					try {
-						relationship = (ZeppaEventToUserRelationship) emgr.newQuery(ZeppaEventToUserRelationship.class,
-								"eventId == " + event.getId().longValue() + " && userId == " + userId2.longValue())
+						relationship = (ZeppaEventToUserRelationship) emgr
+								.newQuery(
+										ZeppaEventToUserRelationship.class,
+										"eventId == "
+												+ event.getId().longValue()
+												+ " && userId == "
+												+ userId2.longValue())
 								.execute();
 
 					} catch (javax.jdo.JDOObjectNotFoundException e) {
@@ -254,8 +283,9 @@ public class RelationshipUtility {
 					}
 
 					if (relationship == null) {
-						relationship = new ZeppaEventToUserRelationship();
-						relationship.init(event, userId2, Boolean.FALSE, Boolean.TRUE, Long.valueOf(-1));
+						relationship = new ZeppaEventToUserRelationship(event,
+								userId2, Boolean.FALSE, Boolean.TRUE,
+								Long.valueOf(-1));
 						relationships.add(relationship);
 					}
 				}
@@ -287,11 +317,13 @@ public class RelationshipUtility {
 	 *            // Authorization
 	 */
 
-	public static void removeRelationshipsBetweenUsers(long userId1, long userId2) {
+	public static void removeRelationshipsBetweenUsers(long userId1,
+			long userId2) {
 
 		// Delete Tag follows between users
 		PersistenceManager tmgr = getPersistenceManager();
-		String filter = "(tagOwnerId == " + userId1 + " || tagOwnerId == " + userId2 + ") && (followerId == " + userId1
+		String filter = "(tagOwnerId == " + userId1 + " || tagOwnerId == "
+				+ userId2 + ") && (followerId == " + userId1
 				+ " || followerId == " + userId2 + ")";
 		try {
 			tmgr.newQuery(EventTagFollow.class, filter).deletePersistentAll();
@@ -302,11 +334,13 @@ public class RelationshipUtility {
 
 		// Delete Notifications Between users
 		PersistenceManager nmgr = getPersistenceManager();
-		filter = "(senderId == " + userId1 + " || senderId == " + userId2 + ") && (recipientId == " + userId1
-				+ " || recipientId == " + userId2 + ")";
+		filter = "(senderId == " + userId1 + " || senderId == " + userId2
+				+ ") && (recipientId == " + userId1 + " || recipientId == "
+				+ userId2 + ")";
 		try {
 
-			nmgr.newQuery(ZeppaNotification.class, filter).deletePersistentAll();
+			nmgr.newQuery(ZeppaNotification.class, filter)
+					.deletePersistentAll();
 
 		} finally {
 			nmgr.close();
@@ -314,11 +348,13 @@ public class RelationshipUtility {
 
 		// Delete event relationships
 		PersistenceManager emgr = getPersistenceManager();
-		filter = "(eventHostId == " + userId1 + " || eventHostId == " + userId2 + ") && (userId == " + userId1
-				+ " || userId == " + userId2 + ") && isAttending == " + Boolean.FALSE;
+		filter = "(eventHostId == " + userId1 + " || eventHostId == " + userId2
+				+ ") && (userId == " + userId1 + " || userId == " + userId2
+				+ ") && isAttending == " + Boolean.FALSE;
 		try {
 
-			emgr.newQuery(ZeppaEventToUserRelationship.class, filter).deletePersistentAll();
+			emgr.newQuery(ZeppaEventToUserRelationship.class, filter)
+					.deletePersistentAll();
 
 		} finally {
 			emgr.close();
@@ -372,7 +408,8 @@ public class RelationshipUtility {
 
 		try {
 
-			mgr.newQuery(ZeppaEventToUserRelationship.class, "eventId == " + eventId).deletePersistentAll();
+			mgr.newQuery(ZeppaEventToUserRelationship.class,
+					"eventId == " + eventId).deletePersistentAll();
 
 		} finally {
 			mgr.close();
@@ -385,7 +422,8 @@ public class RelationshipUtility {
 
 		try {
 
-			mgr.newQuery(EventTagFollow.class, "tagId == " + tagId).deletePersistentAll();
+			mgr.newQuery(EventTagFollow.class, "tagId == " + tagId)
+					.deletePersistentAll();
 
 		} finally {
 			mgr.close();
@@ -494,7 +532,8 @@ public class RelationshipUtility {
 		try {
 
 			String filter = "userId == " + userId;
-			ermgr.newQuery(ZeppaEventToUserRelationship.class, filter).deletePersistentAll();
+			ermgr.newQuery(ZeppaEventToUserRelationship.class, filter)
+					.deletePersistentAll();
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -508,7 +547,8 @@ public class RelationshipUtility {
 		try {
 
 			String filter = "eventHostId == " + userId;
-			ermgr2.newQuery(ZeppaEventToUserRelationship.class, filter).deletePersistentAll();
+			ermgr2.newQuery(ZeppaEventToUserRelationship.class, filter)
+					.deletePersistentAll();
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -526,14 +566,17 @@ public class RelationshipUtility {
 			String filter = "creatorId == " + userId;
 			@SuppressWarnings("unchecked")
 			List<ZeppaUserToUserRelationship> relationships = (List<ZeppaUserToUserRelationship>) umgr
-					.newQuery(ZeppaUserToUserRelationship.class, filter).execute();
+					.newQuery(ZeppaUserToUserRelationship.class, filter)
+					.execute();
 
 			if (relationships != null && !relationships.isEmpty()) {
-				Iterator<ZeppaUserToUserRelationship> iterator = relationships.iterator();
+				Iterator<ZeppaUserToUserRelationship> iterator = relationships
+						.iterator();
 				while (iterator.hasNext()) {
 					ZeppaUserToUserRelationship relationship = iterator.next();
 					String payload = PayloadBuilder
-							.silentUserRelationshipDeletedPayload(relationship.getSubjectId().longValue(), userId);
+							.silentUserRelationshipDeletedPayload(relationship
+									.getSubjectId().longValue(), userId);
 					NotificationUtility.preprocessNotificationDelivery(payload,
 							relationship.getCreatorId().longValue());
 				}
@@ -555,14 +598,17 @@ public class RelationshipUtility {
 			String filter = "subjectId == " + userId;
 			@SuppressWarnings("unchecked")
 			List<ZeppaUserToUserRelationship> relationships = (List<ZeppaUserToUserRelationship>) umgr2
-					.newQuery(ZeppaUserToUserRelationship.class, filter).execute();
+					.newQuery(ZeppaUserToUserRelationship.class, filter)
+					.execute();
 
 			if (relationships != null && !relationships.isEmpty()) {
-				Iterator<ZeppaUserToUserRelationship> iterator = relationships.iterator();
+				Iterator<ZeppaUserToUserRelationship> iterator = relationships
+						.iterator();
 				while (iterator.hasNext()) {
 					ZeppaUserToUserRelationship relationship = iterator.next();
-					String payload = PayloadBuilder.silentUserRelationshipDeletedPayload(userId,
-							relationship.getCreatorId().longValue());
+					String payload = PayloadBuilder
+							.silentUserRelationshipDeletedPayload(userId,
+									relationship.getCreatorId().longValue());
 					NotificationUtility.preprocessNotificationDelivery(payload,
 							relationship.getCreatorId().longValue());
 				}
@@ -581,7 +627,8 @@ public class RelationshipUtility {
 		PersistenceManager nmgr = getPersistenceManager();
 		try {
 			String filter = "senderId == " + userId;
-			nmgr.newQuery(ZeppaNotification.class, filter).deletePersistentAll();
+			nmgr.newQuery(ZeppaNotification.class, filter)
+					.deletePersistentAll();
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -594,7 +641,8 @@ public class RelationshipUtility {
 		PersistenceManager nmgr2 = getPersistenceManager();
 		try {
 			String filter = "recipientId == " + userId;
-			nmgr2.newQuery(ZeppaNotification.class, filter).deletePersistentAll();
+			nmgr2.newQuery(ZeppaNotification.class, filter)
+					.deletePersistentAll();
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

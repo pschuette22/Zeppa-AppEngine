@@ -1,12 +1,18 @@
 package com.zeppamobile.smartfollow.agent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
-import com.google.api.server.spi.response.CollectionResponse;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
-import com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint;
+import com.zeppamobile.smartfollow.Configuration;
 
 /**
  * 
@@ -24,10 +30,6 @@ public class EventAgent {
 	// -1 before it is instantiated
 	private double calculatedPopularity = -1;
 
-	// False until popularity has been calculated. This is stored in case tast
-	// is executed and asked to restore
-	private boolean hasCalculatedPopularity = false;
-
 	/**
 	 * Initialize an event agent
 	 * 
@@ -37,6 +39,7 @@ public class EventAgent {
 	public EventAgent(ZeppaEvent event) {
 		this.event = event;
 		fetchEventRelationships();
+
 	}
 
 	/**
@@ -69,21 +72,61 @@ public class EventAgent {
 	/**
 	 * Fetch all event relationships for this event
 	 * 
+	 * @throws MalformedURLException
+	 * 
 	 */
 	private void fetchEventRelationships() {
 
-		// Instantiate the event relationship endpoint
-		ZeppaEventToUserRelationshipEndpoint endpoint = new ZeppaEventToUserRelationshipEndpoint();
-		// No limit fetch events
-		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
-				.listZeppaEventToUserRelationship(
-						"eventId == " + event.getId(), null, null, null);
+		// Call the API module via HTTP GET request
+		Dictionary<String, String> params = new Hashtable<String, String>();
+		params.put("filter", "eventId==" + event.getId());
 
 		try {
-			relationships.addAll(response.getItems());
-		} catch (NullPointerException e) {
-			// Fack
+			URL url = Configuration.getZeppaAPIUrl(
+					"listZeppaEventToUserRelationshipJson/", params);
+			
+			BufferedReader reader = new BufferedReader(
+		            new InputStreamReader(url.openStream())); 
+			
+			StringBuilder responseBuilder = new StringBuilder();
+			String line;
+			while((line = reader.readLine()) != null){
+				responseBuilder.append(line);
+			}
+			
+//			JSONArray array = new JSONArray(responseBuilder.toString());
+//			
+//			for(int i = 0; i < array.length(); i++){
+//				JSONObject obj = (JSONObject) array.get(i);
+////				ZeppaEventToUserRelationship  relationship = new ZeppaEventToUserRelationship(obj);
+//			}
+			
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			// Network or auth error
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			// Bad response
 		}
+
+		// // Instantiate the event relationship endpoint
+		// ZeppaEventToUserRelationshipEndpoint endpoint = new
+		// ZeppaEventToUserRelationshipEndpoint();
+		// // No limit fetch events
+		// CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
+		// .listZeppaEventToUserRelationship(
+		// , null, null, null);
+		//
+		// try {
+		// relationships.addAll(response.getItems());
+		// } catch (NullPointerException e) {
+		// // Fack
+		// }
 
 	}
 
@@ -214,14 +257,14 @@ public class EventAgent {
 		unweighedPopularity += (totInterestRatio * TOTAL_RATIO_WEIGHT);
 
 		calculatedPopularity = (unweighedPopularity / calculatedWeight);
-		hasCalculatedPopularity = true;
+
 	}
-	
+
 	/**
 	 * 
 	 * @return popularity as decimal percent (-1 if uncalculated or error)
 	 */
-	public double getCalculatedPopularity(){
+	public double getCalculatedPopularity() {
 		return calculatedPopularity;
 	}
 

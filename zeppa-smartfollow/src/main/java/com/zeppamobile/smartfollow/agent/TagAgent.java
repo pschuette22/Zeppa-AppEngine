@@ -16,10 +16,8 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import com.google.api.server.spi.response.CollectionResponse;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.EventTagFollow;
-import com.zeppamobile.api.endpoint.EventTagFollowEndpoint;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
 
@@ -52,12 +50,12 @@ public class TagAgent {
 			System.out.print("Unable to dissect text");
 		}
 	}
-	
-	public EventTag getTag(){
+
+	public EventTag getTag() {
 		return tag;
 	}
-	
-	public Long getTagId(){
+
+	public Long getTagId() {
 		return tag.getId();
 	}
 
@@ -166,10 +164,11 @@ public class TagAgent {
 	 * Quickly fetch all the follows for this tag
 	 */
 	private void fetchTagFollows() {
-		EventTagFollowEndpoint endpoint = new EventTagFollowEndpoint();
-		CollectionResponse<EventTagFollow> response = endpoint
-				.listEventTagFollow("tagId==" + tag.getId(), null, null, null);
-		tagFollows.addAll(response.getItems());
+//		EventTagFollowEndpoint endpoint = new EventTagFollowEndpoint();
+//		CollectionResponse<EventTagFollow> response = endpoint
+//				.listEventTagFollow("tagId==" + tag.getId(), null, null, null);
+//		tagFollows.addAll(response.getItems());
+
 	}
 
 	/**
@@ -314,10 +313,11 @@ public class TagAgent {
 		public TagPart(String word, POS pos) {
 
 			// Make non-noun words lowercase for library readability
-			if(Character.isLetter(word.charAt(0)) && (pos == null || pos != POS.NOUN)){
+			if (Character.isLetter(word.charAt(0))
+					&& (pos == null || pos != POS.NOUN)) {
 				word = Utils.toLowercase(word);
 			}
-			
+
 			this.word = word;
 			this.pos = pos;
 			try {
@@ -425,7 +425,6 @@ public class TagAgent {
 						/*
 						 * Determine how many lists of relationships there are
 						 * between all sysnsets
-						 * 
 						 */
 						if (!synsets.isEmpty() && !psynsets.isEmpty()) {
 							int matchCount = 0;
@@ -433,12 +432,12 @@ public class TagAgent {
 							for (Synset s : synsets) {
 								for (Synset sp : psynsets) {
 									/*
-									 * Find usage relationships:
-									 * Times synonyms are used in place of each other
+									 * Find usage relationships: Times synonyms
+									 * are used in place of each other
 									 */
 									RelationshipList list = RelationshipFinder
 											.findRelationships(s, sp,
-													PointerType.USAGE,1);
+													PointerType.USAGE, 1);
 									if (!list.isEmpty()) {
 										matchCount++;
 									}

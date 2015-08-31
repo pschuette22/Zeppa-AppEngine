@@ -19,7 +19,6 @@ public class Constants {
 	private Constants() {}
 	
 	public static final boolean PRODUCTION = true;
-
 	
 	// Current Android version
 	public final static int androidClientVersion = 1;

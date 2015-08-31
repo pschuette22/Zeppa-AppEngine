@@ -21,7 +21,8 @@ public class EventAgent {
 	private List<ZeppaEventToUserRelationship> relationships = new ArrayList<ZeppaEventToUserRelationship>();
 
 	// Total calculated popularity of a given event
-	private double calculatedPopularity = 0;
+	// -1 before it is instantiated
+	private double calculatedPopularity = -1;
 
 	// False until popularity has been calculated. This is stored in case tast
 	// is executed and asked to restore
@@ -35,6 +36,7 @@ public class EventAgent {
 	 */
 	public EventAgent(ZeppaEvent event) {
 		this.event = event;
+		fetchEventRelationships();
 	}
 
 	/**
@@ -63,26 +65,47 @@ public class EventAgent {
 
 		return relationships;
 	}
-	
-	
+
 	/**
 	 * Fetch all event relationships for this event
 	 * 
 	 */
-	private void fetchEventRelationships(){
+	private void fetchEventRelationships() {
 
 		// Instantiate the event relationship endpoint
 		ZeppaEventToUserRelationshipEndpoint endpoint = new ZeppaEventToUserRelationshipEndpoint();
 		// No limit fetch events
-		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint.listZeppaEventToUserRelationship("eventId == " + event.getId(), null, null, null);
-		
-		
+		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
+				.listZeppaEventToUserRelationship(
+						"eventId == " + event.getId(), null, null, null);
+
 		try {
 			relationships.addAll(response.getItems());
-		} catch (NullPointerException e){
+		} catch (NullPointerException e) {
 			// Fack
 		}
-		
+
+	}
+
+	/**
+	 * Determine if event has tag attached
+	 * 
+	 * @param tagId
+	 * @return true if provided tagId matches an id event tags
+	 */
+	public boolean containsTag(long tagId) {
+		try {
+			for (long l : event.getTagIds()) {
+				if (l == tagId) {
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			// Event has no tags
+			// This could happen if they deleted all tags attached to this event
+		}
+
+		return false;
 	}
 
 	/*
@@ -92,7 +115,9 @@ public class EventAgent {
 
 	private static final double RECOMMENDED_RATIO_WEIGHT = .4;
 	private static final double INVITED_RATIO_WEIGHT = .5;
-	private static final double TOTAL_RATIO_WEIGHT = .1; // low weight because user wasn't notified
+	private static final double TOTAL_RATIO_WEIGHT = .1; // low weight because
+															// user wasn't
+															// notified
 
 	/**
 	 * This is the bulk of this agent. Determine calculated popularity of this
@@ -183,13 +208,21 @@ public class EventAgent {
 			calculatedWeight += INVITED_RATIO_WEIGHT;
 		}
 
-		// Determine total number of people that joined vs total number who could
+		// Determine total number of people that joined vs total number who
+		// could
 		double totInterestRatio = (totInterested / total);
-		unweighedPopularity += (totInterestRatio*TOTAL_RATIO_WEIGHT);
-		
+		unweighedPopularity += (totInterestRatio * TOTAL_RATIO_WEIGHT);
 
-		calculatedPopularity = (unweighedPopularity/calculatedWeight);
+		calculatedPopularity = (unweighedPopularity / calculatedWeight);
 		hasCalculatedPopularity = true;
+	}
+	
+	/**
+	 * 
+	 * @return popularity as decimal percent (-1 if uncalculated or error)
+	 */
+	public double getCalculatedPopularity(){
+		return calculatedPopularity;
 	}
 
 }

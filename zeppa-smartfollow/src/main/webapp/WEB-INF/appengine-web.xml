@@ -6,12 +6,15 @@
 	<module>zeppa-smartfollow</module>
 
 	<!-- Performance Settings -->
-	<instance-class>B2</instance-class>
+<!-- 	<instance-class>B2</instance-class>
 	<basic-scaling>
 		<max-instances>3</max-instances>
-		<!-- Time out immediately -->
 		<idle-timeout>1m</idle-timeout>
-	</basic-scaling>
+	</basic-scaling> -->
+	
+	<automatic-scaling>
+	
+	</automatic-scaling>
 
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />

@@ -32,14 +32,14 @@ public class EventTagFollow {
 	// For Guice
 	public EventTagFollow(){}
 	
-//	public EventTagFollow(EventTag tag, Long followerId) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.tagId = tag.getId();
-//		this.tagOwnerId = tag.getOwnerId();
-//		this.followerId = followerId;
-//	}
+	public EventTagFollow(EventTag tag, Long followerId) {
+
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.tagId = tag.getId();
+		this.tagOwnerId = tag.getOwnerId();
+		this.followerId = followerId;
+	}
 
 	public Long getCreated() {
 		return created;

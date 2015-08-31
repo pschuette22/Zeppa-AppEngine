@@ -94,5 +94,21 @@ public class ZeppaUserToUserRelationship {
 	public void setRelationshipType(UserRelationshipType relationshipType) {
 		this.relationshipType = relationshipType;
 	}
+	
+	/**
+	 * Convenience method to get other userId of user involved in this relationship
+	 * @param userId, asking user's id
+	 * @return the other user id or null if provided user is not involved in this relationship
+	 */
+	public Long getOtherUserId(Long userId){
+		if(userId.longValue() == creatorId.longValue()){
+			return subjectId;
+		} else if (userId.longValue() == subjectId.longValue()){
+			return creatorId;
+		} else {
+			// TODO: flag this
+			return null;
+		}
+	}
 
 }

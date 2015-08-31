@@ -1,5 +1,12 @@
 package com.zeppamobile.smartfollow.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.smartfollow.agent.TagAgent;
+import com.zeppamobile.smartfollow.agent.UserAgent;
+
 /**
  * Base class for tasks associated with smartfollow
  * 
@@ -43,6 +50,32 @@ public abstract class SmartFollowTask {
 	 */
 	public String getTaskName(){
 		return name;
+	}
+	
+	
+	/**
+	 * Get a 2d array of calculated similarity between all tags of two given userAgents
+	 * @return calculatedSimilarities array
+	 */
+	protected double[][] calculateTagSimilarities(List<TagAgent> tagAgentList1, List<TagAgent> tagAgentList2){
+		
+		
+		double[][] result = new double[tagAgentList1.size()][tagAgentList2.size()];
+	
+		/*
+		 * Loop through all the tags for the user 1
+		 * For each u1tag, loop through u2 tags
+		 * Calculate similarity and place in appropriate location
+		 */
+		for(int i = 0; i< tagAgentList1.size(); i++){
+			TagAgent ta1 = tagAgentList1.get(i);
+			for(int j = 0; j< tagAgentList2.size(); j++){
+				TagAgent ta2 = tagAgentList2.get(j);
+				result[i][j] = ta1.calculateSimilarity(ta2);
+			}
+		}
+		
+		return result;
 	}
 	
 }

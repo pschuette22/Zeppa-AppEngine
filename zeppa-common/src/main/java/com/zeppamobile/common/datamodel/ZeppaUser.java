@@ -1,6 +1,9 @@
 package com.zeppamobile.common.datamodel;
 
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -13,43 +16,39 @@ public class ZeppaUser {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-	
+
 	@Persistent
 	private Long created;
-	
+
 	@Persistent
 	private Long updated;
-	
+
 	@Persistent(embeddedElement = "true", dependent = "true", defaultFetchGroup = "true")
 	private ZeppaUserInfo userInfo;
-	
-	@Persistent
-	private String googleProfileId; // Calling user object
 
 	@Persistent
 	private String zeppaCalendarId;
-	
+
 	@Persistent
 	private String authEmail;
-	
 
-	// For Guice
-	public ZeppaUser(){}
-	
-//	public ZeppaUser(ZeppaUserInfo userInfo, String googleProfileId,
-//			String zeppaCalendarId) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.userInfo = userInfo;
-//		this.googleProfileId = googleProfileId;
-//		this.zeppaCalendarId = zeppaCalendarId;
-//	}
+	@NotPersistent
+	private List<String> initialTags;
+
+	public ZeppaUser(ZeppaUserInfo userInfo, String zeppaCalendarId,
+			List<String> initialTags) {
+
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.userInfo = userInfo;
+		this.zeppaCalendarId = zeppaCalendarId;
+		this.initialTags = initialTags;
+	}
 
 	/*
 	 * -------------- Setters ----------------
 	 */
-	
+
 	public Long getCreated() {
 		return created;
 	}
@@ -65,7 +64,7 @@ public class ZeppaUser {
 	public void setUpdated(Long updated) {
 		this.updated = updated;
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -73,12 +72,12 @@ public class ZeppaUser {
 	public Long getId() {
 		return key.getId();
 	}
-	
+
 	public String getAuthEmail() {
 		return authEmail;
 	}
-	
-	public void setAuthEmail(String authEmail){
+
+	public void setAuthEmail(String authEmail) {
 		this.authEmail = authEmail;
 	}
 
@@ -90,13 +89,6 @@ public class ZeppaUser {
 		this.userInfo = userInfo;
 	}
 
-	public String getGoogleProfileId() {
-		return googleProfileId;
-	}
-
-	public void setGoogleProfileId(String googleProfileId) {
-		this.googleProfileId = googleProfileId;
-	}
 
 	public String getZeppaCalendarId() {
 		return zeppaCalendarId;
@@ -109,6 +101,5 @@ public class ZeppaUser {
 	/*
 	 * These methods are only used by App Engine Database
 	 */
-
 
 }

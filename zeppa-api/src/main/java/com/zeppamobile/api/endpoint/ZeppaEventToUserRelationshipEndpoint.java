@@ -10,14 +10,13 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Resources;
 import com.zeppamobile.api.notifications.NotificationUtility;
@@ -27,11 +26,7 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@Api(name = "zeppaeventtouserrelationshipendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,
-
-		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
-		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+@ApiReference(AppEndpointBase.class)
 public class ZeppaEventToUserRelationshipEndpoint {
 
 	/**
@@ -97,34 +92,6 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		return CollectionResponse.<ZeppaEventToUserRelationship> builder()
 				.setItems(execute).setNextPageToken(cursorString).build();
 	}
-
-//	@ApiMethod(name = "listZeppaEventToUserRelationshipJson")
-//	public JSONArray listZeppaEventToUserRelationshipJson(
-//			@Nullable @Named("filter") String filterString,
-//			@Nullable @Named("cursor") String cursorString,
-//			@Nullable @Named("ordering") String orderingString,
-//			@Nullable @Named("limit") Integer limit) {
-//
-//		CollectionResponse<ZeppaEventToUserRelationship> response = listZeppaEventToUserRelationship(
-//				filterString, cursorString, orderingString, limit);
-//
-//		// Json object to return
-//		JSONArray result = new JSONArray();
-//
-//		try {
-//			for (ZeppaEventToUserRelationship relationship : response
-//					.getItems()) {
-//				JSONObject obj = new JSONObject(relationship);
-//				result.put(obj);
-//			}
-//			// TODO:  put in cursors and such
-//			
-//		} catch (NullPointerException e) {
-//			// No relationships
-//		}
-//		
-//		return result;
-//	}
 
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET

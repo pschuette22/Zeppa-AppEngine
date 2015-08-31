@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Pete Schuette
  * 
- * Utilities used by the Zeppa API's
+ * non type-specific utilities used by Zeppa
  *
  */
 public class Utils {
@@ -23,14 +23,19 @@ public class Utils {
 
 
 
-	// Quick method to determine if this list contains this long(ID) value
-	public static boolean listContainsLong(List<Long> list, Long l) {
+	/**
+	 * Convenience method to determine if List of Long objects holds long with value l
+	 * @param list of Long Objects
+	 * @param l - long value to search for
+	 * @return true if l was found in list
+	 */
+	public static boolean listContainsLong(List<Long> list, long l) {
 		if (list.isEmpty())
 			return false;
 
 		Iterator<Long> iterator = list.iterator();
 		while (iterator.hasNext()) {
-			if (iterator.next().longValue() == l.longValue())
+			if (iterator.next().longValue() == l)
 				return true;
 		}
 
@@ -132,17 +137,20 @@ public class Utils {
 	}
 
 	/**
+	 * Convenience method to determine if string has content
 	 * @param s
-	 * @return true if the string is web safe (not null or empty)
+	 * @return true if s is not null or empty
 	 */
 	public static boolean isWebSafe(String s) {
-		if (s == null || s.isEmpty()) {
-			return false;
-		} else {
-			return true;
-		}
+		return (s == null || s.isEmpty());
 	}
 
+	/**
+	 * 
+	 * @param l - long to be converted to int
+	 * @return int value of l
+	 * @throws IllegalArgumentException if l is greater/less than max/min int value
+	 */
 	public static int safeCastLongToInt(Long l) throws IllegalArgumentException {
 		int result = -1;
 		if (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) {

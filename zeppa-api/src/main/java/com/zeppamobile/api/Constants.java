@@ -20,6 +20,8 @@ public class Constants {
 	
 	public static final boolean PRODUCTION = true;
 	
+	public static final String API_NAME = "zeppaApi";
+	
 	// Current Android version
 	public final static int androidClientVersion = 1;
 	public final static int androidClientUpdate = 0;

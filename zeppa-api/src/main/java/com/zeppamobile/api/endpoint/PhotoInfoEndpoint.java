@@ -7,22 +7,17 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 
-@Api(name = "photoinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
-
-		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
-		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+@ApiReference(AppEndpointBase.class)
 public class PhotoInfoEndpoint {
 
 	/**
@@ -139,19 +134,6 @@ public class PhotoInfoEndpoint {
 			mgr.close();
 		}
 	}
-
-//	private boolean containsPhotoInfo(PhotoInfo photoinfo) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		boolean contains = true;
-//		try {
-//			mgr.getObjectById(PhotoInfo.class, photoinfo.getKey());
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			contains = false;
-//		} finally {
-//			mgr.close();
-//		}
-//		return contains;
-//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

@@ -1,5 +1,7 @@
 package com.zeppamobile.common.datamodel;
 
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -53,26 +55,19 @@ public class ZeppaNotification {
 	@Persistent
 	private Boolean hasSeen;
 
-	// For guice
-	public ZeppaNotification() {
-	}
 
-	// public ZeppaNotification(Long senderId, Long recipientId, Long eventId,
-	// Long expires, NotificationType type, String extraMessage,
-	// Boolean hasSeen) {
-	//
-	// this.created = System.currentTimeMillis();
-	// this.updated = System.currentTimeMillis();
-	// this.recipientId = recipientId;
-	// this.senderId = senderId;
-	// this.eventId = eventId;
-	// this.expires = expires;
-	// this.type = type;
-	// this.extraMessage = extraMessage;
-	// this.hasSeen = hasSeen;
-	// }
-
-	public void init(Long senderId, Long recipientId, Long eventId,
+	/**
+	 * Construct a new Notification that can be persisted and viewed by the user
+	 * 
+	 * @param senderId
+	 * @param recipientId
+	 * @param eventId
+	 * @param expires
+	 * @param type
+	 * @param extraMessage
+	 * @param hasSeen
+	 */
+	public ZeppaNotification(Long senderId, Long recipientId, Long eventId,
 			Long expires, NotificationType type, String extraMessage,
 			Boolean hasSeen) {
 
@@ -86,6 +81,7 @@ public class ZeppaNotification {
 		this.extraMessage = extraMessage;
 		this.hasSeen = hasSeen;
 	}
+
 
 	public Long getCreated() {
 		return created;

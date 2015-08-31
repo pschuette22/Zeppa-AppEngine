@@ -9,8 +9,8 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -26,16 +26,9 @@ import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@Api(name = "zeppauserendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,
-
-		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
-		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+@ApiReference(AppEndpointBase.class)
 public class ZeppaUserEndpoint {
 
-	// private static final Logger log =
-	// Logger.getLogger(ZeppaUserEndpoint.class
-	// .getName());
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -215,7 +208,6 @@ public class ZeppaUserEndpoint {
 			currentInfo.setUpdated(System.currentTimeMillis());
 
 			current.setUserInfo(currentInfo);
-			current.setGoogleProfileId(zeppauser.getGoogleProfileId());
 			current.setZeppaCalendarId(zeppauser.getZeppaCalendarId());
 			current.setUpdated(System.currentTimeMillis());
 
@@ -309,23 +301,6 @@ public class ZeppaUserEndpoint {
 		return zeppaUser;
 	}
 
-	/**
-	 * 
-	 * @param zeppauser
-	 * @return true if exists in datastore
-	 */
-//	private boolean containsZeppaUser(ZeppaUser zeppauser) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		boolean contains = true;
-//		try {
-//			mgr.getObjectById(ZeppaUser.class, zeppauser.getKey());
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			contains = false;
-//		} finally {
-//			mgr.close();
-//		}
-//		return contains;
-//	}
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

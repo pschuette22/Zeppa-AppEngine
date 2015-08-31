@@ -19,7 +19,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 
 public class NotificationBuilder {
 
-	private static Logger log = Logger.getLogger(NotificationBuilder.class.getName());
+	private static Logger log = Logger.getLogger(NotificationBuilder.class
+			.getName());
 
 	/**
 	 * @constructor hidden constructor
@@ -36,26 +37,24 @@ public class NotificationBuilder {
 	 * @param action
 	 * @return list of result notifications or null
 	 */
-	public static List<ZeppaNotification> buildNotifications(String objectType, Long id, String action) {
+	public static List<ZeppaNotification> buildNotifications(String objectType,
+			Long id, String action) {
 		if (objectType.equals(EventComment.class.getName())) {
 			return buildNotificationsForEventComment(id.longValue());
 		} else if (objectType.equals(ZeppaEvent.class.getName())) {
 			return buildNotificationsForZeppaEvent(id.longValue(), action);
-		} else if (objectType.equals(ZeppaEventToUserRelationship.class.getName())) {
-			return buildNotificationsForZeppaEventToUserRelationship(id.longValue(), action);
-		} else if (objectType.equals(ZeppaUserToUserRelationship.class.getName())) {
-			return buildNotificationsForZeppaUserToUserRelationship(id.longValue(), action);
+		} else if (objectType.equals(ZeppaEventToUserRelationship.class
+				.getName())) {
+			return buildNotificationsForZeppaEventToUserRelationship(
+					id.longValue(), action);
+		} else if (objectType.equals(ZeppaUserToUserRelationship.class
+				.getName())) {
+			return buildNotificationsForZeppaUserToUserRelationship(
+					id.longValue(), action);
 		} else {
 			return null;
 		}
 	}
-
-	// private static Queue getNotificationCreationQueue() {
-	// Queue notifictionCreatingQueue = QueueFactory
-	// .getQueue("notification-creation");
-	//
-	// return notifictionCreatingQueue;
-	// }
 
 	/**
 	 * Queue the build and send of notifications for a Zeppa Event
@@ -66,12 +65,14 @@ public class NotificationBuilder {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<ZeppaNotification> buildNotificationsForEventComment(long eventCommentId) {
+	private static List<ZeppaNotification> buildNotificationsForEventComment(
+			long eventCommentId) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		List<ZeppaNotification> notifications = null;
 		try {
-			EventComment comment = mgr.getObjectById(EventComment.class, eventCommentId);
+			EventComment comment = mgr.getObjectById(EventComment.class,
+					eventCommentId);
 
 			// Fetch the event in question.
 			// Fails if event was deleted
@@ -79,22 +80,25 @@ public class NotificationBuilder {
 			PersistenceManager emgr = getPersistenceManager();
 			try {
 
-				event = emgr.getObjectById(ZeppaEvent.class, comment.getEventId());
+				event = emgr.getObjectById(ZeppaEvent.class,
+						comment.getEventId());
 			} catch (JDOObjectNotFoundException e) {
 				throw new IllegalArgumentException("Zeppa Event Not Found");
 			} finally {
 				emgr.close();
 			}
 
-			String filterString = "eventId == " + comment.getEventId() + " && isWatching == " + Boolean.TRUE
-					+ " && userId != " + comment.getCommenterId();
+			String filterString = "eventId == " + comment.getEventId()
+					+ " && isWatching == " + Boolean.TRUE + " && userId != "
+					+ comment.getCommenterId();
 
 			List<ZeppaEventToUserRelationship> relationships = null;
 			PersistenceManager rmgr = getPersistenceManager();
 
 			try {
 				relationships = (List<ZeppaEventToUserRelationship>) rmgr
-						.newQuery(ZeppaEventToUserRelationship.class, filterString).execute();
+						.newQuery(ZeppaEventToUserRelationship.class,
+								filterString).execute();
 
 			} finally {
 				rmgr.close();
@@ -108,29 +112,36 @@ public class NotificationBuilder {
 			notifications = new ArrayList<ZeppaNotification>();
 
 			if (!relationships.isEmpty()) {
-				Iterator<ZeppaEventToUserRelationship> iterator = relationships.iterator();
+				Iterator<ZeppaEventToUserRelationship> iterator = relationships
+						.iterator();
 
 				while (iterator.hasNext()) {
 					ZeppaEventToUserRelationship r = iterator.next();
-					ZeppaNotification notification = new ZeppaNotification();
-					notification.init(comment.getCommenterId(), r.getUserId(), comment.getEventId(), event.getEnd(),
-							NotificationType.COMMENT_ON_POST, comment.getText(), Boolean.FALSE);
+					ZeppaNotification notification = new ZeppaNotification(
+							comment.getCommenterId(), r.getUserId(),
+							comment.getEventId(), event.getEnd(),
+							NotificationType.COMMENT_ON_POST,
+							comment.getText(), Boolean.FALSE);
 					notifications.add(notification);
 				}
 
 			}
 			// If it was not the host which commented, send notification to host
-			if (comment.getCommenterId().longValue() != event.getHostId().longValue()) {
-				ZeppaNotification notification = new ZeppaNotification();
-				notification.init(comment.getCommenterId(), event.getHostId(), event.getId(), event.getEnd(),
-						NotificationType.COMMENT_ON_POST, comment.getText(), Boolean.FALSE);
+			if (comment.getCommenterId().longValue() != event.getHostId()
+					.longValue()) {
+				ZeppaNotification notification = new ZeppaNotification(
+						comment.getCommenterId(), event.getHostId(),
+						event.getId(), event.getEnd(),
+						NotificationType.COMMENT_ON_POST, comment.getText(),
+						Boolean.FALSE);
 
 				notifications.add(notification);
 			}
 
 			PersistenceManager nmgr = getPersistenceManager();
 			try {
-				notifications = (List<ZeppaNotification>) nmgr.makePersistentAll(notifications);
+				notifications = (List<ZeppaNotification>) nmgr
+						.makePersistentAll(notifications);
 
 			} finally {
 				nmgr.close();
@@ -157,14 +168,16 @@ public class NotificationBuilder {
 	 * @param event
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<ZeppaNotification> buildNotificationsForZeppaEvent(long eventId, String action) {
+	private static List<ZeppaNotification> buildNotificationsForZeppaEvent(
+			long eventId, String action) {
 
 		List<ZeppaEventToUserRelationship> relationships = null;
 		PersistenceManager rmgr = getPersistenceManager();
 
 		try {
 			relationships = (List<ZeppaEventToUserRelationship>) rmgr
-					.newQuery(ZeppaEventToUserRelationship.class, "eventId == " + eventId).execute();
+					.newQuery(ZeppaEventToUserRelationship.class,
+							"eventId == " + eventId).execute();
 
 		} finally {
 			rmgr.close();
@@ -175,7 +188,8 @@ public class NotificationBuilder {
 			return null;
 		}
 
-		Iterator<ZeppaEventToUserRelationship> iterator = relationships.iterator();
+		Iterator<ZeppaEventToUserRelationship> iterator = relationships
+				.iterator();
 		List<ZeppaNotification> notifications = new ArrayList<ZeppaNotification>();
 
 		if (action.equals("created")) {
@@ -199,14 +213,17 @@ public class NotificationBuilder {
 				ZeppaNotification notification = null;
 				if (relationship.getWasInvited()) {
 					// Create Invited Relationship notification
-					notification = new ZeppaNotification();
-					notification.init(event.getHostId(), relationship.getUserId(), event.getId(), event.getEnd(),
-							NotificationType.DIRECT_INVITE, "User Invited To Event", Boolean.FALSE);
+					notification = new ZeppaNotification(event.getHostId(),
+							relationship.getUserId(), event.getId(),
+							event.getEnd(), NotificationType.DIRECT_INVITE,
+							"User Invited To Event", Boolean.FALSE);
 				} else if (relationship.getIsRecommended()) {
 					// Create recommended relationship notification
-					notification = new ZeppaNotification();
-					notification.init(event.getHostId(), relationship.getUserId(), event.getId(), event.getEnd(),
-							NotificationType.EVENT_RECOMMENDATION, "Recommended Event For User", Boolean.FALSE);
+					notification = new ZeppaNotification(event.getHostId(),
+							relationship.getUserId(), event.getId(),
+							event.getEnd(),
+							NotificationType.EVENT_RECOMMENDATION,
+							"Recommended Event For User", Boolean.FALSE);
 				} else
 					continue;
 
@@ -216,20 +233,26 @@ public class NotificationBuilder {
 		} else if (action.equals("deletedEvent")) {
 			while (iterator.hasNext()) {
 				ZeppaEventToUserRelationship relationship = iterator.next();
-				if (relationship.getIsAttending().booleanValue() || relationship.getIsWatching().booleanValue()) {
+				if (relationship.getIsAttending().booleanValue()
+						|| relationship.getIsWatching().booleanValue()) {
 
 					// Create notification item so the user sees the event was
 					// canceled
-					ZeppaNotification notification = new ZeppaNotification();
-					notification.init(relationship.getEventHostId(), relationship.getUserId(),
-							relationship.getEventId(), relationship.getExpires(), NotificationType.EVENT_CANCELED,
-							"Canceled Event", Boolean.FALSE);
+					ZeppaNotification notification = new ZeppaNotification(
+							relationship.getEventHostId(),
+							relationship.getUserId(),
+							relationship.getEventId(),
+							relationship.getExpires(),
+							NotificationType.EVENT_CANCELED, "Canceled Event",
+							Boolean.FALSE);
 					notifications.add(notification);
 				} else {
 					// If user is not attending, send a payload to notify
 					// devices to remove this event
-					String payload = PayloadBuilder.silentEventDeletedPayload(eventId);
-					NotificationUtility.preprocessNotificationDelivery(payload, relationship.getUserId().longValue());
+					String payload = PayloadBuilder
+							.silentEventDeletedPayload(eventId);
+					NotificationUtility.preprocessNotificationDelivery(payload,
+							relationship.getUserId().longValue());
 				}
 
 			}
@@ -237,7 +260,8 @@ public class NotificationBuilder {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			notifications = (List<ZeppaNotification>) mgr.makePersistentAll(notifications);
+			notifications = (List<ZeppaNotification>) mgr
+					.makePersistentAll(notifications);
 		} finally {
 			mgr.close();
 		}
@@ -250,13 +274,15 @@ public class NotificationBuilder {
 	 * 
 	 * @param relationship
 	 */
-	private static List<ZeppaNotification> buildNotificationsForZeppaEventToUserRelationship(long id, String action) {
+	private static List<ZeppaNotification> buildNotificationsForZeppaEventToUserRelationship(
+			long id, String action) {
 
 		ZeppaEventToUserRelationship relationship = null;
 
 		PersistenceManager rmgr = getPersistenceManager();
 		try {
-			relationship = rmgr.getObjectById(ZeppaEventToUserRelationship.class, id);
+			relationship = rmgr.getObjectById(
+					ZeppaEventToUserRelationship.class, id);
 		} catch (JDOObjectNotFoundException e) {
 			log.warning("ZeppaEventToUserRelationship not found for id: " + id);
 		} finally {
@@ -272,21 +298,25 @@ public class NotificationBuilder {
 		// Send notification if appropriate
 		if (action.equals("joined")) {
 
-			notification = new ZeppaNotification();
-			notification.init(relationship.getUserId(), relationship.getEventHostId(), relationship.getEventId(),
-					relationship.getExpires(), NotificationType.USER_JOINED, "User Joined Event", Boolean.FALSE);
+			notification = new ZeppaNotification(relationship.getUserId(),
+					relationship.getEventHostId(), relationship.getEventId(),
+					relationship.getExpires(), NotificationType.USER_JOINED,
+					"User Joined Event", Boolean.FALSE);
 
 		} else if (action.equals("left")) {
 
-			notification = new ZeppaNotification();
-			notification.init(relationship.getUserId(), relationship.getEventHostId(), relationship.getEventId(),
-					relationship.getExpires(), NotificationType.USER_LEAVING, "User Leaving Event", Boolean.FALSE);
+			notification = new ZeppaNotification(relationship.getUserId(),
+					relationship.getEventHostId(), relationship.getEventId(),
+					relationship.getExpires(), NotificationType.USER_LEAVING,
+					"User Leaving Event", Boolean.FALSE);
 
 		} else if (action.equals("invited")) {
 
-			notification = new ZeppaNotification();
-			notification.init(relationship.getInvitedByUserId(), relationship.getUserId(), relationship.getEventId(),
-					relationship.getExpires(), NotificationType.DIRECT_INVITE, "Invited To Event", Boolean.FALSE);
+			notification = new ZeppaNotification(
+					relationship.getInvitedByUserId(),
+					relationship.getUserId(), relationship.getEventId(),
+					relationship.getExpires(), NotificationType.DIRECT_INVITE,
+					"Invited To Event", Boolean.FALSE);
 
 		}
 		if (notification == null) {
@@ -309,17 +339,19 @@ public class NotificationBuilder {
 	 * 
 	 * @param relationship
 	 */
-	private static List<ZeppaNotification> buildNotificationsForZeppaUserToUserRelationship(long relationshipId,
-			String action) {
+	private static List<ZeppaNotification> buildNotificationsForZeppaUserToUserRelationship(
+			long relationshipId, String action) {
 
 		ZeppaUserToUserRelationship relationship = null;
 		PersistenceManager rmgr = getPersistenceManager();
 
 		try {
-			relationship = rmgr.getObjectById(ZeppaUserToUserRelationship.class, relationshipId);
+			relationship = rmgr.getObjectById(
+					ZeppaUserToUserRelationship.class, relationshipId);
 
 		} catch (JDOObjectNotFoundException e) {
-			log.info("ZeppaUserToUserRelationship not found for id: " + relationshipId);
+			log.info("ZeppaUserToUserRelationship not found for id: "
+					+ relationshipId);
 		} finally {
 			rmgr.close();
 		}
@@ -335,15 +367,17 @@ public class NotificationBuilder {
 
 		if (action.equals("mingling")) {
 
-			notification = new ZeppaNotification();
-			notification.init(relationship.getSubjectId(), relationship.getCreatorId(), null, expires,
-					NotificationType.MINGLE_ACCEPTED, "Now Mingling", Boolean.FALSE);
+			notification = new ZeppaNotification(relationship.getSubjectId(),
+					relationship.getCreatorId(), null, expires,
+					NotificationType.MINGLE_ACCEPTED, "Now Mingling",
+					Boolean.FALSE);
 
 		} else if (action.equals("mingle-request")) {
 
-			notification = new ZeppaNotification();
-			notification.init(relationship.getCreatorId(), relationship.getSubjectId(), null, expires,
-					NotificationType.MINGLE_REQUEST, "User Requested To Mingle", Boolean.FALSE);
+			notification = new ZeppaNotification(relationship.getCreatorId(),
+					relationship.getSubjectId(), null, expires,
+					NotificationType.MINGLE_REQUEST,
+					"User Requested To Mingle", Boolean.FALSE);
 
 		} else {
 			log.info("Notification request does not have valid action");
@@ -362,7 +396,8 @@ public class NotificationBuilder {
 
 		// Handle fail gracefully
 		if (notification == null) {
-			log.warning("Notification was not made, action: " + action + ", id: " + relationshipId);
+			log.warning("Notification was not made, action: " + action
+					+ ", id: " + relationshipId);
 			return null;
 		}
 

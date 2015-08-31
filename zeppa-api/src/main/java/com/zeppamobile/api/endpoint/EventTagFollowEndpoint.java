@@ -7,23 +7,18 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.utils.Utils;
 
-@Api(name = "eventtagfollowendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
-		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,
-
-		Constants.ANDROID_DEBUG_CLIENT_ID, Constants.ANDROID_RELEASE_CLIENT_ID,
-		Constants.IOS_DEBUG_CLIENT_ID, Constants.IOS_CLIENT_ID_OLD }, audiences = { Constants.WEB_CLIENT_ID })
+@ApiReference(AppEndpointBase.class)
 public class EventTagFollowEndpoint {
 
 	/**
@@ -196,51 +191,6 @@ public class EventTagFollowEndpoint {
 		}
 	}
 
-	// private boolean containsEventTagFollow(EventTagFollow eventtagfollow) {
-	// PersistenceManager mgr = getPersistenceManager();
-	// boolean contains = true;
-	// try {
-	// mgr.getObjectById(EventTagFollow.class, eventtagfollow.getKey());
-	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
-	// contains = false;
-	// } finally {
-	// mgr.close();
-	// }
-	// return contains;
-	// }
-
-	// @SuppressWarnings("unchecked")
-	// public static void removeTagFollowersForTag(Long tagId) {
-	// PersistenceManager mgr = getPersistenceManager();
-	//
-	// try {
-	// Query query = mgr.newQuery(EventTagFollow.class);
-	// query.setFilter("tagId == " + tagId);
-	// List<EventTagFollow> follows = (List<EventTagFollow>) query
-	// .execute();
-	// mgr.deletePersistent(follows);
-	//
-	// } finally {
-	// mgr.close();
-	// }
-	//
-	// }
-	//
-	// @SuppressWarnings("unchecked")
-	// public static void removeTagFollowersForUser(Long userId) {
-	// PersistenceManager mgr = getPersistenceManager();
-	//
-	// try {
-	// Query query = mgr.newQuery(EventTagFollow.class);
-	// query.setFilter("followerId == " + userId);
-	// List<EventTagFollow> follows = (List<EventTagFollow>) query
-	// .execute();
-	// mgr.deletePersistent(follows);
-	//
-	// } finally {
-	// mgr.close();
-	// }
-	// }
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

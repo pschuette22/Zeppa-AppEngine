@@ -98,6 +98,42 @@
 	</dependencies>
 
 	<build>
+
+		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
+		<!-- All details/versions/configurations are setup at the parent pom -->
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>${appengine.target.version}</version>
+				<!-- Comment out below to disable debugging -->
+				<!-- Disabling debugging when updating app server <configuration> <port>8888</port> 
+					<jvmFlags> <jvmFlag>-Xdebug</jvmFlag> <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag> 
+					</jvmFlags> <disableUpdateCheck>true</disableUpdateCheck> </configuration> -->
+
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<archiveClasses>true</archiveClasses>
+					<webResources>
+						<!-- in order to interpolate version from pom into appengine-web.xml -->
+						<resource>
+							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+						</resource>
+					</webResources>
+					<!-- <webXml>${basedir}/target/zeppa-backend-1/WEB-INF</webXml> -->
+				</configuration>
+			</plugin>
+		</plugins>
+
 		<finalName>zeppa-smartfollow</finalName>
 	</build>
 </project>

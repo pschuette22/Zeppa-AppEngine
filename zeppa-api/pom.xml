@@ -10,6 +10,7 @@
 	</parent>
 	<artifactId>zeppa-api</artifactId>
 	<packaging>war</packaging>
+	<url></url>
 	<properties>
 		<appengine.app.name>zeppa-cloud-1821</appengine.app.name>
 		<java.version>1.7</java.version>

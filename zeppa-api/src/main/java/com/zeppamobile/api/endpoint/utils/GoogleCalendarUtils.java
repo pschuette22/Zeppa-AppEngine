@@ -16,8 +16,8 @@ import com.google.api.services.calendar.model.Event.Creator;
 import com.google.api.services.calendar.model.Event.Organizer;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.appengine.api.users.User;
-import com.zeppamobile.api.datamodel.ZeppaUser;
-import com.zeppamobile.api.datamodel.ZeppaUserInfo;
+import com.zeppamobile.common.datamodel.ZeppaUser;
+import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 
 public class GoogleCalendarUtils {
 

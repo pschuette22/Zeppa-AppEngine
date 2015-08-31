@@ -14,12 +14,12 @@
 
 	<dependencies>
 
-		<!-- Zeppa-api -->
+		<!-- Dependent on common module -->
 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>
-			<artifactId>zeppa-api</artifactId>
+			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
-			<scope>compile</scope>
+			<type>jar</type>
 		</dependency>
 		<!-- Appengine dependencies -->
 

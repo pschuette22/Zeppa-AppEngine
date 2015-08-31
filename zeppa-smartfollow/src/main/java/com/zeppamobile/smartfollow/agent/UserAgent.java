@@ -3,9 +3,9 @@ package com.zeppamobile.smartfollow.agent;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.zeppamobile.api.datamodel.EventTagFollow;
-import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
-import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.common.datamodel.EventTagFollow;
+import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.smartfollow.Utils;
 
 public class UserAgent {

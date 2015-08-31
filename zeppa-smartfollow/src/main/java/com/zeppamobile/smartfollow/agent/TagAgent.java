@@ -16,8 +16,8 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import com.zeppamobile.api.datamodel.EventTag;
-import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.common.datamodel.EventTag;
+import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
 

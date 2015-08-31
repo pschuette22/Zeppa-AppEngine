@@ -1,4 +1,4 @@
-package com.zeppamobile.api.datamodel;
+package com.zeppamobile.common.datamodel;
 
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;

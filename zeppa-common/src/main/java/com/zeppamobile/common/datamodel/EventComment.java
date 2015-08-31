@@ -1,4 +1,4 @@
-package com.zeppamobile.api.datamodel;
+package com.zeppamobile.common.datamodel;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -8,39 +8,28 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
-public class EventTagFollow {
+public class EventComment {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-
+	
 	@Persistent
 	private Long created;
-
+	
 	@Persistent
 	private Long updated;
 
 	@Persistent
-	private Long tagId;
+	private Long eventId;
 
 	@Persistent
-	private Long tagOwnerId;
+	private Long commenterId;
 
 	@Persistent
-	private Long followerId;
+	private String text;
 
-	// For Guice
-	public EventTagFollow(){}
 	
-	public EventTagFollow(EventTag tag, Long followerId) {
-
-		this.created = System.currentTimeMillis();
-		this.updated = System.currentTimeMillis();
-		this.tagId = tag.getId();
-		this.tagOwnerId = tag.getOwnerId();
-		this.followerId = followerId;
-	}
-
 	public Long getCreated() {
 		return created;
 	}
@@ -56,7 +45,7 @@ public class EventTagFollow {
 	public void setUpdated(Long updated) {
 		this.updated = updated;
 	}
-
+	
 	public Key getKey() {
 		return key;
 	}
@@ -65,28 +54,28 @@ public class EventTagFollow {
 		return key.getId();
 	}
 
-	public Long getFollowerId() {
-		return followerId;
+	public Long getCommenterId() {
+		return commenterId;
 	}
 
-	public void setFollowerId(Long followerId) {
-		this.followerId = followerId;
+	public void setCommenterId(Long commenterId) {
+		this.commenterId = commenterId;
 	}
 
-	public Long getTagId() {
-		return tagId;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
+	public String getText() {
+		return text;
 	}
 
-	public Long getTagOwnerId() {
-		return tagOwnerId;
+	public Long getEventId() {
+		return eventId;
 	}
 
-	public void setTagOwnerId(Long tagOwnerId) {
-		this.tagOwnerId = tagOwnerId;
+	public void setEventId(Long eventId) {
+		this.eventId = eventId;
 	}
 	
 	

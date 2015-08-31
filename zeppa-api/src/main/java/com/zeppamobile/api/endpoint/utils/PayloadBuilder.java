@@ -4,7 +4,7 @@ package com.zeppamobile.api.endpoint.utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.zeppamobile.api.datamodel.ZeppaNotification;
+import com.zeppamobile.common.datamodel.ZeppaNotification;
 
 /**
  * 

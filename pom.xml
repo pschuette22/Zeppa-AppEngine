@@ -6,7 +6,6 @@
 	<artifactId>zeppa</artifactId>
 	<version>1</version>
 	<packaging>pom</packaging>
-	<name>zeppa-appengine</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,11 +56,11 @@
 
 	</build>
 	<modules>
+		<module>zeppa-common</module>
 		<module>zeppa-api</module>
 		<module>zeppa-frontend</module>
 		<module>zeppa-notifications</module>
 		<module>zeppa-ear</module>
 		<module>zeppa-smartfollow</module>
-		<module>zeppa-common</module>
 	</modules>
 </project>

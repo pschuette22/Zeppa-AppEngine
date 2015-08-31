@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.modules.ModulesService;
 import com.google.appengine.api.modules.ModulesServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
-import com.zeppamobile.api.datamodel.ZeppaNotification;
+import com.zeppamobile.common.datamodel.ZeppaNotification;
 
 public class NotificationBuilderServlet extends HttpServlet {
 

@@ -16,7 +16,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.datamodel.PhotoInfo;
+import com.zeppamobile.common.datamodel.PhotoInfo;
 
 @Api(name = "photoinfoendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,

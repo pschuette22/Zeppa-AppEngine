@@ -19,11 +19,11 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Utils;
-import com.zeppamobile.api.datamodel.ZeppaEvent;
-import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.GoogleCalendarService;
 import com.zeppamobile.api.endpoint.utils.NotificationUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.common.datamodel.ZeppaEvent;
+import com.zeppamobile.common.datamodel.ZeppaUser;
 
 @Api(name = "zeppaeventendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID,		Constants.TYPE_OTHER_CLIENT_ID,

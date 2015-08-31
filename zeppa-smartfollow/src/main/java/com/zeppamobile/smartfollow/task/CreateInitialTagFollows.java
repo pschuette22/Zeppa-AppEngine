@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.smartfollow.agent.TagAgent;
 import com.zeppamobile.smartfollow.agent.UserAgent;
 
@@ -49,6 +49,10 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		 */
 		initAgents();
 
+		/*
+		 * Execute the calculation.
+		 * This is a REALLY heavy opp
+		 */
 		result = getInitialTagFollows();
 
 	}

@@ -9,21 +9,18 @@
 		<version>1</version>
 	</parent>
 	<artifactId>zeppa-common</artifactId>
-	<name>zeppa-common</name>
 	<packaging>jar</packaging>
-
-
-	<url>http://maven.apache.org</url>
+	<!-- <url>http://maven.apache.org</url> -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
 	<dependencies>
 		<!-- App Engine Dependencies -->
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>1.9.25</version>
-			<scope>compile</scope>
 		</dependency>
 		<!-- JDO Dependencies -->
 		<dependency>

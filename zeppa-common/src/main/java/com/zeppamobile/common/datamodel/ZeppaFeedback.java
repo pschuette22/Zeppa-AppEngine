@@ -1,4 +1,4 @@
-package com.zeppamobile.api.datamodel;
+package com.zeppamobile.common.datamodel;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -6,7 +6,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.zeppamobile.api.datamodel.DeviceInfo.DeviceType;
+import com.zeppamobile.common.datamodel.DeviceInfo.DeviceType;
 
 @PersistenceCapable
 public class ZeppaFeedback {

@@ -16,8 +16,8 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.google.gson.Gson;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.datamodel.DeviceInfo;
-import com.zeppamobile.api.datamodel.DeviceInfo.DeviceType;
+import com.zeppamobile.common.datamodel.DeviceInfo;
+import com.zeppamobile.common.datamodel.DeviceInfo.DeviceType;
 
 public class NotificationUtility {
 

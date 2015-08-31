@@ -10,8 +10,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import com.zeppamobile.api.datamodel.ZeppaEvent;
-import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.common.datamodel.ZeppaEvent;
+import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.smartfollow.Configuration;
 
 /**

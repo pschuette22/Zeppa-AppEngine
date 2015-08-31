@@ -1,4 +1,4 @@
-package com.zeppamobile.api.datamodel;
+package com.zeppamobile.common.datamodel;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -8,8 +8,9 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
-public class EventComment {
+public class EventTag {
 
+	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
@@ -19,17 +20,24 @@ public class EventComment {
 	
 	@Persistent
 	private Long updated;
-
-	@Persistent
-	private Long eventId;
-
-	@Persistent
-	private Long commenterId;
-
-	@Persistent
-	private String text;
-
 	
+	@Persistent
+	private Long userId;
+
+	@Persistent
+	private String tagText;
+
+	// For Guice
+	public EventTag(){}
+	
+//	public EventTag(Long userId, String tagText) {
+//
+//		this.created = System.currentTimeMillis();
+//		this.updated = System.currentTimeMillis();
+//		this.tagText = tagText;
+//		this.userId = userId;
+//	}
+
 	public Long getCreated() {
 		return created;
 	}
@@ -53,31 +61,21 @@ public class EventComment {
 	public Long getId() {
 		return key.getId();
 	}
-
-	public Long getCommenterId() {
-		return commenterId;
-	}
-
-	public void setCommenterId(Long commenterId) {
-		this.commenterId = commenterId;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public Long getEventId() {
-		return eventId;
-	}
-
-	public void setEventId(Long eventId) {
-		this.eventId = eventId;
-	}
 	
-	
+	public String getTagText() {
+		return tagText;
+	}
+
+	public void setTagText(String tagText) {
+		this.tagText = tagText;
+	}
+
+	public Long getOwnerId() {
+		return userId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.userId = ownerId;
+	}
 
 }

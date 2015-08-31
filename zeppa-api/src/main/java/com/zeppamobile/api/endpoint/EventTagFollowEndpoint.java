@@ -17,7 +17,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Utils;
-import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.common.datamodel.EventTagFollow;
 
 @Api(name = "eventtagfollowendpoint", version = "v1", scopes = { Constants.EMAIL_SCOPE }, clientIds = {
 		Constants.WEB_CLIENT_ID, Constants.TYPE_OTHER_CLIENT_ID,

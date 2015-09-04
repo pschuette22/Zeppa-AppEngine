@@ -244,31 +244,34 @@ public class UserAgent {
 	 */
 	private void fetchMinglingRelationships(Long otherUserId) {
 
-		// // Fetch data from zeppa-api
-		// ZeppaUserToUserRelationshipEndpoint endpoint = new
-		// ZeppaUserToUserRelationshipEndpoint();
-		// CollectionResponse<ZeppaUserToUserRelationship> response = endpoint
-		// .listZeppaUserToUserRelationship(
-		// "creatorUserId=="
-		// + userId
-		// + " && relationshipType == 'MINGLING' && subjectUserId !="
-		// + otherUserId, null, null, null);
-		// CollectionResponse<ZeppaUserToUserRelationship> response2 = endpoint
-		// .listZeppaUserToUserRelationship(
-		// "subjectUserId=="
-		// + userId
-		// + " && relationshipType == 'MINGLING' && creatorUserId !="
-		// + otherUserId, null, null, null);
-		//
-		// // Add all the responses. ignore if null response is returned
-		// try {
-		// minglingRelationships.addAll(response.getItems());
-		// } catch (NullPointerException e) {
-		// }
-		// try {
-		// minglingRelationships.addAll(response2.getItems());
-		// } catch (NullPointerException e) {
-		// }
+//		 // Fetch data from zeppa-api
+//		 ZeppaUserToUserRelationshipEndpoint endpoint = new
+//		 ZeppaUserToUserRelationshipEndpoint();
+//		 CollectionResponse<ZeppaUserToUserRelationship> response = endpoint
+//		 .listZeppaUserToUserRelationship(
+//		 "creatorUserId=="
+//		 + userId
+//		 + " && relationshipType == 'MINGLING' && subjectUserId !="
+//		 + otherUserId, null, null, null);
+//		 CollectionResponse<ZeppaUserToUserRelationship> response2 = endpoint
+//		 .listZeppaUserToUserRelationship(
+//		 "subjectUserId=="
+//		 + userId
+//		 + " && relationshipType == 'MINGLING' && creatorUserId !="
+//		 + otherUserId, null, null, null);
+//		
+//		 // Add all the responses. ignore if null response is returned
+//		 try {
+//		 minglingRelationships.addAll(response.getItems());
+//		 } catch (NullPointerException e) {
+//		 }
+//		 try {
+//		 minglingRelationships.addAll(response2.getItems());
+//		 } catch (NullPointerException e) {
+//		 }
+		
+		
+		
 	}
 
 	/**

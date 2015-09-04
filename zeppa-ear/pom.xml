@@ -2,32 +2,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-    
-    <groupId>com.minook.zeppa</groupId>
+
 	<artifactId>zeppa-ear</artifactId>
 	<packaging>ear</packaging>
-    <version>1</version>
 
 	<parent>
-		<groupId>com.minook.zeppa</groupId>
+		<groupId>com.zeppamobile.appengine</groupId>
 		<artifactId>zeppa</artifactId>
 		<version>1</version>
 	</parent>
 
 
 	<dependencies>
+
+		<!-- Application Module Dependencies -->
+<!-- 		<dependency>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-common</artifactId>
+			<version>1</version>
+			<type>jar</type>
+		</dependency> -->
 		<dependency>
-			<groupId>com.minook.zeppa</groupId>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-api</artifactId>
+			<version>1</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-frontend</artifactId>
 			<version>1</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<groupId>com.minook.zeppa</groupId>
-			<artifactId>zeppa-backend</artifactId>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-notifications</artifactId>
 			<version>1</version>
 			<type>war</type>
 		</dependency>
+		<dependency>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-smartfollow</artifactId>
+			<version>1</version>
+			<type>war</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>

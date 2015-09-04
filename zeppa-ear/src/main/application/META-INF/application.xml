@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd" version="5">
-  <display-name>Zeppa-AppEngine</display-name>
-  <module>
-    <web>
-      <web-uri>zeppa-frontend-1.war</web-uri>
-      <!-- Ignored by AppEngine -->
-      <context-root>/default</context-root>
-    </web>
-  </module>
-  <module>
-    <web>
-      <web-uri>zeppa-backend-1.war</web-uri>
-      <!-- Ignored by AppEngine -->
-      <context-root>/backend</context-root>
-    </web>
-  </module>
-  <library-directory>lib</library-directory>
+<application xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd"
+	version="5">
+	<display-name>zeppa-ear</display-name>
+
+	<module>
+		<web>
+			<web-uri>zeppa-api-1.war</web-uri>
+			<context-root>default</context-root>
+		</web>
+	</module>
+	<module>
+		<web>
+			<web-uri>zeppa-common-1.war</web-uri>
+			<context-root>zeppa-common</context-root>
+		</web>
+	</module>
+	<module>
+		<web>
+			<web-uri>zeppa-frontend-1.war</web-uri>
+			<context-root>zeppa-frontend</context-root>
+		</web>
+	</module>
+	<module>
+		<web>
+			<web-uri>zeppa-notifications-1.war</web-uri>
+			<context-root>zeppa-notifications</context-root>
+		</web>
+	</module>
+	<module>
+		<web>
+			<web-uri>zeppa-smartfollow-1.war</web-uri>
+			<context-root>zeppa-smartfollow</context-root>
+		</web>
+	</module>
+
+	<library-directory>lib</library-directory>
 </application>

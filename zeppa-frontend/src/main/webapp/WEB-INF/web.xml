@@ -1,24 +1,11 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
-	<!-- System servlet handles endpoint class transactions -->
-	<servlet>
-		<servlet-name>SystemServiceServlet</servlet-name>
-		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
-		<init-param>
-			<param-name>services</param-name>
-			<param-value>com.minook.zeppa.DeviceInfoEndpoint,com.minook.zeppa.EventCommentEndpoint,com.minook.zeppa.EventTagEndpoint,com.minook.zeppa.EventTagFollowEndpoint,com.minook.zeppa.PhotoInfoEndpoint,com.minook.zeppa.ZeppaEventEndpoint,com.minook.zeppa.ZeppaEventToUserRelationshipEndpoint,com.minook.zeppa.ZeppaFeedbackEndpoint,com.minook.zeppa.ZeppaNotificationEndpoint,com.minook.zeppa.ZeppaUserEndpoint,com.minook.zeppa.ZeppaUserInfoEndpoint,com.minook.zeppa.ZeppaUserToUserRelationshipEndpoint</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SystemServiceServlet</servlet-name>
-		<url-pattern>/_ah/spi/*</url-pattern>
-	</servlet-mapping>
+	
 
 	<!-- Upload handles uploading a blob to blobstore -->
 	<servlet>
 		<servlet-name>Upload</servlet-name>
-		<servlet-class>com.minook.zeppa.frontend.imageupload.Upload</servlet-class>
+		<servlet-class>com.zeppamobile.frontend.imageupload.Upload</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Upload</servlet-name>
@@ -28,37 +15,12 @@
 	<!-- GetUploadUrl is for obtaining an upload url for blobstore -->
 	<servlet>
 		<servlet-name>GetUploadUrl</servlet-name>
-		<servlet-class>com.minook.zeppa.frontend.imageupload.GetUploadUrl</servlet-class>
+		<servlet-class>com.zeppamobile.frontend.imageupload.GetUploadUrl</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GetUploadUrl</servlet-name>
 		<url-pattern>/getuploadurl</url-pattern>
 	</servlet-mapping>
-
-
-	<!-- Tasks Servlet manages general tasks for the backend -->
-	<servlet>
-		<servlet-name>TaskServlet</servlet-name>
-		<servlet-class>com.minook.zeppa.frontend.tasks.TaskServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TaskServlet</servlet-name>
-		<url-pattern>/tasks/servlet/</url-pattern>
-	</servlet-mapping>
-
-
-
-	<!-- Notification Building Servlet -->
-
-	<servlet>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<servlet-class>com.minook.zeppa.frontend.notifications.NotificationBuilderServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<url-pattern>/notifications/builder/</url-pattern>
-	</servlet-mapping>
-
 
 
 	<!-- Security contraints for managing backend transactions -->

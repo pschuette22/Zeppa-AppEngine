@@ -135,7 +135,7 @@
 			</testResource>
 		</testResources>
 		<directory>${basedir}/target</directory>
-		<finalName>${project.artifactId}-${project.version}</finalName>
+		<finalName>${project.artifactId}-${appengine.app.version}</finalName>
 
 		<pluginManagement>
 			<plugins>

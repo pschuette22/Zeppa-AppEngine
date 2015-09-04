@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
+	<!-- System servlet handles endpoint class transactions -->
+	<servlet>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<servlet-class>com.google.api.server.spi.SystemServiceServlet
+		</servlet-class>
+		<init-param>
+			<param-name>services</param-name>
+			<param-value>com.zeppamobile.api.endpoint.AppEndpointBase</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Tasks Servlet manages general tasks for the backend -->
+	<servlet>
+		<servlet-name>TaskServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.utils.TaskServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TaskServlet</servlet-name>
+		<url-pattern>/tasks/servlet/</url-pattern>
+	</servlet-mapping>
+
+
+
+	<!-- Notification Building Servlet -->
+
+	<servlet>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<url-pattern>/notifications/builder/</url-pattern>
+	</servlet-mapping>
+
+
+</web-app>

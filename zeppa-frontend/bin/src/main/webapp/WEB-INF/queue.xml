@@ -1,0 +1,30 @@
+<queue-entries>
+
+	<!-- Queue of items that need to be stored as notifications -->
+
+	<queue>
+		<name>notification-building</name>
+		<rate>100/s</rate>
+		<bucket-size>100</bucket-size>
+	</queue>
+
+
+	<!-- Pull Queue for delivering notifications/cloud messages -->
+	<queue>
+		<name>notification-delivery</name>
+		<mode>pull</mode>
+		<retry-parameters>
+			<task-retry-limit>5</task-retry-limit>
+		</retry-parameters>
+	</queue>
+
+
+	<!-- Queue for automatically managing entity relationships -->
+	<queue>
+		<name>relationship-management</name>
+		<rate>100/s</rate>
+		<bucket-size>100</bucket-size>
+	</queue>
+
+
+</queue-entries>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>zeppa-smartfollow</display-name>
+
+
+	<!-- GetUploadUrl is for obtaining an upload url for blobstore -->
+	<servlet>
+		<servlet-name>SmartfollowServlet</servlet-name>
+		<servlet-class>com.zeppamobile.smartfollow.servlet.SmartfollowServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SmartfollowServlet</servlet-name>
+		<url-pattern>/smartfollow</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Create Initial -->
+	<servlet>
+		<servlet-name>CreateInitialFollowsServlet</servlet-name>
+		<servlet-class>com.zeppamobile.smartfollow.servlet.CreateInitialFollowsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateInitialFollowsServlet</servlet-name>
+		<url-pattern>/createinitial</url-pattern>
+	</servlet-mapping>
+
+</web-app>

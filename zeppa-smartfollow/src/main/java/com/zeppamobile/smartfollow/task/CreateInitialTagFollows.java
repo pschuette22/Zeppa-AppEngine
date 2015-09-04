@@ -1,9 +1,16 @@
 package com.zeppamobile.smartfollow.task;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +18,14 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import com.zeppamobile.common.datamodel.EventTagFollow;
+import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.common.utils.JSONUtils;
+import com.zeppamobile.common.utils.ModuleUtils;
+import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.agent.TagAgent;
 import com.zeppamobile.smartfollow.agent.UserAgent;
 
@@ -50,8 +64,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		initAgents();
 
 		/*
-		 * Execute the calculation.
-		 * This is a REALLY heavy opp
+		 * Execute the calculation. This is a REALLY heavy opp
 		 */
 		result = getInitialTagFollows();
 
@@ -63,10 +76,45 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		/*
 		 * execute task to create resulting follows
 		 */
-		System.out.print("Would be finalizing");
-		/*
-		 * do any cleanup
-		 */
+
+		if (!result.isEmpty()) {
+
+			try {
+				JSONArray resultArray = JSONUtils
+						.convertTagFollowListToJson(result);
+				Dictionary<String, String> params = new Hashtable<String, String>();
+
+				params.put("jsonArray", resultArray.toString());
+
+				URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
+						"listZeppaEventToUserRelationship", params);
+
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(
+								eventRelationshipsURL.openStream()));
+
+				StringBuilder builder = new StringBuilder();
+
+				String line;
+				while ((line = reader.readLine()) != null) {
+					builder.append(line);
+				}
+
+				List<EventTagFollow> result = JSONUtils.convertTagFollowListString(builder.toString());
+				// TODO: verify results
+				
+
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+
+			}
+
+		}
 
 	}
 
@@ -123,10 +171,10 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 
 		// Keep going till NoSuchElement exception thrown
 		try {
-			
+
 			Long user1Mingler = i1.next();
 			Long user2Mingler = i2.next();
-			
+
 			do {
 				if (user1Mingler.longValue() == user2Mingler.longValue()) {
 					// Mingler id's are equal. This is a common mingler
@@ -343,11 +391,11 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 				calculationWeight += .2;
 			}
 
-//			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-//				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-//						userAgent2.getUserId());
-//				result.add(follow);
-//			}
+			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
+				EventTagFollow follow = new EventTagFollow(agent.getTag(),
+						userAgent2.getUserId());
+				result.add(follow);
+			}
 
 		}
 
@@ -380,11 +428,11 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 				calculationWeight += .2;
 			}
 
-//			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-//				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-//						userAgent1.getUserId());
-//				result.add(follow);
-//			}
+			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
+				EventTagFollow follow = new EventTagFollow(agent.getTag(),
+						userAgent1.getUserId());
+				result.add(follow);
+			}
 
 		}
 

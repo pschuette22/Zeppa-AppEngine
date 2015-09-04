@@ -5,17 +5,6 @@
 	<display-name>zeppa-smartfollow</display-name>
 
 
-	<!-- GetUploadUrl is for obtaining an upload url for blobstore -->
-	<servlet>
-		<servlet-name>SmartfollowServlet</servlet-name>
-		<servlet-class>com.zeppamobile.smartfollow.servlet.SmartfollowServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SmartfollowServlet</servlet-name>
-		<url-pattern>/smartfollow</url-pattern>
-	</servlet-mapping>
-
-
 	<!-- Create Initial -->
 	<servlet>
 		<servlet-name>CreateInitialFollowsServlet</servlet-name>

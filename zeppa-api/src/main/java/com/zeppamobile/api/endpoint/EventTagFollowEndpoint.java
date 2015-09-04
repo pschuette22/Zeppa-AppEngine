@@ -1,11 +1,16 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
@@ -142,6 +147,44 @@ public class EventTagFollowEndpoint {
 		return eventtagfollow;
 	}
 
+	@ApiMethod(name = "insertEventTagFollowArray")
+	public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
+			@Named("jsonArray") String arrayAsJson) {
+		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
+		try {
+			JSONArray array = new JSONArray(arrayAsJson);
+
+			for (int i = 0; i < array.length(); i++) {
+				if (array.isNull(i)) {
+					break;
+				}
+
+				EventTagFollow follow = new EventTagFollow(
+						array.getJSONObject(i));
+				result.add(follow);
+			}
+
+			if (!result.isEmpty()) {
+				PersistenceManager mgr = getPersistenceManager();
+
+				try {
+
+					// Store and update
+					result = (List<EventTagFollow>) mgr.makePersistentAll(result);
+
+				} finally {
+
+					mgr.close();
+				}
+			}
+
+		} catch (JSONException e) {
+
+		}
+		return CollectionResponse.<EventTagFollow> builder().setItems(result)
+				.build();
+	}
+
 	/**
 	 * This method is used for updating an existing entity. If the entity does
 	 * not exist in the datastore, an exception is thrown. It uses HTTP PUT
@@ -190,7 +233,6 @@ public class EventTagFollowEndpoint {
 			mgr.close();
 		}
 	}
-
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

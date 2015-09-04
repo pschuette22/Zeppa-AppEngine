@@ -40,7 +40,7 @@ public class ModuleUtils {
 			while(keySet.hasMoreElements()) {
 				String key = keySet.nextElement();
 				String param = params.get(key);
-				if(paramsBuilder.length()>0){
+				if(paramsBuilder.length()>1){ //
 					paramsBuilder.append("&");
 				}
 				paramsBuilder.append(key);

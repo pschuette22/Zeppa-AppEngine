@@ -31,9 +31,9 @@ public class EventTagFollow {
 	@Persistent
 	private Long followerId;
 
-	
 	/**
 	 * Instantiate follow object
+	 * 
 	 * @param tag
 	 * @param followerId
 	 */
@@ -49,19 +49,22 @@ public class EventTagFollow {
 	/**
 	 * Rebuild an EventTagFollow from json
 	 * 
-	 * @param json representation
+	 * @param json
+	 *            representation
 	 */
-	public EventTagFollow(JSONObject json){
-		
-		this.key = (Key) json.get("key");
+	public EventTagFollow(JSONObject json) {
+		try {
+			this.key = (Key) json.get("key");
+		} catch (Exception e) {
+			// When rebuilding for insert, object will not have key
+		}
 		this.created = json.getLong("created");
 		this.updated = json.getLong("updated");
 		this.tagId = json.getLong("tagId");
 		this.tagOwnerId = json.getLong("tagOwnerId");
 		this.followerId = json.getLong("followerId");
 	}
-	
-	
+
 	public Long getCreated() {
 		return created;
 	}
@@ -109,7 +112,5 @@ public class EventTagFollow {
 	public void setTagOwnerId(Long tagOwnerId) {
 		this.tagOwnerId = tagOwnerId;
 	}
-	
-	
 
 }

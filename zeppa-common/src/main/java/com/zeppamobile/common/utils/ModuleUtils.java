@@ -15,8 +15,7 @@ public class ModuleUtils {
 	 */
 	private ModuleUtils() {
 	}
-	
-	
+
 	/**
 	 * Make a URL pointing to the zeppa-api module to make http request
 	 * 
@@ -28,26 +27,27 @@ public class ModuleUtils {
 	public static URL getZeppaAPIUrl(String methodName,
 			Dictionary<String, String> params) throws MalformedURLException {
 
-		 String paramString= null;
+		String paramString = null;
 
-		 /*
-		  * Append arguments for GET request
-		  */
+		/*
+		 * Append arguments for GET request
+		 */
 		if (params != null && !params.isEmpty()) {
 			StringBuilder paramsBuilder = new StringBuilder();
 			paramsBuilder.append("?");
 			Enumeration<String> keySet = params.keys();
-			while(keySet.hasMoreElements()) {
+			while (keySet.hasMoreElements()) {
 				String key = keySet.nextElement();
 				String param = params.get(key);
-				if(paramsBuilder.length()>0){
+
+				if (paramsBuilder.length() > 1) { //
 					paramsBuilder.append("&");
 				}
 				paramsBuilder.append(key);
 				paramsBuilder.append("=");
 				paramsBuilder.append(param);
 			}
-			
+
 			paramString = paramsBuilder.toString();
 		}
 
@@ -55,8 +55,7 @@ public class ModuleUtils {
 
 		URL url = new URL("http://"
 				+ modulesApi.getVersionHostname("zeppa-api", "v1") + "/"
-				+ methodName + (paramString==null?"":paramString));
-		
+				+ methodName + (paramString == null ? "" : paramString));
 
 		return url;
 	}

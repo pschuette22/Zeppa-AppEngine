@@ -8,7 +8,7 @@
 		<artifactId>zeppa</artifactId>
 		<version>1</version>
 	</parent>
-	<groupId>com.zeppamobile.appengine</groupId>
+
 	<artifactId>zeppa-common</artifactId>
 	<!-- <packaging>jar</packaging> -->
 	<url>http://maven.apache.org</url>

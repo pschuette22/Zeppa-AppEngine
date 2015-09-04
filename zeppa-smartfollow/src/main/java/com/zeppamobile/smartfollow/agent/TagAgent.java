@@ -11,7 +11,15 @@
  */
 package com.zeppamobile.smartfollow.agent;
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import net.sf.extjwnl.JWNLException;
@@ -27,8 +35,13 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
+
+import org.json.JSONException;
+
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
+import com.zeppamobile.common.utils.JSONUtils;
+import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
 
@@ -175,11 +188,40 @@ public class TagAgent {
 	 * Quickly fetch all the follows for this tag
 	 */
 	private void fetchTagFollows() {
-		// EventTagFollowEndpoint endpoint = new EventTagFollowEndpoint();
-		// CollectionResponse<EventTagFollow> response = endpoint
-		// .listEventTagFollow("tagId==" + tag.getId(), null, null, null);
-		// tagFollows.addAll(response.getItems());
 
+
+		try {
+
+			Dictionary<String, String> params = new Hashtable<String, String>();
+			params.put("filter", "tagId==" + tag.getId());
+
+			URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
+					"listEventTagFollow", params);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					eventRelationshipsURL.openStream()));
+
+			StringBuilder builder = new StringBuilder();
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+			}
+
+			List<EventTagFollow> result = JSONUtils
+					.convertTagFollowListString(builder.toString());
+			tagFollows.addAll(result);
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e){
+			
+		}
+		
 	}
 
 	/**
@@ -365,7 +407,8 @@ public class TagAgent {
 		 */
 		public double calculatedMatch(TagPart part) {
 			// negative number indicates it couldn't be calculated
-			// This default and error value
+
+			// This is default and error value
 			double calc = -1;
 
 			// first check to see if they're the same part of speech
@@ -490,45 +533,21 @@ public class TagAgent {
 						// slag words
 						// Calculate similarity
 
+
+						if (word.length() > 4 || part.word.length() > 4) {
+							calc = Utils.stringSimilarityCalculation(word,
+									part.word);
+						}
+						
 					}
-					// else if ((synset != null && part.synset != null)) {
-					// // These words are the same part of speech and have
-					// // synsets
-					// List<Word> syns = synset.getWords();
-					// if (syns.contains(part.word)) {
-					// // If this is a synonym, consider a complete match
-					// calc = 1;
-					// } else {
-					// List<Word> pSyns = part.synset.getWords();
-					// int synCount = syns.size() + pSyns.size();
-					// int matchCount = 0;
-					// // Iterate through this tags synonyms, determine if
-					// // matching synonym
-					// for (Word w : syns) {
-					// if (pSyns.contains(w)) {
-					// matchCount++;
-					// }
-					// }
-					// for (Word pW : pSyns) {
-					// if (syns.contains(pW)) {
-					// matchCount++;
-					// }
-					// }
-					//
-					// // Percent overlap = number of matches/ total number
-					// // of
-					// // synonyms
-					// calc = (matchCount / synCount);
-					// }
-					//
-					// } // else, shouldn't compare them
 
 				}
 				// else they're not the same part of speech or anything, they
 				// should not be compared
 
 			} catch (Exception e) {
-				// A multitude of issues could have happened. Fuck it.
+
+				// A multitude of issues could have happened.
 			}
 
 			return calc;

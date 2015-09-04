@@ -9,11 +9,10 @@
 		<version>1</version>
 	</parent>
 	<artifactId>zeppa-common</artifactId>
-	<packaging>jar</packaging>
-	<!-- <url>http://maven.apache.org</url> -->
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<!-- <packaging>jar</packaging> -->
+	<url>http://maven.apache.org</url>
+	<!-- <properties> <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+		</properties> -->
 
 	<dependencies>
 		<!-- App Engine Dependencies -->

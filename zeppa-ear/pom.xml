@@ -16,12 +16,12 @@
 	<dependencies>
 
 		<!-- Application Module Dependencies -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
 			<type>jar</type>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-api</artifactId>
@@ -66,6 +66,7 @@
 			<plugin>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
+				<version>${appengine.target.version}</version>
 			</plugin>
 		</plugins>
 	</build>

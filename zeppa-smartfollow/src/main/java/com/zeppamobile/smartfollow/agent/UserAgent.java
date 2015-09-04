@@ -1,11 +1,22 @@
 package com.zeppamobile.smartfollow.agent;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
+import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.common.utils.JSONUtils;
+import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Utils;
 
 public class UserAgent {
@@ -48,10 +59,10 @@ public class UserAgent {
 		fetchTags();
 	}
 
-	public Long getUserId(){
+	public Long getUserId() {
 		return userId;
 	}
-	
+
 	public List<TagAgent> getTagAgents() {
 		return tags;
 	}
@@ -66,24 +77,25 @@ public class UserAgent {
 	public List<Long> getOrderedMinglerList() {
 		List<Long> result = new ArrayList<Long>();
 
-//		if (!minglingRelationships.isEmpty()) {
-//			Iterator<ZeppaUserToUserRelationship> iterator = minglingRelationships
-//					.iterator();
-//			while (iterator.hasNext()) {
-//				try {
-//					result.add(iterator.next().getOtherUserId(userId));
-//				} catch (NullPointerException e) {
-//					// catch this if the relationship doesn't actually involve
-//					// this user
-//					// TODO: remove it?
-//				}
-//			}
-//			// Make sure list can be sorted
-//			if (result.size() > 1) {
-//				Collections.sort(result);
-//			}
-//
-//		}
+		// if (!minglingRelationships.isEmpty()) {
+		// Iterator<ZeppaUserToUserRelationship> iterator =
+		// minglingRelationships
+		// .iterator();
+		// while (iterator.hasNext()) {
+		// try {
+		// result.add(iterator.next().getOtherUserId(userId));
+		// } catch (NullPointerException e) {
+		// // catch this if the relationship doesn't actually involve
+		// // this user
+		// // TODO: remove it?
+		// }
+		// }
+		// // Make sure list can be sorted
+		// if (result.size() > 1) {
+		// Collections.sort(result);
+		// }
+		//
+		// }
 
 		return result;
 	}
@@ -181,19 +193,45 @@ public class UserAgent {
 		}
 	}
 
+	/**
+	 * Fetch the EventTag objects owned by this user and add them as tag agents
+	 */
 	private void fetchTags() {
-//		EventTagEndpoint endpoint = new EventTagEndpoint();
-//		// Consider fetching some amount at a time and using cursors for
-//		// efficiency
-//		CollectionResponse<EventTag> response = endpoint.listEventTag(
-//				"ownerId==" + userId, null, null, null);
-//		try {
-//			for (EventTag tag : response.getItems()) {
-//				tags.add(new TagAgent(this, tag));
-//			}
-//		} catch (NullPointerException e) {
-//
-//		}
+
+		try {
+			Dictionary<String, String> params = new Hashtable<String, String>();
+			params.put("filter", "ownerId==" + userId);
+
+			// TODO: implement cursor
+			URL url = ModuleUtils.getZeppaAPIUrl("listEventTag", params);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+
+			StringBuilder builder = new StringBuilder();
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				builder.append(line);
+			}
+
+			List<EventTag> tags = JSONUtils.convertEventTagListString(builder
+					.toString());
+
+			if (!tags.isEmpty()) {
+				for (EventTag tag : tags) {
+					TagAgent agent = new TagAgent(this, tag);
+					this.tags.add(agent);
+				}
+			}
+
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -206,44 +244,46 @@ public class UserAgent {
 	 */
 	private void fetchMinglingRelationships(Long otherUserId) {
 
-//		// Fetch data from zeppa-api
-//		ZeppaUserToUserRelationshipEndpoint endpoint = new ZeppaUserToUserRelationshipEndpoint();
-//		CollectionResponse<ZeppaUserToUserRelationship> response = endpoint
-//				.listZeppaUserToUserRelationship(
-//						"creatorUserId=="
-//								+ userId
-//								+ " && relationshipType == 'MINGLING' && subjectUserId !="
-//								+ otherUserId, null, null, null);
-//		CollectionResponse<ZeppaUserToUserRelationship> response2 = endpoint
-//				.listZeppaUserToUserRelationship(
-//						"subjectUserId=="
-//								+ userId
-//								+ " && relationshipType == 'MINGLING' && creatorUserId !="
-//								+ otherUserId, null, null, null);
-//
-//		// Add all the responses. ignore if null response is returned
-//		try {
-//			minglingRelationships.addAll(response.getItems());
-//		} catch (NullPointerException e) {
-//		}
-//		try {
-//			minglingRelationships.addAll(response2.getItems());
-//		} catch (NullPointerException e) {
-//		}
+		// // Fetch data from zeppa-api
+		// ZeppaUserToUserRelationshipEndpoint endpoint = new
+		// ZeppaUserToUserRelationshipEndpoint();
+		// CollectionResponse<ZeppaUserToUserRelationship> response = endpoint
+		// .listZeppaUserToUserRelationship(
+		// "creatorUserId=="
+		// + userId
+		// + " && relationshipType == 'MINGLING' && subjectUserId !="
+		// + otherUserId, null, null, null);
+		// CollectionResponse<ZeppaUserToUserRelationship> response2 = endpoint
+		// .listZeppaUserToUserRelationship(
+		// "subjectUserId=="
+		// + userId
+		// + " && relationshipType == 'MINGLING' && creatorUserId !="
+		// + otherUserId, null, null, null);
+		//
+		// // Add all the responses. ignore if null response is returned
+		// try {
+		// minglingRelationships.addAll(response.getItems());
+		// } catch (NullPointerException e) {
+		// }
+		// try {
+		// minglingRelationships.addAll(response2.getItems());
+		// } catch (NullPointerException e) {
+		// }
 	}
 
 	/**
 	 * This fetches all the relationships this user has to other events.
 	 */
 	private void fetchEventRelationships() {
-//		ZeppaEventToUserRelationshipEndpoint endpoint = new ZeppaEventToUserRelationshipEndpoint();
-//		CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
-//				.listZeppaEventToUserRelationship(
-//						"userId==" + userId.longValue(), null, null, null);
-//		try {
-//			eventRelationships.addAll(response.getItems());
-//		} catch (NullPointerException e) {
-//		}
+		// ZeppaEventToUserRelationshipEndpoint endpoint = new
+		// ZeppaEventToUserRelationshipEndpoint();
+		// CollectionResponse<ZeppaEventToUserRelationship> response = endpoint
+		// .listZeppaEventToUserRelationship(
+		// "userId==" + userId.longValue(), null, null, null);
+		// try {
+		// eventRelationships.addAll(response.getItems());
+		// } catch (NullPointerException e) {
+		// }
 	}
 
 	/**
@@ -251,36 +291,39 @@ public class UserAgent {
 	 */
 	private void fetchEvents() {
 
-//		ZeppaEventEndpoint endpoint = new ZeppaEventEndpoint();
-//		CollectionResponse<ZeppaEvent> response = endpoint.listZeppaEvent(
-//				"hostId==" + userId, null, null, null);
-//
-//		ZeppaEventToUserRelationshipEndpoint relationshipEndpoint = new ZeppaEventToUserRelationshipEndpoint();
-//
-//		// Concerned about memory
-//		// TODO: implement cursor and fetch limit
-//		// Possibly only fetch events created in the past 6 months
-//		CollectionResponse<ZeppaEventToUserRelationship> relationshipResponse = relationshipEndpoint
-//				.listZeppaEventToUserRelationship("hostId==" + userId, null,
-//						"eventId DESC", null);
-//		List<ZeppaEventToUserRelationship> allEventRelationships = new ArrayList<ZeppaEventToUserRelationship>();
-//		try {
-//			allEventRelationships.addAll(relationshipResponse.getItems());
-//		} catch (NullPointerException e) {
-//			// catch it if there are no relationships to events. Shouldnt happen
-//			// TODO: log this
-//		}
-//
-//		try {
-//			for (ZeppaEvent event : response.getItems()) {
-//				// TODO: initialize event agent with event relationships
-//				EventAgent agent = new EventAgent(event);
-//				agent.pruneRelationships(allEventRelationships);
-//				events.add(agent);
-//			}
-//		} catch (NullPointerException e) {
-//			// null response returned
-//		}
+		// ZeppaEventEndpoint endpoint = new ZeppaEventEndpoint();
+		// CollectionResponse<ZeppaEvent> response = endpoint.listZeppaEvent(
+		// "hostId==" + userId, null, null, null);
+		//
+		// ZeppaEventToUserRelationshipEndpoint relationshipEndpoint = new
+		// ZeppaEventToUserRelationshipEndpoint();
+		//
+		// // Concerned about memory
+		// // TODO: implement cursor and fetch limit
+		// // Possibly only fetch events created in the past 6 months
+		// CollectionResponse<ZeppaEventToUserRelationship> relationshipResponse
+		// = relationshipEndpoint
+		// .listZeppaEventToUserRelationship("hostId==" + userId, null,
+		// "eventId DESC", null);
+		// List<ZeppaEventToUserRelationship> allEventRelationships = new
+		// ArrayList<ZeppaEventToUserRelationship>();
+		// try {
+		// allEventRelationships.addAll(relationshipResponse.getItems());
+		// } catch (NullPointerException e) {
+		// // catch it if there are no relationships to events. Shouldnt happen
+		// // TODO: log this
+		// }
+		//
+		// try {
+		// for (ZeppaEvent event : response.getItems()) {
+		// // TODO: initialize event agent with event relationships
+		// EventAgent agent = new EventAgent(event);
+		// agent.pruneRelationships(allEventRelationships);
+		// events.add(agent);
+		// }
+		// } catch (NullPointerException e) {
+		// // null response returned
+		// }
 
 	}
 

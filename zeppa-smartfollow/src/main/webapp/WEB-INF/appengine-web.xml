@@ -5,12 +5,6 @@
 	<threadsafe>true</threadsafe>
 	<module>zeppa-smartfollow</module>
 
-	<!-- Performance Settings -->
-	<instance-class>B2</instance-class>
-	<basic-scaling>
-		<max-instances>3</max-instances>
-		<idle-timeout>1m</idle-timeout>
-	</basic-scaling>
 
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />

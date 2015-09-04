@@ -63,7 +63,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		/*
 		 * execute task to create resulting follows
 		 */
-
+		System.out.print("Would be finalizing");
 		/*
 		 * do any cleanup
 		 */

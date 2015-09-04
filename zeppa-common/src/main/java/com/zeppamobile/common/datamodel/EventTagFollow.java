@@ -5,6 +5,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.JSONObject;
+
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
@@ -29,9 +31,12 @@ public class EventTagFollow {
 	@Persistent
 	private Long followerId;
 
-	// For Guice
-	public EventTagFollow(){}
 	
+	/**
+	 * Instantiate follow object
+	 * @param tag
+	 * @param followerId
+	 */
 	public EventTagFollow(EventTag tag, Long followerId) {
 
 		this.created = System.currentTimeMillis();
@@ -41,6 +46,22 @@ public class EventTagFollow {
 		this.followerId = followerId;
 	}
 
+	/**
+	 * Rebuild an EventTagFollow from json
+	 * 
+	 * @param json representation
+	 */
+	public EventTagFollow(JSONObject json){
+		
+		this.key = (Key) json.get("key");
+		this.created = json.getLong("created");
+		this.updated = json.getLong("updated");
+		this.tagId = json.getLong("tagId");
+		this.tagOwnerId = json.getLong("tagOwnerId");
+		this.followerId = json.getLong("followerId");
+	}
+	
+	
 	public Long getCreated() {
 		return created;
 	}

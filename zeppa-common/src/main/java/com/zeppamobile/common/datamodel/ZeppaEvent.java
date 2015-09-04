@@ -8,6 +8,10 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
@@ -17,17 +21,17 @@ public class ZeppaEvent {
 		CASUAL, // Friends
 		PRIVATE // Invite Only
 	}
-	
+
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-	
+
 	@Persistent
 	private Long created;
-	
+
 	@Persistent
 	private Long updated;
-	
+
 	@Persistent
 	private String googleCalendarId;
 
@@ -48,7 +52,7 @@ public class ZeppaEvent {
 
 	@Persistent
 	private String description;
-	
+
 	@Persistent
 	private Boolean guestsMayInvite;
 
@@ -67,42 +71,107 @@ public class ZeppaEvent {
 	@Persistent(defaultFetchGroup = "true")
 	private List<Long> tagIds = new ArrayList<Long>();
 
-	// Temporary for backend to create relationships
+	// Initially invited users
 	@Persistent
 	private List<Long> invitedUserIds;
-	
-	// For guice
-	public ZeppaEvent(){}
 
-//	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
-//			String googleCalendarEventId, String iCalUID,
-//			EventPrivacyType privacy, Long hostId, String title, String description,
-//			Boolean guestsMayInvite, Long start, Long end,
-//			String displayLocation, String mapsLocation, List<Long> tagIds,
-//			List<Long> invitedUserIds) {
-//		super();
-//		this.created = created;
-//		this.updated = updated;
-//		this.googleCalendarId = googleCalendarId;
-//		this.googleCalendarEventId = googleCalendarEventId;
-//		this.iCalUID = iCalUID;
-//		this.privacy = privacy;
-//		this.hostId = hostId;
-//		this.title = title;
-//		this.description = description;
-//		this.guestsMayInvite = guestsMayInvite;
-//		this.start = start;
-//		this.end = end;
-//		this.displayLocation = displayLocation;
-//		this.mapsLocation = mapsLocation;
-//		this.tagIds = tagIds;
-//		this.invitedUserIds = invitedUserIds;
-//	}
+	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
+			String googleCalendarEventId, String iCalUID,
+			EventPrivacyType privacy, Long hostId, String title,
+			String description, Boolean guestsMayInvite, Long start, Long end,
+			String displayLocation, String mapsLocation, List<Long> tagIds,
+			List<Long> invitedUserIds) {
+
+		this.created = created;
+		this.updated = updated;
+		this.googleCalendarId = googleCalendarId;
+		this.googleCalendarEventId = googleCalendarEventId;
+		this.iCalUID = iCalUID;
+		this.privacy = privacy;
+		this.hostId = hostId;
+		this.title = title;
+		this.description = description;
+		this.guestsMayInvite = guestsMayInvite;
+		this.start = start;
+		this.end = end;
+		this.displayLocation = displayLocation;
+		this.mapsLocation = mapsLocation;
+		this.tagIds = tagIds;
+		this.invitedUserIds = invitedUserIds;
+	}
+
+	/**
+	 * Rebuild
+	 * 
+	 * @param json
+	 */
+	public ZeppaEvent(JSONObject json) {
+		this.key = (Key) json.get("key");
+		
+		this.created = json.getLong("created");
+		this.updated = json.getLong("updated");
+		this.googleCalendarId = json.getString("googleCalendarId");
+		this.googleCalendarEventId = json.getString("googleCalendarEventId");
+		
+		try {
+			this.iCalUID = json.getString("iCalUID");
+		} catch (JSONException e) {
+
+		}
+		
+		this.privacy = EventPrivacyType.valueOf(json.getString("privacy"));
+		this.hostId = json.getLong("hostId");
+		this.title = json.getString("title");
+		this.description = json.getString("description");
+		this.guestsMayInvite = json.getBoolean("guestsMayInvite");
+		this.start = json.getLong("start");
+		this.end = json.getLong("end");
+		this.displayLocation = json.getString("displayLocation");
+
+		try {
+			this.mapsLocation = json.getString("mapsLocation");
+		} catch (JSONException e) {
+
+		}
+		/*
+		 * Fetch tag ids from json array
+		 */
+		this.tagIds = new ArrayList<Long>();
+		try {
+			JSONArray tagArray = json.getJSONArray("tagIds");
+			for (int i = 0; i < tagArray.length(); i++) {
+				if (tagArray.isNull(i)) {
+					break;
+				}
+				tagIds.add(tagArray.getLong(i));
+			}
+		} catch (JSONException e) {
+
+		}
+
+		/*
+		 * Rebuild the array of users that were invitied initially
+		 */
+		this.invitedUserIds = new ArrayList<Long>();
+		try {
+			JSONArray invitedArray = json.getJSONArray("invitedUserIds");
+			for (int i = 0; i < invitedArray.length(); i++) {
+				if (invitedArray.isNull(i)) {
+					break;
+				}
+				invitedUserIds.add(invitedArray.getLong(i));
+			}
+
+		} catch (JSONException e) {
+
+		}
+
+	}
 
 	public Long getCreated() {
 		return created;
 	}
-	
+
 	public void setCreated(Long created) {
 		this.created = created;
 	}
@@ -114,7 +183,7 @@ public class ZeppaEvent {
 	public void setUpdated(Long updated) {
 		this.updated = updated;
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -210,7 +279,7 @@ public class ZeppaEvent {
 	public void setPrivacy(EventPrivacyType privacy) {
 		this.privacy = privacy;
 	}
-	
+
 	public Long getHostId() {
 		return hostId;
 	}
@@ -234,7 +303,5 @@ public class ZeppaEvent {
 	public void setInvitedUserIds(List<Long> invitedUserIds) {
 		this.invitedUserIds = invitedUserIds;
 	}
-	
-	
 
 }

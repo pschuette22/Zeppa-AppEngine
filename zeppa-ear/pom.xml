@@ -15,6 +15,7 @@
 
 	<dependencies>
 
+		<!-- Application Module Dependencies -->
 		<dependency>
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-common</artifactId>

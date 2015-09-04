@@ -60,7 +60,7 @@
 		<module>zeppa-api</module>
 		<module>zeppa-frontend</module>
 		<module>zeppa-notifications</module>
-		<module>zeppa-ear</module>
 		<module>zeppa-smartfollow</module>
+		<module>zeppa-ear</module>
 	</modules>
 </project>

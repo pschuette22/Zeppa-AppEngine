@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zeppamobile.smartfollow.task.CreateInitialTagFollows;
+
 /**
  * Servlet for handling requests to execute smartfollow tasks
  * 
@@ -52,8 +54,20 @@ public class SmartfollowServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		
-		
+//		String u1IdString = req.getParameter("userId1");
+//		String u2IdString = req.getParameter("user2Id");
+//		
+//		Long user1Id = Long.valueOf(u1IdString);
+//		Long user2Id = Long.valueOf(u2IdString);
+//		
+//		// Create the task object
+//		CreateInitialTagFollows createTags = new CreateInitialTagFollows("Preloaded Task",user1Id, user2Id);
+//		
+//		// Execute the tast object
+//		createTags.execute();
+//		
+//		// 
+//		createTags.finalize();
 	}
 	
 	

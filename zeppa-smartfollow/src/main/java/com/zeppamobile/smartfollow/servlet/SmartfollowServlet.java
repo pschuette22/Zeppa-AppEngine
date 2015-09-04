@@ -50,24 +50,9 @@ public class SmartfollowServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		
-//		String u1IdString = req.getParameter("userId1");
-//		String u2IdString = req.getParameter("user2Id");
-//		
-//		Long user1Id = Long.valueOf(u1IdString);
-//		Long user2Id = Long.valueOf(u2IdString);
-//		
-//		// Create the task object
-//		CreateInitialTagFollows createTags = new CreateInitialTagFollows("Preloaded Task",user1Id, user2Id);
-//		
-//		// Execute the tast object
-//		createTags.execute();
-//		
-//		// 
-//		createTags.finalize();
 	}
 	
 	

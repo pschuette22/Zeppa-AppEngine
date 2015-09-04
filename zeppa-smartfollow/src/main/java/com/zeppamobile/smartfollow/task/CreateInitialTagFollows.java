@@ -22,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.zeppamobile.common.datamodel.EventTagFollow;
-import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Constants;
@@ -343,7 +342,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 			eventPopularityAdjustment = 1 - (Math.abs(ue1Popularity
 					- ue2Popularity));
 		}
-
+ 
 		/*
 		 * Get calculated similarity both users have to the other
 		 */
@@ -370,8 +369,8 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 			// Get the base interest of this TagAgent
 			TagAgent agent = entry.getKey();
 			double interest = entry.getValue().doubleValue();
-			// Don't bother if adjusted interest is below 15%
-			if (interest <= .15) {
+			// Don't bother if adjusted interest is below 20%
+			if (interest <= .2) {
 				continue;
 			}
 			double tagPopularity = agent.getCalculatedPopularity(
@@ -379,12 +378,12 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 			// Initial interest calculation
 			// This holds half the weight
 
-			double calculation = interest * .5;
-			double calculationWeight = .5;
+			double calculation = interest * .6;
+			double calculationWeight = .6;
 
 			if (u2Similarity > 0) {
-				calculation += .3 * u2Similarity;
-				calculationWeight += .3;
+				calculation += .2 * u2Similarity;
+				calculationWeight += .2;
 			}
 
 			if (tagPopularity > 0) {

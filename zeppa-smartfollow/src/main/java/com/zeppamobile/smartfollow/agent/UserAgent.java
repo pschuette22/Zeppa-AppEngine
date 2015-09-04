@@ -363,40 +363,6 @@ public class UserAgent {
 	 * Fetch events relative to other user and create agents
 	 */
 	private void fetchEvents() {
-
-		// Fetch all the EventRelationships to events started by this user
-		List<ZeppaEventToUserRelationship> allEventRelationships = new ArrayList<ZeppaEventToUserRelationship>();
-		try {
-
-			Dictionary<String, String> params = new Hashtable<String, String>();
-			params.put("filter", "hostId==" + userId);
-
-			URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
-					"listZeppaEventToUserRelationship", params);
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					eventRelationshipsURL.openStream()));
-
-			StringBuilder builder = new StringBuilder();
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-			}
-
-			List<ZeppaEventToUserRelationship> result = JSONUtils
-					.convertEventRelationshipListString(builder.toString());
-			allEventRelationships.addAll(result);
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e){
-			
-		}
 		
 		// Fetch all events for this user
 		try {
@@ -422,7 +388,7 @@ public class UserAgent {
 			
 			for(ZeppaEvent event: result){
 				EventAgent eventAgent = new EventAgent(event);
-				eventAgent.pruneRelationships(allEventRelationships);
+//				eventAgent.pruneRelationships(allEventRelationships);
 				events.add(eventAgent);
 			}
 

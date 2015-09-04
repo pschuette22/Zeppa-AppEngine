@@ -42,34 +42,35 @@ public class EventAgent {
 	public EventAgent(ZeppaEvent event) {
 		this.event = event;
 		fetchEventRelationships();
+		calculatePopularity();
 	}
 
-	/**
-	 * 
-	 * This takes a list of all relationships to events created by a given user
-	 * and adds those relative to this event This is implemented in this way to
-	 * minimize datastore reads
-	 * 
-	 * @param relationships
-	 *            - all Event Relationships to events with a similar host
-	 * @return relationships without those relative to this event
-	 */
-	public List<ZeppaEventToUserRelationship> pruneRelationships(
-			List<ZeppaEventToUserRelationship> relationships) {
-
-		// Pull out all relationships to this event from all relationships
-		for (ZeppaEventToUserRelationship relationship : relationships) {
-			if (relationship.getEventId().longValue() == event.getId()
-					.longValue()) {
-				this.relationships.add(relationship);
-			}
-		}
-
-		// Remove relationships that were picked out
-		relationships.removeAll(this.relationships);
-
-		return relationships;
-	}
+//	/**
+//	 * 
+//	 * This takes a list of all relationships to events created by a given user
+//	 * and adds those relative to this event This is implemented in this way to
+//	 * minimize datastore reads
+//	 * 
+//	 * @param relationships
+//	 *            - all Event Relationships to events with a similar host
+//	 * @return relationships without those relative to this event
+//	 */
+//	public List<ZeppaEventToUserRelationship> pruneRelationships(
+//			List<ZeppaEventToUserRelationship> relationships) {
+//
+//		// Pull out all relationships to this event from all relationships
+//		for (ZeppaEventToUserRelationship relationship : relationships) {
+//			if (relationship.getEventId().longValue() == event.getId()
+//					.longValue()) {
+//				this.relationships.add(relationship);
+//			}
+//		}
+//
+//		// Remove relationships that were picked out
+//		relationships.removeAll(this.relationships);
+//
+//		return relationships;
+//	}
 
 	/**
 	 * Fetch all event relationships for this event
@@ -158,8 +159,9 @@ public class EventAgent {
 	public void calculatePopularity() {
 
 		if (relationships.isEmpty()) {
-			// No relationshisp to this event.
+			// No relationship to this event.
 			calculatedPopularity = .5;
+			return;
 		}
 
 		/*

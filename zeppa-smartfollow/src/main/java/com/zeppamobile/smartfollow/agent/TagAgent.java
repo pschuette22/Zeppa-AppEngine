@@ -11,7 +11,6 @@
  */
 package com.zeppamobile.smartfollow.agent;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +33,6 @@ import net.sf.extjwnl.data.relationship.RelationshipFinder;
 import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
-
 
 import org.json.JSONException;
 
@@ -94,7 +92,7 @@ public class TagAgent {
 			List<Long> mutualMinglerIds) {
 		if (tagFollows.isEmpty()) {
 			return -1; // Ignore in case this is a new tag
-		} else if (tagFollows.size() == numberOfMinglers) {
+		} else if (numberOfMinglers > 0 && tagFollows.size() == numberOfMinglers) {
 			// Every mingler follows this. return 1.
 			return 1;
 		}
@@ -189,7 +187,6 @@ public class TagAgent {
 	 */
 	private void fetchTagFollows() {
 
-
 		try {
 
 			Dictionary<String, String> params = new Hashtable<String, String>();
@@ -218,10 +215,10 @@ public class TagAgent {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JSONException e){
-			
+		} catch (JSONException e) {
+
 		}
-		
+
 	}
 
 	/**
@@ -311,7 +308,7 @@ public class TagAgent {
 	 * @return calculatedSimilarity as a decimal percent
 	 */
 	public double calculateSimilarity(TagAgent tag) {
-		double similarity = 0;
+		double similarity = -1;
 
 		if (tag.getTagText().equalsIgnoreCase(tag.getTagText())) {
 			// Tags are the same, ignoring case. Very likely talking about the
@@ -330,7 +327,12 @@ public class TagAgent {
 						// of certainty,
 						// add and average
 						if (sim >= 0) {
+							// Tags have made a valid comparison of content
+							if (similarity < 0) {
+								similarity = 0;
+							}
 							// Quickly average adding this calculation
+
 							similarity += sim;
 							similarity /= 2;
 						}
@@ -528,17 +530,6 @@ public class TagAgent {
 											part.word);
 						}
 
-					} else if (pos == null && part.pos == null) {
-						// Both parts of speech are null. Likely uninterpreted
-						// slag words
-						// Calculate similarity
-
-
-						if (word.length() > 4 || part.word.length() > 4) {
-							calc = Utils.stringSimilarityCalculation(word,
-									part.word);
-						}
-						
 					}
 
 				}

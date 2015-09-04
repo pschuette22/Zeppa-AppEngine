@@ -120,11 +120,13 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		 */
 		Iterator<Long> i1 = userAgent1.getOrderedMinglerList().iterator();
 		Iterator<Long> i2 = userAgent2.getOrderedMinglerList().iterator();
-		Long user1Mingler = i1.next();
-		Long user2Mingler = i2.next();
 
 		// Keep going till NoSuchElement exception thrown
 		try {
+			
+			Long user1Mingler = i1.next();
+			Long user2Mingler = i2.next();
+			
 			do {
 				if (user1Mingler.longValue() == user2Mingler.longValue()) {
 					// Mingler id's are equal. This is a common mingler

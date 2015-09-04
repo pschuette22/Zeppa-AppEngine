@@ -19,7 +19,6 @@
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
-			<type>jar</type>
 		</dependency>
 		<!-- Appengine dependencies -->
 

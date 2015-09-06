@@ -10,6 +10,9 @@ import com.google.appengine.api.modules.ModulesServiceFactory;
 
 public class Configuration {
 
+	/**
+	 * @constructor private contructor as this is a utility class
+	 */
 	private Configuration() {
 	}
 

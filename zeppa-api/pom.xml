@@ -26,7 +26,7 @@
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -142,8 +142,8 @@
 		<sourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/java</sourceDirectory>
 		<scriptSourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/scripts</scriptSourceDirectory>
 		<testSourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/test/java</testSourceDirectory>
-		<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target/classes</outputDirectory>
-		<testOutputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target/test-classes</testOutputDirectory>
+		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
+		<testOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/test-classes</testOutputDirectory>
 		<resources>
 			<resource>
 				<directory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/resources</directory>
@@ -417,7 +417,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/webapp/WEB-INF/classes</outputDirectory>
-	</reporting>
 </project>

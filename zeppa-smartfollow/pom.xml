@@ -98,6 +98,9 @@
 
 	<build>
 
+		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
+		<testOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/test-classes</testOutputDirectory>
+
 		<!-- <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> -->
 		<!-- All details/versions/configurations are setup at the parent pom -->
 		<plugins>

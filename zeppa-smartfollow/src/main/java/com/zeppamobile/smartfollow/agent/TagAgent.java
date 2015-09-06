@@ -40,6 +40,7 @@ import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
+import com.zeppamobile.smartfollow.Configuration;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
 
@@ -56,8 +57,15 @@ public class TagAgent {
 	public TagAgent(UserAgent userAgent, EventTag tag) {
 		this.tag = tag;
 		// Fetch all the instances of people following this tag
-		fetchTagFollows();
-
+		try {
+			fetchTagFollows();
+		} catch (NullPointerException e) {
+			if (!Configuration.isTesting()) {
+				System.out.print("Caught null pointer fetching tags, ignored in test");
+			} else {
+				throw e;
+			}
+		}
 		/*
 		 * Try to turn the tag into a machine-readable sentence This also
 		 * initializes convertedTagWords and posTags If an exception is throw...
@@ -528,6 +536,16 @@ public class TagAgent {
 							calc += (1 - calc)
 									* Utils.stringSimilarityCalculation(word,
 											part.word);
+						}
+
+					} else if (pos == null && part.pos == null) {
+						// Both parts of speech are null. Likely uninterpreted
+						// slag words
+						// Calculate similarity
+
+						if (word.length() > 4 || part.word.length() > 4) {
+							calc = Utils.stringSimilarityCalculation(word,
+									part.word);
 						}
 
 					}

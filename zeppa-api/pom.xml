@@ -14,7 +14,7 @@
 	<properties>
 		<appengine.app.name>zeppa-cloud-1821</appengine.app.name>
 		<java.version>1.7</java.version>
-		<appengine.target.version>1.9.25</appengine.target.version>
+		<appengine.target.version>1.9.26</appengine.target.version>
 		<google.api.client.version>1.17.0-rc</google.api.client.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -25,7 +25,6 @@
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
-			<type>jar</type>
 		</dependency>
 
 		<dependency>
@@ -111,9 +110,9 @@
 			<version>1.20.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20140107</version>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -140,285 +139,59 @@
 		</pluginRepository>
 	</pluginRepositories>
 	<build>
-		<sourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/java</sourceDirectory>
-		<scriptSourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/scripts</scriptSourceDirectory>
-		<testSourceDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/test/java</testSourceDirectory>
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
-		<testOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/test-classes</testOutputDirectory>
-		<resources>
-			<resource>
-				<directory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/main/resources</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/src/test/resources</directory>
-			</testResource>
-		</testResources>
-		<directory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target</directory>
-		<finalName>zeppa-api-1</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.3</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2-beta-5</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<version>2.8</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.3.2</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.5.1</version>
-					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-war-plugin</artifactId>
-					<version>2.3</version>
-				</plugin>
-				<plugin>
-					<groupId>com.google.appengine</groupId>
-					<artifactId>appengine-maven-plugin</artifactId>
-					<version>1.9.25</version>
-				</plugin>
-				<plugin>
-					<groupId>org.datanucleus</groupId>
-					<artifactId>maven-datanucleus-plugin</artifactId>
-					<version>3.1.3</version>
-					<executions>
-						<execution>
-							<phase>compile</phase>
-							<goals>
-								<goal>enhance</goal>
-							</goals>
-							<configuration>
-								<api>JDO</api>
-								<props>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/datanucleus.properties</props>
-								<log4jConfiguration>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/log4j.properties</log4jConfiguration>
-								<verbose>true</verbose>
-								<enhancerName>ASM</enhancerName>
-								<log4jConfiguration>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/log4j.properties</log4jConfiguration>
-								<verbose>false</verbose>
-								<fork>false</fork>
-							</configuration>
-						</execution>
-					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>org.datanucleus</groupId>
-							<artifactId>datanucleus-api-jdo</artifactId>
-							<version>3.1.4</version>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<api>JDO</api>
-						<props>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/datanucleus.properties</props>
-						<log4jConfiguration>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/log4j.properties</log4jConfiguration>
-						<verbose>true</verbose>
-						<enhancerName>ASM</enhancerName>
-						<log4jConfiguration>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/log4j.properties</log4jConfiguration>
-						<verbose>false</verbose>
-						<fork>false</fork>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>2.6</version>
-					<executions>
-						<execution>
-							<id>default-testResources</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>testResources</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>default-resources</id>
-							<phase>process-resources</phase>
-							<goals>
-								<goal>resources</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<!-- All details/versions/configurations are setup at the parent pom -->
 		<plugins>
 			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.5</version>
-				<executions>
-					<execution>
-						<id>default-clean</id>
-						<phase>clean</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
-				<executions>
-					<execution>
-						<id>default-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-install-plugin</artifactId>
-				<version>2.4</version>
-				<executions>
-					<execution>
-						<id>default-install</id>
-						<phase>install</phase>
-						<goals>
-							<goal>install</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
-				<executions>
-					<execution>
-						<id>default-site</id>
-						<phase>site</phase>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target/site</outputDirectory>
-							<reportPlugins>
-								<reportPlugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-project-info-reports-plugin</artifactId>
-									<version>2.8</version>
-								</reportPlugin>
-							</reportPlugins>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-deploy</id>
-						<phase>site-deploy</phase>
-						<goals>
-							<goal>deploy</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target/site</outputDirectory>
-							<reportPlugins>
-								<reportPlugin>
-									<groupId>org.apache.maven.plugins</groupId>
-									<artifactId>maven-project-info-reports-plugin</artifactId>
-									<version>2.8</version>
-								</reportPlugin>
-							</reportPlugins>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<outputDirectory>/Users/DrunkWithFunk21/Workspace/zeppaworkspace/Zeppa-AppEngine/zeppa-api/target/site</outputDirectory>
-					<reportPlugins>
-						<reportPlugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.8</version>
-						</reportPlugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-testResources</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>testResources</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-resources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-war</id>
-						<phase>package</phase>
-						<goals>
-							<goal>war</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<configuration>
+					<enableJarClasses>false</enableJarClasses>
+				</configuration>
+				<!-- automatically call endpoints_get_discovery_doc goal as part of a 
+					Maven build by configuring the App Engine Maven plugin -->
 				<executions>
 					<execution>
-						<id>default-compile</id>
-						<phase>compile</phase>
 						<goals>
-							<goal>compile</goal>
+							<goal>endpoints_get_discovery_doc</goal>
 						</goals>
-						<configuration>
-							<source>1.7</source>
-							<target>1.7</target>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<source>1.7</source>
-							<target>1.7</target>
-						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<archiveClasses>true</archiveClasses>
+					<!-- This is required for the cloud endpoints -->
+					<webXml>${project.build.directory}/generated-sources/appengine-endpoints/WEB-INF/web.xml</webXml>
+					<webResources>
+						<!-- in order to interpolate version from pom into appengine-web.xml -->
+						<resource>
+							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+						</resource>
+						<!-- This is required for the cloud endpoints -->
+						<resource>
+							<!-- this is relative to the pom.xml directory -->
+							<directory>${project.build.directory}/generated-sources/appengine-endpoints</directory>
+							<!-- filtering is needed to interpolate app name from pom into the 
+								discovery files -->
+							<filtering>true</filtering>
+							<includes>
+								<include>WEB-INF/*.discovery</include>
+								<include>WEB-INF/*.api</include>
+							</includes>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

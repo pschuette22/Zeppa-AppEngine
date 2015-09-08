@@ -34,8 +34,6 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import org.json.JSONException;
-
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.utils.JSONUtils;
@@ -48,7 +46,7 @@ public class TagAgent {
 
 	private EventTag tag;
 	private List<EventTagFollow> tagFollows = new ArrayList<EventTagFollow>();
-	private List<String> convertedTagWords;
+	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
 
 	// Parse the tag
@@ -194,6 +192,10 @@ public class TagAgent {
 	 * Quickly fetch all the follows for this tag
 	 */
 	private void fetchTagFollows() {
+		
+		if(Configuration.isTesting()){
+			return;
+		}
 
 		try {
 
@@ -223,9 +225,7 @@ public class TagAgent {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JSONException e) {
-
-		}
+		} 
 
 	}
 
@@ -241,7 +241,7 @@ public class TagAgent {
 		// Check to see if the words are recognized
 		for (String s : stringList) {
 
-			if (!Character.isLetter(s.charAt(0))) {
+			if (Character.isLetter(s.charAt(0))) {
 				try {
 					// If word isnt found in dictionary, assume it is slang
 					IndexWordSet wordSet = Constants.getDictionary()
@@ -279,7 +279,12 @@ public class TagAgent {
 		}
 		POSTaggerME tagger = new POSTaggerME(model);
 		// gets tag parts of speech
-		posTags = tagger.tag((String[]) convertedTagWords.toArray());
+		String[] tagWordArray = new String[convertedTagWords.size()];
+		for(int i = 0; i < convertedTagWords.size(); i++){
+			tagWordArray[i] = convertedTagWords.get(i);
+		}
+		
+		posTags = tagger.tag(tagWordArray);
 
 		try {
 			for (int i = 0; i < convertedTagWords.size(); i++) {

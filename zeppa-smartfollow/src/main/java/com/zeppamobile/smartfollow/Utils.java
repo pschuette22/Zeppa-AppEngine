@@ -114,7 +114,7 @@ public class Utils {
 			result.add(tagText);
 		} else {
 
-			for (int i = tagText.length(); i >= 0; --i) {
+			for (int i = tagText.length()-1; i >= 0; --i) {
 				char ch = tagText.charAt(i);
 
 				if (Character.isLowerCase(ch)) {
@@ -215,7 +215,8 @@ public class Utils {
 	public static POSModel getPOSModel() {
 		InputStream modelIn = null;
 		try {
-			modelIn = new FileInputStream("en-pos-maxent.bin");
+			modelIn = Utils.class.getClassLoader()
+					.getResourceAsStream("en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
 			return model;
 		} catch (IOException e) {

@@ -10,8 +10,6 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.json.JSONException;
-
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.utils.JSONUtils;
@@ -112,7 +110,7 @@ public class EventAgent {
 			// // TODO Auto-generated catch block
 			// e.printStackTrace();
 			// // Bad response
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			// issue with the JSON
 			// Treated as if there are no relationships to event
 			this.relationships = new ArrayList<ZeppaEventToUserRelationship>();

@@ -1,7 +1,5 @@
 package com.zeppamobile.common.datamodel;
 
-import java.util.List;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;

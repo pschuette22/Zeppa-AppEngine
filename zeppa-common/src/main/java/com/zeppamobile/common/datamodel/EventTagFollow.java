@@ -5,7 +5,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -60,11 +60,28 @@ public class EventTagFollow {
 		} catch (Exception e) {
 			// When rebuilding for insert, object will not have key
 		}
-		this.created = json.getLong("created");
-		this.updated = json.getLong("updated");
-		this.tagId = json.getLong("tagId");
-		this.tagOwnerId = json.getLong("tagOwnerId");
-		this.followerId = json.getLong("followerId");
+		this.created = (Long)json.get("created");
+		this.updated = (Long)json.get("updated");
+		this.tagId = (Long)json.get("tagId");
+		this.tagOwnerId = (Long) json.get("tagOwnerId");
+		this.followerId = (Long) json.get("followerId");
+	}
+	
+	/**
+	 * Convert this object to @JSONObject
+	 * @return @JSONObject mapped to this object
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson(){
+		JSONObject obj = new JSONObject();
+		obj.put("key", key);
+		obj.put("created", created);
+		obj.put("updated",updated);
+		obj.put("tagId",tagId);
+		obj.put("tagOwnerId",tagOwnerId);
+		obj.put("followerId", followerId);
+		
+		return obj;
 	}
 
 	

@@ -8,9 +8,9 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
@@ -151,36 +151,30 @@ public class EventTagFollowEndpoint {
 	public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
 			@Named("jsonArray") String arrayAsJson) {
 		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
-		try {
-			JSONArray array = new JSONArray(arrayAsJson);
 
-			for (int i = 0; i < array.length(); i++) {
-				if (array.isNull(i)) {
-					break;
-				}
+		JSONArray array = (JSONArray) JSONValue.parse(arrayAsJson);
 
-				EventTagFollow follow = new EventTagFollow(
-						array.getJSONObject(i));
-				result.add(follow);
-			}
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject obj = (JSONObject) array.get(i);
 
-			if (!result.isEmpty()) {
-				PersistenceManager mgr = getPersistenceManager();
-
-				try {
-
-					// Store and update
-					result = (List<EventTagFollow>) mgr.makePersistentAll(result);
-
-				} finally {
-
-					mgr.close();
-				}
-			}
-
-		} catch (JSONException e) {
-
+			EventTagFollow follow = new EventTagFollow(obj);
+			result.add(follow);
 		}
+
+		if (!result.isEmpty()) {
+			PersistenceManager mgr = getPersistenceManager();
+
+			try {
+
+				// Store and update
+				result = (List<EventTagFollow>) mgr.makePersistentAll(result);
+
+			} finally {
+
+				mgr.close();
+			}
+		}
+
 		return CollectionResponse.<EventTagFollow> builder().setItems(result)
 				.build();
 	}

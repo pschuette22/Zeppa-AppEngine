@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
@@ -31,6 +30,7 @@ public class Upload extends HttpServlet {
 	// private static final Logger LOG =
 	// Logger.getLogger(Upload.class.getName());
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -47,13 +47,8 @@ public class Upload extends HttpServlet {
 		resp.setContentType("application/json");
 		JSONObject json = new JSONObject();
 
-		try {
-			json.put("servingUrl", servingUrl);
-			json.put("blobKey", key.getKeyString());
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		json.put("servingUrl", servingUrl);
+		json.put("blobKey", key.getKeyString());
 
 		PrintWriter out = resp.getWriter();
 		out.print(json.toString());

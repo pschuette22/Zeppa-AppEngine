@@ -8,9 +8,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -105,66 +103,33 @@ public class ZeppaEvent {
 	 * 
 	 * @param json
 	 */
+	@SuppressWarnings("unchecked")
 	public ZeppaEvent(JSONObject json) {
 		this.key = (Key) json.get("key");
 		
-		this.created = json.getLong("created");
-		this.updated = json.getLong("updated");
-		this.googleCalendarId = json.getString("googleCalendarId");
-		this.googleCalendarEventId = json.getString("googleCalendarEventId");
+		this.created = (Long) json.get("created");
+		this.updated = (Long) json.get("updated");
+		this.googleCalendarId = (String)json.get("googleCalendarId");
+		this.googleCalendarEventId = (String) json.get("googleCalendarEventId");
 		
-		try {
-			this.iCalUID = json.getString("iCalUID");
-		} catch (JSONException e) {
-
-		}
+		this.iCalUID = (String) json.get("iCalUID");
 		
-		this.privacy = EventPrivacyType.valueOf(json.getString("privacy"));
-		this.hostId = json.getLong("hostId");
-		this.title = json.getString("title");
-		this.description = json.getString("description");
-		this.guestsMayInvite = json.getBoolean("guestsMayInvite");
-		this.start = json.getLong("start");
-		this.end = json.getLong("end");
-		this.displayLocation = json.getString("displayLocation");
+		this.privacy = EventPrivacyType.valueOf((String)json.get("privacy"));
+		this.hostId = (Long) json.get("hostId");
+		this.title = (String) json.get("title");
+		this.description = (String)json.get("description");
+		this.guestsMayInvite = (Boolean) json.get("guestsMayInvite");
+		this.start = (Long) json.get("start");
+		this.end = (Long) json.get("end");
+		this.displayLocation = (String) json.get("displayLocation");
 
-		try {
-			this.mapsLocation = json.getString("mapsLocation");
-		} catch (JSONException e) {
-
-		}
-		/*
-		 * Fetch tag ids from json array
-		 */
-		this.tagIds = new ArrayList<Long>();
-		try {
-			JSONArray tagArray = json.getJSONArray("tagIds");
-			for (int i = 0; i < tagArray.length(); i++) {
-				if (tagArray.isNull(i)) {
-					break;
-				}
-				tagIds.add(tagArray.getLong(i));
-			}
-		} catch (JSONException e) {
-
-		}
+		this.mapsLocation = (String) json.get("mapsLocation");
+		this.tagIds = (ArrayList<Long>) json.get("tagIds");
 
 		/*
 		 * Rebuild the array of users that were invitied initially
 		 */
-		this.invitedUserIds = new ArrayList<Long>();
-		try {
-			JSONArray invitedArray = json.getJSONArray("invitedUserIds");
-			for (int i = 0; i < invitedArray.length(); i++) {
-				if (invitedArray.isNull(i)) {
-					break;
-				}
-				invitedUserIds.add(invitedArray.getLong(i));
-			}
-
-		} catch (JSONException e) {
-
-		}
+		this.invitedUserIds = (ArrayList<Long>)json.get("invitedUserIds");
 
 	}
 

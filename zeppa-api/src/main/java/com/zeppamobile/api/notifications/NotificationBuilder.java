@@ -36,6 +36,7 @@ public class NotificationBuilder {
 	 * @param id
 	 * @param action
 	 * @return list of result notifications or null
+	 * @throws JSONException 
 	 */
 	public static List<ZeppaNotification> buildNotifications(String objectType,
 			Long id, String action) {
@@ -166,6 +167,7 @@ public class NotificationBuilder {
 	 * Queue the build and send notifications for a ZeppaEvent
 	 * 
 	 * @param event
+	 * @throws JSONException 
 	 */
 	@SuppressWarnings("unchecked")
 	private static List<ZeppaNotification> buildNotificationsForZeppaEvent(

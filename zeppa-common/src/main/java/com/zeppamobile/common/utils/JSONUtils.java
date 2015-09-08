@@ -3,9 +3,9 @@ package com.zeppamobile.common.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
@@ -33,22 +33,18 @@ public class JSONUtils {
 	 *             if there is an error decoding items
 	 */
 	public static List<ZeppaEventToUserRelationship> convertEventRelationshipListString(
-			String responseString) throws JSONException {
+			String responseString) {
 		List<ZeppaEventToUserRelationship> result = new ArrayList<ZeppaEventToUserRelationship>();
 
-		JSONArray array = new JSONArray(responseString);
+		JSONArray array = (JSONArray) JSONValue.parse(responseString);
 
 		// Iterate through list of
-		for (int i = 0; i < array.length(); i++) {
-			if (array.isNull(i)) {
-				break;
-			}
+		for (int i = 0; i < array.size(); i++) {
 
-			JSONObject json = array.getJSONObject(i);
+			JSONObject json = (JSONObject) array.get(i);
 			ZeppaEventToUserRelationship relationship = new ZeppaEventToUserRelationship(
 					json);
 			result.add(relationship);
-
 
 		}
 
@@ -64,19 +60,15 @@ public class JSONUtils {
 	 * @throws JSONException
 	 *             if improperly encoded
 	 */
-	public static List<ZeppaEvent> convertEventListString(String responseString)
-			throws JSONException {
+	public static List<ZeppaEvent> convertEventListString(String responseString) {
 		List<ZeppaEvent> result = new ArrayList<ZeppaEvent>();
 
-		JSONArray array = new JSONArray(responseString);
+		JSONArray array = (JSONArray) JSONValue.parse(responseString);
 
 		// Iterate through list of
-		for (int i = 0; i < array.length(); i++) {
-			if (array.isNull(i)) {
-				break;
-			}
+		for (int i = 0; i < array.size(); i++) {
 
-			JSONObject json = array.getJSONObject(i);
+			JSONObject json = (JSONObject) array.get(i);
 			ZeppaEvent event = new ZeppaEvent(json);
 			result.add(event);
 
@@ -87,23 +79,20 @@ public class JSONUtils {
 
 	/**
 	 * Convert an HTTP get request response string of Event Tag Follows
+	 * 
 	 * @param responseString
 	 * @return
 	 * @throws JSONException
 	 */
-	public static List<EventTag> convertEventTagListString(String responseString)
-			throws JSONException {
+	public static List<EventTag> convertEventTagListString(String responseString) {
 		List<EventTag> result = new ArrayList<EventTag>();
 
-		JSONArray array = new JSONArray(responseString);
+		JSONArray array = (JSONArray) JSONValue.parse(responseString);
 
 		// Iterate through list of
-		for (int i = 0; i < array.length(); i++) {
-			if (array.isNull(i)) {
-				break;
-			}
+		for (int i = 0; i < array.size(); i++) {
 
-			JSONObject json = array.getJSONObject(i);
+			JSONObject json = (JSONObject) array.get(i);
 			EventTag tag = new EventTag(json);
 			result.add(tag);
 
@@ -120,18 +109,15 @@ public class JSONUtils {
 	 * @throws JSONException
 	 */
 	public static List<EventTagFollow> convertTagFollowListString(
-			String responseString) throws JSONException {
+			String responseString) {
 		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
 
-		JSONArray array = new JSONArray(responseString);
+		JSONArray array = (JSONArray) JSONValue.parse(responseString);
 
 		// Iterate through list of
-		for (int i = 0; i < array.length(); i++) {
-			if (array.isNull(i)) {
-				break;
-			}
+		for (int i = 0; i < array.size(); i++) {
 
-			JSONObject json = array.getJSONObject(i);
+			JSONObject json = (JSONObject) array.get(i);
 			EventTagFollow follow = new EventTagFollow(json);
 			result.add(follow);
 
@@ -142,17 +128,18 @@ public class JSONUtils {
 
 	/**
 	 * Convert a list of EventTagFollow objects to json array
+	 * 
 	 * @param follows
 	 * @return
 	 * @throws JSONException
 	 */
+	@SuppressWarnings("unchecked")
 	public static JSONArray convertTagFollowListToJson(
-			List<EventTagFollow> follows) throws JSONException {
+			List<EventTagFollow> follows) {
 		JSONArray result = new JSONArray();
 
 		for (EventTagFollow follow : follows) {
-			JSONObject json = new JSONObject(follow);
-			result.put(json);
+			result.add(follow.toJson());
 		}
 
 		return result;
@@ -167,18 +154,15 @@ public class JSONUtils {
 	 * @throws JSONException
 	 */
 	public static List<ZeppaUserToUserRelationship> convertUserRelationshipListString(
-			String responseString) throws JSONException {
+			String responseString) {
 		List<ZeppaUserToUserRelationship> result = new ArrayList<ZeppaUserToUserRelationship>();
 
-		JSONArray array = new JSONArray(responseString);
+		JSONArray array = (JSONArray) JSONValue.parse(responseString);
 
 		// Iterate through list of
-		for (int i = 0; i < array.length(); i++) {
-			if (array.isNull(i)) {
-				break;
-			}
+		for (int i = 0; i < array.size(); i++) {
 
-			JSONObject json = array.getJSONObject(i);
+			JSONObject json = (JSONObject) array.get(i);
 			ZeppaUserToUserRelationship follow = new ZeppaUserToUserRelationship(
 					json);
 			result.add(follow);

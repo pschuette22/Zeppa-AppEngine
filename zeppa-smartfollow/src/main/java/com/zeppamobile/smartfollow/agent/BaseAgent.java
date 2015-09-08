@@ -1,6 +1,6 @@
 package com.zeppamobile.smartfollow.agent;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 public abstract class BaseAgent {
 

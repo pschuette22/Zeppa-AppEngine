@@ -19,7 +19,6 @@
 			<groupId>com.zeppamobile.appengine</groupId>
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
-			<type>jar</type>
 		</dependency>
 		<!-- Appengine dependencies -->
 
@@ -54,9 +53,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20141113</version>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 		<!-- Natrual Language Processing Library -->
@@ -92,11 +91,7 @@
 	</dependencies>
 
 	<build>
-
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
-		<testOutputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/test-classes</testOutputDirectory>
-
-		<!-- <outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory> -->
 		<!-- All details/versions/configurations are setup at the parent pom -->
 		<plugins>
 			<plugin>
@@ -106,12 +101,6 @@
 			<plugin>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
-				<version>${appengine.target.version}</version>
-				<!-- Comment out below to disable debugging -->
-				<!-- Disabling debugging when updating app server <configuration> <port>8888</port> 
-					<jvmFlags> <jvmFlag>-Xdebug</jvmFlag> <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag> 
-					</jvmFlags> <disableUpdateCheck>true</disableUpdateCheck> </configuration> -->
-
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -126,11 +115,8 @@
 							<targetPath>WEB-INF</targetPath>
 						</resource>
 					</webResources>
-					<!-- <webXml>${basedir}/target/zeppa-backend-1/WEB-INF</webXml> -->
 				</configuration>
 			</plugin>
 		</plugins>
-
-
 	</build>
 </project>

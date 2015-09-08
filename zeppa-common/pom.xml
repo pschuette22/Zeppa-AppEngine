@@ -8,7 +8,7 @@
 		<artifactId>zeppa</artifactId>
 		<version>1</version>
 	</parent>
-	
+
 	<groupId>com.zeppamobile.appengine</groupId>
 	<artifactId>zeppa-common</artifactId>
 	<version>1</version>
@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
-			<version>1.9.25</version>
+			<version>1.9.26</version>
 		</dependency>
 		<!-- JDO Dependencies -->
 		<dependency>
@@ -53,9 +53,9 @@
 
 		<!-- Json Dependency -->
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20140107</version>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

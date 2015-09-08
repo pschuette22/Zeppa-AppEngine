@@ -5,7 +5,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -46,21 +46,21 @@ public class ZeppaUserToUserRelationship {
 		this.subjectId = subjectId;
 		this.relationshipType = relationshipType;
 	}
-	
+
 	/**
 	 * Reconstruct user relationship object from json
+	 * 
 	 * @param json
 	 */
-	public ZeppaUserToUserRelationship(JSONObject json){
+	public ZeppaUserToUserRelationship(JSONObject json) {
 		this.key = (Key) json.get("key");
-		this.created = json.getLong("created");
-		this.updated = json.getLong("updated");
-		this.creatorId = json.getLong("creatorId");
-		this.subjectId = json.getLong("subjectId");
-		
-		String type = json.getString("relationshipType");
-		relationshipType = UserRelationshipType.valueOf(type);
-		
+		this.created = (Long) json.get("created");
+		this.updated = (Long) json.get("updated");
+		this.creatorId = (Long) json.get("creatorId");
+		this.subjectId = (Long) json.get("subjectId");
+		this.relationshipType = UserRelationshipType.valueOf((String) json
+				.get("relationshipType"));
+
 	}
 
 	public Long getCreated() {
@@ -110,7 +110,6 @@ public class ZeppaUserToUserRelationship {
 	public void setRelationshipType(UserRelationshipType relationshipType) {
 		this.relationshipType = relationshipType;
 	}
-	
 
 	/**
 	 * Convenience method to get other userId of user involved in this

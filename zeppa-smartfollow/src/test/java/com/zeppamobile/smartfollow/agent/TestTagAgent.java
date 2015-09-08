@@ -1,28 +1,26 @@
 package com.zeppamobile.smartfollow.agent;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.zeppamobile.common.datamodel.EventTag;
-import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Configuration;
 
-public class TestTagAgent {
 
-	private UserAgent userAgent;
-	private EventTag tag;
+/**
+ * Basic testing for TagAgent 
+ * @author Pete Schuette
+ *
+ */
+public class TestTagAgent {
 	
 	@Before
-	private void setup(){
+	public void setup(){
 		Configuration.startTesting();
-		userAgent = new UserAgent(Long.valueOf(1));
-		tag = new EventTag(userAgent.getUserId(), "TestingPrograms");
+		
 	}
 	
 	@After
@@ -31,24 +29,19 @@ public class TestTagAgent {
 	}
 	
 	@Test
-	private void doTesting(){
-//		TagAgent agent = new TagAgent(userAgent, tag);
+	public void doTesting(){
+		UserAgent userAgent1 = new UserAgent(Long.valueOf(1));
+		UserAgent userAgent2 = new UserAgent(Long.valueOf(2));
+		EventTag tag1 = new EventTag(userAgent1.getUserId(), "TestingPrograms");
+		EventTag tag2 = new EventTag(userAgent2.getUserId(), "PlayingFootball");
+		
+		TagAgent tagAgent1 = new TagAgent(userAgent1, tag1);
+		TagAgent tagAgent2 = new TagAgent(userAgent2, tag2);
+		
+		double similarity = tagAgent1.calculateSimilarity(tagAgent2);
+		System.out.println("Calculated Similarity: " + similarity);
+		assertTrue(true);
 	}
 	
-	
-	
-	private EventTag fetchTagById(Long tagId) throws MalformedURLException{
-		EventTag result = null;
-		
-		
-		Dictionary<String,String> params = new Hashtable<String,String>();
-		params.put("id",String.valueOf(tagId));
-		
-		URL url = ModuleUtils.getZeppaAPIUrl("getEventTag", params);
-		
-		
-		
-		return result;
-	}
 	
 }

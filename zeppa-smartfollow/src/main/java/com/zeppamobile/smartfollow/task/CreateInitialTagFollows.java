@@ -18,8 +18,7 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.simple.JSONArray;
 
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.utils.JSONUtils;
@@ -86,7 +85,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 				params.put("jsonArray", resultArray.toString());
 
 				URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
-						"listZeppaEventToUserRelationship", params);
+						"insertEventTagFollowArray", params);
 
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(
@@ -99,6 +98,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 					builder.append(line);
 				}
 
+				@SuppressWarnings("unused")
 				List<EventTagFollow> result = JSONUtils.convertTagFollowListString(builder.toString());
 				// TODO: verify results
 				
@@ -109,9 +109,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (JSONException e) {
-
-			}
+			} 
 
 		}
 

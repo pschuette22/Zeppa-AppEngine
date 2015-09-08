@@ -24,21 +24,6 @@
     "maxAge" : 0
   },
   "methods" : {
-    "zeppaApi.getIOSClientInfo" : {
-      "path" : "iosclientinfo",
-      "httpMethod" : "GET",
-      "authLevel" : "NONE",
-      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
-      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
-      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
-      "rosyMethod" : "com.zeppamobile.api.endpoint.AppEndpointBase.getIOSClientInfo",
-      "request" : {
-        "body" : "empty"
-      },
-      "response" : {
-        "body" : "autoTemplate(backendResponse)"
-      }
-    },
     "zeppaApi.getAndroidClientInfo" : {
       "path" : "androidclientinfo",
       "httpMethod" : "GET",
@@ -53,32 +38,47 @@
       "response" : {
         "body" : "autoTemplate(backendResponse)"
       }
+    },
+    "zeppaApi.getIOSClientInfo" : {
+      "path" : "iosclientinfo",
+      "httpMethod" : "GET",
+      "authLevel" : "NONE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com" ],
+      "clientIds" : [ "292824132082.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.zeppamobile.api.endpoint.AppEndpointBase.getIOSClientInfo",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
     }
   },
   "descriptor" : {
     "schemas" : {
-      "IOSClientInfo" : {
-        "id" : "IOSClientInfo",
+      "AndroidClientInfo" : {
+        "id" : "AndroidClientInfo",
         "type" : "object",
         "properties" : {
         }
       },
-      "AndroidClientInfo" : {
-        "id" : "AndroidClientInfo",
+      "IOSClientInfo" : {
+        "id" : "IOSClientInfo",
         "type" : "object",
         "properties" : {
         }
       }
     },
     "methods" : {
-      "com.zeppamobile.api.endpoint.AppEndpointBase.getIOSClientInfo" : {
-        "response" : {
-          "$ref" : "IOSClientInfo"
-        }
-      },
       "com.zeppamobile.api.endpoint.AppEndpointBase.getAndroidClientInfo" : {
         "response" : {
           "$ref" : "AndroidClientInfo"
+        }
+      },
+      "com.zeppamobile.api.endpoint.AppEndpointBase.getIOSClientInfo" : {
+        "response" : {
+          "$ref" : "IOSClientInfo"
         }
       }
     }

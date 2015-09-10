@@ -1,6 +1,5 @@
 package com.zeppamobile.smartfollow;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class Utils {
 
 		List<String> result = new ArrayList<String>();
 		// TODO: convert Slang
-		
+
 		// try to convert slang
 		// else (cant convert)
 		result.add(slang);
@@ -82,24 +81,6 @@ public class Utils {
 	}
 
 	/**
-	 * Determine if this word is negative - could reverse meaning of tag
-	 * 
-	 * @param word
-	 * @return true if negative
-	 */
-	public static boolean isNegative(String word) {
-		boolean isNegative = false;
-
-		// Most basic case. "nt" is included for those who don't use apostrophes
-		if (word.equalsIgnoreCase("no") || word.equalsIgnoreCase("not")
-				|| word.endsWith("nt") || word.endsWith("n't")) {
-			isNegative = true;
-		}
-
-		return isNegative;
-	}
-
-	/**
 	 * Convert tag text to list of seperated words
 	 * 
 	 * @return
@@ -114,7 +95,7 @@ public class Utils {
 			result.add(tagText);
 		} else {
 
-			for (int i = tagText.length()-1; i >= 0; --i) {
+			for (int i = tagText.length() - 1; i >= 0; --i) {
 				char ch = tagText.charAt(i);
 
 				if (Character.isLowerCase(ch)) {
@@ -147,13 +128,14 @@ public class Utils {
 					builder = new StringBuilder();
 
 				} else if (!isSpacer(ch)) {
-					if(ch =='\''){
+					if (ch == '\'') {
 						// This is an apostrophe, should be left where it is
 						result.add(0, builder.toString());
 					} else if (builder.length() > 0
 							&& Character.isLetterOrDigit(builder.charAt(0))) {
 						// Add to characters strung together
-						// Could be a Smiley face, heart, or something of the like
+						// Could be a Smiley face, heart, or something of the
+						// like
 						result.add(0, builder.toString());
 						builder = new StringBuilder();
 					}
@@ -161,13 +143,17 @@ public class Utils {
 					builder.append(ch);
 				} else if (builder.length() > 0) {
 					/*
-					 * Encountered spacer and builder had text in queue
-					 * Add queued text to result list
+					 * Encountered spacer and builder had text in queue Add
+					 * queued text to result list
 					 */
 					result.add(0, builder.toString());
 					builder = new StringBuilder();
 				} // else, no need to do anything
 
+			}
+			
+			if(builder.length() > 0){
+				result.add(0, builder.toString());
 			}
 		}
 
@@ -215,8 +201,7 @@ public class Utils {
 	public static POSModel getPOSModel() {
 		InputStream modelIn = null;
 		try {
-			modelIn = Utils.class.getClassLoader()
-					.getResourceAsStream("en-pos-maxent.bin");
+			modelIn = Utils.class.getClassLoader().getResourceAsStream("en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
 			return model;
 		} catch (IOException e) {
@@ -255,41 +240,46 @@ public class Utils {
 			// keep going till out of bounds
 		}
 		// calculated similarity
-		return (1 - ((degrees * 2) / (w1.length() + w2.length())));
+		double sim = (1 - ((degrees * 2) / (w1.length() + w2.length())));
+		System.out.println(w1 + " Character Similarity to" + w2 + ": " + sim);
+		return sim;
 	}
-	
+
 	/**
-	 * @param ch - a character
+	 * @param ch
+	 *            - a character
 	 * @return true if ch is a known replacer of a space
 	 */
-	public static boolean isSpacer(char ch){
-		return (ch == '_' || Character.isWhitespace(ch));
+	public static boolean isSpacer(char ch) {
+		return (ch == '_' || Character.isWhitespace(ch) || ch == '-');
 	}
-	
+
 	/**
 	 * 
-	 * @param list of ids
-	 * @param id that is being looked for
+	 * @param list
+	 *            of ids
+	 * @param id
+	 *            that is being looked for
 	 * @return true if id is held in list
 	 */
-	public static boolean listContainsId(List<Long> list, Long id){
-		for(Long l: list){
-			if(l.longValue() == id.longValue()){
+	public static boolean listContainsId(List<Long> list, Long id) {
+		for (Long l : list) {
+			if (l.longValue() == id.longValue()) {
 				// Id is held, return true
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public static String toLowercase(String s){
+
+	public static String toLowercase(String s) {
 		StringBuilder builder = new StringBuilder();
-		for(int i = 0; i < s.length(); i++){
+		for (int i = 0; i < s.length(); i++) {
 			char ch = s.charAt(i);
 			ch = Character.toLowerCase(ch);
 			builder.append(ch);
 		}
 		return builder.toString();
 	}
-	
+
 }

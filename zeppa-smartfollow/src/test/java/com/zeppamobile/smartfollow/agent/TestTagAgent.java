@@ -32,14 +32,15 @@ public class TestTagAgent {
 	public void doTesting(){
 		UserAgent userAgent1 = new UserAgent(Long.valueOf(1));
 		UserAgent userAgent2 = new UserAgent(Long.valueOf(2));
-		EventTag tag1 = new EventTag(userAgent1.getUserId(), "TestingPrograms");
-		EventTag tag2 = new EventTag(userAgent2.getUserId(), "PlayingFootball");
+		EventTag tag1 = new EventTag(userAgent1.getUserId(), "PlayingFootball");
+		EventTag tag3 = new EventTag(userAgent2.getUserId(), "WatchingFootball");
 		
 		TagAgent tagAgent1 = new TagAgent(userAgent1, tag1);
-		TagAgent tagAgent2 = new TagAgent(userAgent2, tag2);
+		TagAgent tagAgent3 = new TagAgent(userAgent2, tag3);
 		
-		double similarity = tagAgent1.calculateSimilarity(tagAgent2);
-		System.out.println("Calculated Similarity: " + similarity);
+		
+		System.out.println(tag1.getTagText() + " Calculated Similarity to " + tag3.getTagText() +": " + tagAgent1.calculateSimilarity(tagAgent3));
+
 		assertTrue(true);
 	}
 	

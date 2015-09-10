@@ -32,8 +32,8 @@ public class TestTagAgent {
 	public void doTesting(){
 		UserAgent userAgent1 = new UserAgent(Long.valueOf(1));
 		UserAgent userAgent2 = new UserAgent(Long.valueOf(2));
-		EventTag tag1 = new EventTag(userAgent1.getUserId(), "PlayingFootball");
-		EventTag tag3 = new EventTag(userAgent2.getUserId(), "WatchingFootball");
+		EventTag tag1 = new EventTag(userAgent1.getUserId(), "Partying");
+		EventTag tag3 = new EventTag(userAgent2.getUserId(), "TheRoudyRoofdeck");
 		
 		TagAgent tagAgent1 = new TagAgent(userAgent1, tag1);
 		TagAgent tagAgent3 = new TagAgent(userAgent2, tag3);

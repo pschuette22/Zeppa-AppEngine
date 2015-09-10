@@ -25,11 +25,23 @@ public class Utils {
 	public static List<String> slangConverter(String slang) {
 
 		List<String> result = new ArrayList<String>();
-		// TODO: convert Slang
+		// TODO: party/drinking words
+		// TODO: weed words
+		// TODO: Sports Words
 
-		// try to convert slang
-		// else (cant convert)
-		result.add(slang);
+		if(slang.startsWith("ballin")){
+			result.add("playing");
+			result.add("Basketball");
+		} else if(slang.endsWith("in")){
+			// Most likely left the g off an -ing
+			
+			result.add(slang+"g");
+		} else {
+			// try to convert slang
+			// else (cant convert)
+			result.add(slang);
+		}
+		
 		return result;
 	}
 

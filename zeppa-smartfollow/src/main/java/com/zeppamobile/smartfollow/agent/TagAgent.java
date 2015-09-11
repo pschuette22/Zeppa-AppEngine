@@ -731,7 +731,9 @@ public class TagAgent {
 
 					double depth = r.getDepth();
 
-					double adjustment = (Math.pow(relationshipWeight, depth))
+//					double adjustment = (Math.pow(relationshipWeight, depth))
+//							* (1.0 - strength);
+					double adjustment = (Math.pow(.9, depth))
 							* (1.0 - strength);
 					strength += adjustment;
 

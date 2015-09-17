@@ -35,8 +35,23 @@ public class ZeppaUserToUserRelationship {
 	@Persistent
 	private UserRelationshipType relationshipType;
 
-	// For guice
+	/*
+	 * For maintaining relationships
+	 */
+	@Persistent
+	private ZeppaUser creator;
+	
+	@Persistent
+	private ZeppaUser subject;
+	
 
+	/**
+	 * Instantiate a User To User Relationship
+	 * 
+	 * @param creatorId
+	 * @param subjectId
+	 * @param relationshipType
+	 */
 	public ZeppaUserToUserRelationship(Long creatorId, Long subjectId,
 			UserRelationshipType relationshipType) {
 
@@ -58,6 +73,7 @@ public class ZeppaUserToUserRelationship {
 		this.updated = (Long) json.get("updated");
 		this.creatorId = (Long) json.get("creatorId");
 		this.subjectId = (Long) json.get("subjectId");
+		
 		this.relationshipType = UserRelationshipType.valueOf((String) json
 				.get("relationshipType"));
 

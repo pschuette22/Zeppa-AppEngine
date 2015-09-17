@@ -3,6 +3,7 @@ package com.zeppamobile.common.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -73,6 +74,20 @@ public class ZeppaEvent {
 	@Persistent
 	private List<Long> invitedUserIds;
 
+	/*
+	 * Entity relationships
+	 */
+	@Persistent
+	private ZeppaUser host;
+
+	@Persistent(mappedBy = "event")
+	@Element(dependent = "true")
+	private List<ZeppaEventToUserRelationship> attendeeRelationships = new ArrayList<ZeppaEventToUserRelationship>();
+
+	@Persistent(mappedBy = "event")
+	@Element(dependent = "true")
+	private List<EventComment> comments = new ArrayList<EventComment>();
+
 	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
 			String googleCalendarEventId, String iCalUID,
 			EventPrivacyType privacy, Long hostId, String title,
@@ -106,18 +121,18 @@ public class ZeppaEvent {
 	@SuppressWarnings("unchecked")
 	public ZeppaEvent(JSONObject json) {
 		this.key = (Key) json.get("key");
-		
+
 		this.created = (Long) json.get("created");
 		this.updated = (Long) json.get("updated");
-		this.googleCalendarId = (String)json.get("googleCalendarId");
+		this.googleCalendarId = (String) json.get("googleCalendarId");
 		this.googleCalendarEventId = (String) json.get("googleCalendarEventId");
-		
+
 		this.iCalUID = (String) json.get("iCalUID");
-		
-		this.privacy = EventPrivacyType.valueOf((String)json.get("privacy"));
+
+		this.privacy = EventPrivacyType.valueOf((String) json.get("privacy"));
 		this.hostId = (Long) json.get("hostId");
 		this.title = (String) json.get("title");
-		this.description = (String)json.get("description");
+		this.description = (String) json.get("description");
 		this.guestsMayInvite = (Boolean) json.get("guestsMayInvite");
 		this.start = (Long) json.get("start");
 		this.end = (Long) json.get("end");
@@ -129,7 +144,7 @@ public class ZeppaEvent {
 		/*
 		 * Rebuild the array of users that were invitied initially
 		 */
-		this.invitedUserIds = (ArrayList<Long>)json.get("invitedUserIds");
+		this.invitedUserIds = (ArrayList<Long>) json.get("invitedUserIds");
 
 	}
 
@@ -268,5 +283,42 @@ public class ZeppaEvent {
 	public void setInvitedUserIds(List<Long> invitedUserIds) {
 		this.invitedUserIds = invitedUserIds;
 	}
+
+	public ZeppaUser getHost() {
+		return host;
+	}
+
+	public void setHost(ZeppaUser host) {
+		this.host = host;
+	}
+
+	public List<ZeppaEventToUserRelationship> getAttendeeRelationships() {
+		return attendeeRelationships;
+	}
+
+	public void setAttendeeRelationships(
+			List<ZeppaEventToUserRelationship> attendeeRelationships) {
+		this.attendeeRelationships = attendeeRelationships;
+	}
+	
+	public boolean addAttendeeRelationship(ZeppaEventToUserRelationship relationship){
+		return this.attendeeRelationships.add(relationship);
+	}
+
+	public List<EventComment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<EventComment> comments) {
+		this.comments = comments;
+	}
+	
+	
+	public boolean addComment(EventComment comment){
+		return this.comments.add(comment);
+	}
+	
+	
+	
 
 }

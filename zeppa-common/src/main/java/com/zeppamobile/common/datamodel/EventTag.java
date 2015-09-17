@@ -29,17 +29,32 @@ public class EventTag {
 	@Persistent
 	private String tagText;
 
+	@Persistent
+	private ZeppaUser owner;
+	
 	/**
 	 * Create a new EventTag Instance
 	 * @param userId
 	 * @param tagText
 	 */
-	public EventTag(Long userId, String tagText) {
+	public EventTag(ZeppaUser owner, String tagText) {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
-		this.userId = userId;
+		this.owner = owner;
+		this.userId = owner.getId();
+	}
+	
+	/**
+	 * TEMPORARY
+	 */
+	public EventTag(Long ownerId, String tagText) {
+
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.tagText = tagText;
+		this.userId = ownerId;
 	}
 	
 	/**

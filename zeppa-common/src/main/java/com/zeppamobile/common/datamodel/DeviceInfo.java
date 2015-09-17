@@ -26,6 +26,9 @@ public class DeviceInfo  {
 	
 	@Persistent
 	private Long ownerId;
+	
+	@Persistent
+	private ZeppaUser owner;
 
 	@Persistent
 	private DeviceType phoneType;
@@ -38,6 +41,7 @@ public class DeviceInfo  {
 
 	@Persistent
 	private Long lastLogin;
+	
 
 	/*
 	 * These will only be change when a new version of Zeppa is installed
@@ -56,33 +60,45 @@ public class DeviceInfo  {
 	// This will be increased when bugs are fixed
 	private Integer bugfix;
 
-//	/**
-//	 * Contructor. Not used by endpoints.
-//	 * 
-//	 * @param owner
-//	 * @param phoneType
-//	 * @param registrationId
-//	 * @param loggedIn
-//	 * @param version
-//	 * @param update
-//	 * @param bugfix
-//	 */
-//	public DeviceInfo(DeviceType phoneType,
-//			String registrationId, Boolean loggedIn, Integer version,
-//			Integer update, Integer bugfix) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.phoneType = phoneType;
-//		this.registrationId = registrationId;
-//		this.loggedIn = loggedIn;
-//		this.version = version;
-//		this.update = update;
-//		this.bugfix = bugfix;
-//	}
 	
-	public DeviceInfo(){}
 	
+	/**
+	 * Contructor. Not used by endpoints.
+	 * 
+	 * @param owner
+	 * @param phoneType
+	 * @param registrationId
+	 * @param loggedIn
+	 * @param version
+	 * @param update
+	 * @param bugfix
+	 */
+	public DeviceInfo(ZeppaUser owner, DeviceType phoneType,
+			String registrationId, Boolean loggedIn, Integer version,
+			Integer update, Integer bugfix) {
+
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.owner = owner;
+		this.ownerId = owner.getId();
+		this.phoneType = phoneType;
+		this.registrationId = registrationId;
+		this.loggedIn = loggedIn;
+		this.version = version;
+		this.update = update;
+		this.bugfix = bugfix;
+	}
+	
+	
+	
+	public ZeppaUser getOwner() {
+		return owner;
+	}
+
+	public void setOwner(ZeppaUser owner) {
+		this.owner = owner;
+	}
+
 	public Long getCreated() {
 		
 		return created;

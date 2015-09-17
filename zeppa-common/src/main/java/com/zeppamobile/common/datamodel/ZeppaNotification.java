@@ -52,7 +52,16 @@ public class ZeppaNotification {
 
 	@Persistent
 	private Boolean hasSeen;
-
+	
+	/*
+	 * For maintaining relationship
+	 */
+	@Persistent
+	private ZeppaUser recipient;
+	
+	@Persistent
+	private ZeppaUser sender;
+	
 
 	/**
 	 * Construct a new Notification that can be persisted and viewed by the user
@@ -157,8 +166,31 @@ public class ZeppaNotification {
 		return senderId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setSenderId(Long userId) {
 		this.senderId = userId;
 	}
 
+
+	public ZeppaUser getRecipient() {
+		return recipient;
+	}
+
+
+	public void setRecipient(ZeppaUser recipient) {
+		this.recipient = recipient;
+		this.recipientId = recipient.getId();
+	}
+
+
+	public ZeppaUser getSender() {
+		return sender;
+	}
+
+
+	public void setSender(ZeppaUser sender) {
+		this.sender = sender;
+		this.senderId = sender.getId();
+	}
+
+	
 }

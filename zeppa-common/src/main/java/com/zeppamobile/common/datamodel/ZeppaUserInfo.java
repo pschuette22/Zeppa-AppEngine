@@ -38,29 +38,26 @@ public class ZeppaUserInfo{
 
 	@Persistent(defaultFetchGroup = "true")
 	private String primaryUnformattedNumber;
+	
+	
+	/**
+	 * @param givenName
+	 * @param familyName
+	 * @param imageUrl
+	 * @param googleAccountEmail
+	 * @param primaryUnformatedNumber
+	 */
+	public ZeppaUserInfo(String givenName, String familyName, String imageUrl,
+			String googleAccountEmail, String primaryUnformattedNumber) {
 
-	
-	// For guice
-	public ZeppaUserInfo(){}
-	
-//	/**
-//	 * @param givenName
-//	 * @param familyName
-//	 * @param imageUrl
-//	 * @param googleAccountEmail
-//	 * @param primaryUnformatedNumber
-//	 */
-//	public ZeppaUserInfo(String givenName, String familyName, String imageUrl,
-//			String googleAccountEmail, String primaryUnformattedNumber) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.givenName = givenName;
-//		this.familyName = familyName;
-//		this.imageUrl = imageUrl;
-//		this.googleAccountEmail = googleAccountEmail;
-//		this.primaryUnformattedNumber = primaryUnformattedNumber;
-//	}
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.givenName = givenName;
+		this.familyName = familyName;
+		this.imageUrl = imageUrl;
+		this.googleAccountEmail = googleAccountEmail;
+		this.primaryUnformattedNumber = primaryUnformattedNumber;
+	}
 	
 	public Long getCreated() {
 		return created;

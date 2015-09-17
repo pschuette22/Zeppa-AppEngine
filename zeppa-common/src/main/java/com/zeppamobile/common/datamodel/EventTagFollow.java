@@ -30,8 +30,36 @@ public class EventTagFollow {
 
 	@Persistent
 	private Long followerId;
+	
+	
+	/*
+	 * Maps back to tag and user
+	 */
+	@Persistent
+	private EventTag tag;
+	
+	@Persistent
+	private ZeppaUser follower;
 
 
+	/**
+	 * Instantiate follow object
+	 * 
+	 * @param tag
+	 * @param followerId
+	 */
+	public EventTagFollow(EventTag tag, ZeppaUser follower) {
+
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
+		this.tagId = tag.getId();
+		this.tagOwnerId = tag.getOwnerId();
+		this.follower = follower;
+		this.followerId = follower.getId();
+		
+		
+	}
+	
 	/**
 	 * Instantiate follow object
 	 * 
@@ -45,6 +73,8 @@ public class EventTagFollow {
 		this.tagId = tag.getId();
 		this.tagOwnerId = tag.getOwnerId();
 		this.followerId = followerId;
+		
+		
 	}
 
 

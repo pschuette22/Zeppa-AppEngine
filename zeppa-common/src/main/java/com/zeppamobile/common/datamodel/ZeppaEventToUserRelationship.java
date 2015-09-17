@@ -46,12 +46,28 @@ public class ZeppaEventToUserRelationship {
 	@Persistent
 	private Long invitedByUserId;
 	
-	@Persistent // Event holds a tag user follows
+	@Persistent // Event holds a tag attendee follows
 	private Boolean isRecommended;
 
 	
+	/*
+	 * The following is for creating a 'join' relationship
+	 * These values map back to the 
+	 */
+	
+	@Persistent(defaultFetchGroup="true")
+	private ZeppaEvent event;
+	
+	@Persistent(defaultFetchGroup="false")
+	private ZeppaUser host;
+	
+	@Persistent(defaultFetchGroup="false")
+	private ZeppaUser attendee;
+	
+	
+	
 	/**
-	 * Rebuild this object from JSON obejct
+	 * Rebuild this object from JSON object
 	 * @param json - object as JSON
 	 * @throws JSONException throws exception if there is an error converting
 	 */
@@ -183,9 +199,29 @@ public class ZeppaEventToUserRelationship {
 	public void setEventHostId(Long eventHostId) {
 		this.eventHostId = eventHostId;
 	}
-	
-	
-	
-	
 
+	public ZeppaEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ZeppaEvent event) {
+		this.event = event;
+	}
+
+	public ZeppaUser getHost() {
+		return host;
+	}
+
+	public void setHost(ZeppaUser host) {
+		this.host = host;
+	}
+
+	public ZeppaUser getAttendee() {
+		return attendee;
+	}
+
+	public void setAttendee(ZeppaUser attendee) {
+		this.attendee = attendee;
+	}
+	
 }

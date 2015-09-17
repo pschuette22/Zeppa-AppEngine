@@ -13,10 +13,10 @@ public class EventComment {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-	
+
 	@Persistent
 	private Long created;
-	
+
 	@Persistent
 	private Long updated;
 
@@ -29,7 +29,29 @@ public class EventComment {
 	@Persistent
 	private String text;
 
-	
+	/*
+	 * For maintaining relationships
+	 */
+
+	@Persistent
+	private ZeppaEvent event;
+
+	@Persistent
+	private ZeppaUser commenter;
+
+	public EventComment(ZeppaEvent event, ZeppaUser commenter, Long created,
+			Long updated, String text) {
+		super();
+		this.event = event;
+		this.commenter = commenter;
+		this.eventId = event.getId();
+		this.commenterId = commenter.getId();
+		this.created = created;
+		this.updated = updated;
+		this.text = text;
+
+	}
+
 	public Long getCreated() {
 		return created;
 	}
@@ -45,7 +67,7 @@ public class EventComment {
 	public void setUpdated(Long updated) {
 		this.updated = updated;
 	}
-	
+
 	public Key getKey() {
 		return key;
 	}
@@ -77,7 +99,21 @@ public class EventComment {
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
 	}
-	
-	
+
+	public ZeppaEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ZeppaEvent event) {
+		this.event = event;
+	}
+
+	public ZeppaUser getCommenter() {
+		return commenter;
+	}
+
+	public void setCommenter(ZeppaUser commenter) {
+		this.commenter = commenter;
+	}
 
 }

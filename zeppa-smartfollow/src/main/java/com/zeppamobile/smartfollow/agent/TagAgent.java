@@ -26,8 +26,11 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
 import net.sf.extjwnl.data.POS;
+import net.sf.extjwnl.data.PointerTarget;
 import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.list.PointerTargetNode;
+import net.sf.extjwnl.data.list.PointerTargetNodeList;
 import net.sf.extjwnl.data.relationship.Relationship;
 import net.sf.extjwnl.data.relationship.RelationshipFinder;
 import net.sf.extjwnl.data.relationship.RelationshipList;
@@ -672,11 +675,15 @@ public class TagAgent {
 
 				// Iterate through both lists and figure out the highest
 				// similarity
-				for (int i = 0; i < set1.size(); i++) {
+				for (int i = 0; i < set1.size() && i<5; i++) {
 					Synset s1 = set1.get(i);
-					for (int j = 0; j < set2.size(); j++) {
+					for (int j = 0; j < set2.size() &&j<5; j++) {
 						Synset s2 = set2.get(j);
 
+						// Assign weight based on how common this form of word is
+						double weight = Math.pow(.95, (i+j))*.9;
+						
+						
 						/*
 						 * Iterate through all pointer types and try to find
 						 * relationships Calculate strength of these
@@ -689,14 +696,20 @@ public class TagAgent {
 							if (relationships.isEmpty()) {
 								continue;
 							}
+							
+							
 
-							double relationshipWeight = getPOSWeight(s1
-									.getPOS()) * getPOSWeight(s2.getPOS());
+//							double relationshipWeight = getPOSWeight(s1
+//									.getPOS()) * getPOSWeight(s2.getPOS());
 							double similarityCalc = calculatedRelationshipsListStrength(
-									relationships, relationshipWeight);
+									relationships, weight);
 
 							if (similarity < similarityCalc) {
 								similarity = similarityCalc;
+							}
+							
+							if(similarity > .98){
+								return 1;
 							}
 
 						}
@@ -723,20 +736,29 @@ public class TagAgent {
 			 * Create a map of all pointers references with their minimum depth
 			 * of reference
 			 */
+			
+//			System.out.println("Calculating relationship list strength");
 			try {
 				Iterator<Relationship> iterator = relationships.iterator();
 				while (iterator.hasNext()) {
+					
+					if(strength > .98){
+						return 1;
+					}
 
 					Relationship r = iterator.next();
 
+					printPointerRelationshipInfo(r);
+					
 					double depth = r.getDepth();
-
-//					double adjustment = (Math.pow(relationshipWeight, depth))
-//							* (1.0 - strength);
-					double adjustment = (Math.pow(.9, depth))
+				
+					double adjustment = (Math.pow(relationshipWeight, depth))
 							* (1.0 - strength);
+//					double adjustment = (Math.pow(.9, depth))
+//							* (1.0 - strength);
 					strength += adjustment;
-
+					
+					
 				}
 
 			} catch (NullPointerException e) {
@@ -798,6 +820,25 @@ public class TagAgent {
 			}
 
 			return similarity;
+		}
+		
+		
+		/**
+		 * 
+		 * @param relationship
+		 */
+		private void printPointerRelationshipInfo(Relationship relationship){
+			System.out.println("=======================");
+			System.out.println(relationship.getType().toString() + " relationship with depth: " + relationship.getDepth());
+			PointerTargetNodeList nodes = relationship.getNodeList();
+			Iterator<PointerTargetNode> iterator = nodes.iterator();
+			System.out.println("Pointer Target Nodes: ");
+			while(iterator.hasNext()){
+				PointerTargetNode n = iterator.next();
+				System.out.println("	" + n.getPointerTarget().toString());
+				
+			}
+			
 		}
 
 	}

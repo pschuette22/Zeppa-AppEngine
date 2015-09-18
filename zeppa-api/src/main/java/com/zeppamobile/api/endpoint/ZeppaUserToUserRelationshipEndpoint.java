@@ -19,6 +19,7 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.api.notifications.PayloadBuilder;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
@@ -45,7 +46,8 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -106,7 +108,8 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
-			@Named("relationshipId") Long relationshipId) {
+			@Named("relationshipId") Long relationshipId,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserToUserRelationship zeppausertouserrelationship;
@@ -131,7 +134,8 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "insertZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship insertZeppaUserToUserRelationship(
-			ZeppaUserToUserRelationship relationship) {
+			ZeppaUserToUserRelationship relationship,
+			@Named("auth") Authorizer auth) {
 
 		if (relationship.getCreatorId() == null) {
 			throw new NullPointerException("CreatorId not specified");
@@ -211,7 +215,8 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship updateZeppaUserToUserRelationship(
-			ZeppaUserToUserRelationship relationship) {
+			ZeppaUserToUserRelationship relationship,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		boolean didAcceptRequest = false;
@@ -261,7 +266,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
 	public void removeZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
-			@Named("userId") Long userId) {
+			@Named("userId") Long userId, @Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		PersistenceManager umgr = getPersistenceManager();

@@ -20,6 +20,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Resources;
 import com.zeppamobile.api.notifications.NotificationUtility;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUser;
@@ -43,7 +44,8 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -104,7 +106,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
-			@Named("id") Long id) {
+			@Named("id") Long id, @Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
@@ -132,7 +134,8 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "insertZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship insertZeppaEventToUserRelationship(
-			ZeppaEventToUserRelationship relationship) {
+			ZeppaEventToUserRelationship relationship,
+			@Named("auth") Authorizer auth) {
 
 		if (relationship.getEventId() == null) {
 			throw new NullPointerException("Null Event Id");
@@ -188,7 +191,8 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship updateZeppaEventToUserRelationship(
-			ZeppaEventToUserRelationship relationship) throws IOException {
+			ZeppaEventToUserRelationship relationship,
+			@Named("auth") Authorizer auth) throws IOException {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent event = null;
@@ -289,8 +293,8 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEventToUserRelationship")
-	public void removeZeppaEventToUserRelationship(@Named("id") Long id)
-			throws OAuthRequestException {
+	public void removeZeppaEventToUserRelationship(@Named("id") Long id,
+			@Named("auth") Authorizer auth) throws OAuthRequestException {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

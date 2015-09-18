@@ -82,8 +82,6 @@ public class AppEndpointBase {
 	public IOSClientInfo getIOSClientInfo() {
 		return new IOSClientInfo();
 	}
-
-	
 	
 	
 	

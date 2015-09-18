@@ -56,10 +56,10 @@ public class ZeppaNotification {
 	/*
 	 * For maintaining relationship
 	 */
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser recipient;
 	
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser sender;
 	
 

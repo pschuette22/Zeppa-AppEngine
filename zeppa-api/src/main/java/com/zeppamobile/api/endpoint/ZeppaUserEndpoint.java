@@ -21,6 +21,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
 import com.zeppamobile.common.Constants;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
@@ -28,7 +29,6 @@ import com.zeppamobile.common.utils.Utils;
 
 @ApiReference(AppEndpointBase.class)
 public class ZeppaUserEndpoint {
-
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -44,8 +44,9 @@ public class ZeppaUserEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
-		
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
+
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaUser> execute = null;
@@ -103,8 +104,8 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaUser")
-	public ZeppaUser getZeppaUser(@Named("userId") Long userId) {
-
+	public ZeppaUser getZeppaUser(@Named("userId") Long userId,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUser zeppauser = null;
@@ -141,11 +142,11 @@ public class ZeppaUserEndpoint {
 	 */
 
 	@ApiMethod(name = "insertZeppaUser")
-	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser) throws IOException {
-
+	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser,
+			@Named("auth") Authorizer auth) throws IOException {
 
 		try {
-			ZeppaUser fetched = fetchUserByEmail(zeppaUser.getAuthEmail());
+			ZeppaUser fetched = fetchUserByEmail(auth);
 			if (fetched != null) {
 				return fetched;
 			}
@@ -186,12 +187,8 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaUser")
-	public ZeppaUser updateZeppaUser(ZeppaUser zeppauser, User user)
-			throws OAuthRequestException {
-
-		if (Constants.PRODUCTION && user == null) {
-			throw new OAuthRequestException("Unauthorized call");
-		}
+	public ZeppaUser updateZeppaUser(ZeppaUser zeppauser,
+			@Named("auth") Authorizer auth) throws OAuthRequestException {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -227,9 +224,8 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaUser")
-	public void removeZeppaUser(@Named("id") Long userId)
+	public void removeZeppaUser(@Named("id") Long userId, @Named("auth") Authorizer auth)
 			throws OAuthRequestException {
-
 
 		PersistenceManager mgr = getPersistenceManager();
 
@@ -268,13 +264,13 @@ public class ZeppaUserEndpoint {
 	 * */
 
 	@ApiMethod(name = "fetchCurrentZeppaUser")
-	public ZeppaUser fetchUserByEmail(@Named("email")String email) {
+	public ZeppaUser fetchUserByEmail(@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUser zeppaUser = null;
 		try {
-			Query query = mgr.newQuery(ZeppaUser.class,
-					"authEmail == '" + email + "'");
+			Query query = mgr.newQuery(ZeppaUser.class, "authEmail == '"
+					+ auth.getEmail() + "'");
 			query.setUnique(true);
 
 			zeppaUser = (ZeppaUser) query.execute();
@@ -300,7 +296,6 @@ public class ZeppaUserEndpoint {
 
 		return zeppaUser;
 	}
-
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

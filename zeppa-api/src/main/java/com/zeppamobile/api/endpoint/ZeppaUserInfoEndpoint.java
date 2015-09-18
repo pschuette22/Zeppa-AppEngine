@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
@@ -36,7 +37,8 @@ public class ZeppaUserInfoEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -109,7 +111,8 @@ public class ZeppaUserInfoEndpoint {
 
 	@ApiMethod(name = "fetchZeppaUserInfoByParentId")
 	public ZeppaUserInfo fetchZeppaUserInfoByParentId(
-			@Named("requestedParentId") Long requestedUserId) {
+			@Named("requestedParentId") Long requestedUserId,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo result = null;
@@ -146,7 +149,8 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaUserInfo")
-	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id) {
+	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
@@ -169,7 +173,8 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertZeppaUserInfo")
-	public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
+	public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -192,8 +197,8 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaUserInfo")
-	public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
-
+	public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -234,18 +239,18 @@ public class ZeppaUserInfoEndpoint {
 	// }
 	// }
 
-//	private boolean containsZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		boolean contains = true;
-//		try {
-//			mgr.getObjectById(ZeppaUserInfo.class, zeppauserinfo.getKey());
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			contains = false;
-//		} finally {
-//			mgr.close();
-//		}
-//		return contains;
-//	}
+	// private boolean containsZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
+	// PersistenceManager mgr = getPersistenceManager();
+	// boolean contains = true;
+	// try {
+	// mgr.getObjectById(ZeppaUserInfo.class, zeppauserinfo.getKey());
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// contains = false;
+	// } finally {
+	// mgr.close();
+	// }
+	// return contains;
+	// }
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

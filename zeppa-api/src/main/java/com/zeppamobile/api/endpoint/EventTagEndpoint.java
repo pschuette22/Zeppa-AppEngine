@@ -16,6 +16,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.utils.Utils;
 
@@ -36,7 +37,8 @@ public class EventTagEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -96,7 +98,8 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventTag")
-	public EventTag getEventTag(@Named("id") Long id) {
+	public EventTag getEventTag(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventTag eventtag = null;
@@ -116,7 +119,8 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventTag")
-	public EventTag insertEventTag(EventTag eventtag) {
+	public EventTag insertEventTag(EventTag eventtag,
+			@Named("auth") Authorizer auth) {
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
@@ -152,7 +156,8 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventTag")
-	public void removeEventTag(@Named("tagId") Long tagId) {
+	public void removeEventTag(@Named("tagId") Long tagId,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

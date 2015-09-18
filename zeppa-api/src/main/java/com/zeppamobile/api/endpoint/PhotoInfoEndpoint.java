@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 
 @ApiReference(AppEndpointBase.class)
@@ -32,7 +33,8 @@ public class PhotoInfoEndpoint {
 	@ApiMethod(name = "listPhotoInfo")
 	public CollectionResponse<PhotoInfo> listPhotoInfo(
 			@Nullable @Named("cursor") String cursorString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -80,7 +82,8 @@ public class PhotoInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getPhotoInfo")
-	public PhotoInfo getPhotoInfo(@Named("id") Long id) {
+	public PhotoInfo getPhotoInfo(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		PhotoInfo photoinfo = null;
@@ -103,7 +106,8 @@ public class PhotoInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertPhotoInfo")
-	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo) {
+	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -124,7 +128,8 @@ public class PhotoInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removePhotoInfo")
-	public void removePhotoInfo(@Named("id") Long id) {
+	public void removePhotoInfo(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

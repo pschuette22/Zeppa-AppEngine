@@ -35,10 +35,10 @@ public class EventTagFollow {
 	/*
 	 * Maps back to tag and user
 	 */
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private EventTag tag;
 	
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser follower;
 
 

@@ -16,6 +16,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.notifications.NotificationUtility;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventComment;
 import com.zeppamobile.common.utils.Utils;
 
@@ -36,7 +37,8 @@ public class EventCommentEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -97,7 +99,8 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventComment")
-	public EventComment getEventComment(@Named("id") Long id) {
+	public EventComment getEventComment(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventComment eventcomment = null;
@@ -120,7 +123,8 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventComment")
-	public EventComment insertEventComment(EventComment eventcomment) {
+	public EventComment insertEventComment(EventComment eventcomment,
+			@Named("auth") Authorizer auth) {
 
 		if (eventcomment.getEventId() == null) {
 			throw new IllegalArgumentException("Event Id Not Set");
@@ -187,7 +191,8 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventComment")
-	public void removeEventComment(@Named("id") Long id) {
+	public void removeEventComment(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

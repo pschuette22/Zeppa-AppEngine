@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.utils.Utils;
 
@@ -40,7 +41,8 @@ public class EventTagFollowEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -101,7 +103,8 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getEventTagFollow")
-	public EventTagFollow getEventTagFollow(@Named("id") Long id) {
+	public EventTagFollow getEventTagFollow(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		EventTagFollow eventtagfollow = null;
@@ -124,7 +127,8 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertEventTagFollow")
-	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow) {
+	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow,
+			@Named("auth") Authorizer auth) {
 
 		if (eventtagfollow.getTagId() == null) {
 			throw new NullPointerException();
@@ -147,37 +151,38 @@ public class EventTagFollowEndpoint {
 		return eventtagfollow;
 	}
 
-	@ApiMethod(name = "insertEventTagFollowArray")
-	public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
-			@Named("jsonArray") String arrayAsJson) {
-		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
-
-		JSONArray array = (JSONArray) JSONValue.parse(arrayAsJson);
-
-		for (int i = 0; i < array.size(); i++) {
-			JSONObject obj = (JSONObject) array.get(i);
-
-			EventTagFollow follow = new EventTagFollow(obj);
-			result.add(follow);
-		}
-
-		if (!result.isEmpty()) {
-			PersistenceManager mgr = getPersistenceManager();
-
-			try {
-
-				// Store and update
-				result = (List<EventTagFollow>) mgr.makePersistentAll(result);
-
-			} finally {
-
-				mgr.close();
-			}
-		}
-
-		return CollectionResponse.<EventTagFollow> builder().setItems(result)
-				.build();
-	}
+//	@ApiMethod(name = "insertEventTagFollowArray")
+//	public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
+//			@Named("jsonArray") String arrayAsJson,
+//			@Named("auth") Authorizer auth) {
+//		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
+//
+//		JSONArray array = (JSONArray) JSONValue.parse(arrayAsJson);
+//
+//		for (int i = 0; i < array.size(); i++) {
+//			JSONObject obj = (JSONObject) array.get(i);
+//
+//			EventTagFollow follow = new EventTagFollow(obj);
+//			result.add(follow);
+//		}
+//
+//		if (!result.isEmpty()) {
+//			PersistenceManager mgr = getPersistenceManager();
+//
+//			try {
+//
+//				// Store and update
+//				result = (List<EventTagFollow>) mgr.makePersistentAll(result);
+//
+//			} finally {
+//
+//				mgr.close();
+//			}
+//		}
+//
+//		return CollectionResponse.<EventTagFollow> builder().setItems(result)
+//				.build();
+//	}
 
 	/**
 	 * This method is used for updating an existing entity. If the entity does
@@ -190,7 +195,8 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateEventTagFollow")
-	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow) {
+	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow,
+			@Named("auth") Authorizer auth) {
 
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -212,7 +218,8 @@ public class EventTagFollowEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventTagFollow")
-	public void removeEventTagFollow(@Named("id") Long id) {
+	public void removeEventTagFollow(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

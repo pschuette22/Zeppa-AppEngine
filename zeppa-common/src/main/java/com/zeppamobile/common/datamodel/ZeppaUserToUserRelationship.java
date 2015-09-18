@@ -38,10 +38,10 @@ public class ZeppaUserToUserRelationship {
 	/*
 	 * For maintaining relationships
 	 */
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser creator;
 	
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser subject;
 	
 

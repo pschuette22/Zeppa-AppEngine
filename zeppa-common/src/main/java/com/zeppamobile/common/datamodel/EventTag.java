@@ -29,7 +29,7 @@ public class EventTag {
 	@Persistent
 	private String tagText;
 
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser owner;
 	
 	/**

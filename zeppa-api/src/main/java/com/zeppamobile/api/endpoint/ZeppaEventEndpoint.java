@@ -19,6 +19,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
@@ -43,7 +44,8 @@ public class ZeppaEventEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -103,7 +105,8 @@ public class ZeppaEventEndpoint {
 	 */
 
 	@ApiMethod(name = "getZeppaEvent")
-	public ZeppaEvent getZeppaEvent(@Named("id") Long id) {
+	public ZeppaEvent getZeppaEvent(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent zeppaevent = null;
@@ -130,8 +133,8 @@ public class ZeppaEventEndpoint {
 	 * @throws IOException
 	 */
 	@ApiMethod(name = "insertZeppaEvent")
-	public ZeppaEvent insertZeppaEvent(ZeppaEvent zeppaevent)
-			throws IOException {
+	public ZeppaEvent insertZeppaEvent(ZeppaEvent zeppaevent,
+			@Named("auth") Authorizer auth) throws IOException {
 
 		if (zeppaevent.getHostId() == null) {
 			throw new NullPointerException("Null Host User Id");
@@ -183,8 +186,8 @@ public class ZeppaEventEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateZeppaEvent")
-	public ZeppaEvent updateZeppaEvent(ZeppaEvent zeppaevent)
-			throws OAuthRequestException {
+	public ZeppaEvent updateZeppaEvent(ZeppaEvent zeppaevent,
+			@Named("auth") Authorizer auth) throws OAuthRequestException {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -216,7 +219,8 @@ public class ZeppaEventEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaEvent")
-	public void removeZeppaEvent(@Named("id") Long id) {
+	public void removeZeppaEvent(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -240,8 +244,5 @@ public class ZeppaEventEndpoint {
 		return PMF.get().getPersistenceManager();
 	}
 
-	/*
-	 * ------------------------- My Update Methods ------------------------
-	 */
 
 }

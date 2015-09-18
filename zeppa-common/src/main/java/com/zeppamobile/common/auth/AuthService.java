@@ -9,10 +9,19 @@ package com.zeppamobile.common.auth;
  */
 public class AuthService {
 
-	private AuthInfo wrapper;
+	private Authorizer auth;
 
-	public AuthService(AuthInfo wrapper) {
-		this.wrapper = wrapper;
+	public AuthService(Authorizer auth) {
+		this.auth = auth;
+	}
+	
+	
+	public boolean isValid(){
+		boolean isValid = false;
+		
+		
+		
+		return isValid;
 	}
 
 }

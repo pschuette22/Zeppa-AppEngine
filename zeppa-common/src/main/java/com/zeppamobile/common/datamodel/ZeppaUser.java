@@ -36,9 +36,6 @@ public class ZeppaUser {
 	
 	
 	
-	
-	
-	
 	/*
 	 * These are tags to be persisted as soon as the 
 	 */
@@ -149,7 +146,7 @@ public class ZeppaUser {
 	/*
 	 * Event tags are a list of tags that the user has added to their profile
 	 */
-	@Persistent(mappedBy="owner",defaultFetchGroup="true")
+	@Persistent(mappedBy="owner",defaultFetchGroup="false")
 	@Element(dependent = "true")
 	private List<EventTag> tags = new ArrayList<EventTag>();
 	
@@ -236,7 +233,7 @@ public class ZeppaUser {
 	/*
 	 * These are user relationships created by this user. 
 	 */
-	@Persistent(mappedBy="creator", defaultFetchGroup="true")
+	@Persistent(mappedBy="creator", defaultFetchGroup="false")
 	@Element(dependent = "true")
 	private List<ZeppaUserToUserRelationship> createdRelationships = new ArrayList<ZeppaUserToUserRelationship>();
 	
@@ -263,7 +260,7 @@ public class ZeppaUser {
 	/*
 	 * These are user relationships where this user is the subject
 	 */
-	@Persistent(mappedBy="subject", defaultFetchGroup="true")
+	@Persistent(mappedBy="subject", defaultFetchGroup="false")
 	@Element(dependent = "true")
 	private List<ZeppaUserToUserRelationship> subjectRelationships = new ArrayList<ZeppaUserToUserRelationship>();
 	
@@ -356,7 +353,7 @@ public class ZeppaUser {
 	/*
 	 * Hold a list of comments this user has made
 	 */
-	@Persistent(mappedBy="commenter", defaultFetchGroup="true")
+	@Persistent(mappedBy="commenter", defaultFetchGroup="false")
 	@Element(dependent="true")
 	private List<EventComment> comments = new ArrayList<EventComment>();
 	

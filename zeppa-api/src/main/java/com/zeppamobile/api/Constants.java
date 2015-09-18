@@ -49,9 +49,7 @@ public class Constants {
 	public static final String ANDROID_AUDIENCE = WEB_CLIENT_ID; 
 	public static final String SERVICE_ACCOUNT_CLIENT_ID = "587859844920-6fbteep6nm9lv8qoaijqo8r3v16ir87f.apps.googleusercontent.com";
 	public static final String SERVICE_ACCOUNT_EMAIL = "zeppa-cloud-1821@appspot.gserviceaccount.com";
-	
-	
-	public static final String[] CLIENT_IDS = { WEB_CLIENT_ID, ANDROID_DEBUG_CLIENT_ID,ANDROID_RELEASE_CLIENT_ID, IOS_CLIENT_ID_OLD, IOS_DEBUG_CLIENT_ID };
+		
 
 	
 	/*

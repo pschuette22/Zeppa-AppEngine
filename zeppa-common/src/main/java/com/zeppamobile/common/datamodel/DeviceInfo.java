@@ -27,7 +27,7 @@ public class DeviceInfo  {
 	@Persistent
 	private Long ownerId;
 	
-	@Persistent
+	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser owner;
 
 	@Persistent

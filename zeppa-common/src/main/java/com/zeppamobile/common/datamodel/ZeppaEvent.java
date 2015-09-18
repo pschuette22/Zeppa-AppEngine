@@ -80,11 +80,11 @@ public class ZeppaEvent {
 	@Persistent
 	private ZeppaUser host;
 
-	@Persistent(mappedBy = "event")
+	@Persistent(mappedBy = "event",defaultFetchGroup="false")
 	@Element(dependent = "true")
 	private List<ZeppaEventToUserRelationship> attendeeRelationships = new ArrayList<ZeppaEventToUserRelationship>();
 
-	@Persistent(mappedBy = "event")
+	@Persistent(mappedBy = "event",defaultFetchGroup="false")
 	@Element(dependent = "true")
 	private List<EventComment> comments = new ArrayList<EventComment>();
 

@@ -14,7 +14,9 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.DeviceInfo;
+import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
 @ApiReference(AppEndpointBase.class)
@@ -34,7 +36,7 @@ public class DeviceInfoEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit, @Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -92,7 +94,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getDeviceInfo")
-	public DeviceInfo getDeviceInfo(@Named("id") Long id) {
+	public DeviceInfo getDeviceInfo(@Named("id") Long id, @Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		DeviceInfo deviceinfo = null;
@@ -115,7 +117,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
-	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo) {
+	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
 
 		if (deviceinfo.getOwnerId() == null
 				|| deviceinfo.getRegistrationId() == null) {
@@ -124,7 +126,8 @@ public class DeviceInfoEndpoint {
 
 		DeviceInfo result = null;
 		PersistenceManager mgr = getPersistenceManager();
-
+		PersistenceManager mgr2 = getPersistenceManager();
+		
 		// Try to fetch an instance of device info with a matching token and
 		// user id
 		try {
@@ -167,14 +170,27 @@ public class DeviceInfoEndpoint {
 					mgr.deletePersistentAll(response);
 				}
 			}
+			
+			/*
+			 * Make sure device is associated with an owner
+			 */
+			ZeppaUser owner = deviceinfo.getOwner();
+			if(owner == null){
+				owner = mgr2.getObjectById(ZeppaUser.class, deviceinfo.getOwnerId());
+			}
 
-			// Make it persistent
+			deviceinfo.setOwner(owner);
+			owner.addDevice(deviceinfo);
+			
+			// Persist changes into the datastore
 			result = mgr.makePersistent(deviceinfo);
-
+			mgr2.makePersistent(owner);
+			
 		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
 		} finally {
 			mgr.close();
+			mgr2.close();
 		}
 
 		// Return the inserted item or null if an error occured.
@@ -192,7 +208,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateDeviceInfo")
-	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo) {
+	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
@@ -225,7 +241,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeDeviceInfo")
-	public void removeDeviceInfo(DeviceInfo deviceinfo) {
+	public void removeDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

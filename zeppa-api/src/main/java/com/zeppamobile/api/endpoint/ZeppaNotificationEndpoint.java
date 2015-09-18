@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
 import com.zeppamobile.common.utils.Utils;
 
@@ -35,7 +36,8 @@ public class ZeppaNotificationEndpoint {
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -95,7 +97,8 @@ public class ZeppaNotificationEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaNotification")
-	public ZeppaNotification getZeppaNotification(@Named("id") Long id) {
+	public ZeppaNotification getZeppaNotification(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaNotification zeppanotification = null;
@@ -110,39 +113,39 @@ public class ZeppaNotificationEndpoint {
 		return zeppanotification;
 	}
 
-	/**
-	 * This inserts a new entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown. It uses HTTP
-	 * POST method.
-	 * 
-	 * @param zeppanotification
-	 *            the entity to be inserted.
-	 * @return The inserted entity.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "insertZeppaNotification")
-	public ZeppaNotification insertZeppaNotification(
-			ZeppaNotification zeppanotification) {
-
-		if (zeppanotification.getSenderId() == null) {
-			throw new NullPointerException("Must Set User Id");
-		}
-
-		zeppanotification.setCreated(System.currentTimeMillis());
-		zeppanotification.setUpdated(System.currentTimeMillis());
-
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-
-			mgr.makePersistent(zeppanotification);
-
-		} finally {
-
-			mgr.close();
-		}
-
-		return zeppanotification;
-	}
+	// /**
+	// * This inserts a new entity into App Engine datastore. If the entity
+	// * already exists in the datastore, an exception is thrown. It uses HTTP
+	// * POST method.
+	// *
+	// * @param zeppanotification
+	// * the entity to be inserted.
+	// * @return The inserted entity.
+	// * @throws OAuthRequestException
+	// */
+	// @ApiMethod(name = "insertZeppaNotification")
+	// public ZeppaNotification insertZeppaNotification(
+	// ZeppaNotification zeppanotification) {
+	//
+	// if (zeppanotification.getSenderId() == null) {
+	// throw new NullPointerException("Must Set User Id");
+	// }
+	//
+	// zeppanotification.setCreated(System.currentTimeMillis());
+	// zeppanotification.setUpdated(System.currentTimeMillis());
+	//
+	// PersistenceManager mgr = getPersistenceManager();
+	// try {
+	//
+	// mgr.makePersistent(zeppanotification);
+	//
+	// } finally {
+	//
+	// mgr.close();
+	// }
+	//
+	// return zeppanotification;
+	// }
 
 	/**
 	 * This method is used for updating an existing entity. If the entity does
@@ -156,7 +159,7 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaNotification")
 	public ZeppaNotification updateZeppaNotification(
-			ZeppaNotification zeppanotification) {
+			ZeppaNotification zeppanotification, @Named("auth") Authorizer auth) {
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -186,7 +189,8 @@ public class ZeppaNotificationEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaNotification")
-	public void removeZeppaNotification(@Named("id") Long id) {
+	public void removeZeppaNotification(@Named("id") Long id,
+			@Named("auth") Authorizer auth) {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -199,7 +203,6 @@ public class ZeppaNotificationEndpoint {
 			mgr.close();
 		}
 	}
-
 
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();

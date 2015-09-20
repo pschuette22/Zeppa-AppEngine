@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -10,17 +11,17 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
 @ApiReference(AppEndpointBase.class)
-public class DeviceInfoEndpoint {
+public class DeviceInfoEndpoint extends AppEndpointBase {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -28,15 +29,20 @@ public class DeviceInfoEndpoint {
 	 * 
 	 * @return A CollectionResponse class containing the list of all entities
 	 *         persisted and a cursor to the next page.
+	 * @throws UnauthorizedException
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@ApiMethod(name = "listDeviceInfo")
 	public CollectionResponse<DeviceInfo> listDeviceInfo(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit, @Named("auth") Authorizer auth) {
+			@Nullable @Named("limit") Integer limit,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		// Authorized ZeppaUser
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -70,11 +76,19 @@ public class DeviceInfoEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (DeviceInfo obj : execute)
-				;
+			/*
+			 * Devices may only be fetched by the owner Remove the bad eggs.
+			 * TODO: Flag it?
+			 */
+			List<DeviceInfo> badEggs = new ArrayList<DeviceInfo>();
+			for (DeviceInfo obj : execute) {
+				// Make sure authed user owns this device
+				if (obj.getOwnerId().longValue() != user.getId().longValue()) {
+					badEggs.add(obj);
+				}
+			}
+			execute.remove(badEggs);
+
 		} finally {
 			mgr.close();
 		}
@@ -83,7 +97,6 @@ public class DeviceInfoEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
-
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
 	 * method.
@@ -91,15 +104,22 @@ public class DeviceInfoEndpoint {
 	 * @param id
 	 *            the primary key of the java bean.
 	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
+	 * @throws UnauthorizedException
 	 */
 	@ApiMethod(name = "getDeviceInfo")
-	public DeviceInfo getDeviceInfo(@Named("id") Long id, @Named("auth") Authorizer auth) {
+	public DeviceInfo getDeviceInfo(@Named("id") Long id,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		// Authorized ZeppaUser
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		DeviceInfo deviceinfo = null;
 		try {
 			deviceinfo = mgr.getObjectById(DeviceInfo.class, id);
+			if (deviceinfo.getOwnerId().longValue() != user.getId().longValue()) {
+				throw new UnauthorizedException("You don't own this device");
+			}
 		} finally {
 			mgr.close();
 		}
@@ -114,20 +134,30 @@ public class DeviceInfoEndpoint {
 	 * @param deviceinfo
 	 *            the entity to be inserted.
 	 * @return The inserted entity or null.
-	 * @throws OAuthRequestException
+	 * @throws UnauthorizedException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
-	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
+	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		// Make sure necessary items are there before inserting
 		if (deviceinfo.getOwnerId() == null
 				|| deviceinfo.getRegistrationId() == null) {
 			throw new NullPointerException();
 		}
 
+		// Make sure owner is only device for himself
+		if (deviceinfo.getOwnerId().longValue() != auth.getUserId().longValue()) {
+			throw new UnauthorizedException(
+					"You cannot insert devices for other users");
+		}
+
+		// Authorized ZeppaUser
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+
 		DeviceInfo result = null;
 		PersistenceManager mgr = getPersistenceManager();
-		PersistenceManager mgr2 = getPersistenceManager();
-		
+
 		// Try to fetch an instance of device info with a matching token and
 		// user id
 		try {
@@ -170,27 +200,18 @@ public class DeviceInfoEndpoint {
 					mgr.deletePersistentAll(response);
 				}
 			}
-			
-			/*
-			 * Make sure device is associated with an owner
-			 */
-			ZeppaUser owner = deviceinfo.getOwner();
-			if(owner == null){
-				owner = mgr2.getObjectById(ZeppaUser.class, deviceinfo.getOwnerId());
-			}
 
-			deviceinfo.setOwner(owner);
-			owner.addDevice(deviceinfo);
-			
+			deviceinfo.setOwner(user);
+			user.addDevice(deviceinfo);
+
 			// Persist changes into the datastore
 			result = mgr.makePersistent(deviceinfo);
-			mgr2.makePersistent(owner);
-			
+			updateUserRelationships(user);
+
 		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
 		} finally {
 			mgr.close();
-			mgr2.close();
 		}
 
 		// Return the inserted item or null if an error occured.
@@ -208,7 +229,10 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "updateDeviceInfo")
-	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
+	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
@@ -216,16 +240,22 @@ public class DeviceInfoEndpoint {
 		try {
 			DeviceInfo current = mgr.getObjectById(DeviceInfo.class,
 					deviceinfo.getId());
-			current.setBugfix(deviceinfo.getBugfix());
-			current.setUpdate(deviceinfo.getUpdate());
-			current.setVersion(deviceinfo.getVersion());
 
-			current.setLastLogin(deviceinfo.getLastLogin());
-			current.setLoggedIn(deviceinfo.getLoggedIn());
-			current.setUpdated(System.currentTimeMillis());
-			mgr.makePersistent(current);
+			if (user.getId().longValue() == current.getOwnerId().longValue()) {
 
-			deviceinfo = current;
+				current.setBugfix(deviceinfo.getBugfix());
+				current.setUpdate(deviceinfo.getUpdate());
+				current.setVersion(deviceinfo.getVersion());
+
+				current.setLastLogin(deviceinfo.getLastLogin());
+				current.setLoggedIn(deviceinfo.getLoggedIn());
+				current.setUpdated(System.currentTimeMillis());
+				mgr.makePersistent(current);
+
+				deviceinfo = current;
+			} else {
+				throw new UnauthorizedException("You can't update this device");
+			}
 		} finally {
 			mgr.close();
 		}
@@ -241,11 +271,24 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeDeviceInfo")
-	public void removeDeviceInfo(DeviceInfo deviceinfo, @Named("auth") Authorizer auth) {
+	public void removeDeviceInfo(@Named("id") Long id,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			mgr.deletePersistent(deviceinfo);
+			DeviceInfo info = mgr.getObjectById(DeviceInfo.class, id);
+			
+			if(info.getOwnerId().longValue() == user.getId().longValue()){
+				if(user.removeDevice(info)){
+					updateUserRelationships(user);
+				}
+				mgr.deletePersistent(info);
+			} else {
+				throw new UnauthorizedException("You can't delete this device");
+			}
+			
 		} finally {
 			mgr.close();
 		}
@@ -257,21 +300,17 @@ public class DeviceInfoEndpoint {
 	 * @param deviceinfo
 	 * @return true if deviceinfo exists
 	 */
-//	private boolean containsDeviceInfo(DeviceInfo deviceinfo) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		boolean contains = true;
-//		try {
-//			mgr.getObjectById(DeviceInfo.class, deviceinfo.getKey());
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			contains = false;
-//		} finally {
-//			mgr.close();
-//		}
-//		return contains;
-//	}
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
-	}
+	// private boolean containsDeviceInfo(DeviceInfo deviceinfo) {
+	// PersistenceManager mgr = getPersistenceManager();
+	// boolean contains = true;
+	// try {
+	// mgr.getObjectById(DeviceInfo.class, deviceinfo.getKey());
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// contains = false;
+	// } finally {
+	// mgr.close();
+	// }
+	// return contains;
+	// }
 
 }

@@ -26,7 +26,6 @@ import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
 import net.sf.extjwnl.data.POS;
-import net.sf.extjwnl.data.PointerTarget;
 import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.list.PointerTargetNode;
@@ -590,6 +589,7 @@ public class TagAgent {
 							calc += (1 - calc)
 									* Utils.stringSimilarityCalculation(word,
 											part.word);
+							
 						}
 
 					}
@@ -681,7 +681,7 @@ public class TagAgent {
 						Synset s2 = set2.get(j);
 
 						// Assign weight based on how common this form of word is
-						double weight = Math.pow(.95, (i+j))*.9;
+//						double weight = Math.pow(.95, (i+j))*.9;
 						
 						
 						/*
@@ -702,7 +702,7 @@ public class TagAgent {
 //							double relationshipWeight = getPOSWeight(s1
 //									.getPOS()) * getPOSWeight(s2.getPOS());
 							double similarityCalc = calculatedRelationshipsListStrength(
-									relationships, weight);
+									relationships, .9);
 
 							if (similarity < similarityCalc) {
 								similarity = similarityCalc;

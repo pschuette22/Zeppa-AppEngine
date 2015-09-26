@@ -1,5 +1,9 @@
 package com.zeppamobile.common.datamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -43,6 +47,10 @@ public class ZeppaUserToUserRelationship {
 	
 	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser subject;
+	
+	@Persistent(defaultFetchGroup="false")
+	@Element(dependent="true")
+	private List<EventTagFollow> tagFollows = new ArrayList<EventTagFollow>();
 	
 
 	/**
@@ -145,6 +153,15 @@ public class ZeppaUserToUserRelationship {
 			// TODO: flag this
 			return null;
 		}
+	}
+	
+	
+	public boolean addTagFollow(EventTagFollow follow){
+		return this.tagFollows.add(follow);
+	}
+	
+	public boolean removeTagFollow(EventTagFollow follow) {
+		return this.tagFollows.remove(follow);
 	}
 
 }

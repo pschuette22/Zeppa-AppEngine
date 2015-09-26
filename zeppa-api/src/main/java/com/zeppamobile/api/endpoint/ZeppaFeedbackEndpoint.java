@@ -10,7 +10,7 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaFeedback;
 
-@ApiReference(AppEndpointBase.class)
+@ApiReference(EndpointBase.class)
 public class ZeppaFeedbackEndpoint {
 
 

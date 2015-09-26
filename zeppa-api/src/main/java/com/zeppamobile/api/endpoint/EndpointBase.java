@@ -3,6 +3,7 @@ package com.zeppamobile.api.endpoint;
 import java.io.Serializable;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -12,9 +13,10 @@ import com.zeppamobile.api.exception.DickheadException;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
+import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
-public class AppEndpointBase {
+public class EndpointBase {
 
 	/**
 	 * Class with information on the lastest verison of the Android client
@@ -111,7 +113,7 @@ public class AppEndpointBase {
 
 		} catch (NullPointerException e) {
 			// Auth item wasn't made by us
-			throw new DickheadException("Bad Authorizer", "ZeppaUser",
+			throw new DickheadException("Bad Authorizer", ZeppaUser.class,
 					Long.valueOf(-1), auth);
 		} finally {
 			mgr.close();
@@ -154,6 +156,55 @@ public class AppEndpointBase {
 			mgr.close();
 		}
 		return true;
+	}
+
+	/**
+	 * Get the relationship between two
+	 * 
+	 * @param userId1
+	 * @param userId2
+	 * @return
+	 */
+	protected ZeppaUserToUserRelationship getUserRelationship(Long userId1,
+			Long userId2) {
+		if (userId1.longValue() == userId2.longValue()) {
+			throw new NullPointerException("Missing a user id");
+		}
+		String filter = "(creatorId == " + userId1 
+				+ " || creatorId == " + userId2.longValue() 
+				+ ") && (subjectId == " + userId1.longValue() 
+				+ "|| subjectId == " + userId2.longValue() + ")";
+
+		PersistenceManager mgr = getPersistenceManager();
+		ZeppaUserToUserRelationship result = null;
+		try {
+			Query q = mgr.newQuery(ZeppaUserToUserRelationship.class);
+
+			q.setFilter(filter);
+			q.setUnique(true);
+
+			result = (ZeppaUserToUserRelationship) q.execute();
+
+		} finally {
+			mgr.close();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Update a user relationship
+	 * 
+	 * @param relationship
+	 */
+	protected void updateUserRelationship(
+			ZeppaUserToUserRelationship relationship) {
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			mgr.makePersistent(relationship);
+		} finally {
+			mgr.close();
+		}
 	}
 
 	/**

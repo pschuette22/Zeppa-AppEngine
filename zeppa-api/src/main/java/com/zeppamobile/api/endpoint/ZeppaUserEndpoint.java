@@ -27,7 +27,7 @@ import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
+@ApiReference(EndpointBase.class)
 public class ZeppaUserEndpoint {
 
 	/**

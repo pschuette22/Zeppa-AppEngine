@@ -20,8 +20,8 @@ import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
-public class DeviceInfoEndpoint extends AppEndpointBase {
+@ApiReference(EndpointBase.class)
+public class DeviceInfoEndpoint extends EndpointBase {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP

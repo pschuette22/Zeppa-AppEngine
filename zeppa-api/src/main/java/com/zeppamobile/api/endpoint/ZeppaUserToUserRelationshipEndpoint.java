@@ -25,7 +25,7 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
+@ApiReference(EndpointBase.class)
 public class ZeppaUserToUserRelationshipEndpoint {
 
 	// private static final Logger log = Logger

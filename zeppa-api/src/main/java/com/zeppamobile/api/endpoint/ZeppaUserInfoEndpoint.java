@@ -20,7 +20,7 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
+@ApiReference(EndpointBase.class)
 public class ZeppaUserInfoEndpoint {
 
 	/**

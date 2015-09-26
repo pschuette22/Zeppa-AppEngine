@@ -19,7 +19,7 @@ import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
+@ApiReference(EndpointBase.class)
 public class ZeppaNotificationEndpoint {
 
 	/**

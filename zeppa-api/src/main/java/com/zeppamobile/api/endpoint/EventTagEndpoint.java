@@ -11,17 +11,19 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.api.exception.DickheadException;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTag;
+import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppEndpointBase.class)
-public class EventTagEndpoint {
+@ApiReference(EndpointBase.class)
+public class EventTagEndpoint extends EndpointBase {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -38,8 +40,10 @@ public class EventTagEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<EventTag> execute = null;
@@ -99,8 +103,10 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "getEventTag")
 	public EventTag getEventTag(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
 		PersistenceManager mgr = getPersistenceManager();
 		EventTag eventtag = null;
 		try {
@@ -120,12 +126,18 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "insertEventTag")
 	public EventTag insertEventTag(EventTag eventtag,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
 		}
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
+		if(eventtag.getOwnerId().longValue() != user.getId().longValue()){
+			throw new DickheadException("Tried to make tag for someone else", EventTag.class, Long.valueOf(-1), auth);
+		}
+		
 		eventtag.setCreated(System.currentTimeMillis());
 		eventtag.setUpdated(System.currentTimeMillis());
 
@@ -133,9 +145,19 @@ public class EventTagEndpoint {
 
 		try {
 
+		
+			// Set the owner user
+			eventtag.setOwner(user);
+			
 			// Update and store objects
 			mgr.makePersistent(eventtag);
 
+			// Update the user relationships
+			if(user.addTag(eventtag)) {
+				updateUserRelationships(user);
+			}
+			
+			
 		} catch (javax.jdo.JDOObjectNotFoundException e) {
 			e.printStackTrace();
 			eventtag = null;
@@ -157,24 +179,28 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "removeEventTag")
 	public void removeEventTag(@Named("tagId") Long tagId,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
-			TaskUtility.scheduleDeleteTagFollows(tagId);
+			
+			// Make sure user is allowed to access this item
+			if(user.getId().longValue() == eventtag.getOwnerId().longValue()){
+				TaskUtility.scheduleDeleteTagFollows(tagId);
 
-			mgr.deletePersistent(eventtag);
+				mgr.deletePersistent(eventtag);
+			} else {
+				throw new UnauthorizedException("Cannot delete tag you don't own");
+			}
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {
 			e.printStackTrace();
 		} finally {
 			mgr.close();
 		}
-	}
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
 	}
 
 }

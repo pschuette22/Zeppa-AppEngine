@@ -18,7 +18,7 @@ public class DickheadException extends UnauthorizedException {
 	private static final long serialVersionUID = 1L;
 
 	
-	public DickheadException(String message, String objectType, long objectId, Authorizer auth) {
+	public DickheadException(String message, Class c, long objectId, Authorizer auth) {
 		super(message);
 		// TODO: Flag it
 		// TODO: Auto-send notification to 

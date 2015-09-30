@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,15 +12,16 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
+import com.zeppamobile.common.datamodel.ZeppaUser;
 
 @ApiReference(EndpointBase.class)
-public class PhotoInfoEndpoint {
+public class PhotoInfoEndpoint extends EndpointBase {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -34,7 +36,9 @@ public class PhotoInfoEndpoint {
 	public CollectionResponse<PhotoInfo> listPhotoInfo(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -59,11 +63,21 @@ public class PhotoInfoEndpoint {
 			if (cursor != null)
 				cursorString = cursor.toWebSafeString();
 
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (PhotoInfo obj : execute)
-				;
+			/*
+			 * Loop through the list of photoinfo object initialize and remove
+			 * the bad eggs
+			 */
+
+			List<PhotoInfo> badEggs = new ArrayList<PhotoInfo>();
+			for (PhotoInfo photo : execute) {
+				if (photo.getOwnerEmail().equals(auth.getEmail())) {
+					// Good stuff
+				} else {
+					badEggs.add(photo);
+				}
+			}
+			execute.removeAll(badEggs);
+
 		} finally {
 			mgr.close();
 		}
@@ -83,12 +97,18 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "getPhotoInfo")
 	public PhotoInfo getPhotoInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		PhotoInfo photoinfo = null;
 		try {
 			photoinfo = mgr.getObjectById(PhotoInfo.class, id);
+			if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
+				throw new UnauthorizedException(
+						"Can't see photos you don't own");
+			}
 		} finally {
 			mgr.close();
 		}
@@ -107,8 +127,14 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "insertPhotoInfo")
 	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+
+		if(!user.getAuthEmail().equals(photoinfo.getOwnerEmail())){
+			throw new UnauthorizedException("Can't insert photos for someone else");
+		}
+		
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 
@@ -129,19 +155,22 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "removePhotoInfo")
 	public void removePhotoInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);
+			// Verify this user owns this photo
+			if(!user.getAuthEmail().equals(photoinfo.getOwnerEmail())){
+				throw new UnauthorizedException("Can't insert photos for someone else");
+			}
+			
 			mgr.deletePersistent(photoinfo);
 		} finally {
 			mgr.close();
 		}
-	}
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
 	}
 
 }

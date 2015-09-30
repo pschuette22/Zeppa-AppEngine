@@ -21,6 +21,7 @@ import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
 @ApiReference(EndpointBase.class)
@@ -34,7 +35,7 @@ public class EventTagFollowEndpoint extends EndpointBase {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@ApiMethod(name = "listEventTagFollow")
 	public CollectionResponse<EventTagFollow> listEventTagFollow(
 			@Nullable @Named("filter") String filterString,
@@ -94,7 +95,7 @@ public class EventTagFollowEndpoint extends EndpointBase {
 					badEggs.add(f);
 				}
 			}
-			execute.remove(badEggs);
+			execute.removeAll(badEggs);
 
 		} finally {
 			mgr.close();
@@ -128,7 +129,7 @@ public class EventTagFollowEndpoint extends EndpointBase {
 					.longValue()) {
 				// Sick
 			} else {
-				throw new UnauthorizedException("Not allowed to see this");
+				throw new UnauthorizedException("Not allowed to get this");
 			}
 
 		} finally {
@@ -161,10 +162,18 @@ public class EventTagFollowEndpoint extends EndpointBase {
 				.getId().longValue(), eventtagfollow.getTagOwnerId()
 				.longValue());
 
-		if(relationship == null){
-			throw new NullPointerException("Users don't have a relationship");
+		if (relationship == null
+				|| !relationship.getRelationshipType().equals(
+						UserRelationshipType.MINGLING)) {
+			throw new UnauthorizedException("Can't follow tags by this user");
 		}
-		
+
+		if (eventtagfollow.getFollowerId().longValue() != user.getId()
+				.longValue()) {
+			throw new UnauthorizedException(
+					"Can't create follow for someone else");
+		}
+
 		eventtagfollow.setCreated(System.currentTimeMillis());
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 
@@ -173,8 +182,15 @@ public class EventTagFollowEndpoint extends EndpointBase {
 		try {
 
 			// Store and update
-			
-			mgr.makePersistent(eventtagfollow);
+			eventtagfollow = mgr.makePersistent(eventtagfollow);
+
+			/*
+			 * Get tag and update relationships
+			 */
+			EventTag tag = getTagById(eventtagfollow.getTagId());
+			if (tag.addEventTagFollow(eventtagfollow)) {
+				updateTagRelationships(tag);
+			}
 
 		} finally {
 
@@ -228,7 +244,15 @@ public class EventTagFollowEndpoint extends EndpointBase {
 	 */
 	@ApiMethod(name = "updateEventTagFollow")
 	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+
+		if (eventtagfollow.getFollowerId().longValue() != user.getId()
+				.longValue()) {
+			throw new UnauthorizedException(
+					"Can't update follows you don't own");
+		}
 
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
@@ -251,13 +275,30 @@ public class EventTagFollowEndpoint extends EndpointBase {
 	 */
 	@ApiMethod(name = "removeEventTagFollow")
 	public void removeEventTagFollow(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			// Retrieve tag by Id
 			EventTagFollow eventtagfollow = mgr.getObjectById(
 					EventTagFollow.class, id);
+
+			if (eventtagfollow.getFollowerId().longValue() != user.getId()
+					.longValue()) {
+				throw new UnauthorizedException(
+						"Can't update follows you don't own");
+			}
+			
+			/*
+			 * Get tag and update relationships
+			 */
+			EventTag tag = getTagById(eventtagfollow.getTagId());
+			if (tag.removeFollow(eventtagfollow)) {
+				updateTagRelationships(tag);
+			}
+
 
 			// remove the tag
 			mgr.deletePersistent(eventtagfollow);
@@ -274,7 +315,7 @@ public class EventTagFollowEndpoint extends EndpointBase {
 	 * @param auth
 	 * @return Event tag for this ID
 	 */
-	private EventTag getTagById(Long tagId, Authorizer auth) {
+	private EventTag getTagById(Long tagId) {
 		EventTag tag = null;
 		PersistenceManager mgr = getPersistenceManager();
 		/*

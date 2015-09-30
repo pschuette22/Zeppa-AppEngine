@@ -91,7 +91,7 @@ public class EventCommentEndpoint extends EndpointBase {
 				if(!Utils.listContainsLong(authedEventIds, comment.getEventId())){
 					ZeppaEvent event = getEventForComment(comment, auth);
 					authedEventIds.add(event.getId());
-				} // else, verified event with comment can be seen
+				}
 				
 			}
 		} finally {

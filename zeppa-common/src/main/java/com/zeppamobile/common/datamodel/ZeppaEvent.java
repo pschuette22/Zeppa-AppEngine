@@ -80,11 +80,11 @@ public class ZeppaEvent {
 	@Persistent
 	private ZeppaUser host;
 
-	@Persistent(mappedBy = "event",defaultFetchGroup="false")
+	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
 	@Element(dependent = "true")
 	private List<ZeppaEventToUserRelationship> attendeeRelationships = new ArrayList<ZeppaEventToUserRelationship>();
 
-	@Persistent(mappedBy = "event",defaultFetchGroup="false")
+	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
 	@Element(dependent = "true")
 	private List<EventComment> comments = new ArrayList<EventComment>();
 
@@ -300,8 +300,9 @@ public class ZeppaEvent {
 			List<ZeppaEventToUserRelationship> attendeeRelationships) {
 		this.attendeeRelationships = attendeeRelationships;
 	}
-	
-	public boolean addAttendeeRelationship(ZeppaEventToUserRelationship relationship){
+
+	public boolean addAttendeeRelationship(
+			ZeppaEventToUserRelationship relationship) {
 		return this.attendeeRelationships.add(relationship);
 	}
 
@@ -312,13 +313,31 @@ public class ZeppaEvent {
 	public void setComments(List<EventComment> comments) {
 		this.comments = comments;
 	}
-	
-	
-	public boolean addComment(EventComment comment){
+
+	public boolean addComment(EventComment comment) {
 		return this.comments.add(comment);
 	}
-	
-	
-	
+
+	/**
+	 * Helper method to make sure calling user is allowed to see this event
+	 * 
+	 * @param user
+	 * @return true if user is authorized to see this
+	 */
+	public boolean isAuthorized(long userId) {
+
+		boolean isAuthorized = false;
+		if(getHostId().longValue() == userId) {
+			isAuthorized = true;
+		} else {
+			for(ZeppaEventToUserRelationship relationship: attendeeRelationships){
+				if(relationship.getUserId().longValue() == userId){
+					isAuthorized = true;
+					break;
+				}
+			}
+		}
+		return isAuthorized;
+	}
 
 }

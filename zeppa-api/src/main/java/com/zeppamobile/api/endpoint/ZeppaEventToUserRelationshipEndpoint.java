@@ -2,6 +2,7 @@ package com.zeppamobile.api.endpoint;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,10 +15,10 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.Resources;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.common.auth.Authorizer;
@@ -28,7 +29,7 @@ import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
 @ApiReference(EndpointBase.class)
-public class ZeppaEventToUserRelationshipEndpoint {
+public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -45,7 +46,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -81,11 +84,19 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			} else {
 				cursorString = cursor.toWebSafeString();
 			}
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (ZeppaEventToUserRelationship obj : execute)
-				;
+			
+			/*
+			 * Initialize object and remove bad eggs
+			 * Badeggs are relationships to events user
+			 */
+			List<ZeppaEventToUserRelationship> badEggs = new ArrayList<ZeppaEventToUserRelationship>();
+			for (ZeppaEventToUserRelationship relationship : execute) {
+				ZeppaEvent event = relationship.getEvent();
+				if(!event.isAuthorized(user.getId().longValue())){
+					badEggs.add(relationship);
+				}
+			}
+			execute.removeAll(badEggs);
 
 		} finally {
 			mgr.close();
@@ -106,7 +117,10 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
-			@Named("id") Long id, @Named("auth") Authorizer auth) {
+			@Named("id") Long id, @Named("auth") Authorizer auth)
+			throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
@@ -135,7 +149,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	@ApiMethod(name = "insertZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship insertZeppaEventToUserRelationship(
 			ZeppaEventToUserRelationship relationship,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		if (relationship.getEventId() == null) {
 			throw new NullPointerException("Null Event Id");
@@ -192,7 +208,10 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	@ApiMethod(name = "updateZeppaEventToUserRelationship")
 	public ZeppaEventToUserRelationship updateZeppaEventToUserRelationship(
 			ZeppaEventToUserRelationship relationship,
-			@Named("auth") Authorizer auth) throws IOException {
+			@Named("auth") Authorizer auth) throws IOException,
+			UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent event = null;
@@ -294,7 +313,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "removeZeppaEventToUserRelationship")
 	public void removeZeppaEventToUserRelationship(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws OAuthRequestException {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -309,23 +330,5 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		}
 	}
 
-	// private boolean containsZeppaEventToUserRelationship(
-	// ZeppaEventToUserRelationship zeppaeventtouserrelationship) {
-	// PersistenceManager mgr = getPersistenceManager();
-	// boolean contains = true;
-	// try {
-	// mgr.getObjectById(ZeppaEventToUserRelationship.class,
-	// zeppaeventtouserrelationship.getKey());
-	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
-	// contains = false;
-	// } finally {
-	// mgr.close();
-	// }
-	// return contains;
-	// }
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
-	}
 
 }

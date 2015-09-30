@@ -318,7 +318,7 @@ public class TagAgent {
 	 */
 	public double calculateSimilarity(TagAgent tag) {
 		double similarity = 0;
-
+		System.out.println("Calculating similarity");
 		if (getTagText().equalsIgnoreCase(tag.getTagText())) {
 			// Tags are the same, ignoring case. Very likely talking about the
 			// same thing therefore completely similar
@@ -331,7 +331,9 @@ public class TagAgent {
 				// iterate through each part of a tag
 
 				double similarityWeight = 0;
-
+				System.out.println("Tag1 Parts: " + parsedTagParts.toString());
+				System.out.println("Tag2 Parts: " + tag.parsedTagParts.toString());
+				
 				for (TagPart p : parsedTagParts) {
 					// compare it to each part of another tag
 					for (TagPart p2 : tag.parsedTagParts) {

@@ -22,8 +22,8 @@ import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class EventTagEndpoint extends EndpointBase {
+@ApiReference(BaseEndpoint.class)
+public class EventTagEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP

@@ -16,83 +16,81 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
-import com.google.appengine.api.users.User;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
-import com.zeppamobile.common.Constants;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaUserEndpoint {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaUserEndpoint extends BaseEndpoint {
 
-	/**
-	 * This method lists all the entities inserted in datastore. It uses HTTP
-	 * GET method and paging support.
-	 * 
-	 * @return A CollectionResponse class containing the list of all entities
-	 *         persisted and a cursor to the next page.
-	 * @throws OAuthRequestException
-	 */
-	@SuppressWarnings({ "unchecked", "unused" })
-	@ApiMethod(name = "listZeppaUser")
-	public CollectionResponse<ZeppaUser> listZeppaUser(
-			@Nullable @Named("filter") String filterString,
-			@Nullable @Named("cursor") String cursorString,
-			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
-
-		PersistenceManager mgr = null;
-		Cursor cursor = null;
-		List<ZeppaUser> execute = null;
-
-		try {
-			mgr = getPersistenceManager();
-			Query query = mgr.newQuery(ZeppaUser.class);
-			if (Utils.isWebSafe(cursorString)) {
-				cursor = Cursor.fromWebSafeString(cursorString);
-				HashMap<String, Object> extensionMap = new HashMap<String, Object>();
-				extensionMap.put(JDOCursorHelper.CURSOR_EXTENSION, cursor);
-				query.setExtensions(extensionMap);
-			}
-
-			if (Utils.isWebSafe(filterString)) {
-				query.setFilter(filterString);
-			}
-
-			if (Utils.isWebSafe(orderingString)) {
-				query.setOrdering(orderingString);
-			}
-
-			if (limit != null) {
-				query.setRange(0, limit);
-			}
-
-			execute = (List<ZeppaUser>) query.execute();
-
-			cursor = JDOCursorHelper.getCursor(execute);
-			if (cursor == null) {
-				cursorString = null;
-			} else {
-				cursorString = cursor.toWebSafeString();
-			}
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (ZeppaUser obj : execute)
-				;
-		} finally {
-			mgr.close();
-		}
-
-		return CollectionResponse.<ZeppaUser> builder().setItems(execute)
-				.setNextPageToken(cursorString).build();
-	}
+	// /**
+	// * This method lists all the entities inserted in datastore. It uses HTTP
+	// * GET method and paging support.
+	// *
+	// * @return A CollectionResponse class containing the list of all entities
+	// * persisted and a cursor to the next page.
+	// * @throws OAuthRequestException
+	// */
+	// @SuppressWarnings({ "unchecked", "unused" })
+	// @ApiMethod(name = "listZeppaUser")
+	// public CollectionResponse<ZeppaUser> listZeppaUser(
+	// @Nullable @Named("filter") String filterString,
+	// @Nullable @Named("cursor") String cursorString,
+	// @Nullable @Named("ordering") String orderingString,
+	// @Nullable @Named("limit") Integer limit,
+	// @Named("auth") Authorizer auth) {
+	//
+	// PersistenceManager mgr = null;
+	// Cursor cursor = null;
+	// List<ZeppaUser> execute = null;
+	//
+	// try {
+	// mgr = getPersistenceManager();
+	// Query query = mgr.newQuery(ZeppaUser.class);
+	// if (Utils.isWebSafe(cursorString)) {
+	// cursor = Cursor.fromWebSafeString(cursorString);
+	// HashMap<String, Object> extensionMap = new HashMap<String, Object>();
+	// extensionMap.put(JDOCursorHelper.CURSOR_EXTENSION, cursor);
+	// query.setExtensions(extensionMap);
+	// }
+	//
+	// if (Utils.isWebSafe(filterString)) {
+	// query.setFilter(filterString);
+	// }
+	//
+	// if (Utils.isWebSafe(orderingString)) {
+	// query.setOrdering(orderingString);
+	// }
+	//
+	// if (limit != null) {
+	// query.setRange(0, limit);
+	// }
+	//
+	// execute = (List<ZeppaUser>) query.execute();
+	//
+	// cursor = JDOCursorHelper.getCursor(execute);
+	// if (cursor == null) {
+	// cursorString = null;
+	// } else {
+	// cursorString = cursor.toWebSafeString();
+	// }
+	// // Tight loop for fetching all entities from datastore and
+	// // accomodate
+	// // for lazy fetch.
+	// for (ZeppaUser obj : execute)
+	// ;
+	// } finally {
+	// mgr.close();
+	// }
+	//
+	// return CollectionResponse.<ZeppaUser> builder().setItems(execute)
+	// .setNextPageToken(cursorString).build();
+	// }
 
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
@@ -101,30 +99,13 @@ public class ZeppaUserEndpoint {
 	 * @param id
 	 *            the primary key of the java bean.
 	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "getZeppaUser")
 	public ZeppaUser getZeppaUser(@Named("userId") Long userId,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		PersistenceManager mgr = getPersistenceManager();
-		ZeppaUser zeppauser = null;
-		try {
-			zeppauser = mgr.getObjectById(ZeppaUser.class, userId);
+		ZeppaUser zeppauser = getAuthorizedZeppaUser(auth);
 
-			// if(!zeppauser.getAuthEmail().equalsIgnoreCase(user.getEmail())){
-			// zeppauser = null;
-			// throw new
-			// OAuthRequestException("Not Authorized to Access this object");
-			// }
-			ZeppaUserInfo info = zeppauser.getUserInfo();
-
-		} catch (javax.jdo.JDOObjectNotFoundException e) {
-			e.printStackTrace();
-
-		} finally {
-			mgr.close();
-		}
 		return zeppauser;
 	}
 
@@ -143,16 +124,13 @@ public class ZeppaUserEndpoint {
 
 	@ApiMethod(name = "insertZeppaUser")
 	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser,
-			@Named("auth") Authorizer auth) throws IOException {
+			@Named("auth") Authorizer auth) throws IOException,
+			UnauthorizedException {
 
-		try {
-			ZeppaUser fetched = fetchUserByEmail(auth);
-			if (fetched != null) {
-				return fetched;
-			}
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			// Doesnt exist, safe to insert
+		if (user != null) {
+			return user;
 		}
 
 		zeppaUser.setCreated(System.currentTimeMillis());
@@ -160,6 +138,7 @@ public class ZeppaUserEndpoint {
 
 		zeppaUser.getUserInfo().setCreated(System.currentTimeMillis());
 		zeppaUser.getUserInfo().setUpdated(System.currentTimeMillis());
+		zeppaUser.setAuthEmail(auth.getEmail());
 
 		zeppaUser = GoogleCalendarService.insertZeppaCalendar(zeppaUser);
 
@@ -167,9 +146,7 @@ public class ZeppaUserEndpoint {
 
 		try {
 			zeppaUser = mgr.makePersistent(zeppaUser);
-
 		} finally {
-
 			mgr.close();
 		}
 
@@ -188,13 +165,13 @@ public class ZeppaUserEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaUser")
 	public ZeppaUser updateZeppaUser(ZeppaUser zeppauser,
-			@Named("auth") Authorizer auth) throws OAuthRequestException {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			ZeppaUser current = mgr.getObjectById(ZeppaUser.class,
-					zeppauser.getId());
-			ZeppaUserInfo currentInfo = current.getUserInfo();
+			ZeppaUserInfo currentInfo = user.getUserInfo();
 			ZeppaUserInfo updatedInfo = zeppauser.getUserInfo();
 
 			currentInfo.setGivenName(updatedInfo.getGivenName());
@@ -204,11 +181,11 @@ public class ZeppaUserEndpoint {
 					.getPrimaryUnformattedNumber());
 			currentInfo.setUpdated(System.currentTimeMillis());
 
-			current.setUserInfo(currentInfo);
-			current.setZeppaCalendarId(zeppauser.getZeppaCalendarId());
-			current.setUpdated(System.currentTimeMillis());
+			user.setUserInfo(currentInfo);
+			user.setZeppaCalendarId(zeppauser.getZeppaCalendarId());
+			user.setUpdated(System.currentTimeMillis());
 
-			zeppauser = mgr.makePersistent(current);
+			zeppauser = mgr.makePersistent(user);
 		} finally {
 			mgr.close();
 		}
@@ -224,20 +201,26 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeZeppaUser")
-	public void removeZeppaUser(@Named("id") Long userId, @Named("auth") Authorizer auth)
-			throws OAuthRequestException {
+	public void removeZeppaUser(@Named("id") Long userId,
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		
+		if(user.getId().longValue() != userId.longValue()){
+			throw new UnauthorizedException("Can't remove other users");
+		}
+		
 		PersistenceManager mgr = getPersistenceManager();
 
 		try {
-			ZeppaUser zeppauser = mgr.getObjectById(ZeppaUser.class, userId);
 
-			RelationshipUtility.removeZeppaAccountEntities(userId);
+			
+			RelationshipUtility.removeZeppaAccountEntities(user.getId().longValue());
 			// Delete Zeppa Calendar
-			GoogleCalendarService.deleteCalendar(zeppauser);
+			GoogleCalendarService.deleteCalendar(user);
 
 			// Delete ZeppaUser
-			mgr.deletePersistent(zeppauser);
+			mgr.deletePersistent(user);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -247,58 +230,14 @@ public class ZeppaUserEndpoint {
 	}
 
 	/**
-	 * this method finds a ZeppaUser based on the user passed in If it doesnt
-	 * find one, returns null to notify application that it needs to create a
-	 * new user
-	 * 
-	 * 
-	 * @param googlePlusProfileId
-	 *            , profile id for the individual's google plus account
-	 * @param User
-	 *            , the asking user
-	 * 
-	 * @return ZeppaUser which matches user object
-	 * @throws UnauthorizedException
-	 * @throws OAuthRequestException
+	 * fetch the user with this authorizer object
 	 * 
 	 * */
 
 	@ApiMethod(name = "fetchCurrentZeppaUser")
-	public ZeppaUser fetchUserByEmail(@Named("auth") Authorizer auth) {
+	public ZeppaUser fetchCurrentZeppaUser(@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		PersistenceManager mgr = getPersistenceManager();
-		ZeppaUser zeppaUser = null;
-		try {
-			Query query = mgr.newQuery(ZeppaUser.class, "authEmail == '"
-					+ auth.getEmail() + "'");
-			query.setUnique(true);
-
-			zeppaUser = (ZeppaUser) query.execute();
-
-			if (zeppaUser != null) {
-
-				// Touch all fields so they are returned properly to the app
-				ZeppaUserInfo userInfo = zeppaUser.getUserInfo();
-				userInfo.getGivenName();
-				userInfo.getFamilyName();
-				userInfo.getGoogleAccountEmail();
-				userInfo.getImageUrl();
-				userInfo.getPrimaryUnformattedNumber();
-				userInfo.getUpdated();
-				userInfo.getCreated();
-			}
-
-		} catch (JDOObjectNotFoundException e) {
-			// Not found, this should happen every time a new user is created
-		} finally {
-			mgr.close();
-		}
-
-		return zeppaUser;
-	}
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
+		return getAuthorizedZeppaUser(auth);
 	}
 
 }

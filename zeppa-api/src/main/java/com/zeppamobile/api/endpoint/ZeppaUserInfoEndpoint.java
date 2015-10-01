@@ -11,17 +11,17 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaUserInfoEndpoint {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaUserInfoEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -38,7 +38,9 @@ public class ZeppaUserInfoEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+		
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -112,7 +114,9 @@ public class ZeppaUserInfoEndpoint {
 	@ApiMethod(name = "fetchZeppaUserInfoByParentId")
 	public ZeppaUserInfo fetchZeppaUserInfoByParentId(
 			@Named("requestedParentId") Long requestedUserId,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+		
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo result = null;
@@ -150,7 +154,9 @@ public class ZeppaUserInfoEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaUserInfo")
 	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+		
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
@@ -162,63 +168,64 @@ public class ZeppaUserInfoEndpoint {
 		return zeppauserinfo;
 	}
 
-	/**
-	 * This inserts a new entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown. It uses HTTP
-	 * POST method.
-	 * 
-	 * @param zeppauserinfo
-	 *            the entity to be inserted.
-	 * @return The inserted entity.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "insertZeppaUserInfo")
-	public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-			@Named("auth") Authorizer auth) {
+	// /**
+	// * This inserts a new entity into App Engine datastore. If the entity
+	// * already exists in the datastore, an exception is thrown. It uses HTTP
+	// * POST method.
+	// *
+	// * @param zeppauserinfo
+	// * the entity to be inserted.
+	// * @return The inserted entity.
+	// * @throws OAuthRequestException
+	// */
+	// @ApiMethod(name = "insertZeppaUserInfo")
+	// public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
+	// @Named("auth") Authorizer auth) {
+	//
+	// PersistenceManager mgr = getPersistenceManager();
+	// try {
+	//
+	// mgr.makePersistent(zeppauserinfo);
+	// } finally {
+	// mgr.close();
+	// }
+	// return zeppauserinfo;
+	// }
 
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-
-			mgr.makePersistent(zeppauserinfo);
-		} finally {
-			mgr.close();
-		}
-		return zeppauserinfo;
-	}
-
-	/**
-	 * This method is used for updating an existing entity. If the entity does
-	 * not exist in the datastore, an exception is thrown. It uses HTTP PUT
-	 * method.
-	 * 
-	 * @param zeppauserinfo
-	 *            the entity to be updated.
-	 * @return The updated entity.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "updateZeppaUserInfo")
-	public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-			@Named("auth") Authorizer auth) {
-
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			ZeppaUserInfo current = mgr.getObjectById(ZeppaUserInfo.class,
-					zeppauserinfo.getId());
-			current.setGivenName(zeppauserinfo.getGivenName());
-			current.setFamilyName(zeppauserinfo.getFamilyName());
-			current.setImageUrl(zeppauserinfo.getImageUrl());
-			current.setPrimaryUnformattedNumber(zeppauserinfo
-					.getPrimaryUnformattedNumber());
-			current.setUpdated(System.currentTimeMillis());
-
-			mgr.makePersistent(zeppauserinfo);
-			zeppauserinfo = current;
-
-		} finally {
-			mgr.close();
-		}
-		return zeppauserinfo;
-	}
+	// /**
+	// * This method is used for updating an existing entity. If the entity does
+	// * not exist in the datastore, an exception is thrown. It uses HTTP PUT
+	// * method.
+	// *
+	// * @param zeppauserinfo
+	// * the entity to be updated.
+	// * @return The updated entity.
+	// * @throws OAuthRequestException
+	// */
+	// @ApiMethod(name = "updateZeppaUserInfo")
+	// public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
+	// @Named("auth") Authorizer auth) throws UnauthorizedException {
+	// ZeppaUser user = getAuthorizedZeppaUser(auth);
+	//
+	// PersistenceManager mgr = getPersistenceManager();
+	// try {
+	// ZeppaUserInfo current = mgr.getObjectById(ZeppaUserInfo.class,
+	// zeppauserinfo.getId());
+	// current.setGivenName(zeppauserinfo.getGivenName());
+	// current.setFamilyName(zeppauserinfo.getFamilyName());
+	// current.setImageUrl(zeppauserinfo.getImageUrl());
+	// current.setPrimaryUnformattedNumber(zeppauserinfo
+	// .getPrimaryUnformattedNumber());
+	// current.setUpdated(System.currentTimeMillis());
+	//
+	// mgr.makePersistent(zeppauserinfo);
+	// zeppauserinfo = current;
+	//
+	// } finally {
+	// mgr.close();
+	// }
+	// return zeppauserinfo;
+	// }
 
 	// /**
 	// * This method removes the entity with primary key id. It uses HTTP DELETE
@@ -251,9 +258,5 @@ public class ZeppaUserInfoEndpoint {
 	// }
 	// return contains;
 	// }
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
-	}
 
 }

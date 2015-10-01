@@ -28,8 +28,8 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaEventToUserRelationshipEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -84,15 +84,15 @@ public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 			} else {
 				cursorString = cursor.toWebSafeString();
 			}
-			
+
 			/*
-			 * Initialize object and remove bad eggs
-			 * Badeggs are relationships to events user
+			 * Initialize object and remove bad eggs Badeggs are relationships
+			 * to events user
 			 */
 			List<ZeppaEventToUserRelationship> badEggs = new ArrayList<ZeppaEventToUserRelationship>();
 			for (ZeppaEventToUserRelationship relationship : execute) {
 				ZeppaEvent event = relationship.getEvent();
-				if(!event.isAuthorized(user.getId().longValue())){
+				if (!event.isAuthorized(user.getId().longValue())) {
 					badEggs.add(relationship);
 				}
 			}
@@ -127,6 +127,7 @@ public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 		try {
 			zeppaeventtouserrelationship = mgr.getObjectById(
 					ZeppaEventToUserRelationship.class, id);
+
 		} catch (javax.jdo.JDOObjectNotFoundException ex) {
 			ex.printStackTrace();
 			throw ex;
@@ -218,6 +219,11 @@ public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 		try {
 			event = mgr.getObjectById(ZeppaEvent.class,
 					relationship.getEventId());
+			if (!event.isAuthorized(user.getId().longValue())) {
+				throw new UnauthorizedException(
+						"User isnt authorized to see this event");
+			}
+
 		} catch (JDOObjectNotFoundException e) {
 			e.printStackTrace();
 			throw (e);
@@ -321,7 +327,17 @@ public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 		try {
 			ZeppaEventToUserRelationship zeppaeventtouserrelationship = mgr
 					.getObjectById(ZeppaEventToUserRelationship.class, id);
-			mgr.deletePersistent(zeppaeventtouserrelationship);
+
+			if (user.getId().longValue() == zeppaeventtouserrelationship
+					.getEventHostId().longValue()
+					|| user.getId().longValue() == zeppaeventtouserrelationship
+							.getUserId().longValue()) {
+
+				mgr.deletePersistent(zeppaeventtouserrelationship);
+			} else {
+				throw new UnauthorizedException(
+						"Not authorized to remove this Event Relationship");
+			}
 		} catch (javax.jdo.JDOObjectNotFoundException ex) {
 			// Object already deleted or something. all good.
 			ex.printStackTrace();
@@ -329,6 +345,5 @@ public class ZeppaEventToUserRelationshipEndpoint extends EndpointBase {
 			mgr.close();
 		}
 	}
-
 
 }

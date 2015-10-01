@@ -1,10 +1,10 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -12,10 +12,10 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.api.notifications.PayloadBuilder;
@@ -25,8 +25,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaUserToUserRelationshipEndpoint {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 
 	// private static final Logger log = Logger
 	// .getLogger(ZeppaUserToUserRelationshipEndpoint.class.getName());
@@ -47,7 +47,9 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -84,11 +86,27 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			} else {
 				cursorString = cursor.toWebSafeString();
 			}
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (ZeppaUserToUserRelationship obj : execute)
-				;
+			
+			/*
+			 * Remove entities the calling user isnt allowed to see
+			 */
+			List<ZeppaUserToUserRelationship> badEggs = new ArrayList<ZeppaUserToUserRelationship>();
+			for (ZeppaUserToUserRelationship relationship : execute) {
+				if (relationship.getCreatorId().longValue() == user.getId()
+						.longValue()
+						|| relationship.getSubjectId().longValue() == user
+								.getId().longValue()
+						|| relationship.getRelationshipType().equals(
+								UserRelationshipType.MINGLING)) {
+					// Users can see relationships they are involved in
+					// They can also see who is mingling with who
+
+				} else {
+					badEggs.add(relationship);
+				}
+			}
+			execute.removeAll(badEggs);
+
 		} finally {
 			mgr.close();
 		}
@@ -109,16 +127,29 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
-		ZeppaUserToUserRelationship zeppausertouserrelationship;
+		ZeppaUserToUserRelationship zeppausertouserrelationship = null;
 		try {
 			zeppausertouserrelationship = mgr.getObjectById(
 					ZeppaUserToUserRelationship.class, relationshipId);
+
+			// Verify authorized user is involved with this relationship
+			if (zeppausertouserrelationship.getCreatorId().longValue() != user
+					.getId().longValue()
+					&& zeppausertouserrelationship.getSubjectId().longValue() != user
+							.getId().longValue()) {
+				throw new UnauthorizedException(
+						"Not authorized to create relationships for other people");
+			}
+
 		} finally {
 			mgr.close();
 		}
+
 		return zeppausertouserrelationship;
 	}
 
@@ -135,15 +166,22 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "insertZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship insertZeppaUserToUserRelationship(
 			ZeppaUserToUserRelationship relationship,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		if (relationship.getCreatorId() == null) {
-			throw new NullPointerException("CreatorId not specified");
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
+
+		// Verify authorized user is involved with this relationship
+		if (relationship.getCreatorId().longValue() != user.getId().longValue()
+				&& relationship.getSubjectId().longValue() != user.getId()
+						.longValue()) {
+			throw new UnauthorizedException(
+					"Not authorized to create relationships for other people");
 		}
 
-		if (relationship.getSubjectId() == null) {
-			throw new NullPointerException("SubjectId not specified");
-		}
+		// Get the other user
+		Long otherUserId = relationship
+				.getOtherUserId(user.getId().longValue());
+		ZeppaUser otherUser = getUserById(otherUserId);
 
 		PersistenceManager mgr = getPersistenceManager();
 
@@ -181,16 +219,29 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		// Verified the relationship doesn't exist so create a new one
 		try {
 
-			// Persist relationship
+			// set entity values
 			relationship.setCreated(System.currentTimeMillis());
 			relationship.setUpdated(System.currentTimeMillis());
+			relationship.setCreator(user);
+			relationship.setSubject(otherUser);
 
+			// persist the relationship
 			relationship = mgr.makePersistent(relationship);
+
+			// Update User relationships
+			if (user.addCreatedRealtionship(relationship)) {
+				updateUserRelationships(user);
+			}
+			// Update Other User relationships
+			if (otherUser.addSubjectRelationship(relationship)) {
+				updateUserRelationships(otherUser);
+			}
 
 		} finally {
 			mgr.close();
 		}
 
+		// notify user when someone requests to mingle
 		if (relationship.getRelationshipType().equals(
 				UserRelationshipType.PENDING_REQUEST)) {
 
@@ -216,35 +267,45 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "updateZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship updateZeppaUserToUserRelationship(
 			ZeppaUserToUserRelationship relationship,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		boolean didAcceptRequest = false;
 		try {
-			mgr.currentTransaction().begin();
 
+			// Fetch the current state of the user relationship
 			ZeppaUserToUserRelationship current = mgr.getObjectById(
 					ZeppaUserToUserRelationship.class, relationship.getId());
 
+			// Verify user is able to make changes to this relationship
+			if (current.getCreatorId().longValue() != user.getId().longValue()
+					&& current.getSubjectId().longValue() != user.getId()
+							.longValue()) {
+				throw new UnauthorizedException(
+						"Not authorized to update relationships you're not part of");
+			}
+
+			// Determine if the user accepted a request to mingle
 			didAcceptRequest = (relationship.getRelationshipType().equals(
 					UserRelationshipType.MINGLING) && current
 					.getRelationshipType().equals(
 							UserRelationshipType.PENDING_REQUEST));
 
+			// Update entities of the relationship
 			current.setUpdated(System.currentTimeMillis());
 			current.setRelationshipType(relationship.getRelationshipType());
 
+			// make changes to the datastore
 			relationship = mgr.makePersistent(current);
-			mgr.currentTransaction().commit();
 
 		} finally {
-
-			if (mgr.currentTransaction().isActive()) {
-				mgr.currentTransaction().rollback();
-			}
+			mgr.close();
 
 		}
 
+		// If users are now mingling, notify the other user
 		if (didAcceptRequest) {
 			NotificationUtility.scheduleNotificationBuild(
 					ZeppaUserToUserRelationship.class.getName(),
@@ -266,45 +327,56 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
 	public void removeZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
-			@Named("userId") Long userId, @Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
-		PersistenceManager umgr = getPersistenceManager();
 		try {
 
+			// Fetch users involved in this relationship
 			ZeppaUserToUserRelationship relationship = mgr.getObjectById(
 					ZeppaUserToUserRelationship.class, relationshipId);
-			if (relationship.getRelationshipType() == UserRelationshipType.MINGLING) {
 
-				try {
-					ZeppaUser user1 = umgr.getObjectById(ZeppaUser.class,
-							relationship.getCreatorId());
-					ZeppaUser user2 = umgr.getObjectById(ZeppaUser.class,
-							relationship.getSubjectId());
-					TaskUtility.scheduleDeleteRelationshipsBetweenUsers(user1
-							.getId().longValue(), user2.getId().longValue());
-
-					if (user1.getId().longValue() == userId.longValue()) {
-						String payload = PayloadBuilder
-								.silentUserRelationshipDeletedPayload(
-										user1.getId(), user2.getId());
-						NotificationUtility.preprocessNotificationDelivery(
-								payload, user2.getId().longValue());
-					} else {
-						String payload = PayloadBuilder
-								.silentUserRelationshipDeletedPayload(
-										user2.getId(), user1.getId());
-						NotificationUtility.preprocessNotificationDelivery(
-								payload, user1.getId().longValue());
-					}
-
-				} catch (JDOObjectNotFoundException e) {
-					// Couldn't find one of the users
-				} finally {
-					umgr.close();
-				}
+			// Verify authorized user is involved with this relationship
+			if (relationship.getCreatorId().longValue() != user.getId()
+					.longValue()
+					&& relationship.getSubjectId().longValue() != user.getId()
+							.longValue()) {
+				throw new UnauthorizedException(
+						"Not authorized to remove relationships you're not part of");
 			}
 
+			// Get the other user
+			Long otherUserId = relationship.getOtherUserId(user.getId()
+					.longValue());
+			ZeppaUser otherUser = getUserById(otherUserId);
+
+			// If users are mingling make appropriate adjustments
+			if (relationship.getRelationshipType() == UserRelationshipType.MINGLING) {
+
+				// Create task to delete relationships between users
+				TaskUtility.scheduleDeleteRelationshipsBetweenUsers(user
+						.getId().longValue(), otherUser.getId().longValue());
+
+				String payload = PayloadBuilder
+						.silentUserRelationshipDeletedPayload(user.getId(),
+								otherUser.getId());
+				NotificationUtility.preprocessNotificationDelivery(payload,
+						otherUser.getId().longValue());
+			}
+
+			// Update User's relationships
+			if (user.removeUserRelationship(relationship)) {
+				updateUserRelationships(user);
+			}
+
+			// Update Other User's relationships
+			if (otherUser.removeUserRelationship(relationship)) {
+				updateUserRelationships(otherUser);
+			}
+
+			// remove the relationships from data store
 			mgr.deletePersistent(relationship);
 
 		} finally {
@@ -312,8 +384,22 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		}
 	}
 
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	private ZeppaUser getUserById(Long userId) {
+		ZeppaUser result = null;
+
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			result = mgr.getObjectById(ZeppaUser.class, userId);
+		} finally {
+			mgr.close();
+		}
+
+		return result;
 	}
 
 }

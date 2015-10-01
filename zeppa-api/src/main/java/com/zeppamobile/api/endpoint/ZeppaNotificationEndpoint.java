@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,16 +12,17 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
+import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
+import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaNotificationEndpoint {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaNotificationEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -30,14 +32,16 @@ public class ZeppaNotificationEndpoint {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "listZeppaNotification")
 	public CollectionResponse<ZeppaNotification> listZeppaNotification(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -77,8 +81,15 @@ public class ZeppaNotificationEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
-			for (ZeppaNotification obj : execute)
-				;
+			List<ZeppaNotification> badEggs = new ArrayList<ZeppaNotification>();
+			for (ZeppaNotification notif : execute) {
+				if (notif.getRecipientId().longValue() != user.getId()
+						.longValue()) {
+					badEggs.add(notif);
+				}
+			}
+			execute.removeAll(badEggs);
+
 		} finally {
 			mgr.close();
 		}
@@ -98,12 +109,19 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaNotification")
 	public ZeppaNotification getZeppaNotification(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaNotification zeppanotification = null;
 		try {
 			zeppanotification = mgr.getObjectById(ZeppaNotification.class, id);
+			if (zeppanotification.getRecipientId().longValue() != user.getId()
+					.longValue()) {
+				throw new UnauthorizedException(
+						"Can't get notifications that were not sent to you");
+			}
 		} catch (javax.jdo.JDOObjectNotFoundException ex) {
 			zeppanotification = null;
 
@@ -159,13 +177,22 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaNotification")
 	public ZeppaNotification updateZeppaNotification(
-			ZeppaNotification zeppanotification, @Named("auth") Authorizer auth) {
+			ZeppaNotification zeppanotification, @Named("auth") Authorizer auth)
+			throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaNotification current = mgr.getObjectById(
 					ZeppaNotification.class, zeppanotification.getId());
+
+			if (current.getRecipientId().longValue() != user.getId()
+					.longValue()) {
+				throw new UnauthorizedException("");
+			}
+
 			current.setEventId(zeppanotification.getEventId());
 			current.setExpires(zeppanotification.getExpires());
 			current.setExtraMessage(zeppanotification.getExtraMessage());
@@ -190,22 +217,29 @@ public class ZeppaNotificationEndpoint {
 	 */
 	@ApiMethod(name = "removeZeppaNotification")
 	public void removeZeppaNotification(@Named("id") Long id,
-			@Named("auth") Authorizer auth) {
+			@Named("auth") Authorizer auth) throws UnauthorizedException {
+
+		ZeppaUser user = getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaNotification zeppanotification = mgr.getObjectById(
 					ZeppaNotification.class, id);
-			mgr.deletePersistent(zeppanotification);
+			if (zeppanotification.getRecipientId().longValue() == user.getId()
+					.longValue()
+					|| zeppanotification.getSenderId().longValue() == user
+							.getId().longValue()) {
+				mgr.deletePersistent(zeppanotification);
+			} else {
+				throw new UnauthorizedException(
+						"Not able to remove notifications you didnt send or receive");
+			}
+
 		} catch (javax.jdo.JDOObjectNotFoundException ex) {
 
 		} finally {
 			mgr.close();
 		}
-	}
-
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
 	}
 
 }

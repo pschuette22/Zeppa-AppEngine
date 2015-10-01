@@ -20,8 +20,8 @@ import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
-@ApiReference(EndpointBase.class)
-public class PhotoInfoEndpoint extends EndpointBase {
+@ApiReference(BaseEndpoint.class)
+public class PhotoInfoEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP

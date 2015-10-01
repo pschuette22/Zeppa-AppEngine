@@ -26,8 +26,8 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class ZeppaEventEndpoint extends EndpointBase {
+@ApiReference(BaseEndpoint.class)
+public class ZeppaEventEndpoint extends BaseEndpoint {
 
 	// private static final String cursorString = null;
 

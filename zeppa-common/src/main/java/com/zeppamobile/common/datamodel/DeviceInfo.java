@@ -63,7 +63,7 @@ public class DeviceInfo  {
 	
 	
 	/**
-	 * Contructor. Not used by endpoints.
+	 * Constructor. Not used by endpoints.
 	 * 
 	 * @param owner
 	 * @param phoneType

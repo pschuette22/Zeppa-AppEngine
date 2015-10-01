@@ -32,6 +32,7 @@ public class ZeppaUserToUserRelationship {
 
 	@Persistent
 	private Long creatorId;
+	
 
 	@Persistent
 	private Long subjectId;
@@ -119,12 +120,30 @@ public class ZeppaUserToUserRelationship {
 		this.creatorId = creatorId;
 	}
 
+	public ZeppaUser getCreator() {
+		return creator;
+	}
+
+	public void setCreator(ZeppaUser creator) {
+		this.creator = creator;
+		this.creatorId = creator.getId();
+	}
+
 	public Long getSubjectId() {
 		return subjectId;
 	}
 
 	public void setSubjectId(Long subjectId) {
 		this.subjectId = subjectId;
+	}
+
+	public ZeppaUser getSubject() {
+		return subject;
+	}
+
+	public void setSubject(ZeppaUser subject) {
+		this.subject = subject;
+		this.subjectId = subject.getId();
 	}
 
 	public UserRelationshipType getRelationshipType() {
@@ -163,5 +182,10 @@ public class ZeppaUserToUserRelationship {
 	public boolean removeTagFollow(EventTagFollow follow) {
 		return this.tagFollows.remove(follow);
 	}
+
+	public List<EventTagFollow> getTagFollows() {
+		return tagFollows;
+	}
+	
 
 }

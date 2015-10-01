@@ -24,8 +24,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(EndpointBase.class)
-public class EventTagFollowEndpoint extends EndpointBase {
+@ApiReference(BaseEndpoint.class)
+public class EventTagFollowEndpoint extends BaseEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -191,7 +191,12 @@ public class EventTagFollowEndpoint extends EndpointBase {
 			if (tag.addEventTagFollow(eventtagfollow)) {
 				updateTagRelationships(tag);
 			}
-
+			
+			// Update relationship holding follows
+			if(relationship.addTagFollow(eventtagfollow)){
+				updateUserRelationship(relationship);
+			}
+			
 		} finally {
 
 			mgr.close();

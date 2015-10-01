@@ -16,7 +16,7 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
-public class EndpointBase {
+public class BaseEndpoint {
 
 	/**
 	 * Class with information on the lastest verison of the Android client

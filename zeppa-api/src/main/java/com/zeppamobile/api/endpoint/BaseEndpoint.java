@@ -103,23 +103,38 @@ public class BaseEndpoint {
 	 */
 	protected ZeppaUser getAuthorizedZeppaUser(Authorizer auth)
 			throws DickheadException {
-		// TODO: check tokens
 
 		ZeppaUser result = null;
-		PersistenceManager mgr = getPersistenceManager();
-		try {
+		// Verify token is authentic
+		if (isValidAuth(auth)) {
+			PersistenceManager mgr = getPersistenceManager();
+			try {
 
-			result = mgr.getObjectById(ZeppaUser.class, auth.getUserId());
+				result = mgr.getObjectById(ZeppaUser.class, auth.getUserId());
+				// TODO: veridy this auth is good for this user
 
-		} catch (NullPointerException e) {
-			// Auth item wasn't made by us
-			throw new DickheadException("Bad Authorizer", ZeppaUser.class,
-					Long.valueOf(-1), auth);
-		} finally {
-			mgr.close();
+			} catch (NullPointerException e) {
+				// Auth item wasn't made by us
+				throw new DickheadException("Bad Authorizer", ZeppaUser.class,
+						Long.valueOf(-1), auth);
+			} finally {
+				mgr.close();
+			}
 		}
 
 		return result;
+	}
+
+	/**
+	 * Quick method to verify authentication wrapper tokens
+	 * @param auth
+	 * @return
+	 * @throws DickheadException
+	 */
+	protected boolean isValidAuth(Authorizer auth) throws DickheadException {
+		boolean isValid = true;
+		// TODO: validate auth
+		return isValid;
 	}
 
 	/**
@@ -170,10 +185,10 @@ public class BaseEndpoint {
 		if (userId1.longValue() == userId2.longValue()) {
 			throw new NullPointerException("Missing a user id");
 		}
-		String filter = "(creatorId == " + userId1 
-				+ " || creatorId == " + userId2.longValue() 
-				+ ") && (subjectId == " + userId1.longValue() 
-				+ "|| subjectId == " + userId2.longValue() + ")";
+		String filter = "(creatorId == " + userId1 + " || creatorId == "
+				+ userId2.longValue() + ") && (subjectId == "
+				+ userId1.longValue() + "|| subjectId == "
+				+ userId2.longValue() + ")";
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserToUserRelationship result = null;

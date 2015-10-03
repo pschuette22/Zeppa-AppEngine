@@ -1,9 +1,7 @@
 package com.zeppamobile.common.datamodel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -20,16 +18,27 @@ public class InviteGroup {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
 
+	@Persistent(defaultFetchGroup="false")
+	private List<String> emails = new ArrayList<String>();
 	
-	@Persistent
-	private Map<String,Long> invitedUserEmailMap = new HashMap<String,Long>();
-	
+	@Persistent(defaultFetchGroup="false")
+	private List<ZeppaUser> groupMembers = new ArrayList<ZeppaUser>();
 	
 	@Persistent
 	private List<String> suggestedTags = new ArrayList<String>();
 	
 	
-	
-	
+	/**
+	 * Add a group member to an invite group
+	 * @param user
+	 * @return
+	 */
+	public boolean addGroupMember(ZeppaUser user){
+		return this.groupMembers.add(user);
+	}
 
+	public List<ZeppaUser> getGroupMembers(){
+		return this.groupMembers;
+	}
+	
 }

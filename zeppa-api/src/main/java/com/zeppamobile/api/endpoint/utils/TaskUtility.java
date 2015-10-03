@@ -25,6 +25,7 @@ public class TaskUtility {
 		return queue;
 	}
 
+	
 	/**
 	 * Schedule a task to create the relationships of an event This also
 	 * schedules sending a notification as necessary

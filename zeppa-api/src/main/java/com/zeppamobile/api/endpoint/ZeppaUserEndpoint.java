@@ -26,7 +26,6 @@ import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 @ApiReference(BaseEndpoint.class)
 public class ZeppaUserEndpoint extends BaseEndpoint {
 
-
 	/**
 	 * This inserts a new entity into App Engine datastore. It uses HTTP POST
 	 * method.
@@ -81,7 +80,6 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 		/*
 		 * 
 		 * Create this users initial tags
-		 * 
 		 */
 		List<EventTag> tags = new ArrayList<EventTag>();
 		// Make the initial tags
@@ -90,14 +88,13 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 			tags.add(tag);
 			zeppaUser.addTag(tag);
 		}
-		// Persist 
+		// Persist
 		PersistenceManager tmgr = getPersistenceManager();
 		try {
 			tmgr.makePersistentAll(tags);
 		} finally {
 			tmgr.close();
 		}
-		
 
 		/*
 		 * Find initial connections based on invite groups
@@ -114,19 +111,21 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 		}
 		// Schedule making initial mingling connections
 		for (ZeppaUser mingler : initialConnections) {
-			ZeppaUserToUserRelationship relationship = new ZeppaUserToUserRelationship(zeppaUser.getId(), mingler.getId(), UserRelationshipType.MINGLING);
+			ZeppaUserToUserRelationship relationship = new ZeppaUserToUserRelationship(
+					zeppaUser.getId(), mingler.getId(),
+					UserRelationshipType.MINGLING);
 			zeppaUser.addCreatedRealtionship(relationship);
 			mingler.addSubjectRelationship(relationship);
 			updateUserRelationships(mingler);
-			TaskUtility.scheduleCreateEventRelationshipsForUsers(zeppaUser.getId(), mingler.getId());
+			TaskUtility.scheduleCreateEventRelationshipsForUsers(
+					zeppaUser.getId(), mingler.getId());
 		}
-		
+
 		// Update user relationships
 		updateUserRelationships(zeppaUser);
-		
+
 		/*
 		 * Update all invite group(s) with this user
-		 * 
 		 */
 		PersistenceManager gmgr = getPersistenceManager();
 		try {
@@ -185,15 +184,11 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 	 *            the primary key of the entity to be deleted.
 	 * @throws OAuthRequestException
 	 */
-	@ApiMethod(name = "removeZeppaUser")
-	public void removeZeppaUser(@Named("id") Long userId,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+	@ApiMethod(name = "removeCurrentZeppaUser")
+	public void removeCurrentZeppaUser(@Named("auth") Authorizer auth)
+			throws UnauthorizedException {
 
 		ZeppaUser user = getAuthorizedZeppaUser(auth);
-
-		if (user.getId().longValue() != userId.longValue()) {
-			throw new UnauthorizedException("Can't remove other users");
-		}
 
 		PersistenceManager mgr = getPersistenceManager();
 

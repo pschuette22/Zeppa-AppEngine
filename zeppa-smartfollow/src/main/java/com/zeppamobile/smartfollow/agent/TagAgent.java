@@ -56,17 +56,7 @@ public class TagAgent {
 
 	public TagAgent(UserAgent userAgent, EventTag tag) {
 		this.tag = tag;
-		// Fetch all the instances of people following this tag
-		try {
-			fetchTagFollows();
-		} catch (NullPointerException e) {
-			if (!Configuration.isTesting()) {
-				System.out
-						.print("Caught null pointer fetching tags, ignored in test");
-			} else {
-				throw e;
-			}
-		}
+
 		/*
 		 * Try to turn the tag into a machine-readable sentence This also
 		 * initializes convertedTagWords and posTags If an exception is throw...
@@ -89,6 +79,7 @@ public class TagAgent {
 	public Long getTagId() {
 		return tag.getId();
 	}
+
 
 	/**
 	 * Percent of owners minglers who follow this tag
@@ -195,7 +186,7 @@ public class TagAgent {
 	/**
 	 * Quickly fetch all the follows for this tag
 	 */
-	private void fetchTagFollows() {
+	public void fetchTagFollows() {
 
 		if (Configuration.isTesting()) {
 			return;
@@ -616,25 +607,29 @@ public class TagAgent {
 					 */
 					calc = compareIndexWordsForPointerTypes(indexWord,
 							part.indexWord, relevantTypes);
-					
+
 					if (calc <= 0) {
-						// If there is no similarity here, try comparing the words with other relevant parts of speech
+						// If there is no similarity here, try comparing the
+						// words with other relevant parts of speech
 						/*
-						 * If the index word sets for each word lemma are null, look them up
+						 * If the index word sets for each word lemma are null,
+						 * look them up
 						 */
-						if(indexWordSet == null){
-							indexWordSet = Constants.getDictionary().lookupAllIndexWords(
-									indexWord.getLemma());
+						if (indexWordSet == null) {
+							indexWordSet = Constants.getDictionary()
+									.lookupAllIndexWords(indexWord.getLemma());
 						}
-						
-						if(part.indexWordSet == null) {
-							part.indexWordSet = Constants.getDictionary().lookupAllIndexWords(
-									part.indexWord.getLemma());
+
+						if (part.indexWordSet == null) {
+							part.indexWordSet = Constants.getDictionary()
+									.lookupAllIndexWords(
+											part.indexWord.getLemma());
 						}
-						
+
 						// Return the comparison
-						return compareIndexWordSets(indexWordSet, part.indexWordSet);
-						
+						return compareIndexWordSets(indexWordSet,
+								part.indexWordSet);
+
 					}
 
 				}
@@ -753,8 +748,10 @@ public class TagAgent {
 					printPointerRelationshipInfo(r);
 					
 					double depth = r.getDepth();
-				
-					double adjustment = (Math.pow(relationshipWeight, depth))
+
+					// double adjustment = (Math.pow(relationshipWeight, depth))
+					// * (1.0 - strength);
+					double adjustment = (Math.pow(.9, depth))
 							* (1.0 - strength);
 //					double adjustment = (Math.pow(.9, depth))
 //							* (1.0 - strength);
@@ -766,7 +763,6 @@ public class TagAgent {
 			} catch (NullPointerException e) {
 				// Bad list was passed in, no strength
 			}
-
 
 			return strength;
 		}

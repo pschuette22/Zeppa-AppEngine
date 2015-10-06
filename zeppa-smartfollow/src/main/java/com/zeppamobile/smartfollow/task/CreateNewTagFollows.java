@@ -1,5 +1,7 @@
 package com.zeppamobile.smartfollow.task;
 
+import javax.servlet.ServletContext;
+
 
 /**
  * 
@@ -18,8 +20,8 @@ public class CreateNewTagFollows extends SmartFollowTask {
 	 * @param taskName
 	 * @param tagId
 	 */
-	public CreateNewTagFollows(String taskName, Long tagId) {
-		super(taskName);
+	public CreateNewTagFollows(ServletContext context, String taskName, Long tagId) {
+		super(context, taskName);
 		this.tagId =  tagId;
 	}
 

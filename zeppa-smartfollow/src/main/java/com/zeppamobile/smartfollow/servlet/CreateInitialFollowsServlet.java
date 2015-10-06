@@ -21,25 +21,25 @@ public class CreateInitialFollowsServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-		String u1IdString = req.getParameter("userId1");
-		String u2IdString = req.getParameter("userId2");
+			String u1IdString = req.getParameter("userId1");
+			String u2IdString = req.getParameter("userId2");
 
-		Long user1Id = Long.valueOf(u1IdString);
-		Long user2Id = Long.valueOf(u2IdString);
-		
-		// Create the task object
-		CreateInitialTagFollows createTags = new CreateInitialTagFollows(
-				"Preloaded Task", user1Id, user2Id);
+			Long user1Id = Long.valueOf(u1IdString);
+			Long user2Id = Long.valueOf(u2IdString);
 
-		// Execute the tast object
-		createTags.execute();
+			// Create the task object
+			CreateInitialTagFollows createTags = new CreateInitialTagFollows(
+					getServletContext(), "Preloaded Task", user1Id, user2Id);
 
-		//
-		createTags.finalize();
-		
-		resp.setStatus(HttpServletResponse.SC_OK);
-		
-		} catch (NumberFormatException e){
+			// Execute the tast object
+			createTags.execute();
+
+			//
+			createTags.finalize();
+
+			resp.setStatus(HttpServletResponse.SC_OK);
+
+		} catch (NumberFormatException e) {
 			// Failed to format user IDS
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}

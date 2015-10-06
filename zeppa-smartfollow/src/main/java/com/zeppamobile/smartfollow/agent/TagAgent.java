@@ -22,6 +22,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
@@ -54,7 +56,7 @@ public class TagAgent {
 	// Parse the tag
 	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
 
-	public TagAgent(UserAgent userAgent, EventTag tag) {
+	public TagAgent(ServletContext context, UserAgent userAgent, EventTag tag) {
 		this.tag = tag;
 
 		/*
@@ -64,7 +66,7 @@ public class TagAgent {
 		 * NLP Dictionary
 		 */
 		try {
-			dissectText();
+			dissectText(context);
 		} catch (JWNLException e) {
 			// Done derped
 			e.printStackTrace();
@@ -229,7 +231,7 @@ public class TagAgent {
 	 * 
 	 * @throws JWNLException
 	 */
-	private void dissectText() throws JWNLException {
+	private void dissectText(ServletContext context) throws JWNLException {
 		// First, compound text to list of words, numbers and character strings
 		List<String> stringList = Utils.convertTextToStringList(getTagText());
 
@@ -256,7 +258,7 @@ public class TagAgent {
 		/*
 		 * Try to get the model
 		 */
-		POSModel model = Utils.getPOSModel();
+		POSModel model = Utils.getPOSModel(context);
 		if (model == null) {
 			// maybe flag this
 			return;

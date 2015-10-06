@@ -2,6 +2,8 @@ package com.zeppamobile.smartfollow.task;
 
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import com.zeppamobile.smartfollow.agent.TagAgent;
 
 /**
@@ -13,9 +15,10 @@ import com.zeppamobile.smartfollow.agent.TagAgent;
 public abstract class SmartFollowTask {
 
 	private String name;
+	protected ServletContext context;
 	protected boolean isRunning = false;
 	
-	public SmartFollowTask(String taskName){
+	public SmartFollowTask(ServletContext context, String taskName){
 		this.name = taskName;
 	}
 	

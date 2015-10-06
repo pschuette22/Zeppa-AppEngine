@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import opennlp.tools.postag.POSModel;
 
 public class Utils {
@@ -19,28 +21,14 @@ public class Utils {
 	 * This utility method attempts to convert common slang to text recognizable
 	 * by the machine
 	 * 
+	 * This is not implemented yet. Perhaps add to library instead
+	 * 
 	 * @param slang
 	 * @return translation or null
 	 */
 	public static List<String> slangConverter(String slang) {
 
 		List<String> result = new ArrayList<String>();
-		// TODO: party/drinking words
-		// TODO: weed words
-		// TODO: Sports Words
-
-		if(slang.startsWith("ballin")){
-			result.add("playing");
-			result.add("Basketball");
-		} else if(slang.endsWith("in")){
-			// Most likely left the g off an -ing
-			
-			result.add(slang+"g");
-		} else {
-			// try to convert slang
-			// else (cant convert)
-			result.add(slang);
-		}
 		
 		return result;
 	}
@@ -210,10 +198,10 @@ public class Utils {
 	/**
 	 * Get part of speech model used to determine the parts of speech of a tag
 	 */
-	public static POSModel getPOSModel() {
+	public static POSModel getPOSModel(ServletContext context) {
 		InputStream modelIn = null;
 		try {
-			modelIn = Utils.class.getClassLoader().getResourceAsStream("en-pos-maxent.bin");
+			modelIn = context.getResourceAsStream("/WEB-INF/lib/en-pos-maxent.bin");
 			POSModel model = new POSModel(modelIn);
 			return model;
 		} catch (IOException e) {

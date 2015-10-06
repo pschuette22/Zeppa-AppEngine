@@ -18,6 +18,8 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+
 import org.json.simple.JSONArray;
 
 import com.zeppamobile.common.datamodel.EventTagFollow;
@@ -44,8 +46,8 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 	 * @param userId2
 	 */
 
-	public CreateInitialTagFollows(String taskName, Long userId1, Long userId2) {
-		super(taskName);
+	public CreateInitialTagFollows(ServletContext context, String taskName, Long userId1, Long userId2) {
+		super(context, taskName);
 		this.userId1 = userId1;
 		this.userId2 = userId2;
 
@@ -147,14 +149,14 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		 * Instantiate and initialize user1
 		 */
 		userAgent1 = new UserAgent(userId1);
-		userAgent1.init(userId2);
+		userAgent1.init(context, userId2);
 
 		/*
 		 * 
 		 * Instantiate and initialize user2
 		 */
 		userAgent2 = new UserAgent(userId2);
-		userAgent2.init(userId2);
+		userAgent2.init(context, userId2);
 
 		// Can assume that the User Agents have fetched all their mingling
 		// relationships

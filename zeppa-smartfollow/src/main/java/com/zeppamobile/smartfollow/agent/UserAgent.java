@@ -12,6 +12,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
@@ -52,11 +54,11 @@ public class UserAgent {
 	 * @param otherUserId
 	 *            - userId of user agent is being compared to
 	 */
-	public void init(Long otherUserId) {
+	public void init(ServletContext context, Long otherUserId) {
 		fetchMinglingRelationships(otherUserId);
 		fetchEvents();
 		fetchEventRelationships();
-		fetchTags();
+		fetchTags(context);
 	}
 
 	public Long getUserId() {
@@ -196,7 +198,7 @@ public class UserAgent {
 	/**
 	 * Fetch the EventTag objects owned by this user and add them as tag agents
 	 */
-	private void fetchTags() {
+	private void fetchTags(ServletContext context) {
 
 		try {
 			Dictionary<String, String> params = new Hashtable<String, String>();
@@ -220,7 +222,7 @@ public class UserAgent {
 
 			if (!tags.isEmpty()) {
 				for (EventTag tag : tags) {
-					TagAgent agent = new TagAgent(this, tag);
+					TagAgent agent = new TagAgent(context, this, tag);
 					this.tags.add(agent);
 				}
 			}

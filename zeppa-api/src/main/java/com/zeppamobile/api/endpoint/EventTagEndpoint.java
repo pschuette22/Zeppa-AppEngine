@@ -15,6 +15,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.exception.DickheadException;
 import com.zeppamobile.common.auth.Authorizer;
@@ -22,8 +23,8 @@ import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class EventTagEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class EventTagEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -42,14 +43,14 @@ public class EventTagEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<EventTag> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(EventTag.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -105,9 +106,9 @@ public class EventTagEndpoint extends BaseEndpoint {
 	public EventTag getEventTag(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventTag eventtag = null;
 		try {
 			eventtag = mgr.getObjectById(EventTag.class, id);
@@ -132,7 +133,7 @@ public class EventTagEndpoint extends BaseEndpoint {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
 		}
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
 		if(eventtag.getOwnerId().longValue() != user.getId().longValue()){
 			throw new DickheadException("Tried to make tag for someone else", EventTag.class, Long.valueOf(-1), auth);
@@ -141,7 +142,7 @@ public class EventTagEndpoint extends BaseEndpoint {
 		eventtag.setCreated(System.currentTimeMillis());
 		eventtag.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 
@@ -154,7 +155,7 @@ public class EventTagEndpoint extends BaseEndpoint {
 
 			// Update the user relationships
 			if(user.addTag(eventtag)) {
-				updateUserRelationships(user);
+				ClientEndpointUtility.updateUserRelationships(user);
 			}
 			
 			
@@ -181,9 +182,9 @@ public class EventTagEndpoint extends BaseEndpoint {
 	public void removeEventTag(@Named("tagId") Long tagId,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
 			

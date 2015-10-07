@@ -59,9 +59,6 @@ public class ZeppaEventToUserRelationship {
 	private ZeppaEvent event;
 	
 	@Persistent(defaultFetchGroup="false")
-	private ZeppaUser host;
-	
-	@Persistent(defaultFetchGroup="false")
 	private ZeppaUser attendee;
 	
 	
@@ -206,14 +203,6 @@ public class ZeppaEventToUserRelationship {
 
 	public void setEvent(ZeppaEvent event) {
 		this.event = event;
-	}
-
-	public ZeppaUser getHost() {
-		return host;
-	}
-
-	public void setHost(ZeppaUser host) {
-		this.host = host;
 	}
 
 	public ZeppaUser getAttendee() {

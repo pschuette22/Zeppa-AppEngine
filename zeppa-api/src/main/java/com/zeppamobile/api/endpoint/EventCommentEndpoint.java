@@ -16,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventComment;
@@ -24,8 +25,8 @@ import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class EventCommentEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class EventCommentEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -45,14 +46,14 @@ public class EventCommentEndpoint extends BaseEndpoint {
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<EventComment> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(EventComment.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -116,10 +117,10 @@ public class EventCommentEndpoint extends BaseEndpoint {
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventComment eventcomment = null;
 		try {
 			eventcomment = mgr.getObjectById(EventComment.class, id);
@@ -152,13 +153,13 @@ public class EventCommentEndpoint extends BaseEndpoint {
 		}
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		ZeppaEvent event = getEventForComment(eventcomment, auth);
 
 		eventcomment.setCreated(System.currentTimeMillis());
 		eventcomment.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 
@@ -167,12 +168,12 @@ public class EventCommentEndpoint extends BaseEndpoint {
 
 			// Add relationship to user who commented
 			if (user.addComment(eventcomment)) {
-				updateUserRelationships(user);
+				ClientEndpointUtility.updateUserRelationships(user);
 			}
 
 			// Add relationship to event commented on
 			if (event.addComment(eventcomment)) {
-				updateEventRelationships(event);
+				ClientEndpointUtility.updateEventRelationships(event);
 			}
 
 		} finally {
@@ -199,7 +200,7 @@ public class EventCommentEndpoint extends BaseEndpoint {
 	 */
 	private ZeppaEvent getEventForComment(EventComment comment, Authorizer auth)
 			throws UnauthorizedException {
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaEvent event = null;
 		try {
 			event = mgr.getObjectById(ZeppaEvent.class, comment.getEventId());

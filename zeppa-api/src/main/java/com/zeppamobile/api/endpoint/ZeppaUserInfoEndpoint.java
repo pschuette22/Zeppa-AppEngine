@@ -15,13 +15,14 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaUserInfoEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaUserInfoEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -40,14 +41,14 @@ public class ZeppaUserInfoEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 		
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaUserInfo> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaUserInfo.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -116,9 +117,9 @@ public class ZeppaUserInfoEndpoint extends BaseEndpoint {
 			@Named("requestedParentId") Long requestedUserId,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 		
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserInfo result = null;
 
 		try {
@@ -156,9 +157,9 @@ public class ZeppaUserInfoEndpoint extends BaseEndpoint {
 	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 		
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
 		try {
 			zeppauserinfo = mgr.getObjectById(ZeppaUserInfo.class, id);
@@ -168,95 +169,6 @@ public class ZeppaUserInfoEndpoint extends BaseEndpoint {
 		return zeppauserinfo;
 	}
 
-	// /**
-	// * This inserts a new entity into App Engine datastore. If the entity
-	// * already exists in the datastore, an exception is thrown. It uses HTTP
-	// * POST method.
-	// *
-	// * @param zeppauserinfo
-	// * the entity to be inserted.
-	// * @return The inserted entity.
-	// * @throws OAuthRequestException
-	// */
-	// @ApiMethod(name = "insertZeppaUserInfo")
-	// public ZeppaUserInfo insertZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-	// @Named("auth") Authorizer auth) {
-	//
-	// PersistenceManager mgr = getPersistenceManager();
-	// try {
-	//
-	// mgr.makePersistent(zeppauserinfo);
-	// } finally {
-	// mgr.close();
-	// }
-	// return zeppauserinfo;
-	// }
-
-	// /**
-	// * This method is used for updating an existing entity. If the entity does
-	// * not exist in the datastore, an exception is thrown. It uses HTTP PUT
-	// * method.
-	// *
-	// * @param zeppauserinfo
-	// * the entity to be updated.
-	// * @return The updated entity.
-	// * @throws OAuthRequestException
-	// */
-	// @ApiMethod(name = "updateZeppaUserInfo")
-	// public ZeppaUserInfo updateZeppaUserInfo(ZeppaUserInfo zeppauserinfo,
-	// @Named("auth") Authorizer auth) throws UnauthorizedException {
-	// ZeppaUser user = getAuthorizedZeppaUser(auth);
-	//
-	// PersistenceManager mgr = getPersistenceManager();
-	// try {
-	// ZeppaUserInfo current = mgr.getObjectById(ZeppaUserInfo.class,
-	// zeppauserinfo.getId());
-	// current.setGivenName(zeppauserinfo.getGivenName());
-	// current.setFamilyName(zeppauserinfo.getFamilyName());
-	// current.setImageUrl(zeppauserinfo.getImageUrl());
-	// current.setPrimaryUnformattedNumber(zeppauserinfo
-	// .getPrimaryUnformattedNumber());
-	// current.setUpdated(System.currentTimeMillis());
-	//
-	// mgr.makePersistent(zeppauserinfo);
-	// zeppauserinfo = current;
-	//
-	// } finally {
-	// mgr.close();
-	// }
-	// return zeppauserinfo;
-	// }
-
-	// /**
-	// * This method removes the entity with primary key id. It uses HTTP DELETE
-	// * method.
-	// *
-	// * @param id
-	// * the primary key of the entity to be deleted.
-	// */
-	// @ApiMethod(name = "removeZeppaUserInfo")
-	// public void removeZeppaUserInfo(@Named("id") Long id) {
-	// PersistenceManager mgr = getPersistenceManager();
-	// try {
-	// ZeppaUserInfo zeppauserinfo = mgr.getObjectById(
-	// ZeppaUserInfo.class, id);
-	// mgr.deletePersistent(zeppauserinfo);
-	// } finally {
-	// mgr.close();
-	// }
-	// }
-
-	// private boolean containsZeppaUserInfo(ZeppaUserInfo zeppauserinfo) {
-	// PersistenceManager mgr = getPersistenceManager();
-	// boolean contains = true;
-	// try {
-	// mgr.getObjectById(ZeppaUserInfo.class, zeppauserinfo.getKey());
-	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
-	// contains = false;
-	// } finally {
-	// mgr.close();
-	// }
-	// return contains;
-	// }
+	
 
 }

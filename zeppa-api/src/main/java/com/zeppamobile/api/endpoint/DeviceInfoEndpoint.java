@@ -15,13 +15,14 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class DeviceInfoEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class DeviceInfoEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -42,14 +43,14 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<DeviceInfo> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(DeviceInfo.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -111,9 +112,9 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		DeviceInfo deviceinfo = null;
 		try {
 			deviceinfo = mgr.getObjectById(DeviceInfo.class, id);
@@ -153,10 +154,10 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 		}
 
 		// Authorized ZeppaUser
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		DeviceInfo result = null;
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		// Try to fetch an instance of device info with a matching token and
 		// user id
@@ -206,7 +207,7 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 
 			// Persist changes into the datastore
 			result = mgr.makePersistent(deviceinfo);
-			updateUserRelationships(user);
+			ClientEndpointUtility.updateUserRelationships(user);
 
 		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
@@ -232,11 +233,11 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			DeviceInfo current = mgr.getObjectById(DeviceInfo.class,
 					deviceinfo.getId());
@@ -274,15 +275,15 @@ public class DeviceInfoEndpoint extends BaseEndpoint {
 	public void removeDeviceInfo(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			DeviceInfo info = mgr.getObjectById(DeviceInfo.class, id);
 			
 			if(info.getOwnerId().longValue() == user.getId().longValue()){
 				if(user.removeDevice(info)){
-					updateUserRelationships(user);
+					ClientEndpointUtility.updateUserRelationships(user);
 				}
 				mgr.deletePersistent(info);
 			} else {

@@ -12,6 +12,7 @@ import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.auth.Authorizer;
@@ -23,8 +24,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaUserEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaUserEndpoint {
 
 	/**
 	 * This inserts a new entity into App Engine datastore. It uses HTTP POST
@@ -45,7 +46,7 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 			UnauthorizedException {
 
 		// Authorize this auth object. Return User object if one is found
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 		if (user != null) {
 			return user;
 		}
@@ -69,7 +70,7 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 		/*
 		 * Persist this user
 		 */
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			// Persist the User object
 			zeppaUser = mgr.makePersistent(zeppaUser);
@@ -89,7 +90,7 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 			zeppaUser.addTag(tag);
 		}
 		// Persist
-		PersistenceManager tmgr = getPersistenceManager();
+		PersistenceManager tmgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			tmgr.makePersistentAll(tags);
 		} finally {
@@ -116,18 +117,18 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 					UserRelationshipType.MINGLING);
 			zeppaUser.addCreatedRealtionship(relationship);
 			mingler.addSubjectRelationship(relationship);
-			updateUserRelationships(mingler);
+			ClientEndpointUtility.updateUserRelationships(mingler);
 			TaskUtility.scheduleCreateEventRelationshipsForUsers(
 					zeppaUser.getId(), mingler.getId());
 		}
 
 		// Update user relationships
-		updateUserRelationships(zeppaUser);
+		ClientEndpointUtility.updateUserRelationships(zeppaUser);
 
 		/*
 		 * Update all invite group(s) with this user
 		 */
-		PersistenceManager gmgr = getPersistenceManager();
+		PersistenceManager gmgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			gmgr.makePersistentAll(groups);
 		} finally {
@@ -151,9 +152,9 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 	public ZeppaUser updateZeppaUser(ZeppaUser zeppauser,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			ZeppaUserInfo currentInfo = user.getUserInfo();
 			ZeppaUserInfo updatedInfo = zeppauser.getUserInfo();
@@ -188,9 +189,9 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 	public void removeCurrentZeppaUser(@Named("auth") Authorizer auth)
 			throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 
@@ -218,7 +219,7 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 	@ApiMethod(name = "fetchCurrentZeppaUser")
 	public ZeppaUser fetchCurrentZeppaUser(@Named("auth") Authorizer auth)
 			throws UnauthorizedException {
-		return getAuthorizedZeppaUser(auth);
+		return ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 	}
 
 	/**
@@ -227,7 +228,7 @@ public class ZeppaUserEndpoint extends BaseEndpoint {
 	@SuppressWarnings("unchecked")
 	private List<InviteGroup> getInviteGroupsForUser(Authorizer auth) {
 		List<InviteGroup> groups = null;
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			Query q = mgr.newQuery(InviteGroup.class);
 			q.setFilter("emails.contains(:email)");

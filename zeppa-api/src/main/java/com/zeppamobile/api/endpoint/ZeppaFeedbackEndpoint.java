@@ -7,12 +7,13 @@ import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaFeedback;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaFeedbackEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaFeedbackEndpoint {
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
@@ -31,7 +32,7 @@ public class ZeppaFeedbackEndpoint extends BaseEndpoint {
 			throw new NullPointerException("Null User Id");
 		}
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		if (user.getId().longValue() != zeppafeedback.getUserId().longValue()) {
 			throw new UnauthorizedException(
@@ -41,7 +42,7 @@ public class ZeppaFeedbackEndpoint extends BaseEndpoint {
 		zeppafeedback.setCreated(System.currentTimeMillis());
 		zeppafeedback.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
 			// Store feedback

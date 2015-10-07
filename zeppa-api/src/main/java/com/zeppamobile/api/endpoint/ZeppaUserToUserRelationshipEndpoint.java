@@ -16,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.api.notifications.PayloadBuilder;
@@ -25,8 +26,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaUserToUserRelationshipEndpoint {
 
 	// private static final Logger log = Logger
 	// .getLogger(ZeppaUserToUserRelationshipEndpoint.class.getName());
@@ -40,7 +41,7 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 	 * @throws OAuthRequestException
 	 */
 
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "listZeppaUserToUserRelationship")
 	public CollectionResponse<ZeppaUserToUserRelationship> listZeppaUserToUserRelationship(
 			@Nullable @Named("filter") String filterString,
@@ -49,14 +50,14 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaUserToUserRelationship> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -86,7 +87,7 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			} else {
 				cursorString = cursor.toWebSafeString();
 			}
-			
+
 			/*
 			 * Remove entities the calling user isnt allowed to see
 			 */
@@ -129,9 +130,9 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			@Named("relationshipId") Long relationshipId,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserToUserRelationship zeppausertouserrelationship = null;
 		try {
 			zeppausertouserrelationship = mgr.getObjectById(
@@ -168,7 +169,7 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			ZeppaUserToUserRelationship relationship,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		// Verify authorized user is involved with this relationship
 		if (relationship.getCreatorId().longValue() != user.getId().longValue()
@@ -183,7 +184,7 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 				.getOtherUserId(user.getId().longValue());
 		ZeppaUser otherUser = getUserById(otherUserId);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		// Check to make sure the relationship does not already exist
 		try {
@@ -230,11 +231,11 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 
 			// Update User relationships
 			if (user.addCreatedRealtionship(relationship)) {
-				updateUserRelationships(user);
+				ClientEndpointUtility.updateUserRelationships(user);
 			}
 			// Update Other User relationships
 			if (otherUser.addSubjectRelationship(relationship)) {
-				updateUserRelationships(otherUser);
+				ClientEndpointUtility.updateUserRelationships(otherUser);
 			}
 
 		} finally {
@@ -269,9 +270,9 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			ZeppaUserToUserRelationship relationship,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		boolean didAcceptRequest = false;
 		try {
 
@@ -329,9 +330,9 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 			@Named("relationshipId") Long relationshipId,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
 			// Fetch users involved in this relationship
@@ -368,12 +369,12 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 
 			// Update User's relationships
 			if (user.removeUserRelationship(relationship)) {
-				updateUserRelationships(user);
+				ClientEndpointUtility.updateUserRelationships(user);
 			}
 
 			// Update Other User's relationships
 			if (otherUser.removeUserRelationship(relationship)) {
-				updateUserRelationships(otherUser);
+				ClientEndpointUtility.updateUserRelationships(otherUser);
 			}
 
 			// remove the relationships from data store
@@ -392,7 +393,7 @@ public class ZeppaUserToUserRelationshipEndpoint extends BaseEndpoint {
 	private ZeppaUser getUserById(Long userId) {
 		ZeppaUser result = null;
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			result = mgr.getObjectById(ZeppaUser.class, userId);
 		} finally {

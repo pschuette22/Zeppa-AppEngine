@@ -16,13 +16,14 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaNotificationEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaNotificationEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -41,14 +42,14 @@ public class ZeppaNotificationEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaNotification> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaNotification.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -111,9 +112,9 @@ public class ZeppaNotificationEndpoint extends BaseEndpoint {
 	public ZeppaNotification getZeppaNotification(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaNotification zeppanotification = null;
 		try {
 			zeppanotification = mgr.getObjectById(ZeppaNotification.class, id);
@@ -180,10 +181,10 @@ public class ZeppaNotificationEndpoint extends BaseEndpoint {
 			ZeppaNotification zeppanotification, @Named("auth") Authorizer auth)
 			throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			ZeppaNotification current = mgr.getObjectById(
 					ZeppaNotification.class, zeppanotification.getId());
@@ -219,9 +220,9 @@ public class ZeppaNotificationEndpoint extends BaseEndpoint {
 	public void removeZeppaNotification(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			ZeppaNotification zeppanotification = mgr.getObjectById(
 					ZeppaNotification.class, id);

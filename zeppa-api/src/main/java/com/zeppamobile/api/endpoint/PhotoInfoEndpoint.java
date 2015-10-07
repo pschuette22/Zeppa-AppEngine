@@ -16,12 +16,13 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
-@ApiReference(BaseEndpoint.class)
-public class PhotoInfoEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class PhotoInfoEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -38,14 +39,14 @@ public class PhotoInfoEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<PhotoInfo> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(PhotoInfo.class);
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -99,9 +100,9 @@ public class PhotoInfoEndpoint extends BaseEndpoint {
 	public PhotoInfo getPhotoInfo(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		PhotoInfo photoinfo = null;
 		try {
 			photoinfo = mgr.getObjectById(PhotoInfo.class, id);
@@ -129,13 +130,13 @@ public class PhotoInfoEndpoint extends BaseEndpoint {
 	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		if(!user.getAuthEmail().equals(photoinfo.getOwnerEmail())){
 			throw new UnauthorizedException("Can't insert photos for someone else");
 		}
 		
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
 			mgr.makePersistent(photoinfo);
@@ -157,9 +158,9 @@ public class PhotoInfoEndpoint extends BaseEndpoint {
 	public void removePhotoInfo(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);
 			// Verify this user owns this photo

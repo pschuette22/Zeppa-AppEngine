@@ -16,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
@@ -24,8 +25,8 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class EventTagFollowEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class EventTagFollowEndpoint {
 
 	/**
 	 * This method lists all the entities inserted in datastore. It uses HTTP
@@ -44,14 +45,14 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<EventTagFollow> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(EventTagFollow.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -118,9 +119,9 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 	public EventTagFollow getEventTagFollow(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventTagFollow eventtagfollow = null;
 		try {
 			eventtagfollow = mgr.getObjectById(EventTagFollow.class, id);
@@ -156,9 +157,9 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 			throw new NullPointerException();
 		}
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		ZeppaUserToUserRelationship relationship = getUserRelationship(user
+		ZeppaUserToUserRelationship relationship = ClientEndpointUtility.getUserRelationship(user
 				.getId().longValue(), eventtagfollow.getTagOwnerId()
 				.longValue());
 
@@ -177,7 +178,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 		eventtagfollow.setCreated(System.currentTimeMillis());
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 
@@ -194,7 +195,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 			
 			// Update relationship holding follows
 			if(relationship.addTagFollow(eventtagfollow)){
-				updateUserRelationship(relationship);
+				ClientEndpointUtility.updateUserRelationship(relationship);
 			}
 			
 		} finally {
@@ -251,7 +252,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		if (eventtagfollow.getFollowerId().longValue() != user.getId()
 				.longValue()) {
@@ -260,7 +261,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 		}
 
 		eventtagfollow.setUpdated(System.currentTimeMillis());
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
 			mgr.makePersistent(eventtagfollow);
@@ -282,9 +283,9 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 	public void removeEventTagFollow(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			// Retrieve tag by Id
 			EventTagFollow eventtagfollow = mgr.getObjectById(
@@ -322,7 +323,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 	 */
 	private EventTag getTagById(Long tagId) {
 		EventTag tag = null;
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		/*
 		 * Get the tag assume user is authenticaed at this TODO: veridy user is
 		 * allowed to see this
@@ -342,7 +343,7 @@ public class EventTagFollowEndpoint extends BaseEndpoint {
 	 * @param tag
 	 */
 	private void updateTagRelationships(EventTag tag) {
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 			mgr.makePersistent(tag);

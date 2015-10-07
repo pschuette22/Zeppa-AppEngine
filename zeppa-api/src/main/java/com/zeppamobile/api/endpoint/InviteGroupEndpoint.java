@@ -13,14 +13,15 @@ import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.InviteGroup;
 import com.zeppamobile.common.utils.Utils;
 
-public class InviteGroupEndpoint extends BaseEndpoint {
+public class InviteGroupEndpoint {
 
 	/**
-	 * Endpoint to query
+	 * Endpoint to query invite groups for this user
 	 * 
 	 * @param filterString
 	 * @param cursorString
@@ -39,7 +40,8 @@ public class InviteGroupEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		if (!isValidAuth(auth)) {
+		// Verify this request came from a 
+		if (!ClientEndpointUtility.isValidAuth(auth)) {
 			throw new UnauthorizedException(
 					"Unauthorized Request to List Group Invite Objects");
 		}
@@ -49,7 +51,7 @@ public class InviteGroupEndpoint extends BaseEndpoint {
 		List<InviteGroup> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(InviteGroup.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -81,6 +83,9 @@ public class InviteGroupEndpoint extends BaseEndpoint {
 			}
 			cursorString = cursor.toWebSafeString();
 
+			
+			// TODO: remove bad eggs (groups that don't contain this user)
+			
 		} finally {
 			mgr.close();
 		}

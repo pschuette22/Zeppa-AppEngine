@@ -18,6 +18,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.common.auth.Authorizer;
@@ -26,8 +27,8 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(BaseEndpoint.class)
-public class ZeppaEventEndpoint extends BaseEndpoint {
+@ApiReference(AppInfoEndpoint.class)
+public class ZeppaEventEndpoint {
 
 	// private static final String cursorString = null;
 
@@ -39,7 +40,7 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings({ "unchecked" })
 	@ApiMethod(name = "listZeppaEvent")
 	public CollectionResponse<ZeppaEvent> listZeppaEvent(
 			@Nullable @Named("filter") String filterString,
@@ -48,14 +49,14 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 			@Nullable @Named("limit") Integer limit,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaEvent> execute = null;
 
 		try {
-			mgr = getPersistenceManager();
+			mgr = ClientEndpointUtility.getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaEvent.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -119,9 +120,9 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 	public ZeppaEvent getZeppaEvent(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaEvent zeppaevent = null;
 		try {
 			zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
@@ -151,7 +152,7 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 			@Named("auth") Authorizer auth) throws UnauthorizedException,
 			IOException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		if (user.getId().longValue() != zeppaevent.getHostId().longValue()) {
 			throw new UnauthorizedException(
@@ -163,7 +164,7 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 		zeppaevent.setUpdated(System.currentTimeMillis());
 
 		// Manager to insert zeppa event
-		PersistenceManager emgr = getPersistenceManager();
+		PersistenceManager emgr = ClientEndpointUtility.getPersistenceManager();
 
 		try {
 			zeppaevent = GoogleCalendarService
@@ -174,7 +175,7 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 
 			// Make Relationships to Event and Persist Them
 			user.addEvent(zeppaevent);
-			updateUserRelationships(user);
+			ClientEndpointUtility.updateUserRelationships(user);
 
 		} finally {
 
@@ -237,9 +238,9 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 	public void removeZeppaEvent(@Named("id") Long id,
 			@Named("auth") Authorizer auth) throws UnauthorizedException {
 
-		ZeppaUser user = getAuthorizedZeppaUser(auth);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
-		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			ZeppaEvent zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
 
@@ -252,8 +253,8 @@ public class ZeppaEventEndpoint extends BaseEndpoint {
 			 * Update db relationship between user and hosted event
 			 */
 			user.removeEvent(zeppaevent);
-			updateUserRelationships(user);
-			
+			ClientEndpointUtility.updateUserRelationships(user);
+
 			// Schedule notification to users that event was deleted
 			NotificationUtility.scheduleNotificationBuild(
 					ZeppaEvent.class.getName(), zeppaevent.getId(),

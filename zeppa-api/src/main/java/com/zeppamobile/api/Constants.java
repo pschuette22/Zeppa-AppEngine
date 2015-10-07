@@ -2,25 +2,25 @@ package com.zeppamobile.api;
 
 /**
  * 
- * @author DrunkWithFunk21
+ * @author Pete Schuette
  * 
  *         This class contains application wide constants
  * 
  */
 public class Constants {
 
-	/*
-	 * Zeppa Branding Constants
-	 */
-
 	/**
 	 * @constructor private constructor as this is a constants class
 	 */
 	private Constants() {}
 	
-	public static final boolean PRODUCTION = true;
+	/**
+	 * set to @true when deployed, @false when running locally
+	 */
+	public static final boolean PRODUCTION = false;
 	
-	public static final String API_NAME = "zeppaApi";
+	// Name of generated API library
+	public static final String API_NAME = "zeppaclientapi";
 	
 	// Current Android version
 	public final static int androidClientVersion = 1;
@@ -56,9 +56,6 @@ public class Constants {
 	 * Authorization Scopes
 	 */
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-	
-	
-	
 	
 
 }

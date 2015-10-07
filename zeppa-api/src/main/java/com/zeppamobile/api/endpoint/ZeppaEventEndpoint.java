@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
@@ -18,6 +19,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
@@ -27,7 +29,7 @@ import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaEventEndpoint {
 
 	// private static final String cursorString = null;
@@ -47,9 +49,15 @@ public class ZeppaEventEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -118,9 +126,15 @@ public class ZeppaEventEndpoint {
 
 	@ApiMethod(name = "getZeppaEvent")
 	public ZeppaEvent getZeppaEvent(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaEvent zeppaevent = null;
@@ -149,10 +163,16 @@ public class ZeppaEventEndpoint {
 	 */
 	@ApiMethod(name = "insertZeppaEvent")
 	public ZeppaEvent insertZeppaEvent(ZeppaEvent zeppaevent,
-			@Named("auth") Authorizer auth) throws UnauthorizedException,
+			@Named("idToken") String tokenString) throws UnauthorizedException,
 			IOException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		if (user.getId().longValue() != zeppaevent.getHostId().longValue()) {
 			throw new UnauthorizedException(
@@ -175,7 +195,7 @@ public class ZeppaEventEndpoint {
 
 			// Make Relationships to Event and Persist Them
 			user.addEvent(zeppaevent);
-			ClientEndpointUtility.updateUserRelationships(user);
+			ClientEndpointUtility.updateUserEntityRelationships(user);
 
 		} finally {
 
@@ -201,7 +221,7 @@ public class ZeppaEventEndpoint {
 	// */
 	// @ApiMethod(name = "updateZeppaEvent")
 	// public ZeppaEvent updateZeppaEvent(ZeppaEvent zeppaevent,
-	// @Named("auth") Authorizer auth) throws UnauthorizedException {
+	// @Named("idToken") String tokenString) throws UnauthorizedException {
 	//
 	// ZeppaUser user = getAuthorizedZeppaUser(auth);
 	//
@@ -236,9 +256,15 @@ public class ZeppaEventEndpoint {
 	 */
 	@ApiMethod(name = "removeZeppaEvent")
 	public void removeZeppaEvent(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
@@ -253,7 +279,7 @@ public class ZeppaEventEndpoint {
 			 * Update db relationship between user and hosted event
 			 */
 			user.removeEvent(zeppaevent);
-			ClientEndpointUtility.updateUserRelationships(user);
+			ClientEndpointUtility.updateUserEntityRelationships(user);
 
 			// Schedule notification to users that event was deleted
 			NotificationUtility.scheduleNotificationBuild(

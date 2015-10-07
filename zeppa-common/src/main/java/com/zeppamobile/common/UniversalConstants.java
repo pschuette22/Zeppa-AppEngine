@@ -7,7 +7,7 @@ package com.zeppamobile.common;
  *         This class contains application wide constants
  * 
  */
-public class Constants {
+public class UniversalConstants {
 
 	/*
 	 * Zeppa Branding Constants
@@ -16,7 +16,7 @@ public class Constants {
 	/**
 	 * @constructor private constructor as this is a constants class
 	 */
-	private Constants() {}
+	private UniversalConstants() {}
 	
 	public static final boolean PRODUCTION = true;
 	
@@ -49,8 +49,12 @@ public class Constants {
 	public static final String SERVICE_ACCOUNT_EMAIL = "zeppa-cloud-1821@appspot.gserviceaccount.com";
 	
 	
-	public static final String[] CLIENT_IDS = { WEB_CLIENT_ID, ANDROID_DEBUG_CLIENT_ID,ANDROID_RELEASE_CLIENT_ID, IOS_CLIENT_ID_OLD, IOS_DEBUG_CLIENT_ID };
-
+	public static final String[] ALL_CLIENT_IDS = { WEB_CLIENT_ID, ANDROID_DEBUG_CLIENT_ID,ANDROID_RELEASE_CLIENT_ID, IOS_CLIENT_ID_OLD, IOS_DEBUG_CLIENT_ID };
+	
+	/**
+	 * Client ids for basic accounts to call server
+	 */
+	public static final String[] APP_CLIENT_IDS = {ANDROID_DEBUG_CLIENT_ID,ANDROID_RELEASE_CLIENT_ID, IOS_CLIENT_ID_OLD, IOS_DEBUG_CLIENT_ID };
 	
 	/*
 	 * Authorization Scopes

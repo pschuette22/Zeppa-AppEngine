@@ -8,16 +8,16 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
 import com.zeppamobile.common.datamodel.ZeppaUser;
@@ -25,7 +25,7 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagFollowEndpoint {
 
 	/**
@@ -43,9 +43,15 @@ public class EventTagFollowEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -117,9 +123,15 @@ public class EventTagFollowEndpoint {
 	 */
 	@ApiMethod(name = "getEventTagFollow")
 	public EventTagFollow getEventTagFollow(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventTagFollow eventtagfollow = null;
@@ -151,17 +163,23 @@ public class EventTagFollowEndpoint {
 	 */
 	@ApiMethod(name = "insertEventTagFollow")
 	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		if (eventtagfollow.getTagId() == null) {
 			throw new NullPointerException();
 		}
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
-		ZeppaUserToUserRelationship relationship = ClientEndpointUtility.getUserRelationship(user
-				.getId().longValue(), eventtagfollow.getTagOwnerId()
-				.longValue());
+		ZeppaUserToUserRelationship relationship = ClientEndpointUtility
+				.getUserRelationship(user.getId().longValue(), eventtagfollow
+						.getTagOwnerId().longValue());
 
 		if (relationship == null
 				|| !relationship.getRelationshipType().equals(
@@ -192,12 +210,12 @@ public class EventTagFollowEndpoint {
 			if (tag.addEventTagFollow(eventtagfollow)) {
 				updateTagRelationships(tag);
 			}
-			
+
 			// Update relationship holding follows
-			if(relationship.addTagFollow(eventtagfollow)){
+			if (relationship.addTagFollow(eventtagfollow)) {
 				ClientEndpointUtility.updateUserRelationship(relationship);
 			}
-			
+
 		} finally {
 
 			mgr.close();
@@ -208,7 +226,7 @@ public class EventTagFollowEndpoint {
 	// @ApiMethod(name = "insertEventTagFollowArray")
 	// public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
 	// @Named("jsonArray") String arrayAsJson,
-	// @Named("auth") Authorizer auth) {
+	// @Named("idToken") String tokenString) {
 	// List<EventTagFollow> result = new ArrayList<EventTagFollow>();
 	//
 	// JSONArray array = (JSONArray) JSONValue.parse(arrayAsJson);
@@ -250,9 +268,15 @@ public class EventTagFollowEndpoint {
 	 */
 	@ApiMethod(name = "updateEventTagFollow")
 	public EventTagFollow updateEventTagFollow(EventTagFollow eventtagfollow,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		if (eventtagfollow.getFollowerId().longValue() != user.getId()
 				.longValue()) {
@@ -281,9 +305,15 @@ public class EventTagFollowEndpoint {
 	 */
 	@ApiMethod(name = "removeEventTagFollow")
 	public void removeEventTagFollow(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
@@ -296,7 +326,7 @@ public class EventTagFollowEndpoint {
 				throw new UnauthorizedException(
 						"Can't update follows you don't own");
 			}
-			
+
 			/*
 			 * Get tag and update relationships
 			 */
@@ -304,7 +334,6 @@ public class EventTagFollowEndpoint {
 			if (tag.removeFollow(eventtagfollow)) {
 				updateTagRelationships(tag);
 			}
-
 
 			// remove the tag
 			mgr.deletePersistent(eventtagfollow);

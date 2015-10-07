@@ -8,25 +8,25 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.api.notifications.PayloadBuilder;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserToUserRelationshipEndpoint {
 
 	// private static final Logger log = Logger
@@ -48,9 +48,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -128,9 +134,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserToUserRelationship zeppausertouserrelationship = null;
@@ -167,9 +179,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "insertZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship insertZeppaUserToUserRelationship(
 			ZeppaUserToUserRelationship relationship,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		// Verify authorized user is involved with this relationship
 		if (relationship.getCreatorId().longValue() != user.getId().longValue()
@@ -231,11 +249,11 @@ public class ZeppaUserToUserRelationshipEndpoint {
 
 			// Update User relationships
 			if (user.addCreatedRealtionship(relationship)) {
-				ClientEndpointUtility.updateUserRelationships(user);
+				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
 			// Update Other User relationships
 			if (otherUser.addSubjectRelationship(relationship)) {
-				ClientEndpointUtility.updateUserRelationships(otherUser);
+				ClientEndpointUtility.updateUserEntityRelationships(otherUser);
 			}
 
 		} finally {
@@ -268,9 +286,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "updateZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship updateZeppaUserToUserRelationship(
 			ZeppaUserToUserRelationship relationship,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		boolean didAcceptRequest = false;
@@ -328,9 +352,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
 	public void removeZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
@@ -369,12 +399,12 @@ public class ZeppaUserToUserRelationshipEndpoint {
 
 			// Update User's relationships
 			if (user.removeUserRelationship(relationship)) {
-				ClientEndpointUtility.updateUserRelationships(user);
+				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
 
 			// Update Other User's relationships
 			if (otherUser.removeUserRelationship(relationship)) {
-				ClientEndpointUtility.updateUserRelationships(otherUser);
+				ClientEndpointUtility.updateUserEntityRelationships(otherUser);
 			}
 
 			// remove the relationships from data store

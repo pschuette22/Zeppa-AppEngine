@@ -7,11 +7,15 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
@@ -24,7 +28,7 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserEndpoint {
 
 	/**
@@ -42,17 +46,25 @@ public class ZeppaUserEndpoint {
 
 	@ApiMethod(name = "insertZeppaUser")
 	public ZeppaUser insertZeppaUser(ZeppaUser zeppaUser,
-			@Named("auth") Authorizer auth) throws IOException,
+			@Named("idToken") String tokenString) throws IOException,
 			UnauthorizedException {
 
-		// Authorize this auth object. Return User object if one is found
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Get the Payload
+		GoogleIdToken.Payload payload = ClientEndpointUtility
+				.checkToken(tokenString);
+
+		// Try to get a user for this payload
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedUserForPayload(payload);
+
+		// If matching user is found, return found user object
 		if (user != null) {
 			return user;
 		}
 
-		// Check to see if user was invited
-		List<InviteGroup> groups = getInviteGroupsForUser(auth);
+		// Get a list of invite groups
+		List<InviteGroup> groups = getInviteGroupsForUser(payload.getEmail());
+		// Throw Exception if user wasnt invited to use Zeppa
 		if (groups == null || groups.isEmpty()) {
 			throw new UnauthorizedException("Not invited yet");
 		}
@@ -62,7 +74,7 @@ public class ZeppaUserEndpoint {
 		zeppaUser.setUpdated(System.currentTimeMillis());
 		zeppaUser.getUserInfo().setCreated(System.currentTimeMillis());
 		zeppaUser.getUserInfo().setUpdated(System.currentTimeMillis());
-		zeppaUser.setAuthEmail(auth.getEmail());
+		zeppaUser.setAuthEmail(payload.getEmail());
 
 		// Set Google Calendar
 		zeppaUser = GoogleCalendarService.insertZeppaCalendar(zeppaUser);
@@ -117,13 +129,13 @@ public class ZeppaUserEndpoint {
 					UserRelationshipType.MINGLING);
 			zeppaUser.addCreatedRealtionship(relationship);
 			mingler.addSubjectRelationship(relationship);
-			ClientEndpointUtility.updateUserRelationships(mingler);
+			ClientEndpointUtility.updateUserEntityRelationships(mingler);
 			TaskUtility.scheduleCreateEventRelationshipsForUsers(
 					zeppaUser.getId(), mingler.getId());
 		}
 
 		// Update user relationships
-		ClientEndpointUtility.updateUserRelationships(zeppaUser);
+		ClientEndpointUtility.updateUserEntityRelationships(zeppaUser);
 
 		/*
 		 * Update all invite group(s) with this user
@@ -150,9 +162,19 @@ public class ZeppaUserEndpoint {
 	 */
 	@ApiMethod(name = "updateZeppaUser")
 	public ZeppaUser updateZeppaUser(ZeppaUser zeppauser,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
+		if (!zeppauser.getAuthEmail().equals(user.getAuthEmail())) {
+			throw new UnauthorizedException("Cannot edit other user accounts");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
@@ -186,10 +208,16 @@ public class ZeppaUserEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeCurrentZeppaUser")
-	public void removeCurrentZeppaUser(@Named("auth") Authorizer auth)
+	public void removeCurrentZeppaUser(@Named("idToken") String tokenString)
 			throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 
@@ -217,23 +245,29 @@ public class ZeppaUserEndpoint {
 	 * 
 	 * */
 	@ApiMethod(name = "fetchCurrentZeppaUser")
-	public ZeppaUser fetchCurrentZeppaUser(@Named("auth") Authorizer auth)
-			throws UnauthorizedException {
-		return ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+	public ZeppaUser fetchCurrentZeppaUser(@Named("idToken") String tokenString)
+			throws NotFoundException, UnauthorizedException {
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new NotFoundException("No matching user found for this token");
+		}
+		return user;
 	}
 
 	/**
 	 * Fetch invite groups for user
 	 */
 	@SuppressWarnings("unchecked")
-	private List<InviteGroup> getInviteGroupsForUser(Authorizer auth) {
+	private List<InviteGroup> getInviteGroupsForUser(String email) {
 		List<InviteGroup> groups = null;
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			Query q = mgr.newQuery(InviteGroup.class);
 			q.setFilter("emails.contains(:email)");
 			q.declareImports("java.util.List");
-			groups = (List<InviteGroup>) q.execute(auth.getEmail());
+			groups = (List<InviteGroup>) q.execute(email);
 
 		} finally {
 			mgr.close();

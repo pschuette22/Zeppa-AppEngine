@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
@@ -15,13 +16,14 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserInfoEndpoint {
 
 	/**
@@ -39,9 +41,15 @@ public class ZeppaUserInfoEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
-		
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+			@Named("idToken") String tokenString) throws UnauthorizedException {
+
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -114,17 +122,23 @@ public class ZeppaUserInfoEndpoint {
 
 	@ApiMethod(name = "fetchZeppaUserInfoByParentId")
 	public ZeppaUserInfo fetchZeppaUserInfoByParentId(
-			@Named("requestedParentId") Long requestedUserId,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
-		
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+			@Named("requestedParentId") Long parentId,
+			@Named("idToken") String tokenString) throws UnauthorizedException {
+
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserInfo result = null;
 
 		try {
 			ZeppaUser userResult = mgr.getObjectById(ZeppaUser.class,
-					requestedUserId);
+					parentId);
 			result = userResult.getUserInfo();
 			// Touch all the fields so they are properly returned
 			result.getCreated();
@@ -155,9 +169,15 @@ public class ZeppaUserInfoEndpoint {
 	 */
 	@ApiMethod(name = "getZeppaUserInfo")
 	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
-		
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+			@Named("idToken") String tokenString) throws UnauthorizedException {
+
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
@@ -168,7 +188,5 @@ public class ZeppaUserInfoEndpoint {
 		}
 		return zeppauserinfo;
 	}
-
-	
 
 }

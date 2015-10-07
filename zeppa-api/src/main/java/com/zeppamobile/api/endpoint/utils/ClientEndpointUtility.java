@@ -3,13 +3,16 @@ package com.zeppamobile.api.endpoint.utils;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.server.spi.response.UnauthorizedException;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.exception.DickheadException;
-import com.zeppamobile.common.auth.Authorizer;
+import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.auth.AuthChecker;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.common.utils.Utils;
 
 /**
  * This is the base class for endpoints called from the Zeppa Client Apps
@@ -21,55 +24,74 @@ import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
 public class ClientEndpointUtility {
 
 	/**
-	 * Fetch the user for this authorizer
+	 * <p>Fetch the user for this id token</p> 
+	 * This method calls checkToken and
+	 * getAuthorizedZeppaUser sequentially
 	 * 
-	 * @param auth
-	 * @return
-	 * @throws UnauthorizedException
+	 * @param idToken
+	 *            passed by client
+	 * @return ZeppaUser for this passed token or null
+	 * @throws UnauthorizedException if token is not valid
 	 */
-	public static ZeppaUser getAuthorizedZeppaUser(Authorizer auth)
+	public static ZeppaUser getAuthorizedZeppaUser(String tokenString)
 			throws UnauthorizedException {
 
+		// Get payload for token
+		GoogleIdToken.Payload payload = checkToken(tokenString);
+
+		// Return user based on payload
+		return getAuthorizedUserForPayload(payload);
+	}
+
+	/**
+	 * Get ZeppaUser based on GoogleIdToken payload
+	 * 
+	 * @param payload
+	 * @return
+	 */
+	public static ZeppaUser getAuthorizedUserForPayload(
+			GoogleIdToken.Payload payload) throws UnauthorizedException {
+		// Verify it is valid
+		if (payload == null) {
+			throw new UnauthorizedException("Invalid id-token");
+		}
+
+		// Verify auth email is included
+		if (!Utils.isWebSafe(payload.getEmail())) {
+			throw new NullPointerException("Payload Missing Email");
+		}
+
+		// This will be the result of the query or null
 		ZeppaUser result = null;
-		// Verify token is authentic
-		if (isValidAuth(auth) && auth.getUserId().longValue() > 0) {
-			PersistenceManager mgr = getPersistenceManager();
-			try {
 
-				// Fetch user by supplied user id
-				result = mgr.getObjectById(ZeppaUser.class, auth.getUserId());
-
-				if (result.getAuthEmail().equalsIgnoreCase(auth.getEmail())) {
-					// groovy
-				} else {
-					throw new UnauthorizedException(
-							"Auth email does not match user email");
-				}
-
-			} catch (NullPointerException e) {
-				// Auth item wasn't made by us
-				throw new DickheadException("Bad Authorizer", ZeppaUser.class,
-						Long.valueOf(-1), auth);
-			} finally {
-				mgr.close();
-			}
-		} // else, fetch user by auth email
-
+		// Execute the query and clean up where necessary
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(ZeppaUser.class);
+			q.setFilter("authEmail==emailParam");
+			q.declareParameters("String emailParam");
+			q.setUnique(true);
+			result = (ZeppaUser) q.execute(payload.getEmail());
+		} finally {
+			mgr.close();
+		}
 		return result;
 	}
 
 	/**
-	 * Quick method to verify authentication wrapper tokens
+	 * Validate a token used to access the backend
 	 * 
-	 * @param auth
-	 * @return
-	 * @throws DickheadException
+	 * @param tokenString
+	 *            id token sent from client
+	 * @return Payload for this token or null if invalid
 	 */
-	public static boolean isValidAuth(Authorizer auth) throws DickheadException {
-		boolean isValid = true;
+	public static GoogleIdToken.Payload checkToken(String tokenString) {
+
 		// TODO: validate auth token, client id, etc.
-		
-		return isValid;
+		AuthChecker checker = new AuthChecker(
+				UniversalConstants.APP_CLIENT_IDS, Constants.EMAIL_SCOPE);
+
+		return checker.check(tokenString);
 	}
 
 	/**
@@ -78,7 +100,7 @@ public class ClientEndpointUtility {
 	 * @param user
 	 * @return true if object was persisted successfully
 	 */
-	public static boolean updateUserRelationships(ZeppaUser user) {
+	public static boolean updateUserEntityRelationships(ZeppaUser user) {
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			mgr.makePersistent(user);

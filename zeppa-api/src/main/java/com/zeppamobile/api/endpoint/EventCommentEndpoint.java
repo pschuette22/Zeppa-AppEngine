@@ -8,14 +8,15 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.common.auth.Authorizer;
@@ -25,7 +26,7 @@ import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventCommentEndpoint {
 
 	/**
@@ -43,10 +44,15 @@ public class EventCommentEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -87,13 +93,21 @@ public class EventCommentEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
-			List<Long> authedEventIds = new ArrayList<Long>(); 
+			List<Long> authedEventIds = new ArrayList<Long>();
+			List<Long> unauthorizedEventIds = new ArrayList<Long>();
 			for (EventComment comment : execute) {
-				if(!Utils.listContainsLong(authedEventIds, comment.getEventId())){
-					ZeppaEvent event = getEventForComment(comment, auth);
-					authedEventIds.add(event.getId());
+				if (!Utils.listContainsLong(authedEventIds,
+						comment.getEventId())
+						&& !Utils.listContainsLong(unauthorizedEventIds,
+								comment.getEventId())) {
+					ZeppaEvent event = comment.getEvent();
+					if (event.isAuthorized(user.getId().longValue())) {
+						authedEventIds.add(event.getId());
+					} else {
+						unauthorizedEventIds.add(event.getId());
+					}
 				}
-				
+
 			}
 		} finally {
 			mgr.close();
@@ -114,19 +128,28 @@ public class EventCommentEndpoint {
 	 */
 	@ApiMethod(name = "getEventComment")
 	public EventComment getEventComment(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventComment eventcomment = null;
 		try {
 			eventcomment = mgr.getObjectById(EventComment.class, id);
-			
-			// Do this to verify user is allowed to get this comment
-			getEventForComment(eventcomment, auth);
+
+			// Do this to verify user is allowed to retrieve this comment
+			if (eventcomment.getCommenterId().longValue() != user.getId()
+					.longValue()
+					&& !eventcomment.getEvent().isAuthorized(
+							user.getId().longValue())) {
+				throw new UnauthorizedException("User can't see this comment");
+			}
 		} finally {
 			mgr.close();
 		}
@@ -146,15 +169,22 @@ public class EventCommentEndpoint {
 	 */
 	@ApiMethod(name = "insertEventComment")
 	public EventComment insertEventComment(EventComment eventcomment,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		if (eventcomment.getEventId() == null) {
 			throw new NullPointerException("Event Id Not Set");
 		}
 
 		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		ZeppaEvent event = getEventForComment(eventcomment, auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
+		ZeppaEvent event = getEventForComment(eventcomment, user);
 
 		eventcomment.setCreated(System.currentTimeMillis());
 		eventcomment.setUpdated(System.currentTimeMillis());
@@ -168,7 +198,7 @@ public class EventCommentEndpoint {
 
 			// Add relationship to user who commented
 			if (user.addComment(eventcomment)) {
-				ClientEndpointUtility.updateUserRelationships(user);
+				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
 
 			// Add relationship to event commented on
@@ -198,30 +228,14 @@ public class EventCommentEndpoint {
 	 * @return
 	 * @throws UnauthorizedException
 	 */
-	private ZeppaEvent getEventForComment(EventComment comment, Authorizer auth)
-			throws UnauthorizedException {
+	private ZeppaEvent getEventForComment(EventComment comment, ZeppaUser user) throws UnauthorizedException {
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		ZeppaEvent event = null;
 		try {
 			event = mgr.getObjectById(ZeppaEvent.class, comment.getEventId());
 			// Make sure user can comment on this
 
-			boolean isAuthorized = false;
-			if (event.getHostId().longValue() == auth.getUserId().longValue()) {
-				// don't throw anything
-				isAuthorized = true;
-			} else {
-				for (ZeppaEventToUserRelationship r : event
-						.getAttendeeRelationships()) {
-					if (r.getUserId().longValue() == auth.getUserId()
-							.longValue()) {
-						isAuthorized = true;
-						break;
-					}
-				}
-			}
-
-			if (!isAuthorized) {
+			if (!event.isAuthorized(user.getId().longValue())) {
 				throw new UnauthorizedException(
 						"User is not authorized to see this event");
 			}
@@ -231,79 +245,5 @@ public class EventCommentEndpoint {
 		}
 		return event;
 	}
-
-	// /**
-	// * This method is used for updating an existing entity. If the entity does
-	// * not exist in the datastore, an exception is thrown. It uses HTTP PUT
-	// * method.
-	// *
-	// * @param eventcomment
-	// * the entity to be updated.
-	// * @return The updated entity.
-	// */
-	// @ApiMethod(name = "updateEventComment")
-	// public EventComment updateEventComment(EventComment eventcomment, User
-	// user) {
-	//
-	//
-	// eventcomment.setUpdated(System.currentTimeInMillis());
-	// PersistenceManager mgr = getPersistenceManager();
-	// try {
-	//
-	// mgr.makePersistent(eventcomment);
-	// } finally {
-	// mgr.close();
-	// }
-	// return eventcomment;
-	// }
-
-	// /**
-	// * This method removes the entity with primary key id. It uses HTTP DELETE
-	// * method.
-	// *
-	// * @param id
-	// * the primary key of the entity to be deleted.
-	// * @throws OAuthRequestException
-	// */
-	// @ApiMethod(name = "removeEventComment")
-	// public void removeEventComment(@Named("id") Long id,
-	// @Named("auth") Authorizer auth) throws UnauthorizedException {
-	//
-	// // Authorized ZeppaUser
-	// ZeppaUser user = getAuthorizedZeppaUser(auth);
-	//
-	// PersistenceManager mgr = getPersistenceManager();
-	// try {
-	// EventComment eventcomment = mgr.getObjectById(EventComment.class,
-	// id);
-	//
-	// if (user.removeComment(eventcomment)) {
-	// updateUserRelationships(user);
-	// } // TODO: else, something went wrong?
-	//
-	// mgr.deletePersistent(eventcomment);
-	//
-	// } finally {
-	// mgr.close();
-	// }
-	// }
-
-	//
-	// private boolean containsEventComment(EventComment eventcomment) {
-	// PersistenceManager mgr = getPersistenceManager();
-	// boolean contains = true;
-	// try {
-	// mgr.getObjectById(EventComment.class, eventcomment.getKey());
-	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
-	// contains = false;
-	// } finally {
-	// mgr.close();
-	// }
-	// return contains;
-	// }
-	//
-	// private static PersistenceManager getPersistenceManager() {
-	// return PMF.get().getPersistenceManager();
-	// }
 
 }

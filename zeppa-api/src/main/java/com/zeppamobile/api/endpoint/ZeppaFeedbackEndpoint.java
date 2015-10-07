@@ -2,17 +2,19 @@ package com.zeppamobile.api.endpoint;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaFeedback;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaFeedbackEndpoint {
 
 	/**
@@ -26,27 +28,25 @@ public class ZeppaFeedbackEndpoint {
 
 	@ApiMethod(name = "insertZeppaFeedback")
 	public ZeppaFeedback insertZeppaFeedback(ZeppaFeedback zeppafeedback,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		if (zeppafeedback.getUserId() == null) {
-			throw new NullPointerException("Null User Id");
-		}
-
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-
-		if (user.getId().longValue() != zeppafeedback.getUserId().longValue()) {
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
 			throw new UnauthorizedException(
-					"Cant insert feedback for someone else");
+					"No matching user found for this token");
 		}
 
 		zeppafeedback.setCreated(System.currentTimeMillis());
 		zeppafeedback.setUpdated(System.currentTimeMillis());
+		zeppafeedback.setUserId(user.getId().longValue());
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
 			// Store feedback
-			mgr.makePersistent(zeppafeedback);
+			zeppafeedback = mgr.makePersistent(zeppafeedback);
 
 		} finally {
 

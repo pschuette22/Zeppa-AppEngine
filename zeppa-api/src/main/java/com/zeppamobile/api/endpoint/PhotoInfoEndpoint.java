@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
@@ -16,12 +17,13 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class PhotoInfoEndpoint {
 
 	/**
@@ -37,9 +39,15 @@ public class PhotoInfoEndpoint {
 	public CollectionResponse<PhotoInfo> listPhotoInfo(
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -71,7 +79,7 @@ public class PhotoInfoEndpoint {
 
 			List<PhotoInfo> badEggs = new ArrayList<PhotoInfo>();
 			for (PhotoInfo photo : execute) {
-				if (photo.getOwnerEmail().equals(auth.getEmail())) {
+				if (photo.getOwnerEmail().equals(user.getAuthEmail())) {
 					// Good stuff
 				} else {
 					badEggs.add(photo);
@@ -98,10 +106,15 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "getPhotoInfo")
 	public PhotoInfo getPhotoInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		PhotoInfo photoinfo = null;
 		try {
@@ -128,14 +141,21 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "insertPhotoInfo")
 	public PhotoInfo insertPhotoInfo(PhotoInfo photoinfo,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-
-		if(!user.getAuthEmail().equals(photoinfo.getOwnerEmail())){
-			throw new UnauthorizedException("Can't insert photos for someone else");
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
 		}
-		
+
+		if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
+			throw new UnauthorizedException(
+					"Can't insert photos for someone else");
+		}
+
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 
@@ -156,18 +176,25 @@ public class PhotoInfoEndpoint {
 	 */
 	@ApiMethod(name = "removePhotoInfo")
 	public void removePhotoInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);
 			// Verify this user owns this photo
-			if(!user.getAuthEmail().equals(photoinfo.getOwnerEmail())){
-				throw new UnauthorizedException("Can't insert photos for someone else");
+			if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
+				throw new UnauthorizedException(
+						"Can't insert photos for someone else");
 			}
-			
+
 			mgr.deletePersistent(photoinfo);
 		} finally {
 			mgr.close();

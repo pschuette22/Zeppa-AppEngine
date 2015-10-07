@@ -7,17 +7,20 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.InviteGroup;
 import com.zeppamobile.common.utils.Utils;
 
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class InviteGroupEndpoint {
 
 	/**
@@ -38,12 +41,12 @@ public class InviteGroupEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		// Verify this request came from a 
-		if (!ClientEndpointUtility.isValidAuth(auth)) {
-			throw new UnauthorizedException(
-					"Unauthorized Request to List Group Invite Objects");
+		GoogleIdToken.Payload tokenPayload = ClientEndpointUtility
+				.checkToken(tokenString);
+		if (tokenPayload == null || !Utils.isWebSafe(tokenPayload.getEmail())) {
+			throw new UnauthorizedException("unauthorized call");
 		}
 
 		PersistenceManager mgr = null;
@@ -83,9 +86,8 @@ public class InviteGroupEndpoint {
 			}
 			cursorString = cursor.toWebSafeString();
 
-			
 			// TODO: remove bad eggs (groups that don't contain this user)
-			
+
 		} finally {
 			mgr.close();
 		}

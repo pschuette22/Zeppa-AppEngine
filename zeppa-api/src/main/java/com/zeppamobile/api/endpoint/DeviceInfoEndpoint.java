@@ -7,21 +7,24 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.client.json.JsonFactory;
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
+import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.auth.AuthChecker;
 import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class DeviceInfoEndpoint {
 
 	/**
@@ -40,10 +43,15 @@ public class DeviceInfoEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
@@ -109,10 +117,15 @@ public class DeviceInfoEndpoint {
 	 */
 	@ApiMethod(name = "getDeviceInfo")
 	public DeviceInfo getDeviceInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		DeviceInfo deviceinfo = null;
@@ -139,7 +152,7 @@ public class DeviceInfoEndpoint {
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
 	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Make sure necessary items are there before inserting
 		if (deviceinfo.getOwnerId() == null
@@ -147,14 +160,13 @@ public class DeviceInfoEndpoint {
 			throw new NullPointerException();
 		}
 
-		// Make sure owner is only device for himself
-		if (deviceinfo.getOwnerId().longValue() != auth.getUserId().longValue()) {
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
 			throw new UnauthorizedException(
-					"You cannot insert devices for other users");
+					"No matching user found for this token");
 		}
-
-		// Authorized ZeppaUser
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
 
 		DeviceInfo result = null;
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
@@ -207,7 +219,7 @@ public class DeviceInfoEndpoint {
 
 			// Persist changes into the datastore
 			result = mgr.makePersistent(deviceinfo);
-			ClientEndpointUtility.updateUserRelationships(user);
+			ClientEndpointUtility.updateUserEntityRelationships(user);
 
 		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
@@ -231,9 +243,15 @@ public class DeviceInfoEndpoint {
 	 */
 	@ApiMethod(name = "updateDeviceInfo")
 	public DeviceInfo updateDeviceInfo(DeviceInfo deviceinfo,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
@@ -273,23 +291,29 @@ public class DeviceInfoEndpoint {
 	 */
 	@ApiMethod(name = "removeDeviceInfo")
 	public void removeDeviceInfo(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			DeviceInfo info = mgr.getObjectById(DeviceInfo.class, id);
-			
-			if(info.getOwnerId().longValue() == user.getId().longValue()){
-				if(user.removeDevice(info)){
-					ClientEndpointUtility.updateUserRelationships(user);
+
+			if (info.getOwnerId().longValue() == user.getId().longValue()) {
+				if (user.removeDevice(info)) {
+					ClientEndpointUtility.updateUserEntityRelationships(user);
 				}
 				mgr.deletePersistent(info);
 			} else {
 				throw new UnauthorizedException("You can't delete this device");
 			}
-			
+
 		} finally {
 			mgr.close();
 		}

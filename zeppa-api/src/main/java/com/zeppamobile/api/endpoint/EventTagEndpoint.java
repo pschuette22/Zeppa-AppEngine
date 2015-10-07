@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
@@ -15,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
+import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.exception.DickheadException;
@@ -23,7 +25,7 @@ import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
-@ApiReference(AppInfoEndpoint.class)
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class EventTagEndpoint {
 
 	/**
@@ -41,10 +43,16 @@ public class EventTagEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<EventTag> execute = null;
@@ -104,10 +112,16 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "getEventTag")
 	public EventTag getEventTag(@Named("id") Long id,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		EventTag eventtag = null;
 		try {
@@ -127,18 +141,24 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "insertEventTag")
 	public EventTag insertEventTag(EventTag eventtag,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
 		}
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
-		if(eventtag.getOwnerId().longValue() != user.getId().longValue()){
-			throw new DickheadException("Tried to make tag for someone else", EventTag.class, Long.valueOf(-1), auth);
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
 		}
-		
+
+		if (eventtag.getOwnerId().longValue() != user.getId().longValue()) {
+			throw new UnauthorizedException("Cannot make tags for other people");
+		}
+
 		eventtag.setCreated(System.currentTimeMillis());
 		eventtag.setUpdated(System.currentTimeMillis());
 
@@ -146,19 +166,17 @@ public class EventTagEndpoint {
 
 		try {
 
-		
 			// Set the owner user
 			eventtag.setOwner(user);
-			
+
 			// Update and store objects
 			mgr.makePersistent(eventtag);
 
 			// Update the user relationships
-			if(user.addTag(eventtag)) {
-				ClientEndpointUtility.updateUserRelationships(user);
+			if (user.addTag(eventtag)) {
+				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
-			
-			
+
 		} catch (javax.jdo.JDOObjectNotFoundException e) {
 			e.printStackTrace();
 			eventtag = null;
@@ -180,21 +198,28 @@ public class EventTagEndpoint {
 	 */
 	@ApiMethod(name = "removeEventTag")
 	public void removeEventTag(@Named("tagId") Long tagId,
-			@Named("auth") Authorizer auth) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException {
 
-		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(auth);
-		
+		// Fetch Authorized Zeppa User
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+		if (user == null) {
+			throw new UnauthorizedException(
+					"No matching user found for this token");
+		}
+
 		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
 		try {
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
-			
+
 			// Make sure user is allowed to access this item
-			if(user.getId().longValue() == eventtag.getOwnerId().longValue()){
+			if (user.getId().longValue() == eventtag.getOwnerId().longValue()) {
 				TaskUtility.scheduleDeleteTagFollows(tagId);
 
 				mgr.deletePersistent(eventtag);
 			} else {
-				throw new UnauthorizedException("Cannot delete tag you don't own");
+				throw new UnauthorizedException(
+						"Cannot delete tag you don't own");
 			}
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {

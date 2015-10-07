@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.Named;
 import com.zeppamobile.api.Constants;
 
 /**
@@ -79,7 +80,7 @@ public class AppInfoEndpoint {
 	 * @return
 	 */
 	@ApiMethod(name = "getAndroidClientInfo")
-	public AndroidClientInfo getAndroidClientInfo() {
+	public AndroidClientInfo getAndroidClientInfo(@Named("idToken") String tokenString){
 		return new AndroidClientInfo();
 	}
 
@@ -89,7 +90,7 @@ public class AppInfoEndpoint {
 	 * @return IOSClientInfo instance - all instances have the same data
 	 */
 	@ApiMethod(name = "getIOSClientInfo")
-	public IOSClientInfo getIOSClientInfo() {
+	public IOSClientInfo getIOSClientInfo(@Named("idToken") String tokenString) {
 		return new IOSClientInfo();
 	}
 

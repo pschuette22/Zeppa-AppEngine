@@ -142,7 +142,7 @@ public class Utils {
 	 * @return true if s is not null or empty
 	 */
 	public static boolean isWebSafe(String s) {
-		return (s == null || s.isEmpty());
+		return !(s == null || s.isEmpty());
 	}
 
 	/**

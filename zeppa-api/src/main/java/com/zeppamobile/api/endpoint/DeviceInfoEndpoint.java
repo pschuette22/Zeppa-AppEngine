@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.api.client.json.JsonFactory;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
@@ -17,9 +16,8 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.UniversalConstants;
-import com.zeppamobile.common.auth.AuthChecker;
 import com.zeppamobile.common.datamodel.DeviceInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
@@ -58,7 +56,7 @@ public class DeviceInfoEndpoint {
 		List<DeviceInfo> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(DeviceInfo.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -127,7 +125,7 @@ public class DeviceInfoEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		DeviceInfo deviceinfo = null;
 		try {
 			deviceinfo = mgr.getObjectById(DeviceInfo.class, id);
@@ -169,7 +167,7 @@ public class DeviceInfoEndpoint {
 		}
 
 		DeviceInfo result = null;
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		// Try to fetch an instance of device info with a matching token and
 		// user id
@@ -255,7 +253,7 @@ public class DeviceInfoEndpoint {
 
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			DeviceInfo current = mgr.getObjectById(DeviceInfo.class,
 					deviceinfo.getId());
@@ -301,7 +299,7 @@ public class DeviceInfoEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			DeviceInfo info = mgr.getObjectById(DeviceInfo.class, id);
 
@@ -337,5 +335,9 @@ public class DeviceInfoEndpoint {
 	// }
 	// return contains;
 	// }
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
+	}
 
 }

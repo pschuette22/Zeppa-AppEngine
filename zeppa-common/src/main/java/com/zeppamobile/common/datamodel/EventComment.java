@@ -33,14 +33,13 @@ public class EventComment {
 	 * For maintaining relationships
 	 */
 
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
 	private ZeppaEvent event;
 
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
 	private ZeppaUser commenter;
 	
 	
-
 	public EventComment(ZeppaEvent event, ZeppaUser commenter, Long created,
 			Long updated, String text) {
 		super();

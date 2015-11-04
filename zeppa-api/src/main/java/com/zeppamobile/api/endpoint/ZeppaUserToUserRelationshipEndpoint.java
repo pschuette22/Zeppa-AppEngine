@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
@@ -63,7 +64,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		List<ZeppaUserToUserRelationship> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -144,7 +145,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserToUserRelationship zeppausertouserrelationship = null;
 		try {
 			zeppausertouserrelationship = mgr.getObjectById(
@@ -202,7 +203,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 				.getOtherUserId(user.getId().longValue());
 		ZeppaUser otherUser = getUserById(otherUserId);
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		// Check to make sure the relationship does not already exist
 		try {
@@ -296,7 +297,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		boolean didAcceptRequest = false;
 		try {
 
@@ -362,7 +363,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 
 			// Fetch users involved in this relationship
@@ -423,7 +424,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	private ZeppaUser getUserById(Long userId) {
 		ZeppaUser result = null;
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			result = mgr.getObjectById(ZeppaUser.class, userId);
 		} finally {
@@ -431,6 +432,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Get the persistence manager
+	 * 
+	 * @return
+	 */
+	public static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

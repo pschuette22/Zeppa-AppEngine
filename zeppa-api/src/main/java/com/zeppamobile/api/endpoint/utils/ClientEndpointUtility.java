@@ -1,5 +1,11 @@
 package com.zeppamobile.api.endpoint.utils;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.jdo.JDOObjectNotFoundException;
+import javax.jdo.JDOUserException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -8,7 +14,6 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.common.UniversalConstants;
-import com.zeppamobile.common.auth.AuthChecker;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
@@ -23,22 +28,27 @@ import com.zeppamobile.common.utils.Utils;
  */
 public class ClientEndpointUtility {
 
+	private static final Logger LOG = Logger.getLogger(ClientEndpointUtility.class.getName());
+
+	
 	/**
-	 * <p>Fetch the user for this id token</p> 
-	 * This method calls checkToken and
-	 * getAuthorizedZeppaUser sequentially
+	 * <p>
+	 * Fetch the user for this id token
+	 * </p>
+	 * This method calls checkToken and getAuthorizedZeppaUser sequentially
 	 * 
 	 * @param idToken
 	 *            passed by client
 	 * @return ZeppaUser for this passed token or null
-	 * @throws UnauthorizedException if token is not valid
+	 * @throws UnauthorizedException
+	 *             if token is not valid
 	 */
 	public static ZeppaUser getAuthorizedZeppaUser(String tokenString)
 			throws UnauthorizedException {
-
+		LOG.log(Level.WARNING, "Begin Token Auth Process");
 		// Get payload for token
 		GoogleIdToken.Payload payload = checkToken(tokenString);
-
+		LOG.log(Level.WARNING, "Retrieved Payload");
 		// Return user based on payload
 		return getAuthorizedUserForPayload(payload);
 	}
@@ -52,26 +62,35 @@ public class ClientEndpointUtility {
 	public static ZeppaUser getAuthorizedUserForPayload(
 			GoogleIdToken.Payload payload) throws UnauthorizedException {
 		// Verify it is valid
-		if (payload == null) {
+		if (payload == null || !Utils.isWebSafe(payload.getEmail())) {
+			LOG.log(Level.WARNING, "Invalid Payload");
 			throw new UnauthorizedException("Invalid id-token");
 		}
 
-		// Verify auth email is included
-		if (!Utils.isWebSafe(payload.getEmail())) {
-			throw new NullPointerException("Payload Missing Email");
-		}
-
+		LOG.log(Level.WARNING, "Fetching Persistence Manager");
 		// This will be the result of the query or null
 		ZeppaUser result = null;
 
 		// Execute the query and clean up where necessary
 		PersistenceManager mgr = getPersistenceManager();
+
 		try {
-			Query q = mgr.newQuery(ZeppaUser.class);
-			q.setFilter("authEmail==emailParam");
-			q.declareParameters("String emailParam");
+			LOG.log(Level.WARNING, "Creating Query");
+
+			Query q = mgr.newQuery(ZeppaUser.class,"authEmail == '" + payload.getEmail()+"'");
 			q.setUnique(true);
-			result = (ZeppaUser) q.execute(payload.getEmail());
+			LOG.log(Level.WARNING, "Executing Query");
+
+			@SuppressWarnings("unchecked")
+			List<ZeppaUser> resultList = (List<ZeppaUser>) q.execute();
+			// If item was returned, set the result
+			if(resultList != null && !resultList.isEmpty()){
+				LOG.log(Level.WARNING, "Query returned object");
+				result = resultList.get(0);
+			} else {
+				LOG.log(Level.WARNING, "No object found");
+			}
+
 		} finally {
 			mgr.close();
 		}
@@ -85,13 +104,28 @@ public class ClientEndpointUtility {
 	 *            id token sent from client
 	 * @return Payload for this token or null if invalid
 	 */
-	public static GoogleIdToken.Payload checkToken(String tokenString) {
+	public static GoogleIdToken.Payload checkToken(String tokenString) throws UnauthorizedException {
+
+		LOG.log(Level.WARNING, "Instantiating Checker");
 
 		// TODO: validate auth token, client id, etc.
 		AuthChecker checker = new AuthChecker(
-				UniversalConstants.APP_CLIENT_IDS, Constants.EMAIL_SCOPE);
+				UniversalConstants.APP_CLIENT_IDS, Constants.WEB_CLIENT_ID);
 
-		return checker.check(tokenString);
+		LOG.log(Level.WARNING, "Checking token");
+
+		GoogleIdToken.Payload payload = checker.check(tokenString);
+		
+		if(checker.isValid()){
+			LOG.log(Level.WARNING, "Auth Token is Valid");
+
+			return payload;
+		} else {
+			LOG.log(Level.WARNING, "Invalid Auth With Problem: " + checker.problem());
+
+			throw new UnauthorizedException("Invalid Auth With Problem: " + checker.problem());
+		}
+		
 	}
 
 	/**
@@ -184,7 +218,7 @@ public class ClientEndpointUtility {
 	 * 
 	 * @return
 	 */
-	public static PersistenceManager getPersistenceManager() {
+	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
 

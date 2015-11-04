@@ -19,6 +19,9 @@ public class DeviceInfo  {
 	private Key key;
 	
 	@Persistent
+	private ZeppaUser owner;
+	
+	@Persistent
 	private Long created;
 	
 	@Persistent
@@ -27,9 +30,6 @@ public class DeviceInfo  {
 	@Persistent
 	private Long ownerId;
 	
-	@Persistent(defaultFetchGroup="false")
-	private ZeppaUser owner;
-
 	@Persistent
 	private DeviceType phoneType;
 
@@ -48,16 +48,12 @@ public class DeviceInfo  {
 	 * Versions will be defined ##.##.## or <version>.<update>.<bugfix>
 	 */
 	@Persistent
-	// This will be increased when new features are added
 	private Integer version;
 
 	@Persistent
-	// This will be increased when existing features are enhanced or minor
-	// features are added
 	private Integer update;
 
 	@Persistent
-	// This will be increased when bugs are fixed
 	private Integer bugfix;
 
 	

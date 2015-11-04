@@ -16,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.datamodel.InviteGroup;
 import com.zeppamobile.common.utils.Utils;
@@ -54,7 +55,7 @@ public class InviteGroupEndpoint {
 		List<InviteGroup> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(InviteGroup.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -97,4 +98,8 @@ public class InviteGroupEndpoint {
 
 	}
 
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
+	}
+	
 }

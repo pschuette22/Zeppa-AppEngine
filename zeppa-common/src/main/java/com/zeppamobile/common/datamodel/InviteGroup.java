@@ -21,8 +21,8 @@ public class InviteGroup {
 	@Persistent(defaultFetchGroup="false")
 	private List<String> emails = new ArrayList<String>();
 	
-	@Persistent(defaultFetchGroup="false")
-	private List<ZeppaUser> groupMembers = new ArrayList<ZeppaUser>();
+	@Persistent
+	private List<Key> groupMembers = new ArrayList<Key>();
 	
 	@Persistent
 	private List<String> suggestedTags = new ArrayList<String>();
@@ -34,10 +34,10 @@ public class InviteGroup {
 	 * @return
 	 */
 	public boolean addGroupMember(ZeppaUser user){
-		return this.groupMembers.add(user);
+		return this.groupMembers.add(user.getKey());
 	}
 
-	public List<ZeppaUser> getGroupMembers(){
+	public List<Key> getGroupMemberKeys(){
 		return this.groupMembers;
 	}
 	

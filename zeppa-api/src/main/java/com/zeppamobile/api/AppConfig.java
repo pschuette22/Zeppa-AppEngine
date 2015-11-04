@@ -1,4 +1,4 @@
-package com.zeppamobile.common;
+package com.zeppamobile.api;
 
 public class AppConfig {
 

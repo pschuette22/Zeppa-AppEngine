@@ -10,7 +10,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -18,8 +17,8 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaNotification;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
@@ -57,7 +56,7 @@ public class ZeppaNotificationEndpoint {
 		List<ZeppaNotification> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaNotification.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -128,7 +127,7 @@ public class ZeppaNotificationEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaNotification zeppanotification = null;
 		try {
 			zeppanotification = mgr.getObjectById(ZeppaNotification.class, id);
@@ -204,7 +203,7 @@ public class ZeppaNotificationEndpoint {
 		}
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaNotification current = mgr.getObjectById(
 					ZeppaNotification.class, zeppanotification.getId());
@@ -248,7 +247,7 @@ public class ZeppaNotificationEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaNotification zeppanotification = mgr.getObjectById(
 					ZeppaNotification.class, id);
@@ -267,6 +266,10 @@ public class ZeppaNotificationEndpoint {
 		} finally {
 			mgr.close();
 		}
+	}
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

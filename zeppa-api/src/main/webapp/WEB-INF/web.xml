@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
 
 	<!-- System servlet handles endpoint class transactions -->
 	<servlet>
@@ -7,7 +8,8 @@
 		</servlet-class>
 		<init-param>
 			<param-name>services</param-name>
-			<param-value>com.zeppamobile.api.endpoint.AppEndpointBase</param-value>
+			<param-value>com.zeppamobile.api.endpoint.AppInfoEndpoint,com.zeppamobile.api.endpoint.DeviceInfoEndpoint,com.zeppamobile.api.endpoint.EventCommentEndpoint,com.zeppamobile.api.endpoint.EventTagEndpoint,com.zeppamobile.api.endpoint.EventTagFollowEndpoint,com.zeppamobile.api.endpoint.InviteGroupEndpoint,com.zeppamobile.api.endpoint.PhotoInfoEndpoint,com.zeppamobile.api.endpoint.ZeppaEventEndpoint,com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint,com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint,com.zeppamobile.api.endpoint.ZeppaUserEndpoint,com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint
+			</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -31,15 +33,8 @@
 
 	<!-- Notification Building Servlet -->
 
-	<servlet>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet
-		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>NotificationBuilder</servlet-name>
-		<url-pattern>/notifications/builder/</url-pattern>
-	</servlet-mapping>
-
+	<!-- <servlet> <servlet-name>NotificationBuilder</servlet-name> <servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet 
+		</servlet-class> </servlet> <servlet-mapping> <servlet-name>NotificationBuilder</servlet-name> 
+		<url-pattern>/notifications/builder/</url-pattern> </servlet-mapping> -->
 
 </web-app>

@@ -4,13 +4,12 @@ import javax.jdo.PersistenceManager;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaFeedback;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
@@ -42,7 +41,7 @@ public class ZeppaFeedbackEndpoint {
 		zeppafeedback.setUpdated(System.currentTimeMillis());
 		zeppafeedback.setUserId(user.getId().longValue());
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 
 			// Store feedback
@@ -55,4 +54,8 @@ public class ZeppaFeedbackEndpoint {
 		return zeppafeedback;
 	}
 
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
+	}
 }

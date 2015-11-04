@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.EventTagFollow;
@@ -58,7 +59,7 @@ public class EventTagFollowEndpoint {
 		List<EventTagFollow> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(EventTagFollow.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -133,7 +134,7 @@ public class EventTagFollowEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		EventTagFollow eventtagfollow = null;
 		try {
 			eventtagfollow = mgr.getObjectById(EventTagFollow.class, id);
@@ -196,7 +197,7 @@ public class EventTagFollowEndpoint {
 		eventtagfollow.setCreated(System.currentTimeMillis());
 		eventtagfollow.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		try {
 
@@ -285,7 +286,7 @@ public class EventTagFollowEndpoint {
 		}
 
 		eventtagfollow.setUpdated(System.currentTimeMillis());
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 
 			mgr.makePersistent(eventtagfollow);
@@ -315,7 +316,7 @@ public class EventTagFollowEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			// Retrieve tag by Id
 			EventTagFollow eventtagfollow = mgr.getObjectById(
@@ -352,7 +353,7 @@ public class EventTagFollowEndpoint {
 	 */
 	private EventTag getTagById(Long tagId) {
 		EventTag tag = null;
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		/*
 		 * Get the tag assume user is authenticaed at this TODO: veridy user is
 		 * allowed to see this
@@ -372,13 +373,17 @@ public class EventTagFollowEndpoint {
 	 * @param tag
 	 */
 	private void updateTagRelationships(EventTag tag) {
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		try {
 			mgr.makePersistent(tag);
 		} finally {
 			mgr.close();
 		}
+	}
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

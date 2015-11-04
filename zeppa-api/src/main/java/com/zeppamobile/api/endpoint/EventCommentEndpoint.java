@@ -17,12 +17,11 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventComment;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
-import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
@@ -37,7 +36,7 @@ public class EventCommentEndpoint {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "listEventComment")
 	public CollectionResponse<EventComment> listEventComment(
 			@Nullable @Named("filter") String filterString,
@@ -59,7 +58,7 @@ public class EventCommentEndpoint {
 		List<EventComment> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(EventComment.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -138,7 +137,7 @@ public class EventCommentEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		EventComment eventcomment = null;
 		try {
 			eventcomment = mgr.getObjectById(EventComment.class, id);
@@ -189,7 +188,7 @@ public class EventCommentEndpoint {
 		eventcomment.setCreated(System.currentTimeMillis());
 		eventcomment.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		try {
 
@@ -229,7 +228,7 @@ public class EventCommentEndpoint {
 	 * @throws UnauthorizedException
 	 */
 	private ZeppaEvent getEventForComment(EventComment comment, ZeppaUser user) throws UnauthorizedException {
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent event = null;
 		try {
 			event = mgr.getObjectById(ZeppaEvent.class, comment.getEventId());
@@ -244,6 +243,10 @@ public class EventCommentEndpoint {
 			mgr.close();
 		}
 		return event;
+	}
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaEvent {
@@ -78,6 +79,7 @@ public class ZeppaEvent {
 	 * Entity relationships
 	 */
 	@Persistent
+	@Unowned
 	private ZeppaUser host;
 
 	@Persistent(mappedBy = "event", defaultFetchGroup = "false")

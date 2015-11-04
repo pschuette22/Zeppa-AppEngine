@@ -10,7 +10,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -18,8 +17,8 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.PhotoInfo;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 
@@ -54,7 +53,7 @@ public class PhotoInfoEndpoint {
 		List<PhotoInfo> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(PhotoInfo.class);
 			if (cursorString != null && cursorString != "") {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -115,7 +114,7 @@ public class PhotoInfoEndpoint {
 			throw new UnauthorizedException(
 					"No matching user found for this token");
 		}
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		PhotoInfo photoinfo = null;
 		try {
 			photoinfo = mgr.getObjectById(PhotoInfo.class, id);
@@ -156,7 +155,7 @@ public class PhotoInfoEndpoint {
 					"Can't insert photos for someone else");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 
 			mgr.makePersistent(photoinfo);
@@ -186,7 +185,7 @@ public class PhotoInfoEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);
 			// Verify this user owns this photo
@@ -199,6 +198,10 @@ public class PhotoInfoEndpoint {
 		} finally {
 			mgr.close();
 		}
+	}
+	
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

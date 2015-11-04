@@ -140,5 +140,11 @@
 		<property name="subjectId" direction="asc" />
 		<property name="created" direction="desc" />
 	</datastore-index>
+	
+	<datastore-index kind="ZeppaUser"
+		ancestor="false" source="manual">
+		<property name="authEmail" direction="asc" />
+		<property name="created" direction="desc" />
+	</datastore-index>
 
 </datastore-indexes>

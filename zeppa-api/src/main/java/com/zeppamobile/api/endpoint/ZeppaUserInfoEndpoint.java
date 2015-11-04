@@ -9,7 +9,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -17,8 +16,8 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.utils.Utils;
@@ -56,7 +55,7 @@ public class ZeppaUserInfoEndpoint {
 		List<ZeppaUserInfo> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaUserInfo.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -133,7 +132,7 @@ public class ZeppaUserInfoEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo result = null;
 
 		try {
@@ -179,7 +178,7 @@ public class ZeppaUserInfoEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserInfo zeppauserinfo = null;
 		try {
 			zeppauserinfo = mgr.getObjectById(ZeppaUserInfo.class, id);
@@ -188,5 +187,16 @@ public class ZeppaUserInfoEndpoint {
 		}
 		return zeppauserinfo;
 	}
+	
+	/**
+	 * Get the persistence manager
+	 * 
+	 * @return
+	 */
+	public static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
+	}
 
+	
+	
 }

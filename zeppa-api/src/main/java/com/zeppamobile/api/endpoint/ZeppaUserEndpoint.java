@@ -1,8 +1,9 @@
 package com.zeppamobile.api.endpoint;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -10,26 +11,23 @@ import javax.jdo.Query;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
-import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
-import com.zeppamobile.api.endpoint.utils.TaskUtility;
-import com.zeppamobile.common.auth.Authorizer;
-import com.zeppamobile.common.datamodel.EventTag;
+import com.zeppamobile.api.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.datamodel.InviteGroup;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.datamodel.ZeppaUserInfo;
-import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
-import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
-import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserEndpoint {
+
+	private static final Logger LOG = Logger.getLogger(ZeppaUserEndpoint.class
+			.getName());
 
 	/**
 	 * This inserts a new entity into App Engine datastore. It uses HTTP POST
@@ -49,10 +47,11 @@ public class ZeppaUserEndpoint {
 			@Named("idToken") String tokenString) throws IOException,
 			UnauthorizedException {
 
+		LOG.log(Level.WARNING, "Inserting Zeppa User");
 		// Get the Payload
 		GoogleIdToken.Payload payload = ClientEndpointUtility
 				.checkToken(tokenString);
-
+		
 		// Try to get a user for this payload
 		ZeppaUser user = ClientEndpointUtility
 				.getAuthorizedUserForPayload(payload);
@@ -61,91 +60,126 @@ public class ZeppaUserEndpoint {
 		if (user != null) {
 			return user;
 		}
+		LOG.log(Level.WARNING, "User doesn't exist yet");
 
-		// Get a list of invite groups
-		List<InviteGroup> groups = getInviteGroupsForUser(payload.getEmail());
-		// Throw Exception if user wasnt invited to use Zeppa
-		if (groups == null || groups.isEmpty()) {
-			throw new UnauthorizedException("Not invited yet");
-		}
+		// // Get a list of invite groups
+		// List<InviteGroup> groups =
+		// getInviteGroupsForUser(payload.getEmail());
+		// // Throw Exception if user wasnt invited to use Zeppa
+		// if (groups == null || groups.isEmpty()) {
+		// throw new UnauthorizedException("Not invited yet");
+		// }
 
 		// Set entity information
-		zeppaUser.setCreated(System.currentTimeMillis());
-		zeppaUser.setUpdated(System.currentTimeMillis());
-		zeppaUser.getUserInfo().setCreated(System.currentTimeMillis());
-		zeppaUser.getUserInfo().setUpdated(System.currentTimeMillis());
-		zeppaUser.setAuthEmail(payload.getEmail());
+		
+
+		
 
 		// Set Google Calendar
-		zeppaUser = GoogleCalendarService.insertZeppaCalendar(zeppaUser);
+
+//		ZeppaUser insert = new ZeppaUser(zeppaUser.getUserInfo(), zeppaUser.getZeppaCalendarId(), zeppaUser.getInitialTags());
+
+
+		/*
+		 * Create user info data object
+		 */
+		LOG.log(Level.WARNING, "Instantiating Object");
+		ZeppaUserInfo userInfo = zeppaUser.getUserInfo();
+
+		ZeppaUserInfo insertInfo = new ZeppaUserInfo();
+		insertInfo.setCreated(System.currentTimeMillis());
+		insertInfo.setUpdated(System.currentTimeMillis());
+		insertInfo.setGivenName(userInfo.getGivenName());
+		insertInfo.setFamilyName(userInfo.getFamilyName());
+		insertInfo.setImageUrl(userInfo.getImageUrl());
+		insertInfo.setPrimaryUnformattedNumber(userInfo.getPrimaryUnformattedNumber());
+		insertInfo.setGoogleAccountEmail(payload.getEmail());
+		
+		/*
+		 * Create User Data Object
+		 */
+		ZeppaUser insert = new ZeppaUser();
+		insert.setCreated(System.currentTimeMillis());
+		insert.setUpdated(System.currentTimeMillis());
+		insert.setUserInfo(insertInfo);
+		insert.setAuthEmail(payload.getEmail());
+		
+		
+//		insert = GoogleCalendarService.insertZeppaCalendar(insert);
 
 		/*
 		 * Persist this user
 		 */
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		LOG.log(Level.WARNING, "Inserting Object");
+
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			// Persist the User object
-			zeppaUser = mgr.makePersistent(zeppaUser);
+			zeppaUser = mgr.makePersistent(insert);
+			LOG.log(Level.WARNING, "Made Persistent");
+
 		} finally {
 			mgr.close();
 		}
 
-		/*
-		 * 
-		 * Create this users initial tags
-		 */
-		List<EventTag> tags = new ArrayList<EventTag>();
-		// Make the initial tags
-		for (String tagText : zeppaUser.getInitialTags()) {
-			EventTag tag = new EventTag(zeppaUser, tagText);
-			tags.add(tag);
-			zeppaUser.addTag(tag);
-		}
-		// Persist
-		PersistenceManager tmgr = ClientEndpointUtility.getPersistenceManager();
-		try {
-			tmgr.makePersistentAll(tags);
-		} finally {
-			tmgr.close();
-		}
+//		/*
+//		 * 
+//		 * Create this users initial tags
+//		 */
+//		List<EventTag> tags = new ArrayList<EventTag>();
+//		// Make the initial tags
+//		for (String tagText : zeppaUser.getInitialTags()) {
+//			EventTag tag = new EventTag(zeppaUser, tagText);
+//			tags.add(tag);
+//			zeppaUser.addTag(tag);
+//		}
+//		// Persist
+//		PersistenceManager tmgr = getPersistenceManager();
+//		try {
+//			tmgr.makePersistentAll(tags);
+//		} finally {
+//			tmgr.close();
+//		}
 
 		/*
 		 * Find initial connections based on invite groups
 		 */
 		// Find initial connections based on other members invite groups
-		List<ZeppaUser> initialConnections = new ArrayList<ZeppaUser>();
-		for (InviteGroup group : groups) {
-			group.addGroupMember(zeppaUser);
-			List<ZeppaUser> members = group.getGroupMembers();
-			// Quickly remove already existing members before they are added
-			// back again
-			initialConnections.removeAll(members);
-			initialConnections.addAll(members);
-		}
-		// Schedule making initial mingling connections
-		for (ZeppaUser mingler : initialConnections) {
-			ZeppaUserToUserRelationship relationship = new ZeppaUserToUserRelationship(
-					zeppaUser.getId(), mingler.getId(),
-					UserRelationshipType.MINGLING);
-			zeppaUser.addCreatedRealtionship(relationship);
-			mingler.addSubjectRelationship(relationship);
-			ClientEndpointUtility.updateUserEntityRelationships(mingler);
-			TaskUtility.scheduleCreateEventRelationshipsForUsers(
-					zeppaUser.getId(), mingler.getId());
-		}
-
-		// Update user relationships
-		ClientEndpointUtility.updateUserEntityRelationships(zeppaUser);
-
-		/*
-		 * Update all invite group(s) with this user
-		 */
-		PersistenceManager gmgr = ClientEndpointUtility.getPersistenceManager();
-		try {
-			gmgr.makePersistentAll(groups);
-		} finally {
-			gmgr.close();
-		}
+		// List<ZeppaUser> initialConnections = new ArrayList<ZeppaUser>();
+		// for (InviteGroup group : groups) {
+		// group.addGroupMember(zeppaUser);
+		// List<ZeppaUser> members = group.getGroupMembers();
+		// // Quickly remove already existing members before they are added
+		// // back again
+		// initialConnections.removeAll(members);
+		// initialConnections.addAll(members);
+		// }
+		// // Schedule making initial mingling connections
+		// for (ZeppaUser mingler : initialConnections) {
+		// ZeppaUserToUserRelationship relationship = new
+		// ZeppaUserToUserRelationship(
+		// zeppaUser.getId(), mingler.getId(),
+		// UserRelationshipType.MINGLING);
+		// zeppaUser.addCreatedRealtionship(relationship);
+		// mingler.addSubjectRelationship(relationship);
+		// ClientEndpointUtility.updateUserEntityRelationships(mingler);
+		// TaskUtility.scheduleCreateEventRelationshipsForUsers(
+		// zeppaUser.getId(), mingler.getId());
+		// }
+		//
+		// // Update user relationships
+		// ClientEndpointUtility.updateUserEntityRelationships(zeppaUser);
+		//
+		// /*
+		// * Update all invite group(s) with this user
+		// */
+		// PersistenceManager gmgr =
+		// getPersistenceManager();
+		// try {
+		// gmgr.makePersistentAll(groups);
+		// } finally {
+		// gmgr.close();
+		// }
 
 		return zeppaUser;
 	}
@@ -176,7 +210,7 @@ public class ZeppaUserEndpoint {
 			throw new UnauthorizedException("Cannot edit other user accounts");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaUserInfo currentInfo = user.getUserInfo();
 			ZeppaUserInfo updatedInfo = zeppauser.getUserInfo();
@@ -219,13 +253,13 @@ public class ZeppaUserEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		try {
 
 			RelationshipUtility.removeZeppaAccountEntities(user.getId()
 					.longValue());
-			// Delete Zeppa Calendar
+			// Delete Zeppa Cale'ndar
 			GoogleCalendarService.deleteCalendar(user);
 
 			// TODO: remove all invite group references
@@ -246,13 +280,11 @@ public class ZeppaUserEndpoint {
 	 * */
 	@ApiMethod(name = "fetchCurrentZeppaUser")
 	public ZeppaUser fetchCurrentZeppaUser(@Named("idToken") String tokenString)
-			throws NotFoundException, UnauthorizedException {
+			throws UnauthorizedException {
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new NotFoundException("No matching user found for this token");
-		}
+		ZeppaUser user = null;
+		user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
+
 		return user;
 	}
 
@@ -262,11 +294,12 @@ public class ZeppaUserEndpoint {
 	@SuppressWarnings("unchecked")
 	private List<InviteGroup> getInviteGroupsForUser(String email) {
 		List<InviteGroup> groups = null;
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			Query q = mgr.newQuery(InviteGroup.class);
 			q.setFilter("emails.contains(:email)");
 			q.declareImports("java.util.List");
+			q.declareParameters("List emails");
 			groups = (List<InviteGroup>) q.execute(email);
 
 		} finally {
@@ -274,6 +307,15 @@ public class ZeppaUserEndpoint {
 		}
 
 		return groups;
+	}
+	
+	/**
+	 * Get the persistence manager
+	 * 
+	 * @return
+	 */
+	public static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

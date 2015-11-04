@@ -1,4 +1,4 @@
-package com.zeppamobile.common.googlecalendar;
+package com.zeppamobile.api.googlecalendar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

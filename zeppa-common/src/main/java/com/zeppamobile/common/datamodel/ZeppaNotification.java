@@ -6,6 +6,7 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaNotification {
@@ -57,9 +58,11 @@ public class ZeppaNotification {
 	 * For maintaining relationship
 	 */
 	@Persistent(defaultFetchGroup="false")
+	@Unowned
 	private ZeppaUser recipient;
 	
 	@Persistent(defaultFetchGroup="false")
+	@Unowned
 	private ZeppaUser sender;
 	
 

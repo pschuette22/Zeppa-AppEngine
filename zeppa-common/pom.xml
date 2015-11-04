@@ -23,8 +23,16 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
-			<version>1.9.26</version>
+			<version>${appengine.target.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine.orm</groupId>
+			<artifactId>datanucleus-appengine</artifactId>
+			<version>2.1.2</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- JDO Dependencies -->
 		<dependency>
 			<groupId>javax.persistence</groupId>
@@ -32,23 +40,27 @@
 			<version>1.0.2</version>
 			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.jdo</groupId>
 			<artifactId>jdo-api</artifactId>
 			<version>3.1</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<!-- <dependency> <groupId>org.datanucleus</groupId> <artifactId>maven-datanucleus-plugin</artifactId> 
+			<version>3.2.0-m1</version> </dependency> -->
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-core</artifactId>
-			<version>3.1.4</version>
-			<scope>compile</scope>
+			<version>3.1.5</version>
+			<!-- <scope>compile</scope> -->
 		</dependency>
+
 		<dependency>
 			<groupId>org.datanucleus</groupId>
 			<artifactId>datanucleus-api-jdo</artifactId>
 			<version>3.1.4</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<!-- Json Dependency -->
@@ -60,8 +72,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
-			<scope>compile</scope>
+			<version>2.4</version>
 		</dependency>
 
 		<!-- Google Calendar API -->
@@ -84,4 +95,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 </project>

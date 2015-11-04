@@ -8,6 +8,7 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class EventTagFollow {
@@ -35,12 +36,17 @@ public class EventTagFollow {
 	/*
 	 * Maps back to tag and user
 	 */
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
+	@Unowned
 	private EventTag tag;
 	
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
+	@Unowned
 	private ZeppaUser follower;
 
+	@Persistent
+	private ZeppaUserToUserRelationship relationship;
+	
 
 	/**
 	 * Instantiate follow object
@@ -48,7 +54,7 @@ public class EventTagFollow {
 	 * @param tag
 	 * @param followerId
 	 */
-	public EventTagFollow(EventTag tag, ZeppaUser follower) {
+	public EventTagFollow(EventTag tag, ZeppaUser follower, ZeppaUserToUserRelationship relationship) {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
@@ -56,7 +62,7 @@ public class EventTagFollow {
 		this.tagOwnerId = tag.getOwnerId();
 		this.follower = follower;
 		this.followerId = follower.getId();
-		
+		this.relationship = relationship;
 		
 	}
 	

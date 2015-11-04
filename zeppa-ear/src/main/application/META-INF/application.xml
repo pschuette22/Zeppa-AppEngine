@@ -11,12 +11,12 @@
 			<context-root>default</context-root>
 		</web>
 	</module>
-	<module>
+<!-- 	<module>
 		<web>
 			<web-uri>zeppa-common-1.war</web-uri>
 			<context-root>zeppa-common</context-root>
 		</web>
-	</module>
+	</module> -->
 	<module>
 		<web>
 			<web-uri>zeppa-frontend-1.war</web-uri>

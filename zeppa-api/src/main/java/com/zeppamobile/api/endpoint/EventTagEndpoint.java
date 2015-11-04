@@ -9,7 +9,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -17,10 +16,9 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
-import com.zeppamobile.api.exception.DickheadException;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.EventTag;
 import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
@@ -58,7 +56,7 @@ public class EventTagEndpoint {
 		List<EventTag> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(EventTag.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -122,7 +120,7 @@ public class EventTagEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		EventTag eventtag = null;
 		try {
 			eventtag = mgr.getObjectById(EventTag.class, id);
@@ -162,7 +160,7 @@ public class EventTagEndpoint {
 		eventtag.setCreated(System.currentTimeMillis());
 		eventtag.setUpdated(System.currentTimeMillis());
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 
 		try {
 
@@ -208,7 +206,7 @@ public class EventTagEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
 
@@ -227,6 +225,10 @@ public class EventTagEndpoint {
 		} finally {
 			mgr.close();
 		}
+	}
+
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
 	}
 
 }

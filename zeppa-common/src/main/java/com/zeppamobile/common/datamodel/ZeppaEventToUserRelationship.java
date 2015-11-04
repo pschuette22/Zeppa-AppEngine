@@ -8,6 +8,7 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaEventToUserRelationship {
@@ -56,9 +57,11 @@ public class ZeppaEventToUserRelationship {
 	 */
 	
 	@Persistent(defaultFetchGroup="true")
+	@Unowned
 	private ZeppaEvent event;
 	
 	@Persistent(defaultFetchGroup="false")
+	@Unowned
 	private ZeppaUser attendee;
 	
 	
@@ -87,6 +90,14 @@ public class ZeppaEventToUserRelationship {
 		this.isRecommended = (Boolean) json.get("isRecommended");
 	}
 	
+	/**
+	 * Constructor for instantiating a relationship on the backend
+	 * @param event
+	 * @param userId
+	 * @param wasInvited
+	 * @param isRecommended
+	 * @param invitedByUserId
+	 */
 	public ZeppaEventToUserRelationship(ZeppaEvent event, Long userId, Boolean wasInvited, Boolean isRecommended, Long invitedByUserId){
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();

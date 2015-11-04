@@ -43,13 +43,13 @@ public class ZeppaUserToUserRelationship {
 	/*
 	 * For maintaining relationships
 	 */
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
 	private ZeppaUser creator;
 	
-	@Persistent(defaultFetchGroup="false")
+	@Persistent
 	private ZeppaUser subject;
 	
-	@Persistent(defaultFetchGroup="false")
+	@Persistent(mappedBy="relationship", defaultFetchGroup="false")
 	@Element(dependent="true")
 	private List<EventTagFollow> tagFollows = new ArrayList<EventTagFollow>();
 	

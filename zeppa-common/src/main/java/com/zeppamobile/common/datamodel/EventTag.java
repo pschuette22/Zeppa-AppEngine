@@ -8,7 +8,6 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
-import javax.persistence.Entity;
 
 import org.json.simple.JSONObject;
 
@@ -33,10 +32,10 @@ public class EventTag {
 	@Persistent
 	private String tagText;
 
-	@Persistent(defaultFetchGroup = "false")
+	@Persistent
 	private ZeppaUser owner;
 
-	@Persistent(defaultFetchGroup="false")
+	@Persistent(mappedBy="tag")
 	@Element(dependent="true")
 	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
 

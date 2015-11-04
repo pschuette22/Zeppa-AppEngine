@@ -6,6 +6,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.common.datamodel.DeviceInfo.DeviceType;
 
 /**
  * Client endpoint for retrieving information about the latest deployed client apps
@@ -24,7 +25,7 @@ public class AppInfoEndpoint {
 	 * @author Pete Schuette
 	 *
 	 */
-	class AndroidClientInfo implements Serializable {
+	class ClientInfo implements Serializable {
 
 		/**
 		 * 
@@ -32,67 +33,116 @@ public class AppInfoEndpoint {
 		private static final long serialVersionUID = 1L;
 		// Values corresponding to the most recently released version of the
 		// android client
-		final int currentVersion = Constants.androidClientVersion;
-		final int currentUpdate = Constants.androidClientUpdate;
-		final int currentBugfix = Constants.androidClientBugfix;
+		private int currentVersion = -1;
+		private int currentUpdate = -1;
+		private int currentBugfix = -1;
 
 		// Values for the minimum client value allowed to use Zeppa before
 		// requiring update
-		final int minVersion = 1;
-		final int minUpdate = 0;
-		final int minBugfix = 0;
+		private int minVersion = 1;
+		private int minUpdate = 0;
+		private int minBugfix = 0;
 
 		// Message to display to users when asking them to update
-		String message = null;
+		private String message = null;
 
+		
+		public void initAndroidClientInfo(){
+			currentVersion = Constants.androidClientVersion;
+			currentUpdate=Constants.androidClientUpdate;
+			currentBugfix=Constants.androidClientBugfix;
+			
+		}
+		
+		public void initIosClientInfo(){
+			currentVersion = Constants.iOSClientVersion;
+			currentUpdate=Constants.iOSClientUpdate;
+			currentBugfix=Constants.iOSClientBugfix;
+		}
+		
+		public int getCurrentVersion() {
+			return currentVersion;
+		}
+
+		public void setCurrentVersion(int currentVersion) {
+			this.currentVersion = currentVersion;
+		}
+
+		public int getCurrentUpdate() {
+			return currentUpdate;
+		}
+
+		public void setCurrentUpdate(int currentUpdate) {
+			this.currentUpdate = currentUpdate;
+		}
+
+		public int getCurrentBugfix() {
+			return currentBugfix;
+		}
+
+		public void setCurrentBugfix(int currentBugfix) {
+			this.currentBugfix = currentBugfix;
+		}
+
+		public int getMinVersion() {
+			return minVersion;
+		}
+
+		public void setMinVersion(int minVersion) {
+			this.minVersion = minVersion;
+		}
+
+		public int getMinUpdate() {
+			return minUpdate;
+		}
+
+		public void setMinUpdate(int minUpdate) {
+			this.minUpdate = minUpdate;
+		}
+
+		public int getMinBugfix() {
+			return minBugfix;
+		}
+
+		public void setMinBugfix(int minBugfix) {
+			this.minBugfix = minBugfix;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
+
+		
+
+		
+		
 	}
 
 	/**
-	 * Class with information on the latest version of the iOS client
-	 * 
-	 * @author Pete Schuette
-	 *
-	 */
-	class IOSClientInfo implements Serializable {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		// Values of the latest release of the ios app
-		final int currentVersion = Constants.iOSClientVersion;
-		final int currentUpdate = Constants.iOSClientUpdate;
-		final int currentBugfix = Constants.iOSClientBugfix;
-
-		// Minimum values installed app can have without requiring update
-		final int minVersion = 1;
-		final int minUpdate = 0;
-		final int minBugfix = 0;
-
-		// Message to display to users when asking them to update
-		String message = null;
-
-	}
-
-	/**
-	 * GET Request to fetch latest Android client info
+	 * GET Request to fetch latest client info for a device
 	 * 
 	 * @return
 	 */
-	@ApiMethod(name = "getAndroidClientInfo")
-	public AndroidClientInfo getAndroidClientInfo(@Named("idToken") String tokenString){
-		return new AndroidClientInfo();
+	@ApiMethod(name = "getClientInfo")
+	public ClientInfo getClientInfo(@Named("deviceType") DeviceType deviceType){
+		ClientInfo info = new ClientInfo();
+		
+		if(deviceType.equals(DeviceType.ANDROID)){
+			info.initAndroidClientInfo();
+		} else if (deviceType.equals(DeviceType.iOS)){
+			// Init ios device info
+			info.initIosClientInfo();
+		} else {
+			info = null;
+		}
+		
+		return info;
 	}
 
-	/**
-	 * GET Request to fetch latest iOS client info
-	 * 
-	 * @return IOSClientInfo instance - all instances have the same data
-	 */
-	@ApiMethod(name = "getIOSClientInfo")
-	public IOSClientInfo getIOSClientInfo(@Named("idToken") String tokenString) {
-		return new IOSClientInfo();
-	}
 
 	
 }

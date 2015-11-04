@@ -12,7 +12,6 @@ import javax.jdo.Query;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -20,13 +19,13 @@ import com.google.appengine.api.datastore.Cursor;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.api.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.api.notifications.NotificationUtility;
-import com.zeppamobile.common.auth.Authorizer;
 import com.zeppamobile.common.datamodel.ZeppaEvent;
 import com.zeppamobile.common.datamodel.ZeppaUser;
-import com.zeppamobile.common.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -64,7 +63,7 @@ public class ZeppaEventEndpoint {
 		List<ZeppaEvent> execute = null;
 
 		try {
-			mgr = ClientEndpointUtility.getPersistenceManager();
+			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaEvent.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
@@ -136,7 +135,7 @@ public class ZeppaEventEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		ZeppaEvent zeppaevent = null;
 		try {
 			zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
@@ -184,7 +183,7 @@ public class ZeppaEventEndpoint {
 		zeppaevent.setUpdated(System.currentTimeMillis());
 
 		// Manager to insert zeppa event
-		PersistenceManager emgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager emgr = getPersistenceManager();
 
 		try {
 			zeppaevent = GoogleCalendarService
@@ -266,7 +265,7 @@ public class ZeppaEventEndpoint {
 					"No matching user found for this token");
 		}
 
-		PersistenceManager mgr = ClientEndpointUtility.getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
 		try {
 			ZeppaEvent zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
 
@@ -299,4 +298,8 @@ public class ZeppaEventEndpoint {
 
 	}
 
+	private static PersistenceManager getPersistenceManager() {
+		return PMF.get().getPersistenceManager();
+	}
+	
 }

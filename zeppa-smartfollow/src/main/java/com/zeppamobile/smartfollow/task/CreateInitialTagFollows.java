@@ -1,16 +1,9 @@
 package com.zeppamobile.smartfollow.task;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +13,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.json.simple.JSONArray;
-
-import com.zeppamobile.common.datamodel.EventTagFollow;
-import com.zeppamobile.common.utils.JSONUtils;
-import com.zeppamobile.common.utils.ModuleUtils;
+import com.zeppamobile.common.datainfo.EventTagFollowInfo;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.agent.TagAgent;
 import com.zeppamobile.smartfollow.agent.UserAgent;
@@ -32,12 +21,11 @@ import com.zeppamobile.smartfollow.agent.UserAgent;
 public class CreateInitialTagFollows extends SmartFollowTask {
 
 	// Ids of users to determine what to follow automatically.
-	private Long userId1, userId2;
 	private UserAgent userAgent1, userAgent2;
 	private List<Long> mutualMinglerIds = new ArrayList<Long>();
 
 	// List of follows to be created as determined by this task
-	private List<EventTagFollow> result = new ArrayList<EventTagFollow>();
+	private List<EventTagFollowInfo> result = new ArrayList<EventTagFollowInfo>();
 
 	/**
 	 * Create task to autofollow tags between users when they first connect.
@@ -46,10 +34,10 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 	 * @param userId2
 	 */
 
-	public CreateInitialTagFollows(ServletContext context, String taskName, Long userId1, Long userId2) {
+	public CreateInitialTagFollows(ServletContext context, String taskName, UserAgent userAgent1, UserAgent userAgent2) {
 		super(context, taskName);
-		this.userId1 = userId1;
-		this.userId2 = userId2;
+		this.userAgent1 = userAgent1;
+		this.userAgent2 = userAgent2;
 
 	}
 
@@ -72,48 +60,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 
 	@Override
 	public void finalize() {
-		// TODO Auto-generated method stub
-		/*
-		 * execute task to create resulting follows
-		 */
 		
-		if (!result.isEmpty()) {
-
-			try {
-				JSONArray resultArray = JSONUtils
-						.convertTagFollowListToJson(result);
-				Dictionary<String, String> params = new Hashtable<String, String>();
-
-				params.put("jsonArray", resultArray.toString());
-
-				URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
-						"insertEventTagFollowArray", params);
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(
-								eventRelationshipsURL.openStream()));
-
-				StringBuilder builder = new StringBuilder();
-
-				String line;
-				while ((line = reader.readLine()) != null) {
-					builder.append(line);
-				}
-
-				@SuppressWarnings("unused")
-				List<EventTagFollow> result = JSONUtils.convertTagFollowListString(builder.toString());
-				// TODO: verify results
-				
-
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-
-		}
 
 	}
 
@@ -143,20 +90,6 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 	 * Initialize all the agents needed to execute this task
 	 */
 	private void initAgents() {
-
-		/*
-		 * 
-		 * Instantiate and initialize user1
-		 */
-		userAgent1 = new UserAgent(userId1);
-		userAgent1.init(context, userId2);
-
-		/*
-		 * 
-		 * Instantiate and initialize user2
-		 */
-		userAgent2 = new UserAgent(userId2);
-		userAgent2.init(context, userId2);
 
 		// Can assume that the User Agents have fetched all their mingling
 		// relationships
@@ -203,8 +136,8 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 	 * @param tagSimilarities
 	 * @return
 	 */
-	public List<EventTagFollow> getInitialTagFollows() {
-		List<EventTagFollow> result = new ArrayList<EventTagFollow>();
+	public List<EventTagFollowInfo> getInitialTagFollows() {
+		List<EventTagFollowInfo> result = new ArrayList<EventTagFollowInfo>();
 
 		List<TagAgent> u1TagAgents = userAgent1.getTagAgents();
 		List<TagAgent> u2TagAgents = userAgent2.getTagAgents();
@@ -363,7 +296,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		 * similarities to user2's tags If nothing else, this is the base for
 		 * predicting if user2 should follow this tag
 		 */
-		int u1MinglerCount = userAgent1.getMinglingRelationships().size();
+		int u1MinglerCount = userAgent1.getOrderedMinglerList().size();
 		Set<Entry<TagAgent, Double>> u1Set = ua1AdjustedInterest.entrySet();
 		for (Entry<TagAgent, Double> entry : u1Set) {
 			// Get the base interest of this TagAgent
@@ -393,9 +326,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 
 
 			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-						userAgent2.getUserId());
-				result.add(follow);
+				// TODO: instantiate follow info object, populate and send to API
 			}
 
 		}
@@ -403,7 +334,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 		/*
 		 * Do the same thing for the other user
 		 */
-		int u2MinglerCount = userAgent2.getMinglingRelationships().size();
+		int u2MinglerCount = userAgent2.getOrderedMinglerList().size();
 		Set<Entry<TagAgent, Double>> u2Set = ua2AdjustedInterest.entrySet();
 		for (Entry<TagAgent, Double> entry : u2Set) {
 			// Get the base interest of this TagAgent
@@ -431,9 +362,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 
 
 			if ((calculation / calculationWeight) >= Constants.MIN_INTEREST_TO_FOLLOW) {
-				EventTagFollow follow = new EventTagFollow(agent.getTag(),
-						userAgent1.getUserId());
-				result.add(follow);
+				// TODO: create Tag Follow Info object and add to result
 			}
 
 		}

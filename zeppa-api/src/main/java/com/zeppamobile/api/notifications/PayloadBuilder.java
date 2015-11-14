@@ -3,7 +3,7 @@ package com.zeppamobile.api.notifications;
 
 import org.json.simple.JSONObject;
 
-import com.zeppamobile.common.datamodel.ZeppaNotification;
+import com.zeppamobile.api.datamodel.ZeppaNotification;
 
 /**
  * 

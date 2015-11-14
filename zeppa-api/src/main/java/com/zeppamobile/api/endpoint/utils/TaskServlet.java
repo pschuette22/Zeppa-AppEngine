@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.notifications.NotificationUtility;
-import com.zeppamobile.common.datamodel.ZeppaEvent;
 
 public class TaskServlet extends HttpServlet {
 

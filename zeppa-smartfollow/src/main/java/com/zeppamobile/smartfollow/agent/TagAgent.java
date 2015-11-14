@@ -38,8 +38,7 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import com.zeppamobile.common.datamodel.EventTag;
-import com.zeppamobile.common.datamodel.EventTagFollow;
+import com.zeppamobile.common.datainfo.EventTagInfo;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Configuration;
@@ -48,15 +47,15 @@ import com.zeppamobile.smartfollow.Utils;
 
 public class TagAgent {
 
-	private EventTag tag;
-	private List<EventTagFollow> tagFollows = new ArrayList<EventTagFollow>();
+	private EventTagInfo tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
 
 	// Parse the tag
 	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
 
-	public TagAgent(ServletContext context, UserAgent userAgent, EventTag tag) {
+	public TagAgent(ServletContext context, UserAgent userAgent,
+			EventTagInfo tag) {
 		this.tag = tag;
 
 		/*
@@ -74,14 +73,9 @@ public class TagAgent {
 		}
 	}
 
-	public EventTag getTag() {
+	public EventTagInfo getTagInfo() {
 		return tag;
 	}
-
-	public Long getTagId() {
-		return tag.getId();
-	}
-
 
 	/**
 	 * Percent of owners minglers who follow this tag
@@ -92,10 +86,15 @@ public class TagAgent {
 	 */
 	public double getCalculatedPopularity(int numberOfMinglers,
 			List<Long> mutualMinglerIds) {
-		if (tagFollows.isEmpty()) {
-			return -1; // Ignore in case this is a new tag
-		} else if (numberOfMinglers > 0
-				&& tagFollows.size() == numberOfMinglers) {
+
+		// If this is a new tag, return -1 to indicate popularity cannot be
+		// calculated
+		if (tag.isNewTag()) {
+			return -1;
+		}
+
+		if (numberOfMinglers > 0
+				&& tag.getFollowerIds().size() == numberOfMinglers) {
 			// Every mingler follows this. return 1.
 			return 1;
 		}
@@ -103,16 +102,16 @@ public class TagAgent {
 			double calculatedPopularity = 0;
 			int mmFollows = 0;
 			if (!mutualMinglerIds.isEmpty()) {
-				for (EventTagFollow follow : tagFollows) {
-					if (Utils.listContainsId(mutualMinglerIds,
-							follow.getFollowerId())) {
+				for (Long followerId : tag.getFollowerIds()) {
+					if (Utils.listContainsId(mutualMinglerIds, followerId)) {
 						mmFollows++;
 					}
 				}
 				// If there were tag follows, make this the majority
 				// Calculated popularity set to the number of mutual minglers
 				// following as a percent
-				calculatedPopularity += (mmFollows / tagFollows.size());
+				calculatedPopularity += (mmFollows / tag.getFollowerIds()
+						.size());
 			}
 
 			// Mutual Minglers is figured in twice. If the two users have a lot
@@ -120,8 +119,8 @@ public class TagAgent {
 			// sways relative popularity greatly. If not, it has no effect
 			// ie. if half the tag followers are mutual mingers and all mutual
 			// follow, relative popularity would be %75
-			calculatedPopularity += ((1 - calculatedPopularity) * (tagFollows
-					.size() / numberOfMinglers));
+			calculatedPopularity += ((1 - calculatedPopularity) * (tag
+					.getFollowerIds().size() / numberOfMinglers));
 
 			return calculatedPopularity;
 		} catch (Exception e) {
@@ -139,9 +138,9 @@ public class TagAgent {
 	public double getCalculatedPopularityForMutualMinglers(
 			List<Long> mutualMinglerIds) {
 		int mutualWhoFollow = 0;
-		for (EventTagFollow f : tagFollows) {
+		for (Long followerId : tag.getFollowerIds()) {
 			for (Long l : mutualMinglerIds) {
-				if (f.getFollowerId().longValue() == l.longValue()) {
+				if (followerId.longValue() == l.longValue()) {
 					mutualWhoFollow++;
 				}
 			}
@@ -166,7 +165,7 @@ public class TagAgent {
 		for (EventAgent agent : eventAgents) {
 			// If the event agent holds tag and popularity calculated, average
 			// in
-			if (agent.containsTag(tag.getId())
+			if (agent.containsTag(tag.getTagId())
 					&& agent.getCalculatedPopularity() > 0) {
 				if (calculatedHeldEventPopularity < 0) {
 					// calculated held popularity needs to be intialized
@@ -183,47 +182,6 @@ public class TagAgent {
 		}
 
 		return calculatedHeldEventPopularity;
-	}
-
-	/**
-	 * Quickly fetch all the follows for this tag
-	 */
-	public void fetchTagFollows() {
-
-		if (Configuration.isTesting()) {
-			return;
-		}
-
-		try {
-
-			Dictionary<String, String> params = new Hashtable<String, String>();
-			params.put("filter", "tagId==" + tag.getId());
-
-			URL eventRelationshipsURL = ModuleUtils.getZeppaAPIUrl(
-					"listEventTagFollow", params);
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					eventRelationshipsURL.openStream()));
-
-			StringBuilder builder = new StringBuilder();
-
-			String line;
-			while ((line = reader.readLine()) != null) {
-				builder.append(line);
-			}
-
-			List<EventTagFollow> result = JSONUtils
-					.convertTagFollowListString(builder.toString());
-			tagFollows.addAll(result);
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -325,8 +283,9 @@ public class TagAgent {
 
 				double similarityWeight = 0;
 				System.out.println("Tag1 Parts: " + parsedTagParts.toString());
-				System.out.println("Tag2 Parts: " + tag.parsedTagParts.toString());
-				
+				System.out.println("Tag2 Parts: "
+						+ tag.parsedTagParts.toString());
+
 				for (TagPart p : parsedTagParts) {
 					// compare it to each part of another tag
 					for (TagPart p2 : tag.parsedTagParts) {
@@ -584,7 +543,7 @@ public class TagAgent {
 							calc += (1 - calc)
 									* Utils.stringSimilarityCalculation(word,
 											part.word);
-							
+
 						}
 
 					}
@@ -674,15 +633,15 @@ public class TagAgent {
 
 				// Iterate through both lists and figure out the highest
 				// similarity
-				for (int i = 0; i < set1.size() && i<5; i++) {
+				for (int i = 0; i < set1.size() && i < 5; i++) {
 					Synset s1 = set1.get(i);
-					for (int j = 0; j < set2.size() &&j<5; j++) {
+					for (int j = 0; j < set2.size() && j < 5; j++) {
 						Synset s2 = set2.get(j);
 
-						// Assign weight based on how common this form of word is
-//						double weight = Math.pow(.95, (i+j))*.9;
-						
-						
+						// Assign weight based on how common this form of word
+						// is
+						// double weight = Math.pow(.95, (i+j))*.9;
+
 						/*
 						 * Iterate through all pointer types and try to find
 						 * relationships Calculate strength of these
@@ -695,19 +654,17 @@ public class TagAgent {
 							if (relationships.isEmpty()) {
 								continue;
 							}
-							
-							
 
-//							double relationshipWeight = getPOSWeight(s1
-//									.getPOS()) * getPOSWeight(s2.getPOS());
+							// double relationshipWeight = getPOSWeight(s1
+							// .getPOS()) * getPOSWeight(s2.getPOS());
 							double similarityCalc = calculatedRelationshipsListStrength(
 									relationships, .9);
 
 							if (similarity < similarityCalc) {
 								similarity = similarityCalc;
 							}
-							
-							if(similarity > .98){
+
+							if (similarity > .98) {
 								return 1;
 							}
 
@@ -735,31 +692,30 @@ public class TagAgent {
 			 * Create a map of all pointers references with their minimum depth
 			 * of reference
 			 */
-			
-//			System.out.println("Calculating relationship list strength");
+
+			// System.out.println("Calculating relationship list strength");
 			try {
 				Iterator<Relationship> iterator = relationships.iterator();
 				while (iterator.hasNext()) {
-					
-					if(strength > .98){
+
+					if (strength > .98) {
 						return 1;
 					}
 
 					Relationship r = iterator.next();
 
 					printPointerRelationshipInfo(r);
-					
+
 					double depth = r.getDepth();
 
 					// double adjustment = (Math.pow(relationshipWeight, depth))
 					// * (1.0 - strength);
 					double adjustment = (Math.pow(.9, depth))
 							* (1.0 - strength);
-//					double adjustment = (Math.pow(.9, depth))
-//							* (1.0 - strength);
+					// double adjustment = (Math.pow(.9, depth))
+					// * (1.0 - strength);
 					strength += adjustment;
-					
-					
+
 				}
 
 			} catch (NullPointerException e) {
@@ -821,24 +777,24 @@ public class TagAgent {
 
 			return similarity;
 		}
-		
-		
+
 		/**
 		 * 
 		 * @param relationship
 		 */
-		private void printPointerRelationshipInfo(Relationship relationship){
+		private void printPointerRelationshipInfo(Relationship relationship) {
 			System.out.println("=======================");
-			System.out.println(relationship.getType().toString() + " relationship with depth: " + relationship.getDepth());
+			System.out.println(relationship.getType().toString()
+					+ " relationship with depth: " + relationship.getDepth());
 			PointerTargetNodeList nodes = relationship.getNodeList();
 			Iterator<PointerTargetNode> iterator = nodes.iterator();
 			System.out.println("Pointer Target Nodes: ");
-			while(iterator.hasNext()){
+			while (iterator.hasNext()) {
 				PointerTargetNode n = iterator.next();
 				System.out.println("	" + n.getPointerTarget().toString());
-				
+
 			}
-			
+
 		}
 
 	}

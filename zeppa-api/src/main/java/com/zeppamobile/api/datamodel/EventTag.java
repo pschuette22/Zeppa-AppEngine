@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datamodel;
+package com.zeppamobile.api.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,7 @@ public class EventTag {
 	@Persistent
 	private ZeppaUser owner;
 
-	@Persistent(mappedBy="tag")
-	@Element(dependent="true")
+	@Persistent
 	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
 
 	/**

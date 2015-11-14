@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datamodel;
+package com.zeppamobile.api.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +89,8 @@ public class ZeppaEvent {
 	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
 	@Element(dependent = "true")
 	private List<EventComment> comments = new ArrayList<EventComment>();
+	
+	
 
 	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
 			String googleCalendarEventId, String iCalUID,

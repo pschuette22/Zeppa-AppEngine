@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,9 +18,10 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.ZeppaUser;
+import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.datamodel.ZeppaUser;
-import com.zeppamobile.common.datamodel.ZeppaUserInfo;
+import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -40,6 +42,8 @@ public class ZeppaUserInfoEndpoint {
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
+			@Nullable @Named("stringListArg") String listArg,
+			@Nullable @Named("stringListArg2") String listArg2,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
@@ -53,7 +57,9 @@ public class ZeppaUserInfoEndpoint {
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
 		List<ZeppaUserInfo> execute = null;
-
+		
+		List<Object> args = new ArrayList<Object>();
+		
 		try {
 			mgr = getPersistenceManager();
 			Query query = mgr.newQuery(ZeppaUserInfo.class);
@@ -75,8 +81,25 @@ public class ZeppaUserInfoEndpoint {
 			if (limit != null) {
 				query.setRange(0, limit);
 			}
+			
+			/*
+			 * If there is a list argument passed as a JSON string, decode and pass 
+			 */
+			if(Utils.isWebSafe(listArg)){
+				List<String> arg = JSONUtils.decodeListString(listArg);
+				if(arg != null){
+					args.add(arg);
+				}
+			}
 
-			execute = (List<ZeppaUserInfo>) query.execute();
+			if(Utils.isWebSafe(listArg2)){
+				List<String> arg = JSONUtils.decodeListString(listArg2);
+				if(arg != null){
+					args.add(arg);
+				}
+			}
+			
+			execute = (List<ZeppaUserInfo>) query.executeWithArray(args);
 
 			cursor = JDOCursorHelper.getCursor(execute);
 			if (cursor == null) {
@@ -93,7 +116,7 @@ public class ZeppaUserInfoEndpoint {
 				obj.getKey().getParent().getId();
 				obj.getId();
 				obj.getGivenName();
-				obj.getGivenName();
+				obj.getFamilyName();
 				obj.getGoogleAccountEmail();
 				obj.getImageUrl();
 				obj.getPrimaryUnformattedNumber();
@@ -107,6 +130,7 @@ public class ZeppaUserInfoEndpoint {
 		return CollectionResponse.<ZeppaUserInfo> builder().setItems(execute)
 				.setNextPageToken(cursorString).build();
 	}
+	
 
 	/**
 	 * This methods returns a ZeppaUserInfo instance for the requestedUserId.

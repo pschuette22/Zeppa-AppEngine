@@ -20,12 +20,12 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.api.googlecalendar.GoogleCalendarService;
 import com.zeppamobile.api.notifications.NotificationUtility;
-import com.zeppamobile.common.datamodel.ZeppaEvent;
-import com.zeppamobile.common.datamodel.ZeppaUser;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -181,6 +181,7 @@ public class ZeppaEventEndpoint {
 		zeppaevent.setHost(user);
 		zeppaevent.setCreated(System.currentTimeMillis());
 		zeppaevent.setUpdated(System.currentTimeMillis());
+		user.addEvent(zeppaevent);
 
 		// Manager to insert zeppa event
 		PersistenceManager emgr = getPersistenceManager();
@@ -189,12 +190,11 @@ public class ZeppaEventEndpoint {
 			zeppaevent = GoogleCalendarService
 					.insertGCalEvent(user, zeppaevent);
 
+			// Make Relationships to Event and Persist Them
+			ClientEndpointUtility.updateUserEntityRelationships(user);
+
 			// Persist Event
 			zeppaevent = emgr.makePersistent(zeppaevent);
-
-			// Make Relationships to Event and Persist Them
-			user.addEvent(zeppaevent);
-			ClientEndpointUtility.updateUserEntityRelationships(user);
 
 		} finally {
 
@@ -301,5 +301,5 @@ public class ZeppaEventEndpoint {
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
-	
+
 }

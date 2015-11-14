@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datamodel;
+package com.zeppamobile.api.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaUser {
@@ -174,8 +173,7 @@ public class ZeppaUser {
 		return this.tags.remove(tag);
 	}
 	
-	@Persistent(mappedBy = "follower")
-	@Element(dependent = "false")
+	@Persistent
 	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
 
 	/**
@@ -231,8 +229,7 @@ public class ZeppaUser {
 	 * 
 	 * List of relationships to events this user may join
 	 */
-	@Persistent(mappedBy = "attendee", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<ZeppaEventToUserRelationship> eventRelationships = new ArrayList<ZeppaEventToUserRelationship>();
 
 	/**
@@ -260,8 +257,7 @@ public class ZeppaUser {
 	/*
 	 * These are user relationships created by this user.
 	 */
-	@Persistent(mappedBy = "creator", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<ZeppaUserToUserRelationship> createdRelationships = new ArrayList<ZeppaUserToUserRelationship>();
 
 	/**
@@ -289,8 +285,7 @@ public class ZeppaUser {
 	/*
 	 * These are user relationships where this user is the subject
 	 */
-	@Persistent(mappedBy = "subject", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<ZeppaUserToUserRelationship> subjectRelationships = new ArrayList<ZeppaUserToUserRelationship>();
 
 	/**
@@ -329,8 +324,7 @@ public class ZeppaUser {
 	/*
 	 * Hold a list of notifications sent to this
 	 */
-	@Persistent(mappedBy = "recipient", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<ZeppaNotification> notifications = new ArrayList<ZeppaNotification>();
 
 	/**
@@ -356,8 +350,7 @@ public class ZeppaUser {
 	/*
 	 * Hold a list of notifications this user sent
 	 */
-	@Persistent(mappedBy = "sender", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<ZeppaNotification> sentNotifications = new ArrayList<ZeppaNotification>();
 
 	/**
@@ -383,8 +376,7 @@ public class ZeppaUser {
 	/*
 	 * Hold a list of comments this user has made
 	 */
-	@Persistent(mappedBy = "commenter", defaultFetchGroup = "false")
-	@Element(dependent = "false")
+	@Persistent(defaultFetchGroup = "false")
 	private List<EventComment> comments = new ArrayList<EventComment>();
 
 	/**

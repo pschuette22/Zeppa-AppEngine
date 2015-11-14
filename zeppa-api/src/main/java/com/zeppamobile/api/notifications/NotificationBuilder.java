@@ -10,12 +10,12 @@ import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.common.datamodel.EventComment;
-import com.zeppamobile.common.datamodel.ZeppaEvent;
-import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
-import com.zeppamobile.common.datamodel.ZeppaNotification;
-import com.zeppamobile.common.datamodel.ZeppaNotification.NotificationType;
-import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.api.datamodel.EventComment;
+import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.api.datamodel.ZeppaNotification;
+import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType;
 
 public class NotificationBuilder {
 

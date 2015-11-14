@@ -16,12 +16,12 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.InviteGroup;
+import com.zeppamobile.api.datamodel.ZeppaUser;
+import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.RelationshipUtility;
 import com.zeppamobile.api.googlecalendar.GoogleCalendarService;
-import com.zeppamobile.common.datamodel.InviteGroup;
-import com.zeppamobile.common.datamodel.ZeppaUser;
-import com.zeppamobile.common.datamodel.ZeppaUserInfo;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
 public class ZeppaUserEndpoint {
@@ -51,7 +51,7 @@ public class ZeppaUserEndpoint {
 		// Get the Payload
 		GoogleIdToken.Payload payload = ClientEndpointUtility
 				.checkToken(tokenString);
-		
+
 		// Try to get a user for this payload
 		ZeppaUser user = ClientEndpointUtility
 				.getAuthorizedUserForPayload(payload);
@@ -71,14 +71,11 @@ public class ZeppaUserEndpoint {
 		// }
 
 		// Set entity information
-		
-
-		
 
 		// Set Google Calendar
 
-//		ZeppaUser insert = new ZeppaUser(zeppaUser.getUserInfo(), zeppaUser.getZeppaCalendarId(), zeppaUser.getInitialTags());
-
+		// ZeppaUser insert = new ZeppaUser(zeppaUser.getUserInfo(),
+		// zeppaUser.getZeppaCalendarId(), zeppaUser.getInitialTags());
 
 		/*
 		 * Create user info data object
@@ -92,9 +89,10 @@ public class ZeppaUserEndpoint {
 		insertInfo.setGivenName(userInfo.getGivenName());
 		insertInfo.setFamilyName(userInfo.getFamilyName());
 		insertInfo.setImageUrl(userInfo.getImageUrl());
-		insertInfo.setPrimaryUnformattedNumber(userInfo.getPrimaryUnformattedNumber());
+		insertInfo.setPrimaryUnformattedNumber(userInfo
+				.getPrimaryUnformattedNumber());
 		insertInfo.setGoogleAccountEmail(payload.getEmail());
-		
+
 		/*
 		 * Create User Data Object
 		 */
@@ -103,9 +101,7 @@ public class ZeppaUserEndpoint {
 		insert.setUpdated(System.currentTimeMillis());
 		insert.setUserInfo(insertInfo);
 		insert.setAuthEmail(payload.getEmail());
-		
-		
-//		insert = GoogleCalendarService.insertZeppaCalendar(insert);
+		insert = GoogleCalendarService.insertZeppaCalendar(insert);
 
 		/*
 		 * Persist this user
@@ -122,24 +118,24 @@ public class ZeppaUserEndpoint {
 			mgr.close();
 		}
 
-//		/*
-//		 * 
-//		 * Create this users initial tags
-//		 */
-//		List<EventTag> tags = new ArrayList<EventTag>();
-//		// Make the initial tags
-//		for (String tagText : zeppaUser.getInitialTags()) {
-//			EventTag tag = new EventTag(zeppaUser, tagText);
-//			tags.add(tag);
-//			zeppaUser.addTag(tag);
-//		}
-//		// Persist
-//		PersistenceManager tmgr = getPersistenceManager();
-//		try {
-//			tmgr.makePersistentAll(tags);
-//		} finally {
-//			tmgr.close();
-//		}
+		// /*
+		// *
+		// * Create this users initial tags
+		// */
+		// List<EventTag> tags = new ArrayList<EventTag>();
+		// // Make the initial tags
+		// for (String tagText : zeppaUser.getInitialTags()) {
+		// EventTag tag = new EventTag(zeppaUser, tagText);
+		// tags.add(tag);
+		// zeppaUser.addTag(tag);
+		// }
+		// // Persist
+		// PersistenceManager tmgr = getPersistenceManager();
+		// try {
+		// tmgr.makePersistentAll(tags);
+		// } finally {
+		// tmgr.close();
+		// }
 
 		/*
 		 * Find initial connections based on invite groups
@@ -281,9 +277,28 @@ public class ZeppaUserEndpoint {
 	@ApiMethod(name = "fetchCurrentZeppaUser")
 	public ZeppaUser fetchCurrentZeppaUser(@Named("idToken") String tokenString)
 			throws UnauthorizedException {
+
+		LOG.log(Level.WARNING, "Fetching current user");
+
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = null;
-		user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility
+				.getAuthorizedZeppaUser(tokenString);
+
+		if (user != null) {
+			LOG.log(Level.WARNING, "Retreived user for email: " + user.getAuthEmail());
+
+			// "Touch" properties to be added to response objects
+			user.getKey();
+			user.getAuthEmail();
+			user.getZeppaCalendarId();
+
+			user.getUserInfo();
+			user.getUserInfo().getGivenName();
+			user.getUserInfo().getFamilyName();
+			user.getUserInfo().getGoogleAccountEmail();
+			user.getUserInfo().getPrimaryUnformattedNumber();
+			user.getUserInfo().getImageUrl();
+		}
 
 		return user;
 	}
@@ -308,7 +323,7 @@ public class ZeppaUserEndpoint {
 
 		return groups;
 	}
-	
+
 	/**
 	 * Get the persistence manager
 	 * 

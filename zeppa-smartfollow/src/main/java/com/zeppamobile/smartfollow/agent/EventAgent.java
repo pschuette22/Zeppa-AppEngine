@@ -1,19 +1,8 @@
 package com.zeppamobile.smartfollow.agent;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-
-import com.zeppamobile.common.datamodel.ZeppaEvent;
-import com.zeppamobile.common.datamodel.ZeppaEventToUserRelationship;
-import com.zeppamobile.common.utils.JSONUtils;
-import com.zeppamobile.common.utils.ModuleUtils;
+import com.zeppamobile.common.datainfo.EventInfo;
+import com.zeppamobile.common.datainfo.EventRelationshipInfo;
+import com.zeppamobile.common.datainfo.EventTagInfo;
 
 /**
  * 
@@ -24,8 +13,7 @@ import com.zeppamobile.common.utils.ModuleUtils;
  */
 public class EventAgent {
 
-	private ZeppaEvent event;
-	private List<ZeppaEventToUserRelationship> relationships = new ArrayList<ZeppaEventToUserRelationship>();
+	private EventInfo event;
 
 	// Total calculated popularity of a given event
 	// -1 before it is instantiated
@@ -37,85 +25,11 @@ public class EventAgent {
 	 * @param event
 	 *            - event to wrap around
 	 */
-	public EventAgent(ZeppaEvent event) {
+	public EventAgent(EventInfo event) {
 		this.event = event;
-		fetchEventRelationships();
-		calculatePopularity();
-	}
-
-//	/**
-//	 * 
-//	 * This takes a list of all relationships to events created by a given user
-//	 * and adds those relative to this event This is implemented in this way to
-//	 * minimize datastore reads
-//	 * 
-//	 * @param relationships
-//	 *            - all Event Relationships to events with a similar host
-//	 * @return relationships without those relative to this event
-//	 */
-//	public List<ZeppaEventToUserRelationship> pruneRelationships(
-//			List<ZeppaEventToUserRelationship> relationships) {
-//
-//		// Pull out all relationships to this event from all relationships
-//		for (ZeppaEventToUserRelationship relationship : relationships) {
-//			if (relationship.getEventId().longValue() == event.getId()
-//					.longValue()) {
-//				this.relationships.add(relationship);
-//			}
-//		}
-//
-//		// Remove relationships that were picked out
-//		relationships.removeAll(this.relationships);
-//
-//		return relationships;
-//	}
-
-	/**
-	 * Fetch all event relationships for this event
-	 * 
-	 * @throws MalformedURLException
-	 * 
-	 */
-	private void fetchEventRelationships() {
-
-		// Call the API module via HTTP GET request
-		Dictionary<String, String> params = new Hashtable<String, String>();
-		params.put("filter", "eventId==" + event.getId());
-
-		try {
-			URL url = ModuleUtils.getZeppaAPIUrl(
-					"listZeppaEventToUserRelationshipJson/", params);
-
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					url.openStream()));
-
-			StringBuilder responseBuilder = new StringBuilder();
-			String line;
-			while ((line = reader.readLine()) != null) {
-				responseBuilder.append(line);
-			}
-
-			this.relationships = JSONUtils
-					.convertEventRelationshipListString(responseBuilder
-							.toString());
-
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// Network or auth error
-			// } catch (JSONException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// // Bad response
-		} catch (Exception e) {
-			// issue with the JSON
-			// Treated as if there are no relationships to event
-			this.relationships = new ArrayList<ZeppaEventToUserRelationship>();
+		if (!event.isNewEvent()) {
+			calculatePopularity();
 		}
-
 	}
 
 	/**
@@ -126,8 +40,8 @@ public class EventAgent {
 	 */
 	public boolean containsTag(long tagId) {
 		try {
-			for (long l : event.getTagIds()) {
-				if (l == tagId) {
+			for (EventTagInfo info : event.getTags()) {
+				if (info.getTagId() == tagId) {
 					return true;
 				}
 			}
@@ -156,7 +70,7 @@ public class EventAgent {
 	 */
 	public void calculatePopularity() {
 
-		if (relationships.isEmpty()) {
+		if (event.getRelationships().isEmpty()) {
 			// No relationship to this event.
 			calculatedPopularity = .5;
 			return;
@@ -178,20 +92,20 @@ public class EventAgent {
 		/*
 		 * total:interested ratio
 		 */
-		double total = relationships.size();
+		double total = event.getRelationships().size();
 		double totInterested = 0;
 
 		/*
 		 * Iterate through all relationships and determine
 		 */
-		for (ZeppaEventToUserRelationship relationship : relationships) {
+		for (EventRelationshipInfo relationship : event.getRelationships()) {
 			// Event was recommended
-			if (relationship.getIsRecommended()) {
+			if (relationship.isRecommended()) {
 				recommended += 1;
-				if (relationship.getIsAttending()) {
+				if (relationship.isAttending()) {
 					// If they joined, increment
 					recInterested += 1;
-				} else if (relationship.getIsWatching()) {
+				} else if (relationship.isAttending()) {
 					// If they didnt join but watched it (interested), partially
 					// increment
 					recInterested += .6;
@@ -200,22 +114,22 @@ public class EventAgent {
 
 			// Was invited to event
 			// TODO: implement logic if host invited or another user did
-			if (relationship.getWasInvited()) {
+			if (relationship.getInviterId() > 0) {
 				invited += 1;
-				if (relationship.getIsAttending()) {
+				if (relationship.isAttending()) {
 					// If they joined, increment
 					invInterested += 1;
-				} else if (relationship.getIsWatching()) {
+				} else if (relationship.isWatching()) {
 					// If they didnt join but watched it (interested), partially
 					// increment
 					invInterested += .6;
 				}
 			}
 
-			if (relationship.getIsAttending()) {
+			if (relationship.isAttending()) {
 				// If they joined, increment
 				totInterested += 1;
-			} else if (relationship.getIsWatching()) {
+			} else if (relationship.isWatching()) {
 				// If they didnt join but watched it (interested), partially
 				// increment
 				totInterested += .6;

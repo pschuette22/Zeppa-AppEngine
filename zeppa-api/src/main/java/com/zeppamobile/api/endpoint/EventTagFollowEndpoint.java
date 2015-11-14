@@ -18,12 +18,12 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.api.datamodel.ZeppaUser;
+import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
+import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.datamodel.EventTag;
-import com.zeppamobile.common.datamodel.EventTagFollow;
-import com.zeppamobile.common.datamodel.ZeppaUser;
-import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship;
-import com.zeppamobile.common.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })

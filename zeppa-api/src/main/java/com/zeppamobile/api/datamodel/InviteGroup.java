@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datamodel;
+package com.zeppamobile.api.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;

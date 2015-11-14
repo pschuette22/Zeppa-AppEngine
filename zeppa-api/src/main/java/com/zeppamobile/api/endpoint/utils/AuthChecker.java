@@ -12,6 +12,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.server.spi.response.UnauthorizedException;
 
 /**
  * Taken from StackOverflow and slightly modified
@@ -48,34 +49,26 @@ public class AuthChecker {
 	 * @param tokenString
 	 * @return
 	 */
-	public GoogleIdToken.Payload check(String tokenString) {
+	public GoogleIdToken.Payload check(String tokenString) throws UnauthorizedException {
 		GoogleIdToken.Payload payload = null;
 		try {
-			LOG.log(Level.WARNING, "Verifying Token");
 			GoogleIdToken token = GoogleIdToken.parse(mJFactory, tokenString);
 			// If token could not be parsed
 			if (token == null || token.getPayload() == null) {
-				LOG.log(Level.WARNING, "GIDToken null for for idToken: "
-						+ tokenString);
 				return null;
 			}
 
-			// Take a quick peek
-			LOG.log(Level.WARNING, "Parsed Token: " + token.toString());
-
+			// Check email is verified
 			if (token.getPayload().getEmailVerified()) {
-				LOG.log(Level.WARNING, "Verified Token Successfully");
 				GoogleIdToken.Payload tempPayload = token.getPayload();
 
-				LOG.log(Level.WARNING, "Returning valid payload");
 				isValid = true;
 				payload = tempPayload;
 
 			} else {
-				// Verification Failed
-				LOG.log(Level.WARNING, "GIDToken not verified for idToken: "
-						+ tokenString);
+				throw new UnauthorizedException("Email is not verified");
 			}
+			
 		} catch (IOException e) {
 			mProblem = "Network problem: " + e.getLocalizedMessage();
 		}
@@ -90,21 +83,5 @@ public class AuthChecker {
 		return isValid;
 	}
 
-	/**
-	 * Manually verify that this token is legit
-	 * 
-	 * @param token
-	 * @return true if this is a good token
-	 */
-	private boolean verifyIdToken(GoogleIdToken token) {
-		boolean isLegit = false;
-
-		if (token != null && token.getPayload() != null) {
-			GoogleIdToken.Payload payload = token.getPayload();
-
-		}
-
-		return isLegit;
-	}
 
 }

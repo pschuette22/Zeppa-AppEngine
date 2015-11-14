@@ -6,7 +6,7 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.zeppamobile.api.Constants;
-import com.zeppamobile.common.datamodel.DeviceInfo.DeviceType;
+import com.zeppamobile.api.datamodel.DeviceInfo.DeviceType;
 
 /**
  * Client endpoint for retrieving information about the latest deployed client apps

@@ -3,10 +3,16 @@ package com.zeppamobile.api.endpoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -35,15 +41,14 @@ public class ZeppaUserInfoEndpoint {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "listZeppaUserInfo")
 	public CollectionResponse<ZeppaUserInfo> listZeppaUserInfo(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
 			@Nullable @Named("ordering") String orderingString,
 			@Nullable @Named("limit") Integer limit,
-			@Nullable @Named("stringListArg") String listArg,
-			@Nullable @Named("stringListArg2") String listArg2,
+			@Nullable @Named("jsonArgs") String jsonString,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
@@ -58,7 +63,7 @@ public class ZeppaUserInfoEndpoint {
 		Cursor cursor = null;
 		List<ZeppaUserInfo> execute = null;
 		
-		List<Object> args = new ArrayList<Object>();
+		List<String> args = new ArrayList<String>();
 		
 		try {
 			mgr = getPersistenceManager();
@@ -85,21 +90,16 @@ public class ZeppaUserInfoEndpoint {
 			/*
 			 * If there is a list argument passed as a JSON string, decode and pass 
 			 */
-			if(Utils.isWebSafe(listArg)){
-				List<String> arg = JSONUtils.decodeListString(listArg);
-				if(arg != null){
-					args.add(arg);
-				}
-			}
-
-			if(Utils.isWebSafe(listArg2)){
-				List<String> arg = JSONUtils.decodeListString(listArg2);
-				if(arg != null){
-					args.add(arg);
+			if(Utils.isWebSafe(jsonString)){
+				
+				JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonString);
+				for(int i = 0; i < jsonArray.size(); i++){
+					args.add((String)jsonArray.get(i));
 				}
 			}
 			
-			execute = (List<ZeppaUserInfo>) query.executeWithArray(args);
+			
+			execute = (List<ZeppaUserInfo>) query.execute(args);
 
 			cursor = JDOCursorHelper.getCursor(execute);
 			if (cursor == null) {
@@ -120,7 +120,6 @@ public class ZeppaUserInfoEndpoint {
 				obj.getGoogleAccountEmail();
 				obj.getImageUrl();
 				obj.getPrimaryUnformattedNumber();
-
 			}
 
 		} finally {

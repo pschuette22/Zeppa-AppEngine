@@ -8,7 +8,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>services</param-name>
-			<param-value>com.zeppamobile.api.endpoint.AppInfoEndpoint,com.zeppamobile.api.endpoint.DeviceInfoEndpoint,com.zeppamobile.api.endpoint.EventCommentEndpoint,com.zeppamobile.api.endpoint.EventTagEndpoint,com.zeppamobile.api.endpoint.EventTagFollowEndpoint,com.zeppamobile.api.endpoint.InviteGroupEndpoint,com.zeppamobile.api.endpoint.PhotoInfoEndpoint,com.zeppamobile.api.endpoint.ZeppaEventEndpoint,com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint,com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint,com.zeppamobile.api.endpoint.ZeppaUserEndpoint,com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint
+			<param-value>com.zeppamobile.api.endpoint.AppInfoEndpoint,com.zeppamobile.api.endpoint.DeviceInfoEndpoint,com.zeppamobile.api.endpoint.EventCommentEndpoint,com.zeppamobile.api.endpoint.EventTagEndpoint,com.zeppamobile.api.endpoint.EventTagFollowEndpoint,com.zeppamobile.api.endpoint.InviteGroupEndpoint,com.zeppamobile.api.endpoint.PhotoInfoEndpoint,com.zeppamobile.api.endpoint.ZeppaEventEndpoint,com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint,com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint,com.zeppamobile.api.endpoint.ZeppaUserEndpoint,com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaUserInfoEndpoint
 			</param-value>
 		</init-param>
 	</servlet>

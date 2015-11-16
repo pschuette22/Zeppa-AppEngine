@@ -2,9 +2,8 @@ package com.zeppamobile.common.utils;
 
 import java.util.List;
 
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class JSONUtils {
 
@@ -27,6 +26,16 @@ public class JSONUtils {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	/**
+	 * Convenience Method to parse string into JSON object
+	 * @param jsonString
+	 * @return
+	 */
+	public static JSONObject parseJson(String jsonString) {
+		JSONObject json = (JSONObject) JSONValue.parse(jsonString);
+		return json;
 	}
 
 	// /**

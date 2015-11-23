@@ -13,7 +13,17 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>CreateInitialFollowsServlet</servlet-name>
-		<url-pattern>/createinitial</url-pattern>
+		<url-pattern>/create-initial</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Compare two tags -->
+	<servlet>
+		<servlet-name>CompareTagsServlet</servlet-name>
+		<servlet-class>com.zeppamobile.smartfollow.servlet.CompareTagsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CompareTagsServlet</servlet-name>
+		<url-pattern>/compare-tags</url-pattern>
 	</servlet-mapping>
 
 </web-app>

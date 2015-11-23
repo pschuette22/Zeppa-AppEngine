@@ -1,13 +1,7 @@
 package com.zeppamobile.smartfollow;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletContext;
-
-import opennlp.tools.postag.POSModel;
 
 public class Utils {
 
@@ -29,6 +23,10 @@ public class Utils {
 	public static List<String> slangConverter(String slang) {
 
 		List<String> result = new ArrayList<String>();
+		
+		// TODO: convert slang if needed
+		
+		result.add(slang);
 		
 		return result;
 	}
@@ -195,28 +193,7 @@ public class Utils {
 		return true;
 	}
 
-	/**
-	 * Get part of speech model used to determine the parts of speech of a tag
-	 */
-	public static POSModel getPOSModel(ServletContext context) {
-		InputStream modelIn = null;
-		try {
-			modelIn = context.getResourceAsStream("/WEB-INF/lib/en-pos-maxent.bin");
-			POSModel model = new POSModel(modelIn);
-			return model;
-		} catch (IOException e) {
-			// Model loading failed, handle the error
-			e.printStackTrace();
-			return null;
-		} finally {
-			if (modelIn != null) {
-				try {
-					modelIn.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-	}
+
 
 	/**
 	 * Calculate the relativity of two words based on degrees of separation
@@ -240,7 +217,7 @@ public class Utils {
 		}
 		// calculated similarity
 		double sim = (1 - ((degrees * 2) / (w1.length() + w2.length())));
-		System.out.println(w1 + " Character Similarity to" + w2 + ": " + sim);
+		System.out.println(w1 + " Character Similarity to " + w2 + ": " + sim);
 		return sim;
 	}
 

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zeppamobile.common.report.SmartfollowReport;
+
 /**
  * Class used to let modules outside of zeppa-api use data objects
  * 
@@ -33,7 +35,6 @@ public class EventTagInfo implements Serializable{
 	// True if tag was just created
 	private boolean isNewTag = false;
 	
-
 
 	/**
 	 * @return identifier of the EventTag

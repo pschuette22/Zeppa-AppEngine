@@ -164,6 +164,7 @@
 				</configuration>
 				<!-- automatically call endpoints_get_discovery_doc goal as part of a 
 					Maven build by configuring the App Engine Maven plugin -->
+				 
 				<executions>
 					<execution>
 						<goals>

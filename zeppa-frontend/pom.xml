@@ -17,6 +17,13 @@
 		<google.api.client.version>1.17.0-rc</google.api.client.version>
 	</properties>
 	<dependencies>
+
+		<!-- Dependent on common module -->
+		<dependency>
+			<groupId>com.zeppamobile.appengine</groupId>
+			<artifactId>zeppa-common</artifactId>
+			<version>1</version>
+		</dependency>
 		<!-- <dependency> <groupId>com.zeppamobile.appengine</groupId> <artifactId>zeppa-api</artifactId> 
 			<version>1</version> <scope>compile</scope> </dependency> -->
 		<dependency>
@@ -53,21 +60,16 @@
 			<artifactId>datanucleus-appengine</artifactId>
 			<version>2.1.2</version>
 		</dependency>
+		<!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-endpoints</artifactId> 
+			<version>${appengine.target.version}</version> </dependency> -->
+		<!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-testing</artifactId> 
+			<version>${appengine.target.version}</version> <scope>test</scope> </dependency> -->
+		<!-- <dependency> <groupId>com.google.appengine</groupId> <artifactId>appengine-api-stubs</artifactId> 
+			<version>${appengine.target.version}</version> </dependency> -->
 		<dependency>
 			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-endpoints</artifactId>
-			<version>${appengine.target.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-testing</artifactId>
-			<version>${appengine.target.version}</version>
-			<!-- <scope>test</scope> -->
-		</dependency>
-		<dependency>
-			<groupId>com.google.appengine</groupId>
-			<artifactId>appengine-api-stubs</artifactId>
-			<version>${appengine.target.version}</version>
+			<artifactId>appengine-api-labs</artifactId>
+			<version>1.9.28</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -77,16 +79,10 @@
 		</dependency>
 		<!-- <dependency> <groupId>com.google.apis</groupId> <artifactId>google-api-services-oauth2</artifactId> 
 			<version>v2-rev92-1.20.0</version> <scope>compile</scope> </dependency> -->
-		<dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-calendar</artifactId>
-			<version>v3-rev129-1.20.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.api-client</groupId>
-			<artifactId>google-api-client-appengine</artifactId>
-			<version>1.20.0</version>
-		</dependency>
+		<!-- <dependency> <groupId>com.google.apis</groupId> <artifactId>google-api-services-calendar</artifactId> 
+			<version>v3-rev129-1.20.0</version> </dependency> -->
+		<!-- <dependency> <groupId>com.google.api-client</groupId> <artifactId>google-api-client-appengine</artifactId> 
+			<version>1.20.0</version> </dependency> -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

@@ -40,6 +40,12 @@
 			<artifactId>gwt-servlet</artifactId>
 			<version>2.7.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-labs</artifactId>
+			<version>1.9.28</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.code.gson</groupId>

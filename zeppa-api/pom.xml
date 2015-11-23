@@ -85,7 +85,7 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-testing</artifactId>
 			<version>${appengine.target.version}</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>com.google.appengine</groupId>
@@ -123,7 +123,7 @@
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
-	<repositories>
+<!-- 	<repositories>
 		<repository>
 			<snapshots>
 				<enabled>false</enabled>
@@ -132,8 +132,8 @@
 			<name>Central Repository</name>
 			<url>http://repo.maven.apache.org/maven2</url>
 		</repository>
-	</repositories>
-	<pluginRepositories>
+	</repositories> -->
+<!-- 	<pluginRepositories>
 		<pluginRepository>
 			<releases>
 				<updatePolicy>never</updatePolicy>
@@ -145,7 +145,7 @@
 			<name>Central Repository</name>
 			<url>http://repo.maven.apache.org/maven2</url>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories> -->
 	<build>
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<!-- All details/versions/configurations are setup at the parent pom -->
@@ -164,6 +164,7 @@
 				</configuration>
 				<!-- automatically call endpoints_get_discovery_doc goal as part of a 
 					Maven build by configuring the App Engine Maven plugin -->
+				 
 				<executions>
 					<execution>
 						<goals>

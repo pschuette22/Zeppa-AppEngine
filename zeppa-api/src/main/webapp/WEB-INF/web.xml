@@ -30,6 +30,9 @@
 	</servlet-mapping>
 
 
+	<welcome-file-list>
+		<welcome-file>hello.jsp</welcome-file>
+	</welcome-file-list>
 
 	<!-- Notification Building Servlet -->
 

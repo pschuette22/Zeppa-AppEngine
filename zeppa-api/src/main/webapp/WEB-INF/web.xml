@@ -29,11 +29,6 @@
 		<url-pattern>/tasks/servlet/</url-pattern>
 	</servlet-mapping>
 
-
-	<welcome-file-list>
-		<welcome-file>hello.jsp</welcome-file>
-	</welcome-file-list>
-
 	<!-- Notification Building Servlet -->
 
 	<!-- <servlet> <servlet-name>NotificationBuilder</servlet-name> <servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet 

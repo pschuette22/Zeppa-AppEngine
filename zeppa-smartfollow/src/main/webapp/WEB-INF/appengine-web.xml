@@ -11,10 +11,5 @@
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
 	</system-properties>
 
-	<!-- Include library for identifying synonyms -->
-	<static-files>
-		<include path="/lib/en-pos-maxent.bin" />
-	</static-files>
-
 
 </appengine-web-app>

@@ -1,6 +1,6 @@
 package com.zeppamobile.smartfollow.agent;
 
-import org.json.simple.JSONObject;
+import com.zeppamobile.common.report.SmartfollowReport;
 
 public abstract class BaseAgent {
 
@@ -19,18 +19,42 @@ public abstract class BaseAgent {
 		return didFinishedCalculations;
 	}
 	
-	/**
-	 * Convert this agent to JSON
-	 * @return resulting object
-	 */
-	public abstract JSONObject toJson();
+//	/**
+//	 * Convert this agent to JSON
+//	 * @return resulting object
+//	 */
+//	public abstract JSONObject toJson();
+//	
+//	/**
+//	 * Rebuild this agent from JSON string
+//	 * @param jsonString
+//	 * @return 
+//	 */
+//	public abstract BaseAgent fromJSON(String jsonString);
 	
 	/**
-	 * Rebuild this agent from JSON string
-	 * @param jsonString
-	 * @return 
+	 * Report associated with this agent. 
 	 */
-	public abstract BaseAgent fromJSON(String jsonString);
+	protected SmartfollowReport report;
 	
+	/**
+	 * Set the SmartfollowReport that should handle logging for this agent
+	 * 
+	 * @param report - for logging
+	 */
+	public void setReport(SmartfollowReport report) {
+		this.report = report;
+	}
+	
+	/**
+	 * Log information if a report is being taken
+	 * 
+	 * @param text - to be logged
+	 */
+	protected void log(String text) {
+		if(report != null){
+			report.log(text);
+		}
+	}
 	
 }

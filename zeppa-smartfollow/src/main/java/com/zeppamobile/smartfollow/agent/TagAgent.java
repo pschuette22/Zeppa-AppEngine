@@ -11,14 +11,7 @@
  */
 package com.zeppamobile.smartfollow.agent;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,13 +32,12 @@ import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
 import com.zeppamobile.common.datainfo.EventTagInfo;
-import com.zeppamobile.common.utils.JSONUtils;
-import com.zeppamobile.common.utils.ModuleUtils;
-import com.zeppamobile.smartfollow.Configuration;
+import com.zeppamobile.common.report.SmartfollowReport;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
+import com.zeppamobile.smartfollow.nlp.POSFactory;
 
-public class TagAgent {
+public class TagAgent extends BaseAgent {
 
 	private EventTagInfo tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
@@ -54,10 +46,14 @@ public class TagAgent {
 	// Parse the tag
 	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
 
-	public TagAgent(ServletContext context, UserAgent userAgent,
-			EventTagInfo tag) {
+	public TagAgent(ServletContext context,
+			EventTagInfo tag, SmartfollowReport report) {
 		this.tag = tag;
-
+		this.report = report;
+		
+		// Log progress
+		log("Initializing Agent for " + tag.getTagText());
+		
 		/*
 		 * Try to turn the tag into a machine-readable sentence This also
 		 * initializes convertedTagWords and posTags If an exception is throw...
@@ -65,10 +61,12 @@ public class TagAgent {
 		 * NLP Dictionary
 		 */
 		try {
-			dissectText(context);
+			log("Identifying elements of text");
+			dissectText(context, tag.getTagText());
 		} catch (JWNLException e) {
 			// Done derped
 			e.printStackTrace();
+			log("Wordnet Error...");
 			System.out.print("Unable to dissect text");
 		}
 	}
@@ -189,11 +187,11 @@ public class TagAgent {
 	 * 
 	 * @throws JWNLException
 	 */
-	private void dissectText(ServletContext context) throws JWNLException {
+	private void dissectText(ServletContext context, String text) throws JWNLException {
 		// First, compound text to list of words, numbers and character strings
-		List<String> stringList = Utils.convertTextToStringList(getTagText());
-
-		// Check to see if the words are recognized
+		List<String> stringList = Utils.convertTextToStringList(text);
+		
+		// Convert to dictionary words and add to list of words
 		for (String s : stringList) {
 
 			if (Character.isLetter(s.charAt(0))) {
@@ -212,15 +210,33 @@ public class TagAgent {
 			}
 
 		}
+		
+		/*
+		 * Quickly log progress
+		 */
+		StringBuilder builder = new StringBuilder();
+		builder.append("Converted tag to readable words: ");
+		Iterator<String> iterator = convertedTagWords.iterator();
+		while(iterator.hasNext()){
+			builder.append(iterator.next());
+			if(iterator.hasNext()){
+				builder.append(", ");
+			}
+		}
+		log(builder.toString());
+		
+
 
 		/*
 		 * Try to get the model
 		 */
-		POSModel model = Utils.getPOSModel(context);
-		if (model == null) {
-			// maybe flag this
-			return;
+		POSFactory factory = new POSFactory(context);
+		POSModel model = factory.buildPOSModel();
+		
+		if(model == null){
+			System.out.println("Model is null");
 		}
+		
 		POSTaggerME tagger = new POSTaggerME(model);
 		// gets tag parts of speech
 		String[] tagWordArray = new String[convertedTagWords.size()];
@@ -234,10 +250,11 @@ public class TagAgent {
 			for (int i = 0; i < convertedTagWords.size(); i++) {
 				String word = convertedTagWords.get(i);
 				String posT = posTags[i];
-				System.out.println("Word: " + word + " - Part Of Speech: "
+				log("Word: " + word + " - Part Of Speech: "
 						+ posT);
 				POS pos = null;
-				// Try to assign a part of speech. NBD if we can't
+
+				// Assign part of speech or keep it null
 				if (posT.startsWith("JJ")) {
 					pos = POS.ADJECTIVE;
 
@@ -269,7 +286,7 @@ public class TagAgent {
 	 */
 	public double calculateSimilarity(TagAgent tag) {
 		double similarity = 0;
-		System.out.println("Calculating similarity");
+		log("Calculating similarity");
 		if (getTagText().equalsIgnoreCase(tag.getTagText())) {
 			// Tags are the same, ignoring case. Very likely talking about the
 			// same thing therefore completely similar
@@ -282,22 +299,22 @@ public class TagAgent {
 				// iterate through each part of a tag
 
 				double similarityWeight = 0;
-				System.out.println("Tag1 Parts: " + parsedTagParts.toString());
-				System.out.println("Tag2 Parts: "
+				log("Tag1 Parts: " + parsedTagParts.toString());
+				log("Tag2 Parts: "
 						+ tag.parsedTagParts.toString());
 
 				for (TagPart p : parsedTagParts) {
 					// compare it to each part of another tag
 					for (TagPart p2 : tag.parsedTagParts) {
 
-						System.out.println("Comparing " + p.word + " to "
+						log("Comparing " + p.word + " to "
 								+ p2.word);
 
 						double sim = p.calculatedMatch(p2);
 						// If we can calculate their similarity with some degree
 						// of certainty,
 						// add and average
-						System.out.println("Calculated similarity: " + sim);
+						log("Calculated similarity: " + sim);
 						if (sim >= 0) {
 							// Tags have made a valid comparison of content
 
@@ -306,9 +323,8 @@ public class TagAgent {
 							similarity += sim * matchWeight;
 							similarityWeight += matchWeight;
 
-							System.out
-									.println("Total similarity " + similarity);
-							System.out.println("Total similarity weight "
+							log("Total similarity " + similarity);
+							log("Total similarity weight "
 									+ similarityWeight);
 
 						}
@@ -408,7 +424,7 @@ public class TagAgent {
 				// Same part of speech
 				return getPOSWeight(pos);
 			} else {
-				return (getPOSWeight(pos) * getPOSWeight(part.pos));
+				return (getPOSWeight(pos) * getPOSWeight(part.pos) *.5);
 			}
 
 		}
@@ -424,14 +440,15 @@ public class TagAgent {
 			if (pos.equals(POS.NOUN)) {
 				return .9;
 			} else if (pos.equals(POS.VERB)) {
-				return .7;
+				return .6;
 			} else if (pos.equals(POS.ADVERB)) {
-				return .5;
+				return .3;
 			} else if (pos.equals(POS.ADJECTIVE)) {
-				return .4;
+				return .5;
 			} else
 				return .2;
 		}
+		
 
 		/**
 		 * Calculates this part of a tag with another
@@ -505,7 +522,7 @@ public class TagAgent {
 								indexWord, part.indexWord) > 0
 								|| RelationshipFinder.getImmediateRelationship(
 										part.indexWord, indexWord) > 0) {
-							System.out.println(indexWord.getLemma() + " and "
+							log(indexWord.getLemma() + " and "
 									+ part.indexWord.getLemma()
 									+ " are synonyms");
 							return 1;
@@ -521,30 +538,38 @@ public class TagAgent {
 						calc = compareIndexWordsForPointerTypes(indexWord,
 								part.indexWord, allTypes);
 
-					} else if (pos == POS.NOUN) {
-						// Couple of Nouns without index check for similarity
-
-						/*
-						 * 
-						 * Only Calculate similarity by degrees of separation
-						 * for longer nouns. If it is 3 letters or less, it's
-						 * likely an acronym or something like "me" and leaves
-						 * too much margin for error.
-						 */
-						if (word.length() > 3 && part.word.length() > 3) {
-							calc = 0;
-							if (word.contains(part.word)
-									|| part.word.contains(word)) {
-								// One word contains the other. They're probably
-								// relatively similar
-								calc += .4;
-							}
-
-							calc += (1 - calc)
-									* Utils.stringSimilarityCalculation(word,
-											part.word);
-
-						}
+//					} else if (pos == POS.NOUN) {
+//						// Couple of Nouns without index check for similarity
+//
+//						/*
+//						 * 
+//						 * Only Calculate similarity by degrees of separation
+//						 * for longer nouns. If it is 3 letters or less, it's
+//						 * likely an acronym or something like "me" and leaves
+//						 * too much margin for error.
+//						 */
+//						if (word.length() > 3 && part.word.length() > 3) {
+//							calc = 0;
+//							if (word.contains(part.word)
+//									|| part.word.contains(word)) {
+//								// One word contains the other. They're probably
+//								// relatively similar
+//								calc += .4;
+//							}
+//
+//							
+//							double stringSimilarity = Utils.stringSimilarityCalculation(word,
+//									part.word);
+//							if(stringSimilarity > .2){
+//							calc += (1 - calc)
+//									* stringSimilarity;
+//							}
+//
+//							if(calc < .2){
+//								calc = -1;
+//							}
+//							
+//						}
 
 					}
 
@@ -599,7 +624,7 @@ public class TagAgent {
 
 				// A multitude of issues could have happened.
 				e.printStackTrace();
-				System.out.println("Exception");
+				log("Exception");
 			}
 
 			return calc;
@@ -642,6 +667,8 @@ public class TagAgent {
 						// is
 						// double weight = Math.pow(.95, (i+j))*.9;
 
+						double tempSimilarity = 0;
+						
 						/*
 						 * Iterate through all pointer types and try to find
 						 * relationships Calculate strength of these
@@ -660,14 +687,19 @@ public class TagAgent {
 							double similarityCalc = calculatedRelationshipsListStrength(
 									relationships, .9);
 
-							if (similarity < similarityCalc) {
-								similarity = similarityCalc;
+							if (similarityCalc > .1) {
+								tempSimilarity+=(similarityCalc*(1-tempSimilarity));
 							}
 
-							if (similarity > .98) {
-								return 1;
+							if (tempSimilarity >= .95) {
+								return .95;
 							}
 
+						}
+						
+						// Only take the highest similarity calculation
+						if(similarity < tempSimilarity) {
+							similarity = tempSimilarity;
 						}
 
 					}
@@ -693,30 +725,29 @@ public class TagAgent {
 			 * of reference
 			 */
 
-			// System.out.println("Calculating relationship list strength");
+			// log("Calculating relationship list strength");
 			try {
 				Iterator<Relationship> iterator = relationships.iterator();
+				
+				/*
+				 * Quick loop to find the lowest depth of a relationship
+				 */
+				double depth = -1;
 				while (iterator.hasNext()) {
 
-					if (strength > .98) {
-						return 1;
+					double temp = iterator.next().getDepth();
+
+					if(depth < 0 || depth > temp) {
+						depth = temp;
 					}
-
-					Relationship r = iterator.next();
-
-					printPointerRelationshipInfo(r);
-
-					double depth = r.getDepth();
-
-					// double adjustment = (Math.pow(relationshipWeight, depth))
-					// * (1.0 - strength);
-					double adjustment = (Math.pow(.9, depth))
-							* (1.0 - strength);
-					// double adjustment = (Math.pow(.9, depth))
-					// * (1.0 - strength);
-					strength += adjustment;
-
+					
+					if(depth == 1){
+						break;
+					}
+					
 				}
+				
+				strength = Math.pow(relationshipWeight, depth);
 
 			} catch (NullPointerException e) {
 				// Bad list was passed in, no strength
@@ -751,6 +782,8 @@ public class TagAgent {
 							 * Calculate similarity
 							 */
 							try {
+								
+								
 								double calculatedSimilarity = compareIndexWordsForPointerTypes(
 										indexWord1,
 										indexWord2,
@@ -783,20 +816,21 @@ public class TagAgent {
 		 * @param relationship
 		 */
 		private void printPointerRelationshipInfo(Relationship relationship) {
-			System.out.println("=======================");
-			System.out.println(relationship.getType().toString()
+			log("=======================");
+			log(relationship.getType().toString()
 					+ " relationship with depth: " + relationship.getDepth());
 			PointerTargetNodeList nodes = relationship.getNodeList();
 			Iterator<PointerTargetNode> iterator = nodes.iterator();
-			System.out.println("Pointer Target Nodes: ");
+			log("Pointer Target Nodes: ");
 			while (iterator.hasNext()) {
 				PointerTargetNode n = iterator.next();
-				System.out.println("	" + n.getPointerTarget().toString());
+				log("	" + n.getPointerTarget().toString());
 
 			}
 
 		}
 
 	}
+
 
 }

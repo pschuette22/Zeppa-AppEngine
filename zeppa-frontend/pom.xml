@@ -124,30 +124,31 @@
 	<build>
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<!-- All details/versions/configurations are setup at the parent pom -->
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>com.google.appengine</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<archiveClasses>true</archiveClasses>
-					<webResources>
-						<!-- in order to interpolate version from pom into appengine-web.xml -->
-						<resource>
-							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
-							<!-- <filtering>true</filtering> -->
-							<targetPath>WEB-INF</targetPath>
-						</resource>
-					</webResources>
-				</configuration>
-			</plugin>
-		</plugins>
+
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>com.google.appengine</groupId>
+					<artifactId>appengine-maven-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<configuration>
+						<archiveClasses>true</archiveClasses>
+						<webResources>
+							<!-- in order to interpolate version from pom into appengine-web.xml -->
+							<resource>
+								<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+								<!-- <filtering>true</filtering> -->
+								<targetPath>WEB-INF</targetPath>
+							</resource>
+						</webResources>
+					</configuration>
+				</plugin>
+			</plugins>
 	</build>
 </project>

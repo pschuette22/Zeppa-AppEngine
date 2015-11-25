@@ -93,6 +93,12 @@
 			<version>${appengine.target.version}</version>
 			<!-- <scope>compile</scope> -->
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-labs</artifactId>
+			<version>1.9.28</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -123,29 +129,13 @@
 			<version>1.1.1</version>
 		</dependency>
 	</dependencies>
-<!-- 	<repositories>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>http://repo.maven.apache.org/maven2</url>
-		</repository>
-	</repositories> -->
-<!-- 	<pluginRepositories>
-		<pluginRepository>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>http://repo.maven.apache.org/maven2</url>
-		</pluginRepository>
-	</pluginRepositories> -->
+	<!-- <repositories> <repository> <snapshots> <enabled>false</enabled> </snapshots> 
+		<id>central</id> <name>Central Repository</name> <url>http://repo.maven.apache.org/maven2</url> 
+		</repository> </repositories> -->
+	<!-- <pluginRepositories> <pluginRepository> <releases> <updatePolicy>never</updatePolicy> 
+		</releases> <snapshots> <enabled>false</enabled> </snapshots> <id>central</id> 
+		<name>Central Repository</name> <url>http://repo.maven.apache.org/maven2</url> 
+		</pluginRepository> </pluginRepositories> -->
 	<build>
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<!-- All details/versions/configurations are setup at the parent pom -->
@@ -164,7 +154,7 @@
 				</configuration>
 				<!-- automatically call endpoints_get_discovery_doc goal as part of a 
 					Maven build by configuring the App Engine Maven plugin -->
-				 
+
 				<executions>
 					<execution>
 						<goals>

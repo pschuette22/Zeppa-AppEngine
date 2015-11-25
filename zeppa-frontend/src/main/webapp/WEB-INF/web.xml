@@ -27,6 +27,17 @@
 		<servlet-name>GetUploadUrl</servlet-name>
 		<url-pattern>/getuploadurl</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Front end servlet for comparing tags -->
+	<servlet>
+		<servlet-name>compare-tags</servlet-name>
+		<servlet-class>com.zeppamobile.frontend.comparetags.CompareTagsServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>compare-tags</servlet-name>
+		<url-pattern>/compare-tags</url-pattern>
+	</servlet-mapping>
 
 
 	<!-- Security contraints for managing backend transactions -->
@@ -34,8 +45,5 @@
 		</web-resource-collection> <auth-constraint> <role-name>admin</role-name> 
 		</auth-constraint> </security-constraint> -->
 
-	<welcome-file-list>
-		<welcome-file>hello.jsp</welcome-file>
-	</welcome-file-list>
 
 </web-app>

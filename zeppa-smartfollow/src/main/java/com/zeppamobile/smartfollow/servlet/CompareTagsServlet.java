@@ -25,12 +25,15 @@ public class CompareTagsServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	
+	
+	
 	/**
 	 * Get request made to servlet to compare two tags
 	 * 
 	 */
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		// Set as Internal Error at first then change

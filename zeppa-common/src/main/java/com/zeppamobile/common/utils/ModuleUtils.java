@@ -2,8 +2,10 @@ package com.zeppamobile.common.utils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.appengine.api.modules.ModulesService;
 import com.google.appengine.api.modules.ModulesServiceFactory;
@@ -24,8 +26,8 @@ public class ModuleUtils {
 	 * @return URL for request
 	 * @throws MalformedURLException
 	 */
-	public static URL getZeppaAPIUrl(String methodName,
-			Dictionary<String, String> params) throws MalformedURLException {
+	public static URL getZeppaModuleUrl(String moduleName, String methodName,
+			Map<String, String> params) throws MalformedURLException {
 
 		String paramString = null;
 
@@ -35,10 +37,13 @@ public class ModuleUtils {
 		if (params != null && !params.isEmpty()) {
 			StringBuilder paramsBuilder = new StringBuilder();
 			paramsBuilder.append("?");
-			Enumeration<String> keySet = params.keys();
-			while (keySet.hasMoreElements()) {
-				String key = keySet.nextElement();
-				String param = params.get(key);
+			Set<Entry<String,String>> keySet = params.entrySet();
+			Iterator<Entry<String,String>> i = keySet.iterator();
+			while (i.hasNext()) {
+				Entry<String,String> entry = i.next();
+				
+				String key = entry.getKey();
+				String param = entry.getValue();
 
 				if (paramsBuilder.length() > 1) { //
 					paramsBuilder.append("&");
@@ -54,10 +59,10 @@ public class ModuleUtils {
 		ModulesService modulesApi = ModulesServiceFactory.getModulesService();
 
 		URL url = new URL("http://"
-				+ modulesApi.getVersionHostname("zeppa-api", "v1") + "/"
+				+ modulesApi.getVersionHostname(moduleName, "v1") + "/"
 				+ methodName + (paramString == null ? "" : paramString));
 
 		return url;
 	}
-
+	
 }

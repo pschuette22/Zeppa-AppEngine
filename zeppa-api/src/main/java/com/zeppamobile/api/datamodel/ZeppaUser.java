@@ -173,6 +173,14 @@ public class ZeppaUser {
 		return this.tags.remove(tag);
 	}
 	
+	/**
+	 * Get the event tags for this user
+	 * @return tags
+	 */
+	public List<EventTag> getTags() {
+		return tags;
+	}
+	
 	@Persistent
 	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
 

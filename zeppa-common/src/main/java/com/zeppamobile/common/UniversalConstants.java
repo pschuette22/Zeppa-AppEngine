@@ -62,7 +62,18 @@ public class UniversalConstants {
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 	
 	
+	/*
+	 * Key Bank: list of keys so passing between modules 
+	 * 
+	 */
 	
+	public static final String PARAM_ID_TOKEN = "id-token";
+	public static final String PARAM_METHOD = "method";
+	public static final String PARAM_EVENT_NAME = "event-name";
+	
+	
+	public static final String METHOD_INSERT = "insert";
+	public static final String METHOD_LIST = "list";
 	
 
 }

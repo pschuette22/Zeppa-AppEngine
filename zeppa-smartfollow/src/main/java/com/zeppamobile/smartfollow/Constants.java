@@ -50,6 +50,10 @@ public final class Constants {
 	 */
 	private static Dictionary dictionary;
 
+	/**
+	 * Get the Java Word Net Library for identifying words
+	 * @throws JWNLException - if there is an error retrieving the dictionary
+	 */
 	public synchronized static Dictionary getDictionary() throws JWNLException {
 		if (dictionary == null) {
 			dictionary = Dictionary.getDefaultResourceInstance();
@@ -57,6 +61,18 @@ public final class Constants {
 		return dictionary;
 	}
 
+	/*
+	 * TODO: Add another dictionary instance to be manipulated so slang words can be added
+	 * NOTE: it should be considered that slang may vary from location to location
+	 */
+	
+	/*
+	 * TODO: create method to back up dictionary instance as words are added or removed
+	 */
+	
+	/*
+	 * TODO: research how Word Net handles short phrases and update appropriately
+	 */
 	
 
 }

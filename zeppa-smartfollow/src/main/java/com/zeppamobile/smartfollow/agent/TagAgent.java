@@ -17,6 +17,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.apache.tools.ant.types.selectors.DepthSelector;
+
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
@@ -37,6 +39,15 @@ import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
 import com.zeppamobile.smartfollow.nlp.POSFactory;
 
+/**
+ * 
+ * @author Pete Schuette
+ * 
+ *         This agent is used to calculate the similarity between Tags It
+ *         employs Java's Word Net Library (Princeton) and OpenNLP (Source
+ *         Forge)
+ *
+ */
 public class TagAgent extends BaseAgent {
 
 	private EventTagInfo tag;
@@ -46,14 +57,14 @@ public class TagAgent extends BaseAgent {
 	// Parse the tag
 	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
 
-	public TagAgent(ServletContext context,
-			EventTagInfo tag, SmartfollowReport report) {
+	public TagAgent(ServletContext context, EventTagInfo tag,
+			SmartfollowReport report) {
 		this.tag = tag;
 		this.report = report;
-		
+
 		// Log progress
 		log("Initializing Agent for " + tag.getTagText());
-		
+
 		/*
 		 * Try to turn the tag into a machine-readable sentence This also
 		 * initializes convertedTagWords and posTags If an exception is throw...
@@ -187,10 +198,11 @@ public class TagAgent extends BaseAgent {
 	 * 
 	 * @throws JWNLException
 	 */
-	private void dissectText(ServletContext context, String text) throws JWNLException {
+	private void dissectText(ServletContext context, String text)
+			throws JWNLException {
 		// First, compound text to list of words, numbers and character strings
 		List<String> stringList = Utils.convertTextToStringList(text);
-		
+
 		// Convert to dictionary words and add to list of words
 		for (String s : stringList) {
 
@@ -210,33 +222,31 @@ public class TagAgent extends BaseAgent {
 			}
 
 		}
-		
+
 		/*
 		 * Quickly log progress
 		 */
 		StringBuilder builder = new StringBuilder();
 		builder.append("Converted tag to readable words: ");
 		Iterator<String> iterator = convertedTagWords.iterator();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			builder.append(iterator.next());
-			if(iterator.hasNext()){
+			if (iterator.hasNext()) {
 				builder.append(", ");
 			}
 		}
 		log(builder.toString());
-		
-
 
 		/*
 		 * Try to get the model
 		 */
 		POSFactory factory = new POSFactory(context);
 		POSModel model = factory.buildPOSModel();
-		
-		if(model == null){
+
+		if (model == null) {
 			System.out.println("Model is null");
 		}
-		
+
 		POSTaggerME tagger = new POSTaggerME(model);
 		// gets tag parts of speech
 		String[] tagWordArray = new String[convertedTagWords.size()];
@@ -250,8 +260,7 @@ public class TagAgent extends BaseAgent {
 			for (int i = 0; i < convertedTagWords.size(); i++) {
 				String word = convertedTagWords.get(i);
 				String posT = posTags[i];
-				log("Word: " + word + " - Part Of Speech: "
-						+ posT);
+				log("Word: " + word + " - Part Of Speech: " + posT);
 				POS pos = null;
 
 				// Assign part of speech or keep it null
@@ -299,16 +308,12 @@ public class TagAgent extends BaseAgent {
 				// iterate through each part of a tag
 
 				double similarityWeight = 0;
-				log("Tag1 Parts: " + parsedTagParts.toString());
-				log("Tag2 Parts: "
-						+ tag.parsedTagParts.toString());
 
 				for (TagPart p : parsedTagParts) {
 					// compare it to each part of another tag
 					for (TagPart p2 : tag.parsedTagParts) {
 
-						log("Comparing " + p.word + " to "
-								+ p2.word);
+						log("Comparing " + p.word + " to " + p2.word);
 
 						double sim = p.calculatedMatch(p2);
 						// If we can calculate their similarity with some degree
@@ -324,8 +329,7 @@ public class TagAgent extends BaseAgent {
 							similarityWeight += matchWeight;
 
 							log("Total similarity " + similarity);
-							log("Total similarity weight "
-									+ similarityWeight);
+							log("Total similarity weight " + similarityWeight);
 
 						}
 
@@ -424,7 +428,7 @@ public class TagAgent extends BaseAgent {
 				// Same part of speech
 				return getPOSWeight(pos);
 			} else {
-				return (getPOSWeight(pos) * getPOSWeight(part.pos) *.5);
+				return (getPOSWeight(pos) * getPOSWeight(part.pos) * .5);
 			}
 
 		}
@@ -448,7 +452,244 @@ public class TagAgent extends BaseAgent {
 			} else
 				return .2;
 		}
-		
+
+		/**
+		 * Calculate the weight of comparing one part of speech to another
+		 * 
+		 * @param otherPOS
+		 * @return
+		 */
+		private double getPOSComparisonWeight(POS otherPOS) {
+
+			// Make sure the parts of speech are comparable
+			if (pos != null && otherPOS != null) {
+				switch (pos) {
+				case NOUN:
+					switch (otherPOS) {
+					case NOUN:
+
+					case VERB:
+
+					case ADJECTIVE:
+
+					case ADVERB:
+					}
+					break;
+
+				case VERB:
+					switch (otherPOS) {
+					case NOUN:
+
+					case VERB:
+
+					case ADJECTIVE:
+
+					case ADVERB:
+					}
+					break;
+
+				case ADJECTIVE:
+					switch (otherPOS) {
+					case NOUN:
+
+					case VERB:
+
+					case ADJECTIVE:
+
+					case ADVERB:
+					}
+					break;
+
+				case ADVERB:
+					switch (otherPOS) {
+					case NOUN:
+
+					case VERB:
+
+					case ADJECTIVE:
+
+					case ADVERB:
+					}
+					break;
+
+				}
+			}
+
+			return .1;
+
+		}
+
+		/**
+		 * Determine the weight of pointer relationships to enhance the accuracy
+		 * of the tag comparison calculation
+		 * 
+		 * @param type
+		 *            - Pointer Type for a given relationship
+		 * @return calculation weight of this pointer
+		 */
+		private double getPointerTypeWeight(PointerType type) {
+			switch (type) {
+
+			case ANTONYM:
+				/*
+				 * Antonyms are opposites. With negative weight, opposite of
+				 * opposite ex: Happy to Sad
+				 */
+				return -.75;
+
+			case HYPERNYM:
+			case HYPONYM:
+			case INSTANCE_HYPERNYM:
+			case INSTANCES_HYPONYM:
+				/*
+				 * Hypernym/ Hyponym mean the same thing, just opposite
+				 * directions This means relationship is a group member to group
+				 * type ex: Cutlery to Spoon
+				 */
+				return .8;
+
+			case ENTAILMENT:
+				/*
+				 * An entailment is a deduction or implication, that is,
+				 * something that follows logically from or is implied by
+				 * something else. In logic, an entailment is the relationship
+				 * between sentences whereby one sentence will be true if all
+				 * the others are also true.
+				 */
+				return .55;
+
+			case SIMILAR_TO:
+				/*
+				 * This is only used to compare adjectives. One adjective is
+				 * similar to another. High weight. Ex: Happy to Glad
+				 */
+				return .95;
+
+			case MEMBER_HOLONYM:
+			case SUBSTANCE_HOLONYM:
+			case PART_HOLONYM:
+			case MEMBER_MERONYM:
+			case SUBSTANCE_MERONYM:
+			case PART_MERONYM:
+				/*
+				 * Holonym/Meronym are the same, just on different sides of the
+				 * equation Holonymy (in Greek ὅλον holon, "whole" and ὄνομα
+				 * onoma, "name") is a semantic relation. Holonymy defines the
+				 * relationship between a term denoting the whole and a term
+				 * denoting a part of, or a member of, the whole. That is, 'X'
+				 * is a holonym of 'Y' if Ys are parts of Xs, or.
+				 */
+				return .9;
+
+			case CAUSE:
+				/*
+				 * Cause only applies to verbs; one leads to the other. ex.
+				 * joking causes laughing
+				 */
+				return .6;
+
+			case PARTICIPLE_OF:
+				/*
+				 * a word formed from a verb (e.g., going, gone, being, been )
+				 * and used as an adjective (e.g., working woman, burned toast )
+				 * or a noun (e.g., good breeding ). In English, participles are
+				 * also used to make compound verb forms (e.g., is going, has
+				 * been ).
+				 */
+				return .85;
+
+			case SEE_ALSO:
+				/*
+				 * In a dictionary, when a word is part of the definition. ex.
+				 * Plane is used in definition of Air Port
+				 */
+				return .78;
+
+			case PERTAINYM:
+				/*
+				 * (plural pertainyms) (computational linguistics) a word,
+				 * usually an adjective, which can be defined as
+				 * "of or pertaining to" another word.
+				 */
+				return .7;
+
+			case ATTRIBUTE:
+				/*
+				 * 1 : an inherent characteristic; also : an accidental quality
+				 * 2 : an object closely associated with or belonging to a
+				 * specific person, thing, or office <a scepter is the attribute
+				 * of power>; especially : such an object used for
+				 * identification in painting or sculpture 3 : a word ascribing
+				 * a quality; especially : adjective
+				 */
+				return .95;
+
+			case VERB_GROUP:
+				/*
+				 * countable noun. A verb group or verbal group consists of a
+				 * verb, or of a main verb following a modal or one or more
+				 * auxiliaries. Examples are 'walked', 'can see', and 'had been
+				 * waiting'.
+				 */
+				return .65;
+
+			case DERIVATION:
+				/*
+				 * 1. the obtaining or developing of something from a source or
+				 * origin. "the derivation of scientific laws from observation"
+				 * synonyms: deriving, induction, deduction, inference; More 2.
+				 * LINGUISTICS in generative grammar, the set of stages that
+				 * link the abstract underlying structure of an expression to
+				 * its surface form.
+				 */
+				return .95;
+
+			case DOMAIN_ALL:
+			case MEMBER_ALL:
+				/*
+				 * Domain/ Member are the same in opposite directions Check to
+				 * see if Noun is a member of a domain
+				 */
+				return .6;
+
+			case CATEGORY:
+			case CATEGORY_MEMBER:
+
+				/*
+				 * 
+				 * 1. a class or division of people or things regarded as having
+				 * particular shared characteristics.
+				 * "five categories of intelligence" synonyms: class,
+				 * classification, group, grouping, bracket, heading, set; More
+				 * 2. PHILOSOPHY one of a possibly exhaustive set of classes
+				 * among which all things might be distributed.
+				 */
+				return .75;
+
+			case USAGE:
+			case USAGE_MEMBER:
+				/*
+				 * the way that words are used by people when they speak and
+				 * write their language
+				 */
+				return .85;
+
+			case REGION:
+			case REGION_MEMBER:
+				/*
+				 * (Unsure if this is proper definition) Definition of
+				 * LINGUISTIC GEOGRAPHY. : local or regional variations of a
+				 * language or dialect studied as a field of knowledge —called
+				 * also dialect geography. — linguistic geographer noun.
+				 */
+				return .75;
+
+			default:
+				// Just to keep compiler happy
+				return 0;
+			}
+
+		}
 
 		/**
 		 * Calculates this part of a tag with another
@@ -538,38 +779,39 @@ public class TagAgent extends BaseAgent {
 						calc = compareIndexWordsForPointerTypes(indexWord,
 								part.indexWord, allTypes);
 
-//					} else if (pos == POS.NOUN) {
-//						// Couple of Nouns without index check for similarity
-//
-//						/*
-//						 * 
-//						 * Only Calculate similarity by degrees of separation
-//						 * for longer nouns. If it is 3 letters or less, it's
-//						 * likely an acronym or something like "me" and leaves
-//						 * too much margin for error.
-//						 */
-//						if (word.length() > 3 && part.word.length() > 3) {
-//							calc = 0;
-//							if (word.contains(part.word)
-//									|| part.word.contains(word)) {
-//								// One word contains the other. They're probably
-//								// relatively similar
-//								calc += .4;
-//							}
-//
-//							
-//							double stringSimilarity = Utils.stringSimilarityCalculation(word,
-//									part.word);
-//							if(stringSimilarity > .2){
-//							calc += (1 - calc)
-//									* stringSimilarity;
-//							}
-//
-//							if(calc < .2){
-//								calc = -1;
-//							}
-//							
-//						}
+						// } else if (pos == POS.NOUN) {
+						// // Couple of Nouns without index check for similarity
+						//
+						// /*
+						// *
+						// * Only Calculate similarity by degrees of separation
+						// * for longer nouns. If it is 3 letters or less, it's
+						// * likely an acronym or something like "me" and leaves
+						// * too much margin for error.
+						// */
+						// if (word.length() > 3 && part.word.length() > 3) {
+						// calc = 0;
+						// if (word.contains(part.word)
+						// || part.word.contains(word)) {
+						// // One word contains the other. They're probably
+						// // relatively similar
+						// calc += .4;
+						// }
+						//
+						//
+						// double stringSimilarity =
+						// Utils.stringSimilarityCalculation(word,
+						// part.word);
+						// if(stringSimilarity > .2){
+						// calc += (1 - calc)
+						// * stringSimilarity;
+						// }
+						//
+						// if(calc < .2){
+						// calc = -1;
+						// }
+						//
+						// }
 
 					}
 
@@ -631,141 +873,20 @@ public class TagAgent extends BaseAgent {
 		}
 
 		/**
-		 * Compare two indexed words based on a relationships of given pointer
-		 * types
-		 * 
-		 * @param word1
-		 * @param word2
-		 * @param pointerTypes
-		 * @return calculated similarity as a decimal between 0 and 1
-		 * @throws JWNLException
-		 * @throws CloneNotSupportedException
-		 */
-		private double compareIndexWordsForPointerTypes(IndexWord word1,
-				IndexWord word2, List<PointerType> pointerTypes)
-				throws CloneNotSupportedException, JWNLException {
-			double similarity = 0;
-
-			List<Synset> set1 = word1.getSenses();
-			List<Synset> set2 = word2.getSenses();
-
-			if (set1.isEmpty() || set2.isEmpty() || pointerTypes.isEmpty()) {
-				similarity = -1;
-			} else {
-				/*
-				 * Otherwise, perform calculations
-				 */
-
-				// Iterate through both lists and figure out the highest
-				// similarity
-				for (int i = 0; i < set1.size() && i < 5; i++) {
-					Synset s1 = set1.get(i);
-					for (int j = 0; j < set2.size() && j < 5; j++) {
-						Synset s2 = set2.get(j);
-
-						// Assign weight based on how common this form of word
-						// is
-						// double weight = Math.pow(.95, (i+j))*.9;
-
-						double tempSimilarity = 0;
-						
-						/*
-						 * Iterate through all pointer types and try to find
-						 * relationships Calculate strength of these
-						 * relationships
-						 */
-						for (PointerType type : pointerTypes) {
-							RelationshipList relationships = RelationshipFinder
-									.findRelationships(s1, s2, type);
-
-							if (relationships.isEmpty()) {
-								continue;
-							}
-
-							// double relationshipWeight = getPOSWeight(s1
-							// .getPOS()) * getPOSWeight(s2.getPOS());
-							double similarityCalc = calculatedRelationshipsListStrength(
-									relationships, .9);
-
-							if (similarityCalc > .1) {
-								tempSimilarity+=(similarityCalc*(1-tempSimilarity));
-							}
-
-							if (tempSimilarity >= .95) {
-								return .95;
-							}
-
-						}
-						
-						// Only take the highest similarity calculation
-						if(similarity < tempSimilarity) {
-							similarity = tempSimilarity;
-						}
-
-					}
-				}
-			}
-
-			return similarity;
-		}
-
-		/**
-		 * Given a list of relationships between synsets, determine their
-		 * relational strength
-		 * 
-		 * @return percent strength between 0 and 1 where 0 is no strength and 1
-		 *         is completely the same
-		 */
-		private double calculatedRelationshipsListStrength(
-				RelationshipList relationships, double relationshipWeight) {
-			double strength = 0;
-
-			/*
-			 * Create a map of all pointers references with their minimum depth
-			 * of reference
-			 */
-
-			// log("Calculating relationship list strength");
-			try {
-				Iterator<Relationship> iterator = relationships.iterator();
-				
-				/*
-				 * Quick loop to find the lowest depth of a relationship
-				 */
-				double depth = -1;
-				while (iterator.hasNext()) {
-
-					double temp = iterator.next().getDepth();
-
-					if(depth < 0 || depth > temp) {
-						depth = temp;
-					}
-					
-					if(depth == 1){
-						break;
-					}
-					
-				}
-				
-				strength = Math.pow(relationshipWeight, depth);
-
-			} catch (NullPointerException e) {
-				// Bad list was passed in, no strength
-			}
-
-			return strength;
-		}
-
-		/**
-		 * Calculate other forms of this words similarity;
+		 * Calculate other forms of this words similarity; This is only used to
+		 * compare two words which do not have a matching part of speech. To
+		 * counter this, we try to find synonyms with matching parts of speech
 		 * 
 		 * @param wordSet1
+		 *            - synonym set of one tag words
 		 * @param wordSet2
-		 * @return
+		 *            - synonym set of other tag words
+		 * @return calculated similarity as a decimial percent or -1 if
+		 *         calculation couldn't be made
 		 */
 		private double compareIndexWordSets(IndexWordSet wordSet1,
 				IndexWordSet wordSet2) {
-			double similarity = 0;
+			double similarity = -1;
 
 			if (wordSet1 != null && wordSet2 != null) {
 
@@ -782,8 +903,7 @@ public class TagAgent extends BaseAgent {
 							 * Calculate similarity
 							 */
 							try {
-								
-								
+
 								double calculatedSimilarity = compareIndexWordsForPointerTypes(
 										indexWord1,
 										indexWord2,
@@ -812,6 +932,174 @@ public class TagAgent extends BaseAgent {
 		}
 
 		/**
+		 * Compare two indexed words based on a relationships of given pointer
+		 * types
+		 * 
+		 * @param word1
+		 * @param word2
+		 * @param pointerTypes
+		 * @return calculated similarity as a decimal between 0 and 1
+		 * @throws JWNLException
+		 * @throws CloneNotSupportedException
+		 */
+		private double compareIndexWordsForPointerTypes(IndexWord word1,
+				IndexWord word2, List<PointerType> pointerTypes)
+				throws CloneNotSupportedException, JWNLException {
+			double similarity = 0;
+
+			List<Synset> set1 = word1.getSenses();
+			List<Synset> set2 = word2.getSenses();
+
+			if (set1.isEmpty() || set2.isEmpty() || pointerTypes.isEmpty()) {
+				similarity = -1;
+			} else {
+				/*
+				 * Otherwise, perform calculations
+				 */
+				
+				double weightedSimilaritySum = 0;
+				double weightSum = 0;
+
+				// Iterate through both lists and figure out the highest
+				// similarity
+				for (int i = 0; i < set1.size() && i < 5; i++) {
+					Synset s1 = set1.get(i);
+					for (int j = 0; j < set2.size() && j < 5; j++) {
+						Synset s2 = set2.get(j);
+
+						/*
+						 * Iterate through all pointer types and try to find
+						 * relationships Calculate strength of these
+						 * relationships
+						 */
+						for (PointerType type : pointerTypes) {
+							RelationshipList relationships = RelationshipFinder
+									.findRelationships(s1, s2, type);
+
+							if (relationships.isEmpty()) {
+								continue;
+							}
+
+							// double relationshipWeight = getPOSWeight(s1
+							// .getPOS()) * getPOSWeight(s2.getPOS());
+							double pointerTypeWeight = getPointerTypeWeight(type);
+							double similarityCalc = calculatedRelationshipsListStrength(
+									relationships, pointerTypeWeight);
+
+							weightedSimilaritySum += (similarityCalc*pointerTypeWeight);
+							weightSum+=pointerTypeWeight;
+
+						}
+						double synsetSimilarity = weightedSimilaritySum/weightSum;
+						// Compounding percent of similarities
+						similarity+=((1-similarity)*synsetSimilarity);
+
+						// Or only return highest synset similarity calculation
+//						// Only take the highest similarity calculation
+//						if (similarity < synsetSimilarity) {
+//							similarity = synsetSimilarity;
+//						}
+
+					}
+				}
+			}
+
+			return similarity;
+		}
+
+		/**
+		 * Given a list of relationships between synsets, determine their
+		 * relational strength
+		 * 
+		 * @return percent strength between 0 and 1 where 0 is no strength and 1
+		 *         is completely the same
+		 */
+		private double calculatedRelationshipsListStrength(
+				RelationshipList relationships, double relationshipWeight) {
+			double strength = 0;
+
+			/*
+			 * Create a map of all pointers references with their minimum depth
+			 * of reference
+			 */
+
+			// log("Calculating relationship list strength");
+			try {
+
+				/*
+				 * Quick loop to find the lowest depth of a relationship
+				 */
+				// Total number of relationships
+				double relationshipCount = relationships.size();
+				// Most shallow relationship count
+				double minDepth = relationships.getShallowest().getDepth();
+				// Deepest relationship count
+				double maxDepth = relationships.getDeepest().getDepth();
+
+				// Calculates the range
+				double range = minDepth - maxDepth;
+
+				double adjustedWeight = 0;
+				if (range == 0) {
+					/*
+					 * In the event that the minimum and maximum depth is the
+					 * same, there is no point in further computation
+					 */
+					// Max and min depth are the same
+					adjustedWeight += Math.pow(relationshipWeight, minDepth);
+				} else {
+
+					// Sum of all relationship depths
+					double sumDepth = 0;
+					/*
+					 * Quickly iterate through all relationships adding depth to
+					 * sum of all depths
+					 */
+					Iterator<Relationship> iterator = relationships.iterator();
+					while (iterator.hasNext()) {
+						sumDepth += iterator.next().getDepth();
+					}
+					// Average depth
+					double averageDepth = sumDepth / relationshipCount;
+
+					/*
+					 * Hold the range difference between average depth and
+					 * max/min to identify most common ranges
+					 */
+					double minDiff = averageDepth - minDepth;
+					double maxDiff = maxDepth - averageDepth;
+
+					/*
+					 * calculate weight based on dispercement
+					 */
+					double minShare = minDiff / range;
+					double maxShare = maxDiff / range;
+
+					// Adjust the weight and displace based on depth and
+					// displacement of depth
+					adjustedWeight += Math.pow(relationshipWeight, minDepth)
+							* minShare;
+					adjustedWeight += Math.pow(relationshipWeight, maxDepth)
+							* maxShare;
+				}
+
+				/*
+				 * Adjust total strength to account for the number of
+				 * relationships there are. This is useful if there are a bunch
+				 * of distant relationships
+				 */
+				for (int i = 0; i < relationshipCount; i++) {
+					strength += adjustedWeight * (1 - strength);
+				}
+
+			} catch (NullPointerException e) {
+				// Bad list was passed in, no strength
+			}
+
+			return strength;
+		}
+
+		/**
 		 * 
 		 * @param relationship
 		 */
@@ -831,6 +1119,5 @@ public class TagAgent extends BaseAgent {
 		}
 
 	}
-
 
 }

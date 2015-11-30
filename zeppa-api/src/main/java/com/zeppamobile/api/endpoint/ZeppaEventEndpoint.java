@@ -39,7 +39,10 @@ public class ZeppaEventEndpoint {
 	 * 
 	 * @return A CollectionResponse class containing the list of all entities
 	 *         persisted and a cursor to the next page.
-	 * @throws OAuthRequestException
+	 * @throws UnauthorizedException
+	 *             if idToken does not represent a valid user or user makes an
+	 *             unauthorized request
+	 *             
 	 */
 	@SuppressWarnings({ "unchecked" })
 	@ApiMethod(name = "listZeppaEvent")

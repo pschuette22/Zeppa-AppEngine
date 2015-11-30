@@ -7,22 +7,20 @@
 
 	<module>
 		<web>
-			<web-uri>zeppa-api-1.war</web-uri>
+			<web-uri>zeppa-frontend-1.war</web-uri>
 			<context-root>default</context-root>
+
 		</web>
 	</module>
-<!-- 	<module>
-		<web>
-			<web-uri>zeppa-common-1.war</web-uri>
-			<context-root>zeppa-common</context-root>
-		</web>
-	</module> -->
+
 	<module>
 		<web>
-			<web-uri>zeppa-frontend-1.war</web-uri>
-			<context-root>zeppa-frontend</context-root>
+			<web-uri>zeppa-api-1.war</web-uri>
+			<context-root>zeppa-api</context-root>
+
 		</web>
 	</module>
+
 	<module>
 		<web>
 			<web-uri>zeppa-notifications-1.war</web-uri>
@@ -37,4 +35,5 @@
 	</module>
 
 	<library-directory>lib</library-directory>
+	
 </application>

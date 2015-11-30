@@ -21,7 +21,7 @@ function onSignIn(googleUser) {
 </head>
 <body>
 
-	<h1>Comare Tags with Zeppa Smartfollow</h1>
+	<h1>Login</h1>
 
 	<form action="/compare-tags" method="post">
 	

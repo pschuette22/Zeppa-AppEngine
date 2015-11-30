@@ -151,6 +151,36 @@ public class ZeppaEvent {
 		this.invitedUserIds = (ArrayList<Long>) json.get("invitedUserIds");
 
 	}
+	
+	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson(){
+		JSONObject obj = new JSONObject();
+		
+		obj.put("key", key);
+		obj.put("created", created);
+		obj.put("updated", updated);
+		obj.put("googleCalendarId", googleCalendarId);
+		obj.put("googleCalendarEventId", googleCalendarEventId);
+		obj.put("iCalUID", iCalUID);
+		obj.put("privacy", privacy.toString());
+		obj.put("hostId", hostId);
+		obj.put("title", title);
+		obj.put("description", description);
+		obj.put("guestsMayInvite", guestsMayInvite);
+		obj.put("start", start);
+		obj.put("end", end);
+		obj.put("displayLocation", displayLocation);
+		obj.put("mapsLocation", mapsLocation);
+		obj.put("invitedUserIds", invitedUserIds);
+		
+		return obj;
+	}
 
 	public Long getCreated() {
 		return created;

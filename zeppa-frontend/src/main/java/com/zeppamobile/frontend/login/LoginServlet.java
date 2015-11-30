@@ -9,10 +9,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.Session;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.client.Cookies;
 import com.zeppamobile.common.UniversalConstants;
@@ -61,7 +63,8 @@ public class LoginServlet extends HttpServlet{
 			 */
 			try {
 				resp.getWriter().println("Building Url: ");
-				Cookies.setCookie(UniversalConstants.PARAM_ID_TOKEN,token);
+				HttpSession session = req.getSession(true);
+				session.setAttribute(UniversalConstants.PARAM_ID_TOKEN, token);
 				
 				// Set there response status
 				response = "SC_OK";

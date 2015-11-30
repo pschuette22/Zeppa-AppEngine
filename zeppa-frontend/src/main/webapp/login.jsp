@@ -26,24 +26,12 @@ function onSuccess(googleUser) {
     console.log(googleUser);
     console.log(googleUser.po.access_token);
     var access_token = googleUser.po.id_token;
-    var data = {'token': access_token}
+    var data = {'token': access_token};
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	}).fail(function() {
     	    console.log( "error" );
     	});
-    /*
-    $.ajax({
-        url: '/login',
-        data: {
-            'token': access_token
-        },
-        type: 'POST'
-    }).done(function(){
-        alert("success");
-    }).fail(function(){
-        alert( "error" );
-    });​*/
 }
 
   function onFailure(error) {

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEvent.EventPrivacyType;
@@ -31,20 +33,25 @@ public class EventAdminServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
-		String method = req.getParameter(UniversalConstants.PARAM_METHOD);
-
-		// If method is to insert an event, consume here
-		if (method.equals("insert")) {
+		try {
+			String method = req.getParameter(UniversalConstants.PARAM_METHOD);
 
 			// Fetch the current ID token
 			String idToken = req
 					.getParameter(UniversalConstants.PARAM_ID_TOKEN);
 
-			try {
-				// Get the authroized user from the passed id token
-				ZeppaUser user = ClientEndpointUtility
-						.getAuthorizedZeppaUser(idToken);
+			// Get the authorized user from the passed id token
+			ZeppaUser user = ClientEndpointUtility
+					.getAuthorizedZeppaUser(idToken);
+
+			if (user == null) {
+				// If a valid user cannot be retrieved, throw an
+				// unauthorized
+				throw new UnauthorizedException("Bad or missing client id");
+			}
+
+			// If method is to insert an event, consume here
+			if (method.equals(UniversalConstants.METHOD_INSERT)) {
 
 				String eventName = req
 						.getParameter(UniversalConstants.PARAM_EVENT_NAME);
@@ -68,8 +75,8 @@ public class EventAdminServlet extends HttpServlet {
 				}
 
 				/*
-				 * Initialize a Dummy event starting now, ending in an hour with the passed title
-				 * 
+				 * Initialize a Dummy event starting now, ending in an hour with
+				 * the passed title
 				 */
 				ZeppaEvent event = new ZeppaEvent(System.currentTimeMillis(),
 						System.currentTimeMillis(), user.getZeppaCalendarId(),
@@ -77,18 +84,34 @@ public class EventAdminServlet extends HttpServlet {
 						user.getId(), eventName, "Event made from the server",
 						Boolean.TRUE, System.currentTimeMillis(),
 						(System.currentTimeMillis() + 1000 * 60 * 60),
-						"Some Fun Locatio", null, tagIds, null);
-				
+						"Some Fun Location", null, tagIds, null);
+
 				// Initialize the endpoint and execute the insert
 				ZeppaEventEndpoint endpoint = new ZeppaEventEndpoint();
-				endpoint.insertZeppaEvent(event, idToken);
+				event = endpoint.insertZeppaEvent(event, idToken);
 
-			} catch (UnauthorizedException | NullPointerException e) {
-				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			} catch (Exception e) {
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				// Convert the object to json and return in the writer
+				JSONObject json = event.toJson();
+				resp.getWriter().write(json.toJSONString());
+
+			} else if (method.equals(UniversalConstants.METHOD_LIST)) {
+				/*
+				 * This method is called to return a list of this users events
+				 * 
+				 */
+				
+				
+			} else {
+				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				resp.getWriter().write("No such method");
 			}
 
+		} catch (UnauthorizedException e) {
+			// user is not authorized to make this call
+			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		} catch (Exception e) {
+			// An uncaught exception occured
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 
 	}

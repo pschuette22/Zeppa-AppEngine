@@ -190,9 +190,6 @@ public class ZeppaEventEndpoint {
 			zeppaevent = GoogleCalendarService
 					.insertGCalEvent(user, zeppaevent);
 
-			// Make Relationships to Event and Persist Them
-			ClientEndpointUtility.updateUserEntityRelationships(user);
-
 			// Persist Event
 			zeppaevent = emgr.makePersistent(zeppaevent);
 

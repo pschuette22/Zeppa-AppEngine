@@ -1,5 +1,4 @@
 package com.zeppamobile.smartfollow.weightcalculator;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +16,7 @@ public class search {
 
 		long numResults = getResultsCount("Black","Dog");
 
+
 		System.out.println(numResults);
 	}
 	
@@ -27,6 +27,7 @@ public class search {
 	 * @return number of results
 	 */
 	private static long getResultsCount(final String word1, final String word2) {
+
 		try {
 			//attempt to create the URL
 			String query = word1 + " " + word2;

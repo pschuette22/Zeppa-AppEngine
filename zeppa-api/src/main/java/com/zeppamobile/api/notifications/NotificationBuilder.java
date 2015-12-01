@@ -406,6 +406,12 @@ public class NotificationBuilder {
 		return Arrays.asList(notification);
 	}
 
+	
+	/**
+	 * Get persistence manager to interact with the datastore
+	 * 
+	 * @return persistence manager factory instance
+	 */
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}

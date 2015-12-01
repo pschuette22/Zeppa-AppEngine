@@ -69,7 +69,7 @@ public class NotificationWorkerServlet extends HttpServlet {
 	 * Call made from module when notification was added to task queue
 	 */
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 //		super.doPost(req, resp);
 
@@ -78,6 +78,9 @@ public class NotificationWorkerServlet extends HttpServlet {
 		}
 		
 
+		/*
+		 * Run a synced counter to work on polling in managed threads to deliver notifications as promptly as possible 
+		 */
 		for (int workerNo = counter.value(); workerNo < MAX_WORKER_COUNT; workerNo++) {
 
 			// Get the current queue to check it's statistics
@@ -110,7 +113,7 @@ public class NotificationWorkerServlet extends HttpServlet {
 			}
 		}
 
-//		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setStatus(HttpServletResponse.SC_OK);
 
 	}
 

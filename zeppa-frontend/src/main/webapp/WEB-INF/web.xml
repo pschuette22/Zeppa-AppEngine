@@ -40,6 +40,14 @@
     <servlet-name>compare-tags</servlet-name>
     <url-pattern>/compare-tags</url-pattern>
   </servlet-mapping>
+	<servlet>
+		<servlet-name>create-event</servlet-name>
+		<servlet-class>com.zeppamobile.frontend.createevent.CreateEventServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>create-event</servlet-name>
+    <url-pattern>/create-event</url-pattern>
+  </servlet-mapping>
   <servlet>
     <description></description>
     <display-name>EmailFormServlet</display-name>

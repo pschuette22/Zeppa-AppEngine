@@ -8,6 +8,12 @@
 </head>
 <body>
 
+	<div>
+		<a href="/create-event.jsp">Create an Event</a><br/>
+		<a href="/email-form.jsp">Send Email</a><br/>
+		<a href="/compare-tags.jsp">Compare Tags</a><br/>
+	</div><br/><br/>
+	
 	<h1>Display Events From the Database</h1>
 
 	<form action="/get-events" method="get">

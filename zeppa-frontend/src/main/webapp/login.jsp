@@ -48,6 +48,13 @@ function onSuccess(googleUser) {
 </head>
 <body>
 
+	<div>
+		<a href="/email-form.jsp">Send Email</a><br/>
+		<a href="/get-events.jsp">View Events</a><br/>
+		<a href="/compare-tags.jsp">Compare Tags</a><br/>
+		<a href="/create-event.jsp">Create Events</a><br/>
+	</div><br/><br/>
+	
 	<h1>Login</h1>		
 	<div id="my-signin2" class="g-signin2"></div>
 

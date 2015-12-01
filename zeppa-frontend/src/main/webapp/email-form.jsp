@@ -4,29 +4,57 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Send Emails</title>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+
+function sendEmail() {
+    var toAddress = document.getElementById("txtToAddress").value;
+    var subject = document.getElementById("txtSubject").value;
+    var body = document.getElementById("txtBody").value;
+    
+    console.log("To Address: " + toAddress);
+    console.log("Subject: " + subject);
+    console.log("Body: " + body);
+    
+    var data = {'toAddress': toAddress, 'subject': subject, 'body': body};
+    $.post( "/email-form", data, function( resp ) {
+    	 	console.log("success");
+    	 	console.log(resp);
+    	 	document.getElementById("successDiv").innerHTML = "Your email sent successfully";
+    	}).fail(function() {
+    	    console.log( "error" );
+    	    document.getElementById("errorDiv").innerHTML = "Your email was unable to be sent";
+    	});
+}
+</script>
 </head>
 <body>
 
+	<div>
+		<a href="/create-event.jsp">Create an Event</a><br/>
+		<a href="/get-events.jsp">View Events</a><br/>
+		<a href="/compare-tags.jsp">Compare Tags</a><br/>
+	</div><br/><br/>
 	<h1>Create an email to send</h1>
 
-	<form action="/email-form" method="post">
+	<div id="errorDiv" style="color:red; font-size:18px;"></div>
+	<div id="successDiv" style="color:green; font-size:18px;"></div><br/>
+	
+	<form action="javascript:sendEmail()">
 		<div>
-			<span>To Email</span></br>
-			<input type="text" name="toAddress" />
-		</div></br>
+			<span>To Email</span><br/>
+			<input id="txtToAddress" type="text" name="toAddress" />
+		</div><br/>
 		<div>
-			<span>From Email</span></br>
-			<input type="text" name="fromAddress" />
-		</div>
+			<span>Subject</span><br/>
+			<input id="txtSubject" type="text" name="subject" />
+		</div><br/>
 		<div>
-			<span>Subject</span>
-			<input type="text" name="subject" />
-		</div>
-		<div>
-			<span>Email Body</span>
-			<input type="text" name="body" />
-		</div>
+			<span>Email Body</span><br/>
+			<input id="txtBody" type="text" name="body" />
+		</div><br/>
 		<div>
 			<input type="submit" value="Send Email" />
 		</div>

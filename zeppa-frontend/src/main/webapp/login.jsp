@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="google-signin-client_id" content="9207387879-274c5k1el52drcg0ou6l0josl5klbv8s.apps.googleusercontent.com">
+<meta name="google-signin-client_id" content="587859844920-jiqoh8rn4j8d0941vunu4jfdcl2huv4l.apps.googleusercontent.com">
 <title>Zeppa, Comare Tags</title>
 
 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>

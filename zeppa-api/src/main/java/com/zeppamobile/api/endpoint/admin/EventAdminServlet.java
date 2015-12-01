@@ -133,19 +133,27 @@ public class EventAdminServlet extends HttpServlet {
 				throw new UnauthorizedException("Bad or missing client id");
 			}
 
-			String filter = req.getParameter(UniversalConstants.PARAM_FILTER);
-			String cursor = req.getParameter(UniversalConstants.PARAM_CURSOR);
-			String ordering = req
-					.getParameter(UniversalConstants.PARAM_ORDERING);
-			Integer limit = null;
-			try {
-				limit = Integer.parseInt(req
-						.getParameter(UniversalConstants.PARAM_LIMIT));
-			} catch (NumberFormatException | NullPointerException e) {
-				// Ignore this, limit is not necessary as a parameter
-				// Pass 20 by default
-				limit = Integer.valueOf(20);
-			}
+			// String filter =
+			// req.getParameter(UniversalConstants.PARAM_FILTER);
+			// String cursor =
+			// req.getParameter(UniversalConstants.PARAM_CURSOR);
+			// String ordering = req
+			// .getParameter(UniversalConstants.PARAM_ORDERING);
+			// Integer limit = null;
+			// try {
+			// limit = Integer.parseInt(req
+			// .getParameter(UniversalConstants.PARAM_LIMIT));
+			// } catch (NumberFormatException | NullPointerException e) {
+			// // Ignore this, limit is not necessary as a parameter
+			// // Pass 20 by default
+			// limit = Integer.valueOf(20);
+			// }
+
+			String cursor = null;
+			String filter = "hostId == " + user.getId().longValue()
+					+ " && end > " + System.currentTimeMillis();
+			String ordering = "end asc";
+			Integer limit = Integer.valueOf(25);
 
 			// Initialize the endpoint and execute the insert
 			ZeppaEventEndpoint endpoint = new ZeppaEventEndpoint();
@@ -153,22 +161,27 @@ public class EventAdminServlet extends HttpServlet {
 			CollectionResponse<ZeppaEvent> response = endpoint.listZeppaEvent(
 					filter, cursor, ordering, limit, idToken);
 
-			// Object types for return
-			JSONObject json = new JSONObject();
-			JSONArray arr = new JSONArray();
+			try {
+				// Object types for return
+				JSONObject json = new JSONObject();
+				JSONArray arr = new JSONArray();
 
-			Iterator<ZeppaEvent> i = response.getItems().iterator();
-			while (i.hasNext()) {
-				arr.add(i.next().toJson());
+				Iterator<ZeppaEvent> i = response.getItems().iterator();
+				while (i.hasNext()) {
+					arr.add(i.next().toJson());
+				}
+
+				json.put(UniversalConstants.KEY_OBJECTS, arr.toJSONString());
+				if (Utils.isWebSafe(response.getNextPageToken())) {
+					json.put(UniversalConstants.KEY_CURSOR,
+							response.getNextPageToken());
+				}
+
+				resp.getWriter().write(json.toJSONString());
+
+			} catch (NullPointerException e) {
+				resp.getWriter().write("No Events to Display!");
 			}
-
-			json.put(UniversalConstants.KEY_OBJECTS, arr);
-			if (Utils.isWebSafe(response.getNextPageToken())) {
-				json.put(UniversalConstants.KEY_CURSOR,
-						response.getNextPageToken());
-			}
-
-			resp.getWriter().write(json.toJSONString());
 			resp.setStatus(HttpServletResponse.SC_OK);
 		} catch (UnauthorizedException e) {
 			// user is not authorized to make this call

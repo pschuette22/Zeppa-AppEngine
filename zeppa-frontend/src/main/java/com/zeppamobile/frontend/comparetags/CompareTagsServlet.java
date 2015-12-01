@@ -68,15 +68,14 @@ public class CompareTagsServlet extends HttpServlet {
 						"compare-tags", params);
 				
 //				resp.getWriter().print(url.toString() + "\n");
-
+				
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(url.openStream()));
-				String line;
 
 				// Read from the buffer line by line and write to the response
 				// item
 				StringBuilder message = new StringBuilder();
-				
+				String line;
 				while ((line = reader.readLine()) != null) {
 					resp.getWriter().write(line+"\n");
 //					resp.getWriter().println(line);

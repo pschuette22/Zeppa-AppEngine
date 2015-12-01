@@ -47,7 +47,7 @@ public class EmailFormServlet extends HttpServlet {
 		String subject = request.getParameter("subject");
 		String body = request.getParameter("body");
 		
-		response.getWriter().println(toAddress + "\n}");
+//		response.getWriter().println(toAddress + "\n}");
 		
 		if (Utils.isWebSafe(toAddress) && Utils.isWebSafe(fromAddress) &&
 				Utils.isWebSafe(subject) && Utils.isWebSafe(body)) {
@@ -64,14 +64,14 @@ public class EmailFormServlet extends HttpServlet {
 			Session session = Session.getDefaultInstance(properties, null);
 
 			try {
-				response.getWriter().println("In try Block \n}");
+//				response.getWriter().println("In try Block \n}");
 				
 			    Message msg = new MimeMessage(session);
-			    msg.setFrom(new InternetAddress(toAddress));
-			    msg.addRecipient(Message.RecipientType.TO,
-			     new InternetAddress(fromAddress));
+			    msg.setFrom(new InternetAddress(fromAddress));
+			    msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toAddress));
 			    msg.setSubject(subject);
 			    msg.setText(body);
+			    
 			    Transport.send(msg);
 
 			} catch (AddressException e) {

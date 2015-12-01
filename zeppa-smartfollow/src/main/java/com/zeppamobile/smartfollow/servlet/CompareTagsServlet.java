@@ -37,7 +37,6 @@ public class CompareTagsServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Set as Internal Error at first then change
-		resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
 		String tagText1 = req.getParameter("tagText1");
 		String tagText2 = req.getParameter("tagText2");
@@ -46,7 +45,6 @@ public class CompareTagsServlet extends HttpServlet {
 		 * Make sure that we can calculate use this text
 		 */
 		if (Utils.isWebSafe(tagText1) && Utils.isWebSafe(tagText2)) {
-			resp.setStatus(HttpServletResponse.SC_ACCEPTED);
 			// Initialize the Info Classes for computing
 			EventTagInfo tagInfo1 = new EventTagInfo();
 			tagInfo1.setTagText(tagText1);
@@ -77,10 +75,10 @@ public class CompareTagsServlet extends HttpServlet {
 				report.log("Calculated similarity between "
 						+ agent1.getTagText() + " and " + agent2.getTagText()
 						+ " - " + calculatedSimilarity);
-				resp.setStatus(HttpServletResponse.SC_OK);
 			} else {
 				report.log("Couldn't calculate similarity");
 			}
+			resp.setStatus(HttpServletResponse.SC_OK);
 
 		} else {
 			// didn't supply sufficient arguments

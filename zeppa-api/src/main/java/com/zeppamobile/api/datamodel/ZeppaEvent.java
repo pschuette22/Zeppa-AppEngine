@@ -163,21 +163,21 @@ public class ZeppaEvent {
 		JSONObject obj = new JSONObject();
 		
 		obj.put("key", key);
-		obj.put("created", created);
-		obj.put("updated", updated);
-		obj.put("googleCalendarId", googleCalendarId);
-		obj.put("googleCalendarEventId", googleCalendarEventId);
-		obj.put("iCalUID", iCalUID);
-		obj.put("privacy", privacy.toString());
-		obj.put("hostId", hostId);
-		obj.put("title", title);
-		obj.put("description", description);
-		obj.put("guestsMayInvite", guestsMayInvite);
-		obj.put("start", start);
-		obj.put("end", end);
-		obj.put("displayLocation", displayLocation);
-		obj.put("mapsLocation", mapsLocation);
-		obj.put("invitedUserIds", invitedUserIds);
+		obj.put("created", created==null? Long.valueOf(-1) : created);
+		obj.put("updated", updated==null? Long.valueOf(-1) : updated);
+		obj.put("googleCalendarId", googleCalendarId==null? "googleCalendarId" : googleCalendarId);
+		obj.put("googleCalendarEventId", googleCalendarEventId==null? "googleCalendarEventId" : googleCalendarEventId);
+		obj.put("iCalUID", iCalUID==null? "iCalUID" : iCalUID);
+		obj.put("privacy", privacy==null? "privacy" : privacy.toString());
+		obj.put("hostId", hostId==null? Long.valueOf(-1) : hostId);
+		obj.put("title", title==null? "title" : title);
+		obj.put("description", description==null? "description" : description);
+		obj.put("guestsMayInvite", guestsMayInvite==null? false : guestsMayInvite);
+		obj.put("start", start==null? Long.valueOf(-1) : start);
+		obj.put("end", end==null? Long.valueOf(-1) : end);
+		obj.put("displayLocation", displayLocation==null? "displayLocation" : displayLocation);
+		obj.put("mapsLocation", mapsLocation==null? "mapsLocation" : mapsLocation);
+		obj.put("invitedUserIds", invitedUserIds==null? (new ArrayList<Long>()) : invitedUserIds);
 		
 		return obj;
 	}

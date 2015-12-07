@@ -58,24 +58,7 @@ public class EventAdminServlet extends HttpServlet {
 
 			String eventName = req
 					.getParameter(UniversalConstants.PARAM_EVENT_NAME);
-
-			/*
-			 * public ZeppaEvent(Long created, Long updated, String
-			 * googleCalendarId, String googleCalendarEventId, String iCalUID,
-			 * EventPrivacyType privacy, Long hostId, String title, String
-			 * description, Boolean guestsMayInvite, Long start, Long end,
-			 * String displayLocation, String mapsLocation, List<Long> tagIds,
-			 * List<Long> invitedUserIds) {
-			 */
-
-			List<Long> tagIds = new ArrayList<Long>();
-			for (int i = 0; i < 6; i++) {
-				try {
-					tagIds.add(user.getTags().get(i).getId());
-				} catch (IndexOutOfBoundsException e) {
-					e.printStackTrace();
-				}
-			}
+			
 
 			/*
 			 * Initialize a Dummy event starting now, ending in an hour with the
@@ -87,7 +70,7 @@ public class EventAdminServlet extends HttpServlet {
 					user.getId(), eventName, "Event made from the server",
 					Boolean.TRUE, System.currentTimeMillis(),
 					(System.currentTimeMillis() + 1000 * 60 * 60),
-					"Some Fun Location", null, tagIds, null);
+					"Some Fun Location", "Navigation Location", null, null);
 
 			// Initialize the endpoint and execute the insert
 			ZeppaEventEndpoint endpoint = new ZeppaEventEndpoint();
@@ -100,11 +83,7 @@ public class EventAdminServlet extends HttpServlet {
 		} catch (UnauthorizedException e) {
 			// user is not authorized to make this call
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			e.printStackTrace(resp.getWriter());
-		} catch (Exception e) {
-			// An uncaught exception occured
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace(resp.getWriter());
+			resp.getWriter().print("Auth Error");
 		}
 
 	}
@@ -187,11 +166,7 @@ public class EventAdminServlet extends HttpServlet {
 			// user is not authorized to make this call
 			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			e.printStackTrace(resp.getWriter());
-		} catch (Exception e) {
-			// An uncaught exception occured
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			e.printStackTrace(resp.getWriter());
-		}
+		} 
 
 	}
 

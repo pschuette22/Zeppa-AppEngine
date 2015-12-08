@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.modules.ModulesService;
 import com.google.appengine.api.modules.ModulesServiceFactory;
-import com.google.appengine.api.utils.SystemProperty;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
+import com.zeppamobile.common.utils.ModuleUtils;
 
 public class NotificationBuilderServlet extends HttpServlet {
 
@@ -33,7 +33,7 @@ public class NotificationBuilderServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-//		super.doGet(req, resp);
+		// super.doGet(req, resp);
 		try {
 			doPost(req, resp);
 
@@ -45,7 +45,7 @@ public class NotificationBuilderServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-//		super.doPost(req, resp);
+		// super.doPost(req, resp);
 
 		try {
 			String objectType = req.getParameter("objectType");
@@ -81,53 +81,53 @@ public class NotificationBuilderServlet extends HttpServlet {
 							notification.getRecipientId().longValue());
 				}
 
-				if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) {
+				// if (SystemProperty.environment.value() ==
+				// SystemProperty.Environment.Value.Production) {
 
-					// log.info("Production run with existing tasks in queue");
+				// log.info("Production run with existing tasks in queue");
 
-					// If not running locally
-					// form URL to execute notification worker
-					URL url = new URL("http://"
-							+ modulesApi.getVersionHostname("notifications", "1")
-							+ "/notifications/notificationworker");
+				// If not running locally
+				// form URL to execute notification worker
+				
+				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications", "/notifications/notificationworker", null);
 
-					try {
-						// execute post method
-						HttpURLConnection connection = (HttpURLConnection) url
-								.openConnection();
-						// connection.setDoOutput(true);
-						connection.setRequestMethod("POST");
-						connection.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-						connection.setInstanceFollowRedirects(false);
+				try {
+					// execute post method
+					HttpURLConnection connection = (HttpURLConnection) url
+							.openConnection();
+					// connection.setDoOutput(true);
+					connection.setRequestMethod("POST");
+					connection.setRequestProperty("content-type",
+							"application/x-www-form-urlencoded");
+					connection.setInstanceFollowRedirects(false);
 
-						
-						// OutputStreamWriter writer = new OutputStreamWriter(
-						// connection.getOutputStream());
-						//
-						// String message =
-						// URLEncoder.encode("Send Notifications",
-						// "UTF-8");
-						// writer.write("message=" + message);
-						// writer.close();
-						//
-						// connection.getOutputStream();
+					// OutputStreamWriter writer = new OutputStreamWriter(
+					// connection.getOutputStream());
+					//
+					// String message =
+					// URLEncoder.encode("Send Notifications",
+					// "UTF-8");
+					// writer.write("message=" + message);
+					// writer.close();
+					//
+					// connection.getOutputStream();
 
-						connection.connect();
+					connection.connect();
 
-						if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-							// OK
-							log.warning("Responded OK, notification worker started fine");
-						} else {
-							// Server returned HTTP error code.
-							log.warning("Something went wrong trying to start notification worker");
-						}
-
-					} catch (MalformedURLException e) {
-						// ...
-					} catch (IOException e) {
-						// ...
+					if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+						// OK
+						log.warning("Responded OK, notification worker started fine");
+					} else {
+						// Server returned HTTP error code.
+						log.warning("Something went wrong trying to start notification worker");
 					}
+
+				} catch (MalformedURLException e) {
+					// ...
+				} catch (IOException e) {
+					// ...
 				}
+				// }
 
 			} else {
 				log.info("Tried to create null number of notifications");

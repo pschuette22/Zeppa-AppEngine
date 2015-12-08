@@ -184,7 +184,6 @@ public class ZeppaEventEndpoint {
 		zeppaevent.setHost(user);
 		zeppaevent.setCreated(System.currentTimeMillis());
 		zeppaevent.setUpdated(System.currentTimeMillis());
-		user.addEvent(zeppaevent);
 
 		// Manager to insert zeppa event
 		PersistenceManager emgr = getPersistenceManager();

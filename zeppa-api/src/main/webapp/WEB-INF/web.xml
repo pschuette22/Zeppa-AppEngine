@@ -31,9 +31,15 @@
 
 	<!-- Notification Building Servlet -->
 
-	<!-- <servlet> <servlet-name>NotificationBuilder</servlet-name> <servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet 
-		</servlet-class> </servlet> <servlet-mapping> <servlet-name>NotificationBuilder</servlet-name> 
-		<url-pattern>/notifications/builder/</url-pattern> </servlet-mapping> -->
+	<servlet>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<servlet-class>com.zeppamobile.api.notifications.NotificationBuilderServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<url-pattern>/notifications/builder/</url-pattern>
+	</servlet-mapping>
 
 
 	<!-- Admin Servlet for events -->

@@ -211,9 +211,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			q.declareParameters("Long callingUserIdParam, Long otherUserIdParam");
 			q.setFilter("(creatorId == otherUserIdParam || creatorId == callingUserIdParam) && (subjectId == callingUserIdParam || subjectId == otherUserIdParam)");
 			q.setUnique(true);
-			ZeppaUserToUserRelationship r = (ZeppaUserToUserRelationship) q
-					.execute(relationship.getCreatorId(),
-							relationship.getSubjectId());
+			ZeppaUserToUserRelationship r = (ZeppaUserToUserRelationship) q.execute(relationship.getCreatorId(), relationship.getSubjectId());
 
 			if (r != null) {
 				mgr.close();

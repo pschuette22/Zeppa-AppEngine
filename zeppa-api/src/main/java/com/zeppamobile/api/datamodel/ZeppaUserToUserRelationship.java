@@ -46,8 +46,8 @@ public class ZeppaUserToUserRelationship {
 	@Persistent
 	private ZeppaUser creator;
 	
-	@Persistent
-	private ZeppaUser subject;
+//	@Persistent
+//	private ZeppaUser subject;
 	
 	@Persistent(mappedBy="relationship", defaultFetchGroup="false")
 	@Element(dependent="true")
@@ -137,12 +137,12 @@ public class ZeppaUserToUserRelationship {
 		this.subjectId = subjectId;
 	}
 
-	public ZeppaUser getSubject() {
-		return subject;
-	}
+//	public ZeppaUser getSubject() {
+//		return subject;
+//	}
 
 	public void setSubject(ZeppaUser subject) {
-		this.subject = subject;
+//		this.subject = subject;
 		this.subjectId = subject.getId();
 	}
 

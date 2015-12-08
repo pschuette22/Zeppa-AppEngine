@@ -1,6 +1,10 @@
 package com.zeppamobile.api.notifications;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +22,7 @@ import com.google.gson.Gson;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.DeviceInfo;
 import com.zeppamobile.api.datamodel.DeviceInfo.DeviceType;
+import com.zeppamobile.common.utils.ModuleUtils;
 
 public class NotificationUtility {
 
@@ -107,6 +112,28 @@ public class NotificationUtility {
 				.param("payload", payload)
 				.param("devices", devicesAsJson)
 				.param("deviceType", deviceType));
+		
+		// Make a get request to notification module to start notification polling
+		try {
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications", "/notifications/notificationworker", null);
+			
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(url.openStream()));
+			
+			String line;
+			while((line =reader.readLine())!=null){
+				// read the output
+			}
+			
+			// TODO: verify proper output or 
+			
+		} catch (MalformedURLException e) {
+			// TODO: Log this, indicates the url is not formed properly
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 

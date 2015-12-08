@@ -17,7 +17,7 @@ hs_err_pid*
 # Generated files
 target/
 build/
-datanucleus.log
+**/datanucleus.log
 .DS_STORE
 out
 

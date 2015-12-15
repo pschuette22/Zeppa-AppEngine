@@ -28,6 +28,24 @@ public class InviteGroup {
 	private List<String> suggestedTags = new ArrayList<String>();
 	
 	
+	
+	
+	public List<String> getEmails() {
+		return emails;
+	}
+
+	public void setEmails(List<String> emails) {
+		this.emails = emails;
+	}
+
+	public List<String> getSuggestedTags() {
+		return suggestedTags;
+	}
+
+	public void setSuggestedTags(List<String> suggestedTags) {
+		this.suggestedTags = suggestedTags;
+	}
+
 	/**
 	 * Add a group member to an invite group
 	 * @param user

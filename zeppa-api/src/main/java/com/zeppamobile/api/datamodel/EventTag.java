@@ -3,7 +3,6 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -36,7 +35,7 @@ public class EventTag {
 	private ZeppaUser owner;
 
 	@Persistent
-	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+	private List<Key> follows = new ArrayList<Key>();
 
 	/**
 	 * Create a new EventTag Instance
@@ -128,11 +127,20 @@ public class EventTag {
 	}
 	
 	public boolean addEventTagFollow(EventTagFollow follow){
-		return this.follows.add(follow);
+		return this.follows.add(follow.getKey());
 	}
 	
 	public boolean removeFollow(EventTagFollow follow){
-		return this.follows.remove(follow);
+		return this.follows.remove(follow.getKey());
+	}
+	
+	/**
+	 * get the database keys of follow objects
+	 * 
+	 * @return follows
+	 */
+	public List<Key> getFollowKeys() {
+		return this.follows;
 	}
 
 }

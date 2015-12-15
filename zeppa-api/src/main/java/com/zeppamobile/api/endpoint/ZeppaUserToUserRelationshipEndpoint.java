@@ -247,11 +247,11 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			relationship = mgr.makePersistent(relationship);
 
 			// Update User relationships
-			if (user.addCreatedRealtionship(relationship)) {
+			if (user.addUserRealtionship(relationship)) {
 				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
 			// Update Other User relationships
-			if (otherUser.addSubjectRelationship(relationship)) {
+			if (otherUser.addUserRealtionship(relationship)) {
 				ClientEndpointUtility.updateUserEntityRelationships(otherUser);
 			}
 

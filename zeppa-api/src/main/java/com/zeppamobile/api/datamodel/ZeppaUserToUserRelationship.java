@@ -12,6 +12,7 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaUserToUserRelationship {
@@ -33,21 +34,24 @@ public class ZeppaUserToUserRelationship {
 	@Persistent
 	private Long creatorId;
 	
-
 	@Persistent
 	private Long subjectId;
 
 	@Persistent
 	private UserRelationshipType relationshipType;
 
+	
+	
 	/*
 	 * For maintaining relationships
 	 */
 	@Persistent
+	@Unowned
 	private ZeppaUser creator;
 	
-//	@Persistent
-//	private ZeppaUser subject;
+	@Persistent
+	@Unowned
+	private ZeppaUser subject;
 	
 	@Persistent(mappedBy="relationship", defaultFetchGroup="false")
 	@Element(dependent="true")
@@ -61,13 +65,15 @@ public class ZeppaUserToUserRelationship {
 	 * @param subjectId
 	 * @param relationshipType
 	 */
-	public ZeppaUserToUserRelationship(Long creatorId, Long subjectId,
+	public ZeppaUserToUserRelationship(ZeppaUser creator, ZeppaUser subject,
 			UserRelationshipType relationshipType) {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
-		this.creatorId = creatorId;
-		this.subjectId = subjectId;
+		this.creatorId = creator.getId();
+		this.creator = creator;
+		this.subjectId = subject.getId();
+		this.subject = subject;
 		this.relationshipType = relationshipType;
 	}
 
@@ -77,15 +83,14 @@ public class ZeppaUserToUserRelationship {
 	 * @param json
 	 */
 	public ZeppaUserToUserRelationship(JSONObject json) {
+		
 		this.key = (Key) json.get("key");
 		this.created = (Long) json.get("created");
 		this.updated = (Long) json.get("updated");
 		this.creatorId = (Long) json.get("creatorId");
 		this.subjectId = (Long) json.get("subjectId");
-		
 		this.relationshipType = UserRelationshipType.valueOf((String) json
 				.get("relationshipType"));
-
 	}
 
 	public Long getCreated() {

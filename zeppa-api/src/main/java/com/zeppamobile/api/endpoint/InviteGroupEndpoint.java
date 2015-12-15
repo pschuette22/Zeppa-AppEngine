@@ -7,6 +7,8 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import org.json.simple.JSONValue;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -18,6 +20,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.InviteGroup;
+import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.utils.Utils;
 
@@ -98,8 +101,111 @@ public class InviteGroupEndpoint {
 
 	}
 
+	/**
+	 * Insert an invite group into the data store. Automatically connect people
+	 * who are already on Zeppa
+	 * 
+	 * @param emailList
+	 *            - list of emails for people on Zeppa
+	 * @param tagList
+	 *            - List of recommended tags for users when they create their
+	 *            account
+	 * @return inviteGroup - result of
+	 */
+	public InviteGroup insertInviteGroup(String emailListString,
+			String tagListString, String idToken) {
+
+		/*
+		 * Invite group that was entered into the datastore
+		 */
+		InviteGroup result = null;
+
+		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager umgr = getPersistenceManager();
+
+		try {
+			/*
+			 * Parse out the params
+			 */
+			@SuppressWarnings("unchecked")
+			List<String> emailList = (List<String>) JSONValue
+					.parse(emailListString);
+
+			@SuppressWarnings("unchecked")
+			List<String> tagList = (List<String>) JSONValue
+					.parse(tagListString);
+
+			InviteGroup group = new InviteGroup();
+			group.setEmails(emailList);
+			group.setSuggestedTags(tagList);
+
+			/*
+			 * Get group members that already exist with user persistence
+			 * manager
+			 */
+			Query userQuery = umgr.newQuery(ZeppaUser.class);
+			userQuery.declareImports("java.util.List");
+			userQuery.declareParameters("List emails");
+			userQuery.setFilter(":emails.contains(authEmail)");
+			@SuppressWarnings("unchecked")
+			List<ZeppaUser> userList = (List<ZeppaUser>) userQuery
+					.execute(emailList);
+
+			/*
+			 * Add all the existing user objects to this invite group Determine
+			 * if any connections should be made at this time
+			 */
+			if (userList != null && !userList.isEmpty()) {
+				for (ZeppaUser u : userList) {
+					group.addGroupMember(u);
+				}
+
+				/*
+				 * If there was more than one group member, make sure they are
+				 * connected
+				 */
+				// Should this be done? If they have not already connected is there a reason for that?
+//				if (userList.size() > 1) {
+//					for (int i = 0; i < userList.size() - 1; i++) {
+//						for (int j = i; j < userList.size(); j++) {
+//							ZeppaUser u1 = userList.get(i);
+//							ZeppaUser u2 = userList.get(j);
+//
+//							/*
+//							 * Instantiate the relationship object type
+//							 */
+//							ZeppaUserToUserRelationship r = new ZeppaUserToUserRelationship(
+//									u1,
+//									u2,
+//									ZeppaUserToUserRelationship.UserRelationshipType.MINGLING);
+//							// Insert relationship. Insert method will make sure there isn't already a relationship
+//							ZeppaUserToUserRelationshipEndpoint e = new ZeppaUserToUserRelationshipEndpoint();
+//							e.insertZeppaUserToUserRelationship(r,idToken);
+//						}
+//					}
+//				}
+				
+				
+			}
+
+			// Insert the invite group
+			result = mgr.makePersistent(group);
+			
+			//TODO: email the people who were just invited to use Zeppa
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			mgr.close();
+			umgr.close();
+		}
+
+		return result;
+	}
+
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
-	
+
 }

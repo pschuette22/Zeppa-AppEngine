@@ -182,7 +182,7 @@ public class ZeppaUser {
 	}
 	
 	@Persistent
-	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+	private List<Key> follows = new ArrayList<Key>();
 
 	/**
 	 * Add a tag to the list of tags associated with this profile
@@ -191,7 +191,7 @@ public class ZeppaUser {
 	 * @return true if tag was successfully added
 	 */
 	public boolean addTagFollow(EventTagFollow follow) {
-		return this.follows.add(follow);
+		return this.follows.add(follow.getKey());
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class ZeppaUser {
 	 * @return
 	 */
 	public boolean removeTagFollow(EventTagFollow follow) {
-		return this.follows.remove(follow);
+		return this.follows.remove(follow.getKey());
 	}
 	
 
@@ -238,7 +238,7 @@ public class ZeppaUser {
 	 * List of relationships to events this user may join
 	 */
 	@Persistent(defaultFetchGroup = "false")
-	private List<ZeppaEventToUserRelationship> eventRelationships = new ArrayList<ZeppaEventToUserRelationship>();
+	private List<Key> eventRelationships = new ArrayList<Key>();
 
 	/**
 	 * Add an Event Relationship to list of relationships for this user
@@ -248,7 +248,7 @@ public class ZeppaUser {
 	 */
 	public boolean addEventRelationship(
 			ZeppaEventToUserRelationship relationship) {
-		return this.eventRelationships.add(relationship);
+		return this.eventRelationships.add(relationship.getKey());
 	}
 
 	/**
@@ -259,90 +259,61 @@ public class ZeppaUser {
 	 */
 	public boolean removeEventRelationship(
 			ZeppaEventToUserRelationship relationship) {
-		return this.eventRelationships.remove(relationship);
+		return this.eventRelationships.remove(relationship.getKey());
 	}
 
 	/*
 	 * These are user relationships created by this user.
 	 */
 	@Persistent(defaultFetchGroup = "false")
-	private List<ZeppaUserToUserRelationship> createdRelationships = new ArrayList<ZeppaUserToUserRelationship>();
+	private List<Key> userRelationships = new ArrayList<Key>();
 
 	/**
-	 * Add a User relationship to list of relationships created by this user
+	 * Add a User relationship
 	 * 
 	 * @param relationship
 	 * @return true if relationship was added successfully
 	 */
-	public boolean addCreatedRealtionship(
+	public boolean addUserRealtionship(
 			ZeppaUserToUserRelationship relationship) {
-		return createdRelationships.add(relationship);
+		return userRelationships.add(relationship.getKey());
 	}
 
 	/**
-	 * Remove a User relationship that was created by this user
+	 * Remove a User relationship
 	 * 
 	 * @param relationship
-	 * @return true if Event Relationship was successfully removed
-	 */
-	public boolean removeCreatedRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		return createdRelationships.remove(relationship);
-	}
-
-	/*
-	 * These are user relationships where this user is the subject
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<ZeppaUserToUserRelationship> subjectRelationships = new ArrayList<ZeppaUserToUserRelationship>();
-
-	/**
-	 * Add a User Relationship this user is the subject of
-	 * 
-	 * @param relationship
-	 * @return true if relationship was removed
-	 */
-	public boolean addSubjectRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		return subjectRelationships.add(relationship);
-	}
-
-	/**
-	 * Remove a User relationship that this user is the subject of
-	 * 
-	 * @param relationship
-	 * @return
-	 */
-	public boolean removeSubjectRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		return subjectRelationships.remove(relationship);
-	}
-
-	/**
-	 * Remove a User relationship associated with this user
-	 * 
-	 * @param relationship
-	 * @return true if relationship was removed
+	 * @return true if Relationship was successfully removed
 	 */
 	public boolean removeUserRelationship(
 			ZeppaUserToUserRelationship relationship) {
-		return (removeCreatedRelationship(relationship) || removeSubjectRelationship(relationship));
+		return userRelationships.remove(relationship.getKey());
+	}
+	
+	/**
+	 * get a list of the user relationships
+	 * 
+	 * @return relationships list
+	 */
+	public List<Key> getUserRelationships(){
+		return userRelationships;
 	}
 
 	/*
-	 * Hold a list of notifications sent to this
+	 * Hold a list of notifications sent to this user
 	 */
 	@Persistent(defaultFetchGroup = "false")
-	private List<ZeppaNotification> notifications = new ArrayList<ZeppaNotification>();
+	private List<Key> notifications = new ArrayList<Key>();
 
 	/**
 	 * Add a notification that was delivered to this user
 	 * 
 	 * @param notification
-	 * @return true if the notification was added successfully
+	 * @return true if the notification was
+	 *  added successfully
 	 */
 	public boolean addNotification(ZeppaNotification notification) {
-		return notifications.add(notification);
+		return notifications.add(notification.getKey());
 	}
 
 	/**
@@ -352,14 +323,14 @@ public class ZeppaUser {
 	 * @return true if notification was removed successfully
 	 */
 	public boolean removeNotification(ZeppaNotification notification) {
-		return notifications.remove(notification);
+		return notifications.remove(notification.getKey());
 	}
 
 	/*
 	 * Hold a list of notifications this user sent
 	 */
 	@Persistent(defaultFetchGroup = "false")
-	private List<ZeppaNotification> sentNotifications = new ArrayList<ZeppaNotification>();
+	private List<Key> sentNotifications = new ArrayList<Key>();
 
 	/**
 	 * Add a notification this user sent
@@ -368,7 +339,7 @@ public class ZeppaUser {
 	 * @return true notification was added successfully
 	 */
 	public boolean addSentNotification(ZeppaNotification notification) {
-		return sentNotifications.add(notification);
+		return sentNotifications.add(notification.getKey());
 	}
 
 	/**
@@ -378,14 +349,14 @@ public class ZeppaUser {
 	 * @return true if notification was removed successfully
 	 */
 	public boolean removeSentNotification(ZeppaNotification notification) {
-		return sentNotifications.remove(notification);
+		return sentNotifications.remove(notification.getKey());
 	}
 
 	/*
 	 * Hold a list of comments this user has made
 	 */
 	@Persistent(defaultFetchGroup = "false")
-	private List<EventComment> comments = new ArrayList<EventComment>();
+	private List<Key> comments = new ArrayList<Key>();
 
 	/**
 	 * Add a reference to a comment this user made on an event
@@ -394,7 +365,7 @@ public class ZeppaUser {
 	 * @return true if comment was added successfully
 	 */
 	public boolean addComment(EventComment comment) {
-		return comments.add(comment);
+		return comments.add(comment.getKey());
 	}
 
 	/**
@@ -404,7 +375,7 @@ public class ZeppaUser {
 	 * @return
 	 */
 	public boolean removeComment(EventComment comment) {
-		return comments.remove(comment);
+		return comments.remove(comment.getKey());
 	}
 	
 	

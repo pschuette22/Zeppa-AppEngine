@@ -28,8 +28,6 @@ public class InviteGroup {
 	private List<String> suggestedTags = new ArrayList<String>();
 	
 	
-	
-	
 	public List<String> getEmails() {
 		return emails;
 	}

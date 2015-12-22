@@ -31,8 +31,30 @@ public class ZeppaUser {
 	@Persistent
 	private String zeppaCalendarId;
 
+	/**
+	 * Google account email or unique, authenticated email
+	 */
 	@Persistent
 	private String authEmail;
+
+	/**
+	 * 10 digit phone number of user with all non-digit characters and spaces
+	 * removed (19876543210)
+	 */
+	@Persistent
+	private String phoneNumber;
+
+	/**
+	 * Last known longitude of the user
+	 */
+	@Persistent
+	private Long longitude;
+
+	/**
+	 * Last known latitude of the user
+	 */
+	@Persistent
+	private Long latitude;
 
 	/*
 	 * These are tags to be persisted as soon as the
@@ -40,15 +62,15 @@ public class ZeppaUser {
 	@NotPersistent
 	private List<String> initialTags;
 
-//	public ZeppaUser(ZeppaUserInfo userInfo, String zeppaCalendarId,
-//			List<String> initialTags) {
-//
-//		this.created = System.currentTimeMillis();
-//		this.updated = System.currentTimeMillis();
-//		this.userInfo = userInfo;
-//		this.zeppaCalendarId = zeppaCalendarId;
-//		this.initialTags = initialTags;
-//	}
+	// public ZeppaUser(ZeppaUserInfo userInfo, String zeppaCalendarId,
+	// List<String> initialTags) {
+	//
+	// this.created = System.currentTimeMillis();
+	// this.updated = System.currentTimeMillis();
+	// this.userInfo = userInfo;
+	// this.zeppaCalendarId = zeppaCalendarId;
+	// this.initialTags = initialTags;
+	// }
 
 	/*
 	 * -------------- Setters ----------------
@@ -100,6 +122,30 @@ public class ZeppaUser {
 
 	public void setZeppaCalendarId(String zeppaCalendarId) {
 		this.zeppaCalendarId = zeppaCalendarId;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public Long getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Long longitude) {
+		this.longitude = longitude;
+	}
+
+	public Long getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Long latitude) {
+		this.latitude = latitude;
 	}
 
 	public List<String> getInitialTags() {
@@ -172,15 +218,16 @@ public class ZeppaUser {
 	public boolean removeTag(EventTag tag) {
 		return this.tags.remove(tag);
 	}
-	
+
 	/**
 	 * Get the event tags for this user
+	 * 
 	 * @return tags
 	 */
 	public List<EventTag> getTags() {
 		return tags;
 	}
-	
+
 	@Persistent
 	private List<Key> follows = new ArrayList<Key>();
 
@@ -203,7 +250,6 @@ public class ZeppaUser {
 	public boolean removeTagFollow(EventTagFollow follow) {
 		return this.follows.remove(follow.getKey());
 	}
-	
 
 	/*
 	 * 
@@ -274,8 +320,7 @@ public class ZeppaUser {
 	 * @param relationship
 	 * @return true if relationship was added successfully
 	 */
-	public boolean addUserRealtionship(
-			ZeppaUserToUserRelationship relationship) {
+	public boolean addUserRealtionship(ZeppaUserToUserRelationship relationship) {
 		return userRelationships.add(relationship.getKey());
 	}
 
@@ -289,13 +334,13 @@ public class ZeppaUser {
 			ZeppaUserToUserRelationship relationship) {
 		return userRelationships.remove(relationship.getKey());
 	}
-	
+
 	/**
 	 * get a list of the user relationships
 	 * 
 	 * @return relationships list
 	 */
-	public List<Key> getUserRelationships(){
+	public List<Key> getUserRelationships() {
 		return userRelationships;
 	}
 
@@ -309,8 +354,7 @@ public class ZeppaUser {
 	 * Add a notification that was delivered to this user
 	 * 
 	 * @param notification
-	 * @return true if the notification was
-	 *  added successfully
+	 * @return true if the notification was added successfully
 	 */
 	public boolean addNotification(ZeppaNotification notification) {
 		return notifications.add(notification.getKey());
@@ -377,7 +421,5 @@ public class ZeppaUser {
 	public boolean removeComment(EventComment comment) {
 		return comments.remove(comment.getKey());
 	}
-	
-	
-	
+
 }

@@ -170,4 +170,32 @@ public class EventTagFollow {
 		this.tagOwnerId = tagOwnerId;
 	}
 
+	public EventTag getTag() {
+		return tag;
+	}
+
+	public void setTag(EventTag tag) {
+		this.tag = tag;
+		this.tagId = tag.getId();
+	}
+
+	public ZeppaUser getFollower() {
+		return follower;
+	}
+
+	public void setFollower(ZeppaUser follower) {
+		this.follower = follower;
+		this.followerId = follower.getId();
+	}
+
+	public ZeppaUserToUserRelationship getRelationship() {
+		return relationship;
+	}
+
+	public void setRelationship(ZeppaUserToUserRelationship relationship) {
+		this.relationship = relationship;
+	}
+	
+	
+
 }

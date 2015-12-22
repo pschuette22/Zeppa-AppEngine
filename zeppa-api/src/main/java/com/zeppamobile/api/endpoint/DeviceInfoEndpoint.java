@@ -95,6 +95,10 @@ public class DeviceInfoEndpoint {
 				}
 			}
 			execute.remove(badEggs);
+			// If query only returned bad eggs, someone was being an ass hat
+			if(execute.isEmpty() && !badEggs.isEmpty()){
+				throw new UnauthorizedException("Quit being an ass hat");
+			}
 
 		} finally {
 			mgr.close();

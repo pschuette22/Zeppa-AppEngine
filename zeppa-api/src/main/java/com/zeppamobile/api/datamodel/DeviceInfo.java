@@ -42,6 +42,18 @@ public class DeviceInfo  {
 	@Persistent
 	private Long lastLogin;
 	
+	/**
+	 * Phone number for this device (if added)
+	 */
+	@Persistent
+	private String phoneNumber;
+	
+	/**
+	 * True if this number was verified
+	 */
+	@Persistent
+	private Boolean isVerified;
+	
 
 	/*
 	 * These will only be change when a new version of Zeppa is installed

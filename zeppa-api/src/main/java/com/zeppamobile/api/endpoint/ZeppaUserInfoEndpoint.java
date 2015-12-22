@@ -117,9 +117,7 @@ public class ZeppaUserInfoEndpoint {
 				obj.getId();
 				obj.getGivenName();
 				obj.getFamilyName();
-				obj.getGoogleAccountEmail();
 				obj.getImageUrl();
-				obj.getPrimaryUnformattedNumber();
 			}
 
 		} finally {
@@ -166,8 +164,6 @@ public class ZeppaUserInfoEndpoint {
 			result.getCreated();
 			result.getFamilyName();
 			result.getGivenName();
-			result.getGoogleAccountEmail();
-			result.getPrimaryUnformattedNumber();
 			result.getUpdated();
 			result.getImageUrl();
 

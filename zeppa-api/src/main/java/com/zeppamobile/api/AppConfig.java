@@ -1,5 +1,12 @@
 package com.zeppamobile.api;
 
+/**
+ * 
+ * @author Pete Schuette
+ * 
+ * Static file to set runtime configuration
+ *
+ */
 public class AppConfig {
 
 	
@@ -9,6 +16,20 @@ public class AppConfig {
 	private AppConfig(){}
 	
 	
+	private static boolean isTest = false;
+	
+	public static void setTestConfig(){
+		isTest = true;
+	}
+	
+	/**
+	 * Determine if currently running a junit test
+	 * 
+	 * @return true if this is a test
+	 */
+	public static boolean isTest(){
+		return isTest;
+	}
 	
 	
 }

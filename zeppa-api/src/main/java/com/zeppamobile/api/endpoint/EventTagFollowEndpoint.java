@@ -201,13 +201,20 @@ public class EventTagFollowEndpoint {
 
 		try {
 
-			// Store and update
-			eventtagfollow = mgr.makePersistent(eventtagfollow);
-
 			/*
 			 * Get tag and update relationships
 			 */
 			EventTag tag = getTagById(eventtagfollow.getTagId());
+			/*
+			 * Set the relationships 
+			 */
+			eventtagfollow.setTag(tag);
+			eventtagfollow.setRelationship(relationship);
+			eventtagfollow.setFollower(user);
+			
+			// Store and update
+			eventtagfollow = mgr.makePersistent(eventtagfollow);
+
 			if (tag.addEventTagFollow(eventtagfollow)) {
 				updateTagRelationships(tag);
 			}
@@ -332,8 +339,17 @@ public class EventTagFollowEndpoint {
 			 * Get tag and update relationships
 			 */
 			EventTag tag = getTagById(eventtagfollow.getTagId());
+			// remove mapping to tag
 			if (tag.removeFollow(eventtagfollow)) {
 				updateTagRelationships(tag);
+			}
+			
+			if(eventtagfollow.getRelationship().removeTagFollow(eventtagfollow)){
+				// Removed mapping to user relationship
+			}
+			
+			if(eventtagfollow.getFollower().removeTagFollow(eventtagfollow)){
+				// Removed mapping to follower
 			}
 
 			// remove the tag
@@ -381,7 +397,7 @@ public class EventTagFollowEndpoint {
 			mgr.close();
 		}
 	}
-	
+
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}

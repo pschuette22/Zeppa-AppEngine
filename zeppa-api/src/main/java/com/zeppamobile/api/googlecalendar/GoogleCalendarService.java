@@ -37,7 +37,6 @@ public class GoogleCalendarService {
 	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser)
 			throws IOException {
 
-
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();
 
@@ -74,7 +73,6 @@ public class GoogleCalendarService {
 	public static ZeppaEvent insertGCalEvent(ZeppaUser zeppaUser,
 			ZeppaEvent event) throws IOException {
 
-
 		try {
 			com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 					.makeCalendarServiceInstance();
@@ -87,7 +85,6 @@ public class GoogleCalendarService {
 			calEvent.setLocation(event.getMapsLocation() != null ? event
 					.getMapsLocation() : event.getDisplayLocation());
 			calEvent.setOrganizer(GoogleCalendarUtils.getServiceAsOrganizer());
-
 
 			// Event Times
 			EventDateTime start = new EventDateTime();
@@ -103,7 +100,6 @@ public class GoogleCalendarService {
 			calEvent.setGuestsCanModify(false);
 			calEvent.setLocked(false);
 			calEvent.setGuestsCanSeeOtherGuests(true);
-
 
 			// Insert and update object
 			calEvent = service.events()
@@ -134,7 +130,6 @@ public class GoogleCalendarService {
 	public static void joinEvent(ZeppaEvent zeppaEvent, ZeppaUser zeppaUser)
 			throws IOException {
 
-
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
 				.makeCalendarServiceInstance();
 
@@ -153,8 +148,7 @@ public class GoogleCalendarService {
 
 			while (iterator.hasNext()) {
 				EventAttendee temp = iterator.next();
-				if (temp.getEmail().equals(
-						zeppaUser.getUserInfo().getGoogleAccountEmail())) {
+				if (temp.getEmail().equals(zeppaUser.getAuthEmail())) {
 					attendee = temp;
 					break;
 				}
@@ -202,7 +196,7 @@ public class GoogleCalendarService {
 		while (iterator.hasNext()) {
 			EventAttendee attendee = iterator.next();
 			if (attendee.getEmail().equals(
-					zeppaUser.getUserInfo().getGoogleAccountEmail())) {
+					zeppaUser.getAuthEmail())) {
 				success = calEvent.getAttendees().remove(attendee);
 				break;
 			}
@@ -220,7 +214,9 @@ public class GoogleCalendarService {
 
 	/**
 	 * Delete the GoogleCalendar for this user
-	 * @param zeppaUser - ZeppaUser who's calendar should be deleted
+	 * 
+	 * @param zeppaUser
+	 *            - ZeppaUser who's calendar should be deleted
 	 * @throws IOException
 	 */
 	public static void deleteCalendar(ZeppaUser zeppaUser) throws IOException {
@@ -243,7 +239,10 @@ public class GoogleCalendarService {
 
 	/**
 	 * Remove Google Calendar event corresponding to ZeppaEvent
-	 * @param event - ZeppaEvent corresponding to Google Calendar Event to be removed
+	 * 
+	 * @param event
+	 *            - ZeppaEvent corresponding to Google Calendar Event to be
+	 *            removed
 	 * @throws IOException
 	 */
 	public static void deleteCalendarEvent(ZeppaEvent event) throws IOException {

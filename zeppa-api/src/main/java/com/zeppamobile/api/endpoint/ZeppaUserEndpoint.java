@@ -58,6 +58,7 @@ public class ZeppaUserEndpoint {
 
 		// If matching user is found, return found user object
 		if (user != null) {
+			System.out.println("User already exists");
 			return user;
 		}
 		LOG.log(Level.WARNING, "User doesn't exist yet");
@@ -89,9 +90,6 @@ public class ZeppaUserEndpoint {
 		insertInfo.setGivenName(userInfo.getGivenName());
 		insertInfo.setFamilyName(userInfo.getFamilyName());
 		insertInfo.setImageUrl(userInfo.getImageUrl());
-		insertInfo.setPrimaryUnformattedNumber(userInfo
-				.getPrimaryUnformattedNumber());
-		insertInfo.setGoogleAccountEmail(payload.getEmail());
 
 		/*
 		 * Create User Data Object
@@ -214,8 +212,6 @@ public class ZeppaUserEndpoint {
 			currentInfo.setGivenName(updatedInfo.getGivenName());
 			currentInfo.setFamilyName(updatedInfo.getFamilyName());
 			currentInfo.setImageUrl(updatedInfo.getImageUrl());
-			currentInfo.setPrimaryUnformattedNumber(updatedInfo
-					.getPrimaryUnformattedNumber());
 			currentInfo.setUpdated(System.currentTimeMillis());
 
 			user.setUserInfo(currentInfo);
@@ -295,8 +291,6 @@ public class ZeppaUserEndpoint {
 			user.getUserInfo();
 			user.getUserInfo().getGivenName();
 			user.getUserInfo().getFamilyName();
-			user.getUserInfo().getGoogleAccountEmail();
-			user.getUserInfo().getPrimaryUnformattedNumber();
 			user.getUserInfo().getImageUrl();
 		}
 

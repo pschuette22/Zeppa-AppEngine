@@ -20,7 +20,9 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
@@ -97,8 +99,8 @@ public class ZeppaEventEndpoint {
 			}
 
 			/*
-			 * Initialize object and remove bad eggs Only event owners may query
-			 * for lists of events
+			 * Initialize object and remove bad eggs. 
+			 * Only event owners may query for lists of events
 			 */
 			List<ZeppaEvent> badEggs = new ArrayList<ZeppaEvent>();
 			for (ZeppaEvent event : execute) {
@@ -107,6 +109,13 @@ public class ZeppaEventEndpoint {
 				}
 			}
 			execute.removeAll(badEggs);
+			
+			/*
+			 * If user only queried for events they cannot see
+			 */
+			if(execute.isEmpty() && !badEggs.isEmpty()){
+				// TODO: This user was being a dickhead. let them know
+			}
 
 		} finally {
 			mgr.close();
@@ -189,15 +198,24 @@ public class ZeppaEventEndpoint {
 		PersistenceManager emgr = getPersistenceManager();
 
 		try {
+			/*
+			 * Add this event to google calendar
+			 */
 			zeppaevent = GoogleCalendarService
 					.insertGCalEvent(user, zeppaevent);
 
 			// Persist Event
 			zeppaevent = emgr.makePersistent(zeppaevent);
 
+			/*
+			 * Establish mapped relationship to the host
+			 */
+			if(user.addEvent(zeppaevent)) {
+				// Mapped to the host
+			}
+			
 		} finally {
 
-			// If
 			emgr.close();
 
 		}
@@ -286,6 +304,19 @@ public class ZeppaEventEndpoint {
 
 			// Remove event from calendar
 			GoogleCalendarService.deleteCalendarEvent(zeppaevent);
+			
+			// Remove attendee mapping to event relationship
+			for(ZeppaEventToUserRelationship relationship: zeppaevent.getAttendeeRelationships()){
+				ZeppaUser attendee = relationship.getAttendee();
+				attendee.removeEventRelationship(relationship);
+			}
+			
+			// Remove commenter mapping to event comments
+			for(EventComment comment: zeppaevent.getComments()){
+				ZeppaUser commenter = comment.getCommenter();
+				commenter.removeComment(comment);
+			}
+			
 			// Remove event from datastore
 			mgr.deletePersistent(zeppaevent);
 

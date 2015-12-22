@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -13,11 +14,13 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
@@ -207,12 +210,28 @@ public class EventTagEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
+		PersistenceManager rmgr = getPersistenceManager();
 		try {
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
 
 			// Make sure user is allowed to access this item
 			if (user.getId().longValue() == eventtag.getOwnerId().longValue()) {
 				TaskUtility.scheduleDeleteTagFollows(tagId);
+				Transaction txn = rmgr.currentTransaction();
+
+				txn.begin();
+
+				List<Key> followKeys = eventtag.getFollowKeys();
+
+				/*
+				 * Iterate through the keys and kill relationships
+				 */
+				for (Key k : followKeys) {
+					EventTagFollow f = rmgr.getObjectById(EventTagFollow.class, k);
+					
+					
+					
+				}
 
 				mgr.deletePersistent(eventtag);
 			} else {

@@ -1,7 +1,6 @@
 package com.zeppamobile.api.endpoint.admin;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

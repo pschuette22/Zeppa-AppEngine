@@ -33,7 +33,7 @@ public class PhotoInfoEndpoint {
 	 *         persisted and a cursor to the next page.
 	 * @throws OAuthRequestException
 	 */
-	@SuppressWarnings({ "unchecked", "unused" })
+	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "listPhotoInfo")
 	public CollectionResponse<PhotoInfo> listPhotoInfo(
 			@Nullable @Named("cursor") String cursorString,
@@ -200,6 +200,10 @@ public class PhotoInfoEndpoint {
 		}
 	}
 	
+	/**
+	 * Get the persistence manager factory to interact with the datastore
+	 * @return
+	 */
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}

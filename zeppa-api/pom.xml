@@ -79,23 +79,31 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-endpoints</artifactId>
 			<version>${appengine.target.version}</version>
-			<!-- <scope>compile</scope> -->
+			<scope>compile</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.google.appengine</groupId> -->
-<!-- 			<artifactId>appengine-testing</artifactId> -->
-<!-- 			<version>${appengine.target.version}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.google.appengine</groupId> -->
-<!-- 			<artifactId>appengine-api-stubs</artifactId> -->
-<!-- 			<version>${appengine.target.version}</version> -->
-<!-- 		</dependency> -->
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-testing</artifactId>
+			<version>${appengine.target.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-stubs</artifactId>
+			<version>${appengine.target.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
-			<version>1.9.28</version>
+			<version>${appengine.target.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-tools-sdk</artifactId>
+			<version>${appengine.target.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -147,8 +155,8 @@
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
 				<configuration>
-					<!-- <enableJarClasses>false</enableJarClasses> -->
-					<enableJarClasses>true</enableJarClasses>
+					<enableJarClasses>false</enableJarClasses>
+					<!-- <enableJarClasses>true</enableJarClasses> -->
 				</configuration>
 				<!-- automatically call endpoints_get_discovery_doc goal as part of a 
 					Maven build by configuring the App Engine Maven plugin -->

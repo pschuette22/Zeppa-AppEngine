@@ -50,7 +50,7 @@ public class InviteGroupEndpoint {
 		GoogleIdToken.Payload tokenPayload = ClientEndpointUtility
 				.checkToken(tokenString);
 		if (tokenPayload == null || !Utils.isWebSafe(tokenPayload.getEmail())) {
-			throw new UnauthorizedException("unauthorized call");
+			throw new UnauthorizedException("Unrecognized Email");
 		}
 
 		PersistenceManager mgr = null;
@@ -112,8 +112,8 @@ public class InviteGroupEndpoint {
 	 *            account
 	 * @return inviteGroup - result of
 	 */
-	public InviteGroup insertInviteGroup(String emailListString,
-			String tagListString, String idToken) {
+	public InviteGroup insertInviteGroup(@Named("emailListJson") String emailListString,
+			@Named("tagListJson") String tagListString, @Named("idToken") String idToken) {
 
 		/*
 		 * Invite group that was entered into the datastore

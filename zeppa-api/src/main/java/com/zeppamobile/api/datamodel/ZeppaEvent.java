@@ -62,11 +62,29 @@ public class ZeppaEvent {
 	@Persistent
 	private Long end;
 
+	/*
+	 * ===== Information relevant to location =====
+	 */
 	@Persistent
 	private String displayLocation;
 
 	@Persistent
 	private String mapsLocation;
+
+	/**
+	 * Boolean operator indicating that the venue lat/long was found
+	 */
+	@Persistent
+	private Boolean isVenueFound;
+
+	@Persistent
+	private Long latitude;
+
+	@Persistent
+	private Long longitude;
+	/*
+	 * ============================================
+	 */
 
 	@Persistent(defaultFetchGroup = "true")
 	private List<Long> tagIds = new ArrayList<Long>();
@@ -89,8 +107,6 @@ public class ZeppaEvent {
 	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
 	@Element(dependent = "true")
 	private List<EventComment> comments = new ArrayList<EventComment>();
-	
-	
 
 	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
 			String googleCalendarEventId, String iCalUID,
@@ -151,34 +167,43 @@ public class ZeppaEvent {
 		this.invitedUserIds = (ArrayList<Long>) json.get("invitedUserIds");
 
 	}
-	
-	
+
 	/**
 	 * Convert this object to a json object
 	 * 
 	 * @return jsonObject
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject toJson(){
+	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
-		
+
 		obj.put("key", key);
-		obj.put("created", created==null? Long.valueOf(-1) : created);
-		obj.put("updated", updated==null? Long.valueOf(-1) : updated);
-		obj.put("googleCalendarId", googleCalendarId==null? "googleCalendarId" : googleCalendarId);
-		obj.put("googleCalendarEventId", googleCalendarEventId==null? "googleCalendarEventId" : googleCalendarEventId);
-		obj.put("iCalUID", iCalUID==null? "iCalUID" : iCalUID);
-		obj.put("privacy", privacy==null? "privacy" : privacy.toString());
-		obj.put("hostId", hostId==null? Long.valueOf(-1) : hostId);
-		obj.put("title", title==null? "title" : title);
-		obj.put("description", description==null? "description" : description);
-		obj.put("guestsMayInvite", guestsMayInvite==null? false : guestsMayInvite);
-		obj.put("start", start==null? Long.valueOf(-1) : start);
-		obj.put("end", end==null? Long.valueOf(-1) : end);
-		obj.put("displayLocation", displayLocation==null? "displayLocation" : displayLocation);
-		obj.put("mapsLocation", mapsLocation==null? "mapsLocation" : mapsLocation);
-		obj.put("invitedUserIds", invitedUserIds==null? (new ArrayList<Long>()) : invitedUserIds);
-		
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+		obj.put("googleCalendarId",
+				googleCalendarId == null ? "googleCalendarId"
+						: googleCalendarId);
+		obj.put("googleCalendarEventId",
+				googleCalendarEventId == null ? "googleCalendarEventId"
+						: googleCalendarEventId);
+		obj.put("iCalUID", iCalUID == null ? "iCalUID" : iCalUID);
+		obj.put("privacy", privacy == null ? "privacy" : privacy.toString());
+		obj.put("hostId", hostId == null ? Long.valueOf(-1) : hostId);
+		obj.put("title", title == null ? "title" : title);
+		obj.put("description", description == null ? "description"
+				: description);
+		obj.put("guestsMayInvite", guestsMayInvite == null ? false
+				: guestsMayInvite);
+		obj.put("start", start == null ? Long.valueOf(-1) : start);
+		obj.put("end", end == null ? Long.valueOf(-1) : end);
+		obj.put("displayLocation", displayLocation == null ? "displayLocation"
+				: displayLocation);
+		obj.put("mapsLocation", mapsLocation == null ? "mapsLocation"
+				: mapsLocation);
+		obj.put("invitedUserIds",
+				invitedUserIds == null ? (new ArrayList<Long>())
+						: invitedUserIds);
+
 		return obj;
 	}
 
@@ -361,11 +386,11 @@ public class ZeppaEvent {
 	public boolean isAuthorized(long userId) {
 
 		boolean isAuthorized = false;
-		if(getHostId().longValue() == userId) {
+		if (getHostId().longValue() == userId) {
 			isAuthorized = true;
 		} else {
-			for(ZeppaEventToUserRelationship relationship: attendeeRelationships){
-				if(relationship.getUserId().longValue() == userId){
+			for (ZeppaEventToUserRelationship relationship : attendeeRelationships) {
+				if (relationship.getUserId().longValue() == userId) {
 					isAuthorized = true;
 					break;
 				}

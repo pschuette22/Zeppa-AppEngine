@@ -61,6 +61,38 @@ public class ZeppaUser {
 	 */
 	@NotPersistent
 	private List<String> initialTags;
+	
+	/**
+	 * Blank Constructor if you want to initialize everything
+	 */
+	public ZeppaUser() {
+		// Super expensive op
+	}
+	
+	/**
+	 * Construct a Zeppa User object with populated fields
+	 * 
+	 * @param authEmail - email used for authorization
+	 * @param givenName - first name of this user
+	 * @param familyName - last name of this user
+	 * @param phoneNumber - phone number as unformatted 10-digit number
+	 * @param latitude - last known latitude of this user
+	 * @param longitude - last known longitude of this user
+	 */
+	public ZeppaUser(String authEmail, String givenName, String familyName, String phoneNumber, Long latitude, Long longitude, List<String> initialTags) {
+		ZeppaUserInfo info = new ZeppaUserInfo();
+		info.setGivenName(givenName);
+		info.setFamilyName(familyName);
+		info.setImageUrl("default-image-url.jpg");
+		
+		this.userInfo = info;
+		this.authEmail = authEmail;
+		this.phoneNumber = phoneNumber;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.initialTags = initialTags;
+	}
+	
 
 	// public ZeppaUser(ZeppaUserInfo userInfo, String zeppaCalendarId,
 	// List<String> initialTags) {

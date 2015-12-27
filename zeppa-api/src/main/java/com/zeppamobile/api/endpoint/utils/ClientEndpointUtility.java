@@ -1,7 +1,6 @@
 package com.zeppamobile.api.endpoint.utils;
 
 import java.security.GeneralSecurityException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -186,20 +185,6 @@ public class ClientEndpointUtility {
 		return result;
 	}
 
-	/**
-	 * Update a user relationship
-	 * 
-	 * @param relationship
-	 */
-	public static void updateUserRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			mgr.makePersistent(relationship);
-		} finally {
-			mgr.close();
-		}
-	}
 
 	/**
 	 * Get the persistence manager

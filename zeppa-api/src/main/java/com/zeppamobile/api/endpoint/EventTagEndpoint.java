@@ -1,9 +1,11 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
@@ -164,22 +166,33 @@ public class EventTagEndpoint {
 		eventtag.setUpdated(System.currentTimeMillis());
 
 		PersistenceManager mgr = getPersistenceManager();
-
+		// Persistence manager for making changes to the user
+		// PersistenceManager umgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
-
+			txn.begin();
+			// Reopen the user with a persistence manager to make changes
+			user = mgr.getObjectById(ZeppaUser.class, user.getKey());
 			// Set the owner user
 			eventtag.setOwner(user);
+			// Update the user relationships
+			if (user.addTag(eventtag)) {
+				System.out.println("Mapped tag to user");
+				ClientEndpointUtility.updateUserEntityRelationships(user);
+			} else {
+				System.out.println("Did not map tag to user");
+			}
 
 			// Update and store objects
 			eventtag = mgr.makePersistent(eventtag);
-
-			// Update the user relationships
-			if (user.addTag(eventtag)) {
-				ClientEndpointUtility.updateUserEntityRelationships(user);
-			}
-
+			txn.commit();
 		} finally {
-
+			// Close the persistence managers so changes are made to data
+			if (txn.isActive()) {
+				System.out.println("Transaction rolled back");
+				txn.rollback();
+				eventtag = null;
+			}
 			mgr.close();
 		}
 
@@ -220,20 +233,28 @@ public class EventTagEndpoint {
 
 				List<Key> followKeys = eventtag.getFollowKeys();
 
-				/*
-				 * Iterate through the keys and kill relationships
-				 */
-				for (Key k : followKeys) {
-					EventTagFollow f = rmgr.getObjectById(EventTagFollow.class, k);
-					
-					
-					
+				if (!followKeys.isEmpty()) {
+					/*
+					 * Iterate through the keys and kill relationships
+					 */
+					List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+					for (Key k : followKeys) {
+						try {
+							EventTagFollow f = rmgr.getObjectById(
+									EventTagFollow.class, k);
+							follows.add(f);
+						} catch (JDOObjectNotFoundException e) {
+							// Follow not found... oh well
+						}
+					}
+					// Delete all the follows
+					rmgr.deletePersistentAll(follows);
 				}
 
 				mgr.deletePersistent(eventtag);
 			} else {
 				throw new UnauthorizedException(
-						"Cannot delete tag you don't own");
+						"Cannot delete a tag you don't own");
 			}
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {

@@ -216,12 +216,12 @@ public class EventTagFollowEndpoint {
 			eventtagfollow = mgr.makePersistent(eventtagfollow);
 
 			if (tag.addEventTagFollow(eventtagfollow)) {
-				updateTagRelationships(tag);
+				// Successfully added event tag follow
 			}
 
 			// Update relationship holding follows
 			if (relationship.addTagFollow(eventtagfollow)) {
-				ClientEndpointUtility.updateUserRelationship(relationship);
+				// successfully added tag follow to relationship
 			}
 
 		} finally {
@@ -341,7 +341,7 @@ public class EventTagFollowEndpoint {
 			EventTag tag = getTagById(eventtagfollow.getTagId());
 			// remove mapping to tag
 			if (tag.removeFollow(eventtagfollow)) {
-				updateTagRelationships(tag);
+				// Removed follow from tag
 			}
 			
 			if(eventtagfollow.getRelationship().removeTagFollow(eventtagfollow)){
@@ -381,21 +381,6 @@ public class EventTagFollowEndpoint {
 		}
 
 		return tag;
-	}
-
-	/**
-	 * Update this event tag when
-	 * 
-	 * @param tag
-	 */
-	private void updateTagRelationships(EventTag tag) {
-		PersistenceManager mgr = getPersistenceManager();
-
-		try {
-			mgr.makePersistent(tag);
-		} finally {
-			mgr.close();
-		}
 	}
 
 	private static PersistenceManager getPersistenceManager() {

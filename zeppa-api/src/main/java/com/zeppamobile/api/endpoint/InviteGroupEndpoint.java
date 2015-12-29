@@ -7,8 +7,6 @@ import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import org.json.simple.JSONValue;
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -112,9 +110,9 @@ public class InviteGroupEndpoint {
 	 *            account
 	 * @return inviteGroup - result of
 	 */
-	public InviteGroup insertInviteGroup(@Named("emailListJson") String emailListString,
-			@Named("tagListJson") String tagListString, @Named("idToken") String idToken) {
+	public InviteGroup insertInviteGroup(InviteGroup group) {
 
+		
 		/*
 		 * Invite group that was entered into the datastore
 		 */
@@ -124,32 +122,32 @@ public class InviteGroupEndpoint {
 		PersistenceManager umgr = getPersistenceManager();
 
 		try {
-			/*
-			 * Parse out the params
-			 */
-			@SuppressWarnings("unchecked")
-			List<String> emailList = (List<String>) JSONValue
-					.parse(emailListString);
-
-			@SuppressWarnings("unchecked")
-			List<String> tagList = (List<String>) JSONValue
-					.parse(tagListString);
-
-			InviteGroup group = new InviteGroup();
-			group.setEmails(emailList);
-			group.setSuggestedTags(tagList);
+//			/*
+//			 * Parse out the params
+//			 */
+//			@SuppressWarnings("unchecked")
+//			List<String> emailList = (List<String>) JSONValue
+//					.parse(emailListString);
+//
+//			@SuppressWarnings("unchecked")
+//			List<String> tagList = (List<String>) JSONValue
+//					.parse(tagListString);
+//
+//			InviteGroup group = new InviteGroup();
+//			group.setEmails(emailList);
+//			group.setSuggestedTags(tagList);
 
 			/*
 			 * Get group members that already exist with user persistence
 			 * manager
 			 */
 			Query userQuery = umgr.newQuery(ZeppaUser.class);
-			userQuery.declareImports("java.util.List");
+			userQuery.declareImports("import java.util.List;");
 			userQuery.declareParameters("List emails");
-			userQuery.setFilter(":emails.contains(authEmail)");
+			userQuery.setFilter("emails.contains(authEmail)");
 			@SuppressWarnings("unchecked")
 			List<ZeppaUser> userList = (List<ZeppaUser>) userQuery
-					.execute(emailList);
+					.execute(group.getEmails());
 
 			/*
 			 * Add all the existing user objects to this invite group Determine

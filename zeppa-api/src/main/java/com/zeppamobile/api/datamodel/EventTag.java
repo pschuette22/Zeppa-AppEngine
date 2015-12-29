@@ -52,16 +52,6 @@ public class EventTag {
 		this.ownerId = owner.getId();
 	}
 
-	/**
-	 * TEMPORARY
-	 */
-	public EventTag(Long ownerId, String tagText) {
-
-		this.created = System.currentTimeMillis();
-		this.updated = System.currentTimeMillis();
-		this.tagText = tagText;
-		this.ownerId = ownerId;
-	}
 
 	/**
 	 * Rebuild an EventTag from json

@@ -14,6 +14,7 @@ import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 
@@ -37,26 +38,35 @@ public class GoogleCalendarService {
 	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser)
 			throws IOException {
 
-		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
-				.makeCalendarServiceInstance();
+		
+		if (AppConfig.isTest()) {
+			// If this is a test, simulate that the calendar was inserted
+			zeppaUser.setZeppaCalendarId("test-calendar-id");
+		} else {
+			// else initialize the Google Calendar service and make the calendar
+			com.google.api.services.calendar.Calendar service = GoogleCalendarUtils
+					.makeCalendarServiceInstance();
 
-		// Create the calendar
-		Calendar calendar = new Calendar();
-		calendar.setSummary("Zeppa");
-		calendar.setDescription("Calendar holding activities made on Zeppa");
-		calendar = service.calendars().insert(calendar).execute();
+			// TODO: check to see if there is already a Zeppa Calendar for this user
+			
+			// Create the calendar
+			Calendar calendar = new Calendar();
+			calendar.setSummary("Zeppa");
+			calendar.setDescription("Calendar holding activities made on Zeppa");
+			calendar = service.calendars().insert(calendar).execute();
 
-		// Give user reader access to this calendar
-		AclRule userRule = new AclRule();
-		Scope userScope = new AclRule.Scope();
-		userScope.setType("user");
-		userScope.setValue(zeppaUser.getAuthEmail());
-		userRule.setRole("reader");
-		userRule.setScope(userScope);
-		userRule = service.acl().insert(calendar.getId(), userRule).execute();
+			// Give user reader access to this calendar
+			AclRule userRule = new AclRule();
+			Scope userScope = new AclRule.Scope();
+			userScope.setType("user");
+			userScope.setValue(zeppaUser.getAuthEmail());
+			userRule.setRole("reader");
+			userRule.setScope(userScope);
+			userRule = service.acl().insert(calendar.getId(), userRule)
+					.execute();
 
-		zeppaUser.setZeppaCalendarId(calendar.getId());
-
+			zeppaUser.setZeppaCalendarId(calendar.getId());
+		}
 		return zeppaUser;
 	}
 
@@ -195,8 +205,7 @@ public class GoogleCalendarService {
 
 		while (iterator.hasNext()) {
 			EventAttendee attendee = iterator.next();
-			if (attendee.getEmail().equals(
-					zeppaUser.getAuthEmail())) {
+			if (attendee.getEmail().equals(zeppaUser.getAuthEmail())) {
 				success = calEvent.getAttendees().remove(attendee);
 				break;
 			}

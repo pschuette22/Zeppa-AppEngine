@@ -123,14 +123,14 @@ public class ClientEndpointUtility {
 	 * @return true if object was persisted successfully
 	 */
 	public static boolean updateUserEntityRelationships(ZeppaUser user) {
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			mgr.makePersistent(user);
-		} catch (Exception e) {
-			return false;
-		} finally {
-			mgr.close();
-		}
+//		PersistenceManager mgr = getPersistenceManager();
+//		try {
+//			mgr.makePersistent(user);
+//		} catch (Exception e) {
+//			return false;
+//		} finally {
+//			mgr.close();
+//		}
 
 		return true;
 	}

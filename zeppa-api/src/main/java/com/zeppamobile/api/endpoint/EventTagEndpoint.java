@@ -171,16 +171,13 @@ public class EventTagEndpoint {
 			eventtag.setOwner(user);
 
 			// Update and store objects
-			mgr.makePersistent(eventtag);
+			eventtag = mgr.makePersistent(eventtag);
 
 			// Update the user relationships
 			if (user.addTag(eventtag)) {
 				ClientEndpointUtility.updateUserEntityRelationships(user);
 			}
 
-		} catch (javax.jdo.JDOObjectNotFoundException e) {
-			e.printStackTrace();
-			eventtag = null;
 		} finally {
 
 			mgr.close();

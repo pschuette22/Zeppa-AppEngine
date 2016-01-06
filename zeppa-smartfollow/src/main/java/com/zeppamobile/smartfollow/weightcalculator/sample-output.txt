@@ -1,0 +1,196 @@
+antonym	noun	noun	229000
+hypernym	noun	noun	37900
+hyponym	noun	noun	374000
+member holonym	noun	noun	90500
+substance holonym	noun	noun	256000
+part holonym	noun	noun	903000
+member meronym	noun	noun	8680
+substance meronym	noun	noun	2670000
+part meronym	noun	noun	228000
+also see	noun	noun	0
+attribute	noun	noun	0
+derivation	noun	noun	432000000
+category domain	noun	noun	736000
+usage domain	noun	noun	21000
+region domain	noun	noun	38900
+member of category domain	noun	noun	18700000
+member of usage domain	noun	noun	15000
+member of region domain	noun	noun	523000
+instance hypernym	noun	noun	85800
+instances hyponym	noun	noun	75700000
+antonym	noun	verb	0
+hypernym	noun	verb	4120000
+hyponym	noun	verb	102000000
+member holonym	noun	verb	0
+substance holonym	noun	verb	0
+part holonym	noun	verb	444000
+member meronym	noun	verb	0
+substance meronym	noun	verb	0
+part meronym	noun	verb	0
+also see	noun	verb	0
+attribute	noun	verb	0
+derivation	noun	verb	18500
+category domain	noun	verb	0
+usage domain	noun	verb	0
+region domain	noun	verb	0
+member of category domain	noun	verb	103000
+member of usage domain	noun	verb	796000
+member of region domain	noun	verb	0
+instance hypernym	noun	verb	0
+instances hyponym	noun	verb	0
+antonym	noun	adjective	0
+hypernym	noun	adjective	56400000
+hyponym	noun	adjective	0
+member holonym	noun	adjective	0
+substance holonym	noun	adjective	0
+part holonym	noun	adjective	0
+member meronym	noun	adjective	0
+substance meronym	noun	adjective	0
+part meronym	noun	adjective	0
+also see	noun	adjective	0
+attribute	noun	adjective	482000
+derivation	noun	adjective	468000
+category domain	noun	adjective	0
+usage domain	noun	adjective	0
+region domain	noun	adjective	0
+member of category domain	noun	adjective	40700000
+member of usage domain	noun	adjective	130000000
+member of region domain	noun	adjective	41500000
+instance hypernym	noun	adjective	0
+instances hyponym	noun	adjective	0
+antonym	noun	adverb	0
+hypernym	noun	adverb	430000
+hyponym	noun	adverb	0
+member holonym	noun	adverb	5540
+substance holonym	noun	adverb	0
+part holonym	noun	adverb	0
+member meronym	noun	adverb	0
+substance meronym	noun	adverb	0
+part meronym	noun	adverb	0
+also see	noun	adverb	0
+attribute	noun	adverb	0
+derivation	noun	adverb	62900
+category domain	noun	adverb	0
+usage domain	noun	adverb	0
+region domain	noun	adverb	0
+member of category domain	noun	adverb	505000000
+member of usage domain	noun	adverb	0
+member of region domain	noun	adverb	147000
+instance hypernym	noun	adverb	0
+instances hyponym	noun	adverb	0
+antonym	verb	noun	0
+hypernym	verb	noun	79500000
+hyponym	verb	noun	0
+entailment	verb	noun	0
+cause	verb	noun	0
+also see	verb	noun	0
+verb group	verb	noun	0
+derivation	verb	noun	230000
+category domain	verb	noun	805000
+usage domain	verb	noun	3780000
+region domain	verb	noun	696000000
+instance hypernym	verb	noun	0
+instances hyponym	verb	noun	0
+antonym	verb	verb	284000
+hypernym	verb	verb	305000
+hyponym	verb	verb	524000
+entailment	verb	verb	75900
+cause	verb	verb	63300000
+also see	verb	verb	1110000000
+verb group	verb	verb	160000000
+derivation	verb	verb	597000
+category domain	verb	verb	0
+usage domain	verb	verb	0
+region domain	verb	verb	0
+instance hypernym	verb	verb	0
+instances hyponym	verb	verb	0
+antonym	verb	adjective	16600000
+hypernym	verb	adjective	187000
+hyponym	verb	adjective	224000000
+entailment	verb	adjective	0
+cause	verb	adjective	0
+also see	verb	adjective	0
+verb group	verb	adjective	6770000
+derivation	verb	adjective	414000
+category domain	verb	adjective	0
+usage domain	verb	adjective	0
+region domain	verb	adjective	0
+instance hypernym	verb	adjective	0
+instances hyponym	verb	adjective	0
+antonym	verb	adverb	156000000
+hypernym	verb	adverb	40900
+hyponym	verb	adverb	133000
+entailment	verb	adverb	0
+cause	verb	adverb	0
+also see	verb	adverb	0
+verb group	verb	adverb	0
+derivation	verb	adverb	230000
+category domain	verb	adverb	0
+usage domain	verb	adverb	0
+region domain	verb	adverb	0
+instance hypernym	verb	adverb	0
+instances hyponym	verb	adverb	0
+antonym	adjective	noun	0
+similar	adjective	noun	0
+participle of	adjective	noun	0
+also see	adjective	noun	0
+pertainym	adjective	noun	198000
+attribute	adjective	noun	230000000
+derivation	adjective	noun	37800
+category domain	adjective	noun	72000
+usage domain	adjective	noun	11500000
+region domain	adjective	noun	3130000
+antonym	adjective	verb	571000
+similar	adjective	verb	112000
+participle of	adjective	verb	21300000
+also see	adjective	verb	0
+pertainym	adjective	verb	11200000
+attribute	adjective	verb	0
+derivation	adjective	verb	58300
+category domain	adjective	verb	0
+usage domain	adjective	verb	0
+region domain	adjective	verb	0
+antonym	adjective	adjective	429000
+similar	adjective	adjective	519000
+participle of	adjective	adjective	0
+also see	adjective	adjective	12100000
+pertainym	adjective	adjective	14100000
+attribute	adjective	adjective	0
+derivation	adjective	adjective	102000000
+category domain	adjective	adjective	0
+usage domain	adjective	adjective	0
+region domain	adjective	adjective	0
+antonym	adjective	adverb	76300000
+similar	adjective	adverb	490000
+participle of	adjective	adverb	0
+also see	adjective	adverb	0
+pertainym	adjective	adverb	0
+attribute	adjective	adverb	0
+derivation	adjective	adverb	538000
+category domain	adjective	adverb	0
+usage domain	adjective	adverb	0
+region domain	adjective	adverb	0
+antonym	adverb	noun	0
+pertainym	adverb	noun	465000
+derivation	adverb	noun	0
+category domain	adverb	noun	1410000
+usage domain	adverb	noun	296000
+region domain	adverb	noun	441000
+antonym	adverb	verb	0
+pertainym	adverb	verb	215000
+derivation	adverb	verb	0
+category domain	adverb	verb	0
+usage domain	adverb	verb	0
+region domain	adverb	verb	0
+antonym	adverb	adjective	0
+pertainym	adverb	adjective	32600
+derivation	adverb	adjective	532000
+category domain	adverb	adjective	0
+usage domain	adverb	adjective	0
+region domain	adverb	adjective	0
+antonym	adverb	adverb	391000
+pertainym	adverb	adverb	279000
+derivation	adverb	adverb	0
+category domain	adverb	adverb	0
+usage domain	adverb	adverb	0
+region domain	adverb	adverb	0

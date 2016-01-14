@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -88,7 +89,16 @@ public class InviteGroupEndpoint {
 			}
 			cursorString = cursor.toWebSafeString();
 
-			// TODO: remove bad eggs (groups that don't contain this user)
+			if (!execute.isEmpty()) {
+				// TODO: remove bad eggs (groups that don't contain this user)
+				List<InviteGroup> badEggs = new ArrayList<InviteGroup>();
+				for (InviteGroup group : execute) {
+					if (!group.isGroupMember(tokenPayload.getEmail())) {
+						badEggs.add(group);
+					}
+				}
+				execute.removeAll(badEggs);
+			}
 
 		} finally {
 			mgr.close();
@@ -112,7 +122,6 @@ public class InviteGroupEndpoint {
 	 */
 	public InviteGroup insertInviteGroup(InviteGroup group) {
 
-		
 		/*
 		 * Invite group that was entered into the datastore
 		 */
@@ -122,20 +131,20 @@ public class InviteGroupEndpoint {
 		PersistenceManager umgr = getPersistenceManager();
 
 		try {
-//			/*
-//			 * Parse out the params
-//			 */
-//			@SuppressWarnings("unchecked")
-//			List<String> emailList = (List<String>) JSONValue
-//					.parse(emailListString);
-//
-//			@SuppressWarnings("unchecked")
-//			List<String> tagList = (List<String>) JSONValue
-//					.parse(tagListString);
-//
-//			InviteGroup group = new InviteGroup();
-//			group.setEmails(emailList);
-//			group.setSuggestedTags(tagList);
+			// /*
+			// * Parse out the params
+			// */
+			// @SuppressWarnings("unchecked")
+			// List<String> emailList = (List<String>) JSONValue
+			// .parse(emailListString);
+			//
+			// @SuppressWarnings("unchecked")
+			// List<String> tagList = (List<String>) JSONValue
+			// .parse(tagListString);
+			//
+			// InviteGroup group = new InviteGroup();
+			// group.setEmails(emailList);
+			// group.setSuggestedTags(tagList);
 
 			/*
 			 * Get group members that already exist with user persistence
@@ -162,38 +171,41 @@ public class InviteGroupEndpoint {
 				 * If there was more than one group member, make sure they are
 				 * connected
 				 */
-				// Should this be done? If they have not already connected is there a reason for that?
-//				if (userList.size() > 1) {
-//					for (int i = 0; i < userList.size() - 1; i++) {
-//						for (int j = i; j < userList.size(); j++) {
-//							ZeppaUser u1 = userList.get(i);
-//							ZeppaUser u2 = userList.get(j);
-//
-//							/*
-//							 * Instantiate the relationship object type
-//							 */
-//							ZeppaUserToUserRelationship r = new ZeppaUserToUserRelationship(
-//									u1,
-//									u2,
-//									ZeppaUserToUserRelationship.UserRelationshipType.MINGLING);
-//							// Insert relationship. Insert method will make sure there isn't already a relationship
-//							ZeppaUserToUserRelationshipEndpoint e = new ZeppaUserToUserRelationshipEndpoint();
-//							e.insertZeppaUserToUserRelationship(r,idToken);
-//						}
-//					}
-//				}
-				
-				
+				// Should this be done? If they have not already connected is
+				// there a reason for that?
+				// if (userList.size() > 1) {
+				// for (int i = 0; i < userList.size() - 1; i++) {
+				// for (int j = i; j < userList.size(); j++) {
+				// ZeppaUser u1 = userList.get(i);
+				// ZeppaUser u2 = userList.get(j);
+				//
+				// /*
+				// * Instantiate the relationship object type
+				// */
+				// ZeppaUserToUserRelationship r = new
+				// ZeppaUserToUserRelationship(
+				// u1,
+				// u2,
+				// ZeppaUserToUserRelationship.UserRelationshipType.MINGLING);
+				// // Insert relationship. Insert method will make sure there
+				// isn't already a relationship
+				// ZeppaUserToUserRelationshipEndpoint e = new
+				// ZeppaUserToUserRelationshipEndpoint();
+				// e.insertZeppaUserToUserRelationship(r,idToken);
+				// }
+				// }
+				// }
+
 			}
 
 			// Insert the invite group
 			result = mgr.makePersistent(group);
-			
-			//TODO: email the people who were just invited to use Zeppa
-			
+
+			// TODO: email the people who were just invited to use Zeppa
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 		} finally {
 			mgr.close();
 			umgr.close();

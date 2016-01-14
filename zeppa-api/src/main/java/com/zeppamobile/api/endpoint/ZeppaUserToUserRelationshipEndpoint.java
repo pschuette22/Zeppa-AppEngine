@@ -7,10 +7,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
@@ -43,7 +45,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "listZeppaUserToUserRelationship")
+	@ApiMethod(name = "listZeppaUserToUserRelationship",path="listZeppaUserToUserRelationship")
 	public CollectionResponse<ZeppaUserToUserRelationship> listZeppaUserToUserRelationship(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -132,7 +134,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 * @return The entity with primary key id.
 	 * @throws OAuthRequestException
 	 */
-	@ApiMethod(name = "getZeppaUserToUserRelationship")
+	@ApiMethod(name = "getZeppaUserToUserRelationship",path="getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
@@ -180,7 +182,19 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	@ApiMethod(name = "insertZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship insertZeppaUserToUserRelationship(
 			ZeppaUserToUserRelationship relationship,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+			@Named("idToken") String tokenString) throws UnauthorizedException,
+			BadRequestException {
+
+		try {
+			// Make sure params are good
+			if (relationship.getCreatorId().longValue() == relationship
+					.getSubjectId()) {
+				throw new BadRequestException(
+						"Subject and Creator ID's are equal");
+			}
+		} catch (NullPointerException e) {
+			throw new BadRequestException("Missing user ID(s)");
+		}
 
 		// Fetch Authorized Zeppa User
 		ZeppaUser user = ClientEndpointUtility
@@ -191,9 +205,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		}
 
 		// Verify authorized user is involved with this relationship
-		if (relationship.getCreatorId().longValue() != user.getId().longValue()
-				&& relationship.getSubjectId().longValue() != user.getId()
-						.longValue()) {
+		if (relationship.getCreatorId().longValue() != user.getId().longValue()) {
 			throw new UnauthorizedException(
 					"Not authorized to create relationships for other people");
 		}
@@ -211,7 +223,9 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			q.declareParameters("Long callingUserIdParam, Long otherUserIdParam");
 			q.setFilter("(creatorId == otherUserIdParam || creatorId == callingUserIdParam) && (subjectId == callingUserIdParam || subjectId == otherUserIdParam)");
 			q.setUnique(true);
-			ZeppaUserToUserRelationship r = (ZeppaUserToUserRelationship) q.execute(relationship.getCreatorId(), relationship.getSubjectId());
+			ZeppaUserToUserRelationship r = (ZeppaUserToUserRelationship) q
+					.execute(relationship.getCreatorId(),
+							relationship.getSubjectId());
 
 			if (r != null) {
 				mgr.close();
@@ -225,6 +239,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 								.getSubjectId().longValue()) {
 					r.setRelationshipType(UserRelationshipType.MINGLING);
 					r = mgr.makePersistent(r);
+					// Notify both users they are now mingling?
 				}
 
 				return r;
@@ -234,39 +249,36 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			// Expect this not to exist
 		}
 
+		Transaction txn = mgr.currentTransaction();
 		// Verified the relationship doesn't exist so create a new one
 		try {
 
-			// set entity values
-			relationship.setCreated(System.currentTimeMillis());
-			relationship.setUpdated(System.currentTimeMillis());
-			relationship.setCreator(user);
-			relationship.setSubject(otherUser);
+			txn.begin();
+			ZeppaUserToUserRelationship insert = new ZeppaUserToUserRelationship(
+					user, otherUser, UserRelationshipType.PENDING_REQUEST);
+			// // set entity values
+			// relationship.setCreated(System.currentTimeMillis());
+			// relationship.setUpdated(System.currentTimeMillis());
+			// relationship.setCreator(user);
+			// relationship.setSubject(otherUser);
 
 			// persist the relationship
-			relationship = mgr.makePersistent(relationship);
+			relationship = mgr.makePersistent(insert);
 
-			// Update User relationships
-			if (user.addUserRealtionship(relationship)) {
-				ClientEndpointUtility.updateUserEntityRelationships(user);
-			}
-			// Update Other User relationships
-			if (otherUser.addUserRealtionship(relationship)) {
-				ClientEndpointUtility.updateUserEntityRelationships(otherUser);
-			}
-
-		} finally {
-			mgr.close();
-		}
-
-		// notify user when someone requests to mingle
-		if (relationship.getRelationshipType().equals(
-				UserRelationshipType.PENDING_REQUEST)) {
-
+			// Schedule notification to inform the subject user, someone wants
+			// to mingle
 			NotificationUtility.scheduleNotificationBuild(
 					ZeppaUserToUserRelationship.class.getName(),
 					relationship.getId(), "mingle-request");
 
+			txn.commit();
+
+		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+				relationship = null;
+			}
+			mgr.close();
 		}
 
 		return relationship;
@@ -296,12 +308,12 @@ public class ZeppaUserToUserRelationshipEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
-		boolean didAcceptRequest = false;
+		Transaction txn = mgr.currentTransaction();
 		try {
-
+			txn.begin();
 			// Fetch the current state of the user relationship
 			ZeppaUserToUserRelationship current = mgr.getObjectById(
-					ZeppaUserToUserRelationship.class, relationship.getId());
+					ZeppaUserToUserRelationship.class, relationship.getKey());
 
 			// Verify user is able to make changes to this relationship
 			if (current.getCreatorId().longValue() != user.getId().longValue()
@@ -312,10 +324,15 @@ public class ZeppaUserToUserRelationshipEndpoint {
 			}
 
 			// Determine if the user accepted a request to mingle
-			didAcceptRequest = (relationship.getRelationshipType().equals(
-					UserRelationshipType.MINGLING) && current
-					.getRelationshipType().equals(
-							UserRelationshipType.PENDING_REQUEST));
+			if (relationship.getRelationshipType().equals(
+					UserRelationshipType.MINGLING)
+					&& current.getRelationshipType().equals(
+							UserRelationshipType.PENDING_REQUEST)) {
+				NotificationUtility.scheduleNotificationBuild(
+						ZeppaUserToUserRelationship.class.getName(),
+						relationship.getId(), "mingling");
+
+			}
 
 			// Update entities of the relationship
 			current.setUpdated(System.currentTimeMillis());
@@ -323,17 +340,14 @@ public class ZeppaUserToUserRelationshipEndpoint {
 
 			// make changes to the datastore
 			relationship = mgr.makePersistent(current);
+			txn.commit();
 
 		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+				relationship = null;
+			}
 			mgr.close();
-
-		}
-
-		// If users are now mingling, notify the other user
-		if (didAcceptRequest) {
-			NotificationUtility.scheduleNotificationBuild(
-					ZeppaUserToUserRelationship.class.getName(),
-					relationship.getId(), "mingling");
 
 		}
 
@@ -350,7 +364,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
 	public void removeZeppaUserToUserRelationship(
-			@Named("relationshipId") Long relationshipId,
+			@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
@@ -366,7 +380,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 
 			// Fetch users involved in this relationship
 			ZeppaUserToUserRelationship relationship = mgr.getObjectById(
-					ZeppaUserToUserRelationship.class, relationshipId);
+					ZeppaUserToUserRelationship.class, id);
 
 			// Verify authorized user is involved with this relationship
 			if (relationship.getCreatorId().longValue() != user.getId()
@@ -394,16 +408,6 @@ public class ZeppaUserToUserRelationshipEndpoint {
 								otherUser.getId());
 				NotificationUtility.preprocessNotificationDelivery(payload,
 						otherUser.getId().longValue());
-			}
-
-			// Update User's relationships
-			if (user.removeUserRelationship(relationship)) {
-				ClientEndpointUtility.updateUserEntityRelationships(user);
-			}
-
-			// Update Other User's relationships
-			if (otherUser.removeUserRelationship(relationship)) {
-				ClientEndpointUtility.updateUserEntityRelationships(otherUser);
 			}
 
 			// remove the relationships from data store

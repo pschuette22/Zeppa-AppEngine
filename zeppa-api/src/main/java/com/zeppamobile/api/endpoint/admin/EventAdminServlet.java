@@ -1,9 +1,7 @@
 package com.zeppamobile.api.endpoint.admin;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -64,8 +62,7 @@ public class EventAdminServlet extends HttpServlet {
 			 * Initialize a Dummy event starting now, ending in an hour with the
 			 * passed title
 			 */
-			ZeppaEvent event = new ZeppaEvent(System.currentTimeMillis(),
-					System.currentTimeMillis(), user.getZeppaCalendarId(),
+			ZeppaEvent event = new ZeppaEvent(user.getZeppaCalendarId(),
 					"not-set", "not-set", EventPrivacyType.CASUAL,
 					user.getId(), eventName, "Event made from the server",
 					Boolean.TRUE, System.currentTimeMillis(),

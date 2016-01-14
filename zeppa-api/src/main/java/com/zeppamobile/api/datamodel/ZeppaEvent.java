@@ -3,7 +3,6 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -12,7 +11,6 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaEvent {
@@ -93,30 +91,16 @@ public class ZeppaEvent {
 	@Persistent
 	private List<Long> invitedUserIds;
 
-	/*
-	 * Entity relationships
-	 */
-	@Persistent
-	@Unowned
-	private ZeppaUser host;
 
-	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<ZeppaEventToUserRelationship> attendeeRelationships = new ArrayList<ZeppaEventToUserRelationship>();
-
-	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<EventComment> comments = new ArrayList<EventComment>();
-
-	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
+	public ZeppaEvent(String googleCalendarId,
 			String googleCalendarEventId, String iCalUID,
 			EventPrivacyType privacy, Long hostId, String title,
 			String description, Boolean guestsMayInvite, Long start, Long end,
 			String displayLocation, String mapsLocation, List<Long> tagIds,
 			List<Long> invitedUserIds) {
 
-		this.created = created;
-		this.updated = updated;
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
 		this.googleCalendarId = googleCalendarId;
 		this.googleCalendarEventId = googleCalendarEventId;
 		this.iCalUID = iCalUID;
@@ -343,60 +327,8 @@ public class ZeppaEvent {
 		this.invitedUserIds = invitedUserIds;
 	}
 
-	public ZeppaUser getHost() {
-		return host;
-	}
-
 	public void setHost(ZeppaUser host) {
-		this.host = host;
-	}
-
-	public List<ZeppaEventToUserRelationship> getAttendeeRelationships() {
-		return attendeeRelationships;
-	}
-
-	public void setAttendeeRelationships(
-			List<ZeppaEventToUserRelationship> attendeeRelationships) {
-		this.attendeeRelationships = attendeeRelationships;
-	}
-
-	public boolean addAttendeeRelationship(
-			ZeppaEventToUserRelationship relationship) {
-		return this.attendeeRelationships.add(relationship);
-	}
-
-	public List<EventComment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<EventComment> comments) {
-		this.comments = comments;
-	}
-
-	public boolean addComment(EventComment comment) {
-		return this.comments.add(comment);
-	}
-
-	/**
-	 * Helper method to make sure calling user is allowed to see this event
-	 * 
-	 * @param user
-	 * @return true if user is authorized to see this
-	 */
-	public boolean isAuthorized(long userId) {
-
-		boolean isAuthorized = false;
-		if (getHostId().longValue() == userId) {
-			isAuthorized = true;
-		} else {
-			for (ZeppaEventToUserRelationship relationship : attendeeRelationships) {
-				if (relationship.getUserId().longValue() == userId) {
-					isAuthorized = true;
-					break;
-				}
-			}
-		}
-		return isAuthorized;
+		this.hostId = host.getId();
 	}
 
 }

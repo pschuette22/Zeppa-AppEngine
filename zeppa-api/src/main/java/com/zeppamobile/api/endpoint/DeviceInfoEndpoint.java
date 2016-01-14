@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -35,7 +36,7 @@ public class DeviceInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@SuppressWarnings({ "unchecked" })
-	@ApiMethod(name = "listDeviceInfo")
+	@ApiMethod(name = "listDeviceInfo",path="listDeviceInfo")
 	public CollectionResponse<DeviceInfo> listDeviceInfo(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -92,6 +93,17 @@ public class DeviceInfoEndpoint {
 				// Make sure authed user owns this device
 				if (obj.getOwnerId().longValue() != user.getId().longValue()) {
 					badEggs.add(obj);
+				} else {
+					obj.getKey();
+					obj.getId();
+					obj.getVersion();
+					obj.getUpdate();
+					obj.getBugfix();
+					obj.getCreated();
+					obj.getUpdated();
+					obj.getRegistrationId();
+					obj.getOwnerId();
+					obj.getLastLogin();
 				}
 			}
 			execute.remove(badEggs);
@@ -117,7 +129,7 @@ public class DeviceInfoEndpoint {
 	 * @return The entity with primary key id.
 	 * @throws UnauthorizedException
 	 */
-	@ApiMethod(name = "getDeviceInfo")
+	@ApiMethod(name = "getDeviceInfo",path="getDeviceInfo")
 	public DeviceInfo getDeviceInfo(@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
@@ -153,7 +165,7 @@ public class DeviceInfoEndpoint {
 	 * @throws UnauthorizedException
 	 */
 	@ApiMethod(name = "insertDeviceInfo")
-	public DeviceInfo insertOrUpdateDeviceInfo(DeviceInfo deviceinfo,
+	public DeviceInfo insertDeviceInfo(DeviceInfo deviceinfo,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Make sure necessary items are there before inserting
@@ -168,14 +180,17 @@ public class DeviceInfoEndpoint {
 		if (user == null) {
 			throw new UnauthorizedException(
 					"No matching user found for this token");
+		} else if (user.getId().longValue() != deviceinfo.getOwnerId().longValue()) {
+			throw new UnauthorizedException("Can't create a device for another user, bruh");
 		}
 
 		DeviceInfo result = null;
 		PersistenceManager mgr = getPersistenceManager();
-
+		Transaction txn = mgr.currentTransaction();
 		// Try to fetch an instance of device info with a matching token and
 		// user id
 		try {
+			txn.begin();
 			String filter = "ownerId == " + deviceinfo.getOwnerId()
 					+ " && registrationId == '"
 					+ deviceinfo.getRegistrationId() + "'";
@@ -190,11 +205,16 @@ public class DeviceInfoEndpoint {
 			if (response == null || response.isEmpty()) {
 				deviceinfo.setCreated(System.currentTimeMillis());
 				deviceinfo.setUpdated(System.currentTimeMillis());
+
+				// Persist the object
+				result = mgr.makePersistent(deviceinfo);
+				
+				
 			} else {
 
 				// get and remove the first object
 				DeviceInfo current = response.get(0);
-				response.remove(0);
+				response.remove(current);
 
 				// Set version information
 				current.setBugfix(deviceinfo.getBugfix());
@@ -215,18 +235,22 @@ public class DeviceInfoEndpoint {
 					mgr.deletePersistentAll(response);
 				}
 			}
+			
+			// Persist the device info
 
-			deviceinfo.setOwner(user);
-			user.addDevice(deviceinfo);
-
-			// Persist changes into the datastore
-			result = mgr.makePersistent(deviceinfo);
-			ClientEndpointUtility.updateUserEntityRelationships(user);
-
+			txn.commit();
+			
 		} catch (javax.jdo.JDOObjectNotFoundException | NullPointerException e) {
 			e.printStackTrace();
 		} finally {
+			
+			if(txn.isActive()){
+				txn.rollback();
+				deviceinfo = null;
+			}
+			
 			mgr.close();
+			
 		}
 
 		// Return the inserted item or null if an error occured.
@@ -258,12 +282,13 @@ public class DeviceInfoEndpoint {
 		deviceinfo.setUpdated(System.currentTimeMillis());
 
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
+			txn.begin();
 			DeviceInfo current = mgr.getObjectById(DeviceInfo.class,
 					deviceinfo.getId());
 
 			if (user.getId().longValue() == current.getOwnerId().longValue()) {
-
 				current.setBugfix(deviceinfo.getBugfix());
 				current.setUpdate(deviceinfo.getUpdate());
 				current.setVersion(deviceinfo.getVersion());
@@ -271,15 +296,21 @@ public class DeviceInfoEndpoint {
 				current.setLastLogin(deviceinfo.getLastLogin());
 				current.setLoggedIn(deviceinfo.getLoggedIn());
 				current.setUpdated(System.currentTimeMillis());
-				mgr.makePersistent(current);
 
 				deviceinfo = current;
+				
+				txn.commit();
 			} else {
 				throw new UnauthorizedException("You can't update this device");
 			}
 		} finally {
+			if(txn.isActive()){
+				txn.rollback();
+				deviceinfo = null;
+			}
 			mgr.close();
 		}
+		
 		return deviceinfo;
 	}
 
@@ -304,19 +335,23 @@ public class DeviceInfoEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
 			DeviceInfo info = mgr.getObjectById(DeviceInfo.class, id);
 
 			if (info.getOwnerId().longValue() == user.getId().longValue()) {
-				if (user.removeDevice(info)) {
-					ClientEndpointUtility.updateUserEntityRelationships(user);
-				}
-				mgr.deletePersistent(info);
+				txn.begin();
+				user = mgr.getObjectById(ZeppaUser.class, user.getKey());
+				txn.commit();
 			} else {
 				throw new UnauthorizedException("You can't delete this device");
 			}
 
 		} finally {
+			if(txn.isActive()){
+				txn.rollback();
+				// TODO: throw an error to alert the user?
+			}
 			mgr.close();
 		}
 	}

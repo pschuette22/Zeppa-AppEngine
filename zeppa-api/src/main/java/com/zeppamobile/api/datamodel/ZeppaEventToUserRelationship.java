@@ -8,7 +8,7 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
+import com.google.appengine.labs.repackaged.org.json.JSONException;
 
 @PersistenceCapable
 public class ZeppaEventToUserRelationship {
@@ -49,21 +49,6 @@ public class ZeppaEventToUserRelationship {
 	
 	@Persistent // Event holds a tag attendee follows
 	private Boolean isRecommended;
-
-	
-	/*
-	 * The following is for creating a 'join' relationship
-	 * These values map back to the 
-	 */
-	
-	@Persistent(defaultFetchGroup="true")
-	@Unowned
-	private ZeppaEvent event;
-	
-	@Persistent(defaultFetchGroup="false")
-	@Unowned
-	private ZeppaUser attendee;
-	
 	
 	
 	/**
@@ -206,22 +191,6 @@ public class ZeppaEventToUserRelationship {
 
 	public void setEventHostId(Long eventHostId) {
 		this.eventHostId = eventHostId;
-	}
-
-	public ZeppaEvent getEvent() {
-		return event;
-	}
-
-	public void setEvent(ZeppaEvent event) {
-		this.event = event;
-	}
-
-	public ZeppaUser getAttendee() {
-		return attendee;
-	}
-
-	public void setAttendee(ZeppaUser attendee) {
-		this.attendee = attendee;
 	}
 	
 }

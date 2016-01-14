@@ -14,6 +14,7 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
@@ -94,39 +95,39 @@ public class PhotoInfoEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
-	/**
-	 * This method gets the entity having primary key id. It uses HTTP GET
-	 * method.
-	 * 
-	 * @param id
-	 *            the primary key of the java bean.
-	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "getPhotoInfo")
-	public PhotoInfo getPhotoInfo(@Named("id") Long id,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
-
-		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
-		}
-		PersistenceManager mgr = getPersistenceManager();
-		PhotoInfo photoinfo = null;
-		try {
-			photoinfo = mgr.getObjectById(PhotoInfo.class, id);
-			if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
-				throw new UnauthorizedException(
-						"Can't see photos you don't own");
-			}
-		} finally {
-			mgr.close();
-		}
-		return photoinfo;
-	}
+//	/**
+//	 * This method gets the entity having primary key id. It uses HTTP GET
+//	 * method.
+//	 * 
+//	 * @param id
+//	 *            the primary key of the java bean.
+//	 * @return The entity with primary key id.
+//	 * @throws OAuthRequestException
+//	 */
+//	@ApiMethod(name = "getPhotoInfo")
+//	public PhotoInfo getPhotoInfo(Key key,
+//			@Named("idToken") String tokenString) throws UnauthorizedException {
+//
+//		// Fetch Authorized Zeppa User
+//		ZeppaUser user = ClientEndpointUtility
+//				.getAuthorizedZeppaUser(tokenString);
+//		if (user == null) {
+//			throw new UnauthorizedException(
+//					"No matching user found for this token");
+//		}
+//		PersistenceManager mgr = getPersistenceManager();
+//		PhotoInfo photoinfo = null;
+//		try {
+//			photoinfo = mgr.getObjectById(PhotoInfo.class, key);
+//			if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
+//				throw new UnauthorizedException(
+//						"Can't see photos you don't own");
+//			}
+//		} finally {
+//			mgr.close();
+//		}
+//		return photoinfo;
+//	}
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
@@ -174,7 +175,7 @@ public class PhotoInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removePhotoInfo")
-	public void removePhotoInfo(@Named("id") Long id,
+	public void removePhotoInfo(Key key,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
@@ -187,7 +188,7 @@ public class PhotoInfoEndpoint {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
-			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, id);
+			PhotoInfo photoinfo = mgr.getObjectById(PhotoInfo.class, key);
 			// Verify this user owns this photo
 			if (!user.getAuthEmail().equals(photoinfo.getOwnerEmail())) {
 				throw new UnauthorizedException(

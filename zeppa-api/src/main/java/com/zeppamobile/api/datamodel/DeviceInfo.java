@@ -19,9 +19,6 @@ public class DeviceInfo  {
 	private Key key;
 	
 	@Persistent
-	private ZeppaUser owner;
-	
-	@Persistent
 	private Long created;
 	
 	@Persistent
@@ -87,7 +84,6 @@ public class DeviceInfo  {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
-		this.owner = owner;
 		this.ownerId = owner.getId();
 		this.phoneType = phoneType;
 		this.registrationId = registrationId;
@@ -95,16 +91,6 @@ public class DeviceInfo  {
 		this.version = version;
 		this.update = update;
 		this.bugfix = bugfix;
-	}
-	
-	
-	
-	public ZeppaUser getOwner() {
-		return owner;
-	}
-
-	public void setOwner(ZeppaUser owner) {
-		this.owner = owner;
 	}
 
 	public Long getCreated() {

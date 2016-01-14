@@ -130,7 +130,7 @@ public class ZeppaUserEndpoint {
 		for (String tagText : initialTags) {
 			EventTag tag = new EventTag(zeppaUser, tagText);
 			tags.add(tag);
-			zeppaUser.addTag(tag);
+//			zeppaUser.addTag(tag);
 		}
 		// Persist
 		PersistenceManager tmgr = getPersistenceManager();
@@ -173,9 +173,6 @@ public class ZeppaUserEndpoint {
 								UserRelationshipType.MINGLING);
 
 						relationship = rmgr.makePersistent(relationship);
-
-						zeppaUser.addUserRealtionship(relationship);
-						mingler.addUserRealtionship(relationship);
 
 						TaskUtility.scheduleCreateEventRelationshipsForUsers(
 								zeppaUser.getId(), mingler.getId());

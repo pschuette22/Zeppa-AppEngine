@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -76,15 +75,15 @@ public class AuthChecker {
 			}
 
 			// Verify this token contains the given audience
-			if (!token.getPayload().getAudienceAsList()
-					.contains(this.mAudience)) {
-				throw new GeneralSecurityException("Audience mismatch");
-			}
+//			if (!token.getPayload().getAudienceAsList()
+//					.contains(this.mAudience)) {
+//				throw new GeneralSecurityException("Audience mismatch");
+//			}
 
-			// Verify this token contains the given audience
-			if (!mClientIDs.contains(token.getPayload().getIssuer())) {
-				throw new GeneralSecurityException("Invalid issuer");
-			}
+//			// Verify this token contains the given audience
+//			if (!mClientIDs.contains(token.getPayload().getIssuer())) {
+//				throw new GeneralSecurityException("Invalid issuer");
+//			}
 
 			// Check email is verified
 			if (token.getPayload().getEmailVerified()) {

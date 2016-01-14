@@ -3,16 +3,13 @@ package com.zeppamobile.api.endpoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -27,7 +24,6 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -61,13 +57,14 @@ public class ZeppaUserInfoEndpoint {
 
 		PersistenceManager mgr = null;
 		Cursor cursor = null;
-		List<ZeppaUserInfo> execute = null;
+		List<ZeppaUser> execute = null;
+		List<ZeppaUserInfo> result = new ArrayList<ZeppaUserInfo>();
 		
 		List<String> args = new ArrayList<String>();
 		
 		try {
 			mgr = getPersistenceManager();
-			Query query = mgr.newQuery(ZeppaUserInfo.class);
+			Query query = mgr.newQuery(ZeppaUser.class);
 			if (Utils.isWebSafe(cursorString)) {
 				cursor = Cursor.fromWebSafeString(cursorString);
 				HashMap<String, Object> extensionMap = new HashMap<String, Object>();
@@ -91,15 +88,17 @@ public class ZeppaUserInfoEndpoint {
 			 * If there is a list argument passed as a JSON string, decode and pass 
 			 */
 			if(Utils.isWebSafe(jsonString)){
-				
 				JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonString);
 				for(int i = 0; i < jsonArray.size(); i++){
 					args.add((String)jsonArray.get(i));
 				}
+				// Declare list import and list param
+				query.declareImports("import java.util.List;");
+				query.declareParameters("List listParam");
 			}
 			
 			
-			execute = (List<ZeppaUserInfo>) query.execute(args);
+			execute = (List<ZeppaUser>) query.execute(args);
 
 			cursor = JDOCursorHelper.getCursor(execute);
 			if (cursor == null) {
@@ -110,7 +109,8 @@ public class ZeppaUserInfoEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
-			for (ZeppaUserInfo obj : execute) {
+			for (ZeppaUser u : execute) {
+				ZeppaUserInfo obj = u.getUserInfo();
 				obj.getKey();
 				obj.getKey().getParent();
 				obj.getKey().getParent().getId();
@@ -118,13 +118,15 @@ public class ZeppaUserInfoEndpoint {
 				obj.getGivenName();
 				obj.getFamilyName();
 				obj.getImageUrl();
+				// Add touched object to result
+				result.add(obj);
 			}
 
 		} finally {
 			mgr.close();
 		}
 
-		return CollectionResponse.<ZeppaUserInfo> builder().setItems(execute)
+		return CollectionResponse.<ZeppaUserInfo> builder().setItems(result)
 				.setNextPageToken(cursorString).build();
 	}
 	
@@ -140,7 +142,7 @@ public class ZeppaUserInfoEndpoint {
 	 * @throws OAuthRequestException
 	 */
 
-	@ApiMethod(name = "fetchZeppaUserInfoByParentId")
+	@ApiMethod(name = "fetchZeppaUserInfoByParentId",path="fetchZeppaUserInfoByParentId")
 	public ZeppaUserInfo fetchZeppaUserInfoByParentId(
 			@Named("requestedParentId") Long parentId,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
@@ -161,6 +163,8 @@ public class ZeppaUserInfoEndpoint {
 					parentId);
 			result = userResult.getUserInfo();
 			// Touch all the fields so they are properly returned
+			result.getKey();
+			result.getId();
 			result.getCreated();
 			result.getFamilyName();
 			result.getGivenName();
@@ -176,36 +180,36 @@ public class ZeppaUserInfoEndpoint {
 		return result;
 	}
 
-	/**
-	 * This method gets the entity having primary key id. It uses HTTP GET
-	 * method.
-	 * 
-	 * @param id
-	 *            the primary key of the java bean.
-	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "getZeppaUserInfo")
-	public ZeppaUserInfo getZeppaUserInfo(@Named("id") Long id,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
-
-		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
-		}
-
-		PersistenceManager mgr = getPersistenceManager();
-		ZeppaUserInfo zeppauserinfo = null;
-		try {
-			zeppauserinfo = mgr.getObjectById(ZeppaUserInfo.class, id);
-		} finally {
-			mgr.close();
-		}
-		return zeppauserinfo;
-	}
+//	/**
+//	 * This method gets the entity having primary key id. It uses HTTP GET
+//	 * method.
+//	 * 
+//	 * @param id
+//	 *            the primary key of the java bean.
+//	 * @return The entity with primary key id.
+//	 * @throws OAuthRequestException
+//	 */
+//	@ApiMethod(name = "getZeppaUserInfo",path="getZeppaUserInfo")
+//	public ZeppaUserInfo getZeppaUserInfo(Key key,
+//			@Named("idToken") String tokenString) throws UnauthorizedException {
+//
+//		// Fetch Authorized Zeppa User
+//		ZeppaUser user = ClientEndpointUtility
+//				.getAuthorizedZeppaUser(tokenString);
+//		if (user == null) {
+//			throw new UnauthorizedException(
+//					"No matching user found for this token");
+//		}
+//
+//		PersistenceManager mgr = getPersistenceManager();
+//		ZeppaUserInfo zeppauserinfo = null;
+//		try {
+//			zeppauserinfo = mgr.getObjectById(ZeppaUserInfo.class, key);
+//		} finally {
+//			mgr.close();
+//		}
+//		return zeppauserinfo;
+//	}
 	
 	/**
 	 * Get the persistence manager

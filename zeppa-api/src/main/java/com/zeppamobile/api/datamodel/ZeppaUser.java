@@ -1,9 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
@@ -57,16 +55,16 @@ public class ZeppaUser {
 	private Long latitude;
 
 	/*
-	 * These are tags to be persisted as soon as the
+	 * These are tags to be persisted as soon as the user object is created in database
 	 */
 	@NotPersistent
 	private List<String> initialTags;
 	
 	/**
-	 * Blank Constructor if you want to initialize everything
+	 * Blank Constructor
 	 */
 	public ZeppaUser() {
-		// Super expensive op
+		// NOTE: Required for appengine
 	}
 	
 	/**
@@ -188,273 +186,5 @@ public class ZeppaUser {
 		this.initialTags = initialTags;
 	}
 
-	/*
-	 * 
-	 * These are all owned entities Relationships are stored here for cascading
-	 * deleted and easy access
-	 */
-
-	/*
-	 * 
-	 * 
-	 * Devices represent devices used to login to this account These are how we
-	 * notify the user of updates to the database
-	 */
-	@Persistent(mappedBy = "owner", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<DeviceInfo> devices = new ArrayList<DeviceInfo>();
-
-	/**
-	 * Add a device to the list of user devices
-	 * 
-	 * @param device
-	 * @return true if device is successfully added
-	 */
-	public boolean addDevice(DeviceInfo device) {
-		return this.devices.add(device);
-	}
-
-	/**
-	 * Remove a device from the list of devices
-	 * 
-	 * @param device
-	 * @return true if device was removed from list
-	 */
-	public boolean removeDevice(DeviceInfo device) {
-		return this.devices.remove(device);
-	}
-
-	/*
-	 * Event tags are a list of tags that the user has added to their profile
-	 */
-	@Persistent(mappedBy = "owner")
-	@Element(dependent = "true")
-	private List<EventTag> tags = new ArrayList<EventTag>();
-
-	/**
-	 * Add a tag to the list of tags associated with this profile
-	 * 
-	 * @param tag
-	 * @return true if tag was successfully added
-	 */
-	public boolean addTag(EventTag tag) {
-		return this.tags.add(tag);
-	}
-
-	/**
-	 * Remove a tag from the list of tags associated with this profile
-	 * 
-	 * @param tag
-	 * @return
-	 */
-	public boolean removeTag(EventTag tag) {
-		return this.tags.remove(tag);
-	}
-
-	/**
-	 * Get the event tags for this user
-	 * 
-	 * @return tags
-	 */
-	public List<EventTag> getTags() {
-		return tags;
-	}
-
-	/*
-	 * Mapped to all the instances of people following this users tags 
-	 */
-	@Persistent
-	private List<Key> follows = new ArrayList<Key>();
-
-	/**
-	 * Add a tag to the list of tags associated with this profile
-	 * 
-	 * @param tag
-	 * @return true if tag was successfully added
-	 */
-	public boolean addTagFollow(EventTagFollow follow) {
-		return this.follows.add(follow.getKey());
-	}
-
-	/**
-	 * Remove a tag from the list of tags associated with this profile
-	 * 
-	 * @param tag
-	 * @return
-	 */
-	public boolean removeTagFollow(EventTagFollow follow) {
-		return this.follows.remove(follow.getKey());
-	}
-
-	/*
-	 * 
-	 * List of events this user has started
-	 */
-	@Persistent(mappedBy = "host", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<ZeppaEvent> events = new ArrayList<ZeppaEvent>();
-
-	/**
-	 * Add an Event to this user's list of events
-	 * 
-	 * @param event
-	 * @return true if event was added successfully
-	 */
-	public boolean addEvent(ZeppaEvent event) {
-		return this.events.add(event);
-	}
-
-	/**
-	 * Remove an Event from this user's list of events
-	 * 
-	 * @param event
-	 * @return
-	 */
-	public boolean removeEvent(ZeppaEvent event) {
-		return this.events.remove(event);
-	}
-
-	/*
-	 * 
-	 * List of relationships to events this user may join
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<Key> eventRelationships = new ArrayList<Key>();
-
-	/**
-	 * Add an Event Relationship to list of relationships for this user
-	 * 
-	 * @param relationship
-	 * @return true if relationship was added successfully
-	 */
-	public boolean addEventRelationship(
-			ZeppaEventToUserRelationship relationship) {
-		return this.eventRelationships.add(relationship.getKey());
-	}
-
-	/**
-	 * Remove an Event Relationship from list of relationships for this user
-	 * 
-	 * @param relationship
-	 * @return true if Event Relationship was successfully removed
-	 */
-	public boolean removeEventRelationship(
-			ZeppaEventToUserRelationship relationship) {
-		return this.eventRelationships.remove(relationship.getKey());
-	}
-
-	/*
-	 * These are user relationships created by this user.
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<Key> userRelationships = new ArrayList<Key>();
-
-	/**
-	 * Add a User relationship
-	 * 
-	 * @param relationship
-	 * @return true if relationship was added successfully
-	 */
-	public boolean addUserRealtionship(ZeppaUserToUserRelationship relationship) {
-		return userRelationships.add(relationship.getKey());
-	}
-
-	/**
-	 * Remove a User relationship
-	 * 
-	 * @param relationship
-	 * @return true if Relationship was successfully removed
-	 */
-	public boolean removeUserRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		return userRelationships.remove(relationship.getKey());
-	}
-
-	/**
-	 * get a list of the user relationships
-	 * 
-	 * @return relationships list
-	 */
-	public List<Key> getUserRelationships() {
-		return userRelationships;
-	}
-
-	/*
-	 * Hold a list of notifications sent to this user
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<Key> notifications = new ArrayList<Key>();
-
-	/**
-	 * Add a notification that was delivered to this user
-	 * 
-	 * @param notification
-	 * @return true if the notification was added successfully
-	 */
-	public boolean addNotification(ZeppaNotification notification) {
-		return notifications.add(notification.getKey());
-	}
-
-	/**
-	 * Remove a notification sent to this user
-	 * 
-	 * @param notification
-	 * @return true if notification was removed successfully
-	 */
-	public boolean removeNotification(ZeppaNotification notification) {
-		return notifications.remove(notification.getKey());
-	}
-
-	/*
-	 * Hold a list of notifications this user sent
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<Key> sentNotifications = new ArrayList<Key>();
-
-	/**
-	 * Add a notification this user sent
-	 * 
-	 * @param notification
-	 * @return true notification was added successfully
-	 */
-	public boolean addSentNotification(ZeppaNotification notification) {
-		return sentNotifications.add(notification.getKey());
-	}
-
-	/**
-	 * Remove a notification this user sent
-	 * 
-	 * @param notification
-	 * @return true if notification was removed successfully
-	 */
-	public boolean removeSentNotification(ZeppaNotification notification) {
-		return sentNotifications.remove(notification.getKey());
-	}
-
-	/*
-	 * Hold a list of comments this user has made
-	 */
-	@Persistent(defaultFetchGroup = "false")
-	private List<Key> comments = new ArrayList<Key>();
-
-	/**
-	 * Add a reference to a comment this user made on an event
-	 * 
-	 * @param comment
-	 * @return true if comment was added successfully
-	 */
-	public boolean addComment(EventComment comment) {
-		return comments.add(comment.getKey());
-	}
-
-	/**
-	 * Remove a reference to a comment this user made on an event
-	 * 
-	 * @param comment
-	 * @return
-	 */
-	public boolean removeComment(EventComment comment) {
-		return comments.remove(comment.getKey());
-	}
 
 }

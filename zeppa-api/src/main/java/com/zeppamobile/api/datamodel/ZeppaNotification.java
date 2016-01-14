@@ -6,7 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaNotification {
@@ -53,18 +52,6 @@ public class ZeppaNotification {
 
 	@Persistent
 	private Boolean hasSeen;
-	
-	/*
-	 * For maintaining relationship
-	 */
-	@Persistent(defaultFetchGroup="false")
-	@Unowned
-	private ZeppaUser recipient;
-	
-	@Persistent(defaultFetchGroup="false")
-	@Unowned
-	private ZeppaUser sender;
-	
 
 	/**
 	 * Construct a new Notification that can be persisted and viewed by the user
@@ -91,7 +78,6 @@ public class ZeppaNotification {
 		this.extraMessage = extraMessage;
 		this.hasSeen = hasSeen;
 	}
-
 
 	public Long getCreated() {
 		return created;
@@ -173,27 +159,4 @@ public class ZeppaNotification {
 		this.senderId = userId;
 	}
 
-
-	public ZeppaUser getRecipient() {
-		return recipient;
-	}
-
-
-	public void setRecipient(ZeppaUser recipient) {
-		this.recipient = recipient;
-		this.recipientId = recipient.getId();
-	}
-
-
-	public ZeppaUser getSender() {
-		return sender;
-	}
-
-
-	public void setSender(ZeppaUser sender) {
-		this.sender = sender;
-		this.senderId = sender.getId();
-	}
-
-	
 }

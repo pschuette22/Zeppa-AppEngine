@@ -1,11 +1,9 @@
 package com.zeppamobile.api.endpoint;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
-import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
@@ -16,7 +14,6 @@ import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.CollectionResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
@@ -25,7 +22,6 @@ import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
-import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -40,7 +36,7 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
-	@ApiMethod(name = "listEventTag")
+	@ApiMethod(name = "listEventTag",path="listEventTag")
 	public CollectionResponse<EventTag> listEventTag(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -104,36 +100,36 @@ public class EventTagEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
-	/**
-	 * This method gets the entity having primary key id. It uses HTTP GET
-	 * method.
-	 * 
-	 * @param id
-	 *            the primary key of the java bean.
-	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "getEventTag")
-	public EventTag getEventTag(@Named("id") Long id,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
-
-		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
-		}
-
-		PersistenceManager mgr = getPersistenceManager();
-		EventTag eventtag = null;
-		try {
-			eventtag = mgr.getObjectById(EventTag.class, id);
-		} finally {
-			mgr.close();
-		}
-		return eventtag;
-	}
+//	/**
+//	 * This method gets the entity having primary key id. It uses HTTP GET
+//	 * method.
+//	 * 
+//	 * @param id
+//	 *            the primary key of the java bean.
+//	 * @return The entity with primary key id.
+//	 * @throws OAuthRequestException
+//	 */
+//	@ApiMethod(name = "getEventTag")
+//	public EventTag getEventTag(Key key,
+//			@Named("idToken") String tokenString) throws UnauthorizedException {
+//
+//		// Fetch Authorized Zeppa User
+//		ZeppaUser user = ClientEndpointUtility
+//				.getAuthorizedZeppaUser(tokenString);
+//		if (user == null) {
+//			throw new UnauthorizedException(
+//					"No matching user found for this token");
+//		}
+//
+//		PersistenceManager mgr = getPersistenceManager();
+//		EventTag eventtag = null;
+//		try {
+//			eventtag = mgr.getObjectById(EventTag.class, key);
+//		} finally {
+//			mgr.close();
+//		}
+//		return eventtag;
+//	}
 
 	/**
 	 * 
@@ -158,12 +154,10 @@ public class EventTagEndpoint {
 					"No matching user found for this token");
 		}
 
+		// This could be unnecessary
 		if (eventtag.getOwnerId().longValue() != user.getId().longValue()) {
 			throw new UnauthorizedException("Cannot make tags for other people");
 		}
-
-		eventtag.setCreated(System.currentTimeMillis());
-		eventtag.setUpdated(System.currentTimeMillis());
 
 		PersistenceManager mgr = getPersistenceManager();
 		// Persistence manager for making changes to the user
@@ -171,28 +165,24 @@ public class EventTagEndpoint {
 		Transaction txn = mgr.currentTransaction();
 		try {
 			txn.begin();
-			// Reopen the user with a persistence manager to make changes
-			user = mgr.getObjectById(ZeppaUser.class, user.getKey());
-			// Set the owner user
-			eventtag.setOwner(user);
-			// Update the user relationships
-			if (user.addTag(eventtag)) {
-				System.out.println("Mapped tag to user");
-				ClientEndpointUtility.updateUserEntityRelationships(user);
-			} else {
-				System.out.println("Did not map tag to user");
-			}
+
+			// Initialize the tag
+			EventTag insert = new EventTag(user, eventtag.getTagText());
 
 			// Update and store objects
-			eventtag = mgr.makePersistent(eventtag);
+			eventtag = mgr.makePersistent(insert);
+
+			// Commit the transaction
 			txn.commit();
+
 		} finally {
-			// Close the persistence managers so changes are made to data
+			// If transaction was not committed, roll it back
 			if (txn.isActive()) {
 				System.out.println("Transaction rolled back");
 				txn.rollback();
 				eventtag = null;
 			}
+			// Close persistence managers to finalize
 			mgr.close();
 		}
 
@@ -220,38 +210,20 @@ public class EventTagEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
-		PersistenceManager rmgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
+
 		try {
+			// Search through users tags for one to be removed
 			EventTag eventtag = mgr.getObjectById(EventTag.class, tagId);
 
-			// Make sure user is allowed to access this item
-			if (user.getId().longValue() == eventtag.getOwnerId().longValue()) {
-				TaskUtility.scheduleDeleteTagFollows(tagId);
-				Transaction txn = rmgr.currentTransaction();
-
+			if (eventtag != null) {
 				txn.begin();
-
-				List<Key> followKeys = eventtag.getFollowKeys();
-
-				if (!followKeys.isEmpty()) {
-					/*
-					 * Iterate through the keys and kill relationships
-					 */
-					List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
-					for (Key k : followKeys) {
-						try {
-							EventTagFollow f = rmgr.getObjectById(
-									EventTagFollow.class, k);
-							follows.add(f);
-						} catch (JDOObjectNotFoundException e) {
-							// Follow not found... oh well
-						}
-					}
-					// Delete all the follows
-					rmgr.deletePersistentAll(follows);
-				}
-
+				// Remove the follow objects
+				long deleted = mgr.newQuery(EventTagFollow.class, "tagId=="+eventtag.getId().longValue()).deletePersistentAll();
+				// TODO: remove references to this tag in events
+				// Remove the tag
 				mgr.deletePersistent(eventtag);
+				txn.commit();
 			} else {
 				throw new UnauthorizedException(
 						"Cannot delete a tag you don't own");
@@ -259,6 +231,7 @@ public class EventTagEndpoint {
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {
 			e.printStackTrace();
+			// object with this ID was not found in db
 		} finally {
 			mgr.close();
 		}

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.DeviceInfo;
@@ -16,10 +17,10 @@ import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaEvent.EventPrivacyType;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
 import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
-import com.zeppamobile.api.datamodel.ZeppaEvent.EventPrivacyType;
 import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship.UserRelationshipType;
 import com.zeppamobile.api.notifications.NotificationUtility;
 import com.zeppamobile.api.notifications.PayloadBuilder;
@@ -41,6 +42,7 @@ public class RelationshipUtility {
 	public static Collection<ZeppaEventToUserRelationship> createEventRelationships(
 			long eventId) {
 
+		// TODO: get Zeppa User object and filter with relationship keys
 		ZeppaEvent event = null;
 		PersistenceManager emgr = getPersistenceManager();
 		try {
@@ -60,10 +62,10 @@ public class RelationshipUtility {
 
 		Collection<ZeppaEventToUserRelationship> result = new ArrayList<ZeppaEventToUserRelationship>();
 		List<Long> userIds = new ArrayList<Long>();
+		userIds.addAll(event.getInvitedUserIds());
 
-		if (event.getPrivacy() == EventPrivacyType.PRIVATE) {
-			userIds.addAll(event.getInvitedUserIds());
-		} else {
+		if (event.getPrivacy() == EventPrivacyType.CASUAL) {
+
 			// Execute Query to find all relationships user initiated
 			PersistenceManager mgr = getPersistenceManager();
 
@@ -76,12 +78,16 @@ public class RelationshipUtility {
 				List<ZeppaUserToUserRelationship> connections = (List<ZeppaUserToUserRelationship>) query
 						.execute();
 
-				if (!connections.isEmpty()) {
+				// Only iterate if the connects are not empty
+				if (connections != null && !connections.isEmpty()) {
 
 					Iterator<ZeppaUserToUserRelationship> iterator = connections
 							.iterator();
 					while (iterator.hasNext()) {
-						userIds.add(iterator.next().getSubjectId());
+						Long subjectId = iterator.next().getSubjectId();
+						if (!userIds.contains(subjectId)) {
+							userIds.add(subjectId);
+						}
 					}
 				}
 
@@ -94,12 +100,15 @@ public class RelationshipUtility {
 				List<ZeppaUserToUserRelationship> connections2 = (List<ZeppaUserToUserRelationship>) query
 						.execute();
 
-				if (!connections2.isEmpty()) {
+				if (connections2 != null && !connections2.isEmpty()) {
 
 					Iterator<ZeppaUserToUserRelationship> iterator = connections2
 							.iterator();
 					while (iterator.hasNext()) {
-						userIds.add(iterator.next().getCreatorId());
+						Long creatorId = iterator.next().getCreatorId();
+						if (!userIds.contains(creatorId)) {
+							userIds.add(creatorId);
+						}
 					}
 				}
 
@@ -191,18 +200,46 @@ public class RelationshipUtility {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
+			txn.begin();
+
 			result = mgr.makePersistentAll(result);
+
+			txn.commit();
 		} finally {
+			// Something went wrong
+			if (txn.isActive()) {
+				txn.rollback();
+				result = null;
+			}
 			mgr.close();
 		}
 
 		return result;
 	}
 
+	/**
+	 * Create event relationships between two users after they connect. Relevant
+	 * events are casual events either user has created that has not ended yet
+	 * 
+	 * @param userId1
+	 *            - database id of one of the users involved in this transaction
+	 * @param userId2
+	 *            - database id of the other user involved in this transaction
+	 */
 	@SuppressWarnings("unchecked")
 	public static void createRelevantRelationshipsForUsers(Long userId1,
 			Long userId2) {
+
+		/**
+		 * Verify this is a relevant transaction
+		 */
+		if (userId1 == null || userId2 == null
+				|| userId1.longValue() == userId2.longValue()) {
+			// TODO: throw bad params exception
+			return;
+		}
 
 		List<ZeppaEventToUserRelationship> relationships = new ArrayList<ZeppaEventToUserRelationship>();
 
@@ -213,7 +250,7 @@ public class RelationshipUtility {
 		String filter = "hostId == " + userId2 + " && end > "
 				+ System.currentTimeMillis() + " && privacy == 'CASUAL'";
 		PersistenceManager mgr = getPersistenceManager();
-
+		Transaction txn = mgr.currentTransaction();
 		try {
 			List<ZeppaEvent> events = (List<ZeppaEvent>) mgr.newQuery(
 					ZeppaEvent.class, filter).execute();
@@ -222,28 +259,19 @@ public class RelationshipUtility {
 
 				Iterator<ZeppaEvent> iterator = events.iterator();
 				while (iterator.hasNext()) {
+
 					ZeppaEvent event = iterator.next();
-					PersistenceManager emgr = getPersistenceManager();
 					ZeppaEventToUserRelationship relationship = null;
-					try {
-						relationship = (ZeppaEventToUserRelationship) emgr
-								.newQuery(
-										ZeppaEventToUserRelationship.class,
-										"eventId == "
-												+ event.getId().longValue()
-												+ " && userId == "
-												+ userId1.longValue())
-								.execute();
+					Collection<ZeppaEventToUserRelationship> existingRelationships = (Collection<ZeppaEventToUserRelationship>) mgr
+							.newQuery(
+									ZeppaEventToUserRelationship.class,
+									"eventId == " + event.getId().longValue()
+											+ " && userId == "
+											+ userId1.longValue()).execute();
 
-					} catch (javax.jdo.JDOObjectNotFoundException e) {
-						// No object was found. This is stellar
-					} finally {
-						emgr.close();
-					}
-
-					if (relationship == null) {
+					if (existingRelationships == null || existingRelationships.isEmpty()) {
 						relationship = new ZeppaEventToUserRelationship(event,
-								userId1, Boolean.FALSE, Boolean.TRUE,
+								userId1, Boolean.FALSE, Boolean.FALSE,
 								Long.valueOf(-1));
 						relationships.add(relationship);
 					}
@@ -266,43 +294,36 @@ public class RelationshipUtility {
 				while (iterator.hasNext()) {
 
 					ZeppaEvent event = iterator.next();
-					PersistenceManager emgr = getPersistenceManager();
 					ZeppaEventToUserRelationship relationship = null;
-					try {
-						relationship = (ZeppaEventToUserRelationship) emgr
-								.newQuery(
-										ZeppaEventToUserRelationship.class,
-										"eventId == "
-												+ event.getId().longValue()
-												+ " && userId == "
-												+ userId2.longValue())
-								.execute();
+					Collection<ZeppaEventToUserRelationship> existingRelationships = (Collection<ZeppaEventToUserRelationship>) mgr
+							.newQuery(
+									ZeppaEventToUserRelationship.class,
+									"eventId == " + event.getId().longValue()
+											+ " && userId == "
+											+ userId2.longValue()).execute();
 
-					} catch (javax.jdo.JDOObjectNotFoundException e) {
-						// No object was found. This is stellar
-					} finally {
-						emgr.close();
-					}
-
-					if (relationship == null) {
+					if (existingRelationships == null || existingRelationships.isEmpty()) {
 						relationship = new ZeppaEventToUserRelationship(event,
-								userId2, Boolean.FALSE, Boolean.TRUE,
+								userId2, Boolean.FALSE, Boolean.FALSE,
 								Long.valueOf(-1));
 						relationships.add(relationship);
 					}
+
 				}
 
 			}
+			if (!relationships.isEmpty()) {
+				mgr.makePersistentAll(relationships);
+				
+			}
+			txn.commit();
 
 		} finally {
+			// Make sure this finished up properly
+			if (txn.isActive()) {
+				txn.rollback();
+			}
 			mgr.close();
-		}
-
-		PersistenceManager rmgr = getPersistenceManager();
-		try {
-			rmgr.makePersistentAll(relationships);
-		} finally {
-			rmgr.close();
 		}
 
 	}

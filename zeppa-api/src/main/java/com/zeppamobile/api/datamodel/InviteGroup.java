@@ -57,4 +57,13 @@ public class InviteGroup {
 		return this.groupMembers;
 	}
 	
+	/**
+	 * Determine if email is part of email group
+	 * @param email - email of user
+	 * @return true if email is part of this group
+	 */
+	public boolean isGroupMember(String email){
+		return emails.contains(email);
+	}
+	
 }

@@ -28,6 +28,22 @@ public class InviteGroup {
 	private List<String> suggestedTags = new ArrayList<String>();
 	
 	
+	public List<String> getEmails() {
+		return emails;
+	}
+
+	public void setEmails(List<String> emails) {
+		this.emails = emails;
+	}
+
+	public List<String> getSuggestedTags() {
+		return suggestedTags;
+	}
+
+	public void setSuggestedTags(List<String> suggestedTags) {
+		this.suggestedTags = suggestedTags;
+	}
+
 	/**
 	 * Add a group member to an invite group
 	 * @param user
@@ -39,6 +55,15 @@ public class InviteGroup {
 
 	public List<Key> getGroupMemberKeys(){
 		return this.groupMembers;
+	}
+	
+	/**
+	 * Determine if email is part of email group
+	 * @param email - email of user
+	 * @return true if email is part of this group
+	 */
+	public boolean isGroupMember(String email){
+		return emails.contains(email);
 	}
 	
 }

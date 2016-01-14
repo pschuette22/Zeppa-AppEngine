@@ -76,6 +76,8 @@ public class UniversalConstants {
 	public static final String PARAM_CURSOR = "cursor";
 	public static final String PARAM_ORDERING = "ordering";
 	public static final String PARAM_LIMIT = "limit";
+	public static final String PARAM_EMAIL_LIST = "email-list";
+	public static final String PARAM_TAG_LIST = "tag-list";
 
 	/*
 	 * Return argument keys

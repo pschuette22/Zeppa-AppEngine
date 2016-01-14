@@ -1,6 +1,6 @@
 package com.zeppamobile.api.endpoint.utils;
 
-import java.util.logging.Level;
+import java.security.GeneralSecurityException;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -8,6 +8,7 @@ import javax.jdo.Query;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.server.spi.response.UnauthorizedException;
+import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
@@ -25,9 +26,9 @@ import com.zeppamobile.common.utils.Utils;
  */
 public class ClientEndpointUtility {
 
-	private static final Logger LOG = Logger.getLogger(ClientEndpointUtility.class.getName());
+	private static final Logger LOG = Logger
+			.getLogger(ClientEndpointUtility.class.getName());
 
-	
 	/**
 	 * <p>
 	 * Fetch the user for this id token
@@ -69,11 +70,11 @@ public class ClientEndpointUtility {
 
 		try {
 
-			Query q = mgr.newQuery(ZeppaUser.class,"authEmail == '" + payload.getEmail()+"'");
+			Query q = mgr.newQuery(ZeppaUser.class,
+					"authEmail == '" + payload.getEmail() + "'");
 			q.setUnique(true);
 
 			result = (ZeppaUser) q.execute();
-			
 
 		} finally {
 			mgr.close();
@@ -88,23 +89,30 @@ public class ClientEndpointUtility {
 	 *            id token sent from client
 	 * @return Payload for this token or null if invalid
 	 */
-	public static GoogleIdToken.Payload checkToken(String tokenString) throws UnauthorizedException {
+	public static GoogleIdToken.Payload checkToken(String tokenString)
+			throws UnauthorizedException {
 
 		// TODO: validate auth token, client id, etc.
 		AuthChecker checker = new AuthChecker(
 				UniversalConstants.APP_CLIENT_IDS, Constants.WEB_CLIENT_ID);
 
+		try {
+			GoogleIdToken.Payload payload = checker.check(tokenString);
 
-		GoogleIdToken.Payload payload = checker.check(tokenString);
-		
-		if(checker.isValid()){
+			if (checker.isValid() || AppConfig.isTest()) {
 
-			return payload;
-		} else {
+				return payload;
+			} else {
 
-			throw new UnauthorizedException("Invalid Auth With Problem: " + checker.problem());
+				throw new UnauthorizedException("Invalid Auth With Problem: "
+						+ checker.problem());
+			}
+		} catch (GeneralSecurityException e) {
+			// TODO: flag the security error
+			throw new UnauthorizedException("Security Error: "
+					+ e.getLocalizedMessage());
 		}
-		
+
 	}
 
 	/**
@@ -114,14 +122,14 @@ public class ClientEndpointUtility {
 	 * @return true if object was persisted successfully
 	 */
 	public static boolean updateUserEntityRelationships(ZeppaUser user) {
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			mgr.makePersistent(user);
-		} catch (Exception e) {
-			return false;
-		} finally {
-			mgr.close();
-		}
+//		PersistenceManager mgr = getPersistenceManager();
+//		try {
+//			mgr.makePersistent(user);
+//		} catch (Exception e) {
+//			return false;
+//		} finally {
+//			mgr.close();
+//		}
 
 		return true;
 	}
@@ -177,20 +185,6 @@ public class ClientEndpointUtility {
 		return result;
 	}
 
-	/**
-	 * Update a user relationship
-	 * 
-	 * @param relationship
-	 */
-	public static void updateUserRelationship(
-			ZeppaUserToUserRelationship relationship) {
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			mgr.makePersistent(relationship);
-		} finally {
-			mgr.close();
-		}
-	}
 
 	/**
 	 * Get the persistence manager

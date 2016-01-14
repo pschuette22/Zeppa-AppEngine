@@ -1,9 +1,5 @@
 package com.zeppamobile.api.datamodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -32,11 +28,12 @@ public class EventTag {
 	@Persistent
 	private String tagText;
 
-	@Persistent
-	private ZeppaUser owner;
+	/**
+	 * Blank Constructor
+	 */
+	public EventTag() {
 
-	@Persistent
-	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+	}
 
 	/**
 	 * Create a new EventTag Instance
@@ -49,19 +46,7 @@ public class EventTag {
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
-		this.owner = owner;
 		this.ownerId = owner.getId();
-	}
-
-	/**
-	 * TEMPORARY
-	 */
-	public EventTag(Long ownerId, String tagText) {
-
-		this.created = System.currentTimeMillis();
-		this.updated = System.currentTimeMillis();
-		this.tagText = tagText;
-		this.ownerId = ownerId;
 	}
 
 	/**
@@ -117,22 +102,6 @@ public class EventTag {
 
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
-	}
-
-	public ZeppaUser getOwner() {
-		return owner;
-	}
-
-	public void setOwner(ZeppaUser owner) {
-		this.owner = owner;
-	}
-	
-	public boolean addEventTagFollow(EventTagFollow follow){
-		return this.follows.add(follow);
-	}
-	
-	public boolean removeFollow(EventTagFollow follow){
-		return this.follows.remove(follow);
 	}
 
 }

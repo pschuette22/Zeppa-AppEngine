@@ -48,14 +48,14 @@ public class AppInfoEndpoint {
 
 		
 		public void initAndroidClientInfo(){
-			currentVersion = Constants.androidClientVersion;
+			currentVersion=Constants.androidClientVersion;
 			currentUpdate=Constants.androidClientUpdate;
 			currentBugfix=Constants.androidClientBugfix;
 			
 		}
 		
 		public void initIosClientInfo(){
-			currentVersion = Constants.iOSClientVersion;
+			currentVersion=Constants.iOSClientVersion;
 			currentUpdate=Constants.iOSClientUpdate;
 			currentBugfix=Constants.iOSClientBugfix;
 		}
@@ -116,10 +116,6 @@ public class AppInfoEndpoint {
 			this.message = message;
 		}
 
-		
-
-		
-		
 	}
 
 	/**

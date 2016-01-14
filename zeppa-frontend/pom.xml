@@ -24,8 +24,7 @@
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.zeppamobile.appengine</groupId> <artifactId>zeppa-api</artifactId> 
-			<version>1</version> <scope>compile</scope> </dependency> -->
+
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
@@ -69,7 +68,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
-			<version>1.9.28</version>
+			<version>${appengine.target.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -86,7 +85,7 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.3.1</version>
+			<version>2.4</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>com.alibaba</groupId> <artifactId>fastjson</artifactId> 
@@ -133,6 +132,7 @@
 				<plugin>
 					<groupId>com.google.appengine</groupId>
 					<artifactId>appengine-maven-plugin</artifactId>
+					<version>${appengine.target.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

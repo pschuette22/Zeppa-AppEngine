@@ -33,12 +33,6 @@ public class ZeppaUserInfo{
 	@Persistent(defaultFetchGroup = "true")
 	private String imageUrl;
 
-	@Persistent(defaultFetchGroup = "true")
-	private String googleAccountEmail;
-
-	@Persistent(defaultFetchGroup = "true")
-	private String primaryUnformattedNumber;
-	
 	
 	
 	public Long getCreated() {
@@ -87,22 +81,6 @@ public class ZeppaUserInfo{
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
-	}
-
-	public String getGoogleAccountEmail() {
-		return googleAccountEmail;
-	}
-
-	public void setGoogleAccountEmail(String googleAccountEmail) {
-		this.googleAccountEmail = googleAccountEmail;
-	}
-
-	public String getPrimaryUnformattedNumber() {
-		return primaryUnformattedNumber;
-	}
-
-	public void setPrimaryUnformattedNumber(String primaryUnformattedNumber) {
-		this.primaryUnformattedNumber = primaryUnformattedNumber;
 	}
 
 }

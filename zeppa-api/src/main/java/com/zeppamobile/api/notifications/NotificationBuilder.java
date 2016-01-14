@@ -9,13 +9,14 @@ import java.util.logging.Logger;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.labs.repackaged.org.json.JSONException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
 import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification;
-import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType;
+import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 
 public class NotificationBuilder {
 
@@ -232,33 +233,7 @@ public class NotificationBuilder {
 				notifications.add(notification);
 			}
 
-		} else if (action.equals("deletedEvent")) {
-			while (iterator.hasNext()) {
-				ZeppaEventToUserRelationship relationship = iterator.next();
-				if (relationship.getIsAttending().booleanValue()
-						|| relationship.getIsWatching().booleanValue()) {
-
-					// Create notification item so the user sees the event was
-					// canceled
-					ZeppaNotification notification = new ZeppaNotification(
-							relationship.getEventHostId(),
-							relationship.getUserId(),
-							relationship.getEventId(),
-							relationship.getExpires(),
-							NotificationType.EVENT_CANCELED, "Canceled Event",
-							Boolean.FALSE);
-					notifications.add(notification);
-				} else {
-					// If user is not attending, send a payload to notify
-					// devices to remove this event
-					String payload = PayloadBuilder
-							.silentEventDeletedPayload(eventId);
-					NotificationUtility.preprocessNotificationDelivery(payload,
-							relationship.getUserId().longValue());
-				}
-
-			}
-		}
+		} 
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {

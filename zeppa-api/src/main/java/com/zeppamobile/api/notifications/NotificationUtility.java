@@ -3,6 +3,7 @@ package com.zeppamobile.api.notifications;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import com.google.gson.Gson;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.DeviceInfo;
 import com.zeppamobile.api.datamodel.DeviceInfo.DeviceType;
+import com.zeppamobile.api.datamodel.ZeppaNotification;
 import com.zeppamobile.common.utils.ModuleUtils;
 
 public class NotificationUtility {
@@ -52,14 +54,83 @@ public class NotificationUtility {
 
 		// Execute the servlet to pull from the queue
 		Queue executionQueue = QueueFactory.getQueue("notification-building");
-		executionQueue
-				.add(TaskOptions.Builder
-						.withUrl(
-								"/notifications/builder/")
-						.method(Method.GET).param("objectType", objectType)
-						.param("id", String.valueOf(id.longValue()))
-						.param("action", action));
+		executionQueue.add(TaskOptions.Builder
+				.withUrl("/notifications/builder/").method(Method.GET)
+				.param("objectType", objectType)
+				.param("id", String.valueOf(id.longValue()))
+				.param("action", action));
 
+	}
+
+	/**
+	 * Enqueue notifications that have been persisted for preprocessing and
+	 * delivery
+	 * 
+	 * @param notifications
+	 */
+	public static void enqueueNotificationsDelivery(
+			List<ZeppaNotification> notifications) {
+
+		if (notifications != null && !notifications.isEmpty()) {
+			// Schedule delivery of notification
+			for (ZeppaNotification notification : notifications) {
+
+				// Enqueue notifications to be delivered to appropriate
+				// users
+				String payload = PayloadBuilder
+						.zeppaNotificationPayload(notification);
+
+				NotificationUtility.preprocessNotificationDelivery(payload,
+						notification.getRecipientId().longValue());
+			}
+
+			
+			
+			// Spin up the delivery worker
+			try {
+				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications", "/notifications/notificationworker", null);
+
+				// execute post method
+				HttpURLConnection connection = (HttpURLConnection) url
+						.openConnection();
+				// connection.setDoOutput(true);
+				connection.setRequestMethod("POST");
+				connection.setRequestProperty("content-type",
+						"application/x-www-form-urlencoded");
+				connection.setInstanceFollowRedirects(false);
+
+				// OutputStreamWriter writer = new OutputStreamWriter(
+				// connection.getOutputStream());
+				//
+				// String message =
+				// URLEncoder.encode("Send Notifications",
+				// "UTF-8");
+				// writer.write("message=" + message);
+				// writer.close();
+				//
+				// connection.getOutputStream();
+
+				connection.connect();
+
+				if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					// OK
+					log.warning("Responded OK, notification worker started fine");
+				} else {
+					// Server returned HTTP error code.
+					log.warning("Something went wrong trying to start notification worker");
+				}
+
+			} catch (MalformedURLException e) {
+				// ...
+			} catch (IOException e) {
+				// ...
+			}
+			// }
+
+		} else {
+			log.info("Tried to create null number of notifications");
+		}
+		
 	}
 
 	// /**
@@ -103,34 +174,34 @@ public class NotificationUtility {
 				.toArray(new String[registrationIds.size()]);
 		String devicesAsJson = new Gson().toJson(registrationIdArray);
 
-
 		Queue notificationQueue = QueueFactory
 				.getQueue("notification-delivery");
 		// Add notification to the appropriate queue
 		notificationQueue.add(TaskOptions.Builder
-				.withMethod(TaskOptions.Method.PULL)
-				.param("payload", payload)
+				.withMethod(TaskOptions.Method.PULL).param("payload", payload)
 				.param("devices", devicesAsJson)
 				.param("deviceType", deviceType));
-		
-		// Make a get request to notification module to start notification polling
+
+		// Make a get request to notification module to start notification
+		// polling
 		try {
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications", "/notifications/notificationworker", null);
-			
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(url.openStream()));
-			
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications",
+					"/notifications/notificationworker", null);
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+
 			String line;
-			while((line =reader.readLine())!=null){
+			while ((line = reader.readLine()) != null) {
 				// read the output
 			}
-			
-			// TODO: verify proper output or 
-			
+
+			// TODO: verify proper output or
+
 		} catch (MalformedURLException e) {
 			// TODO: Log this, indicates the url is not formed properly
 			e.printStackTrace();
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -160,7 +231,7 @@ public class NotificationUtility {
 
 		List<String> androidDeviceTokens = new ArrayList<String>();
 		List<String> iosDeviceTokens = new ArrayList<String>();
-		
+
 		log.info("Processing notification to: " + recipientId + ", payload: "
 				+ payload);
 
@@ -179,10 +250,10 @@ public class NotificationUtility {
 				// Must have an updated version of the app
 				if (device.getLoggedIn() != null
 						&& device.getLoggedIn().booleanValue()) {
-					if(device.getPhoneType() == DeviceType.ANDROID){
+					if (device.getPhoneType() == DeviceType.ANDROID) {
 						androidDeviceTokens.add(device.getRegistrationId());
 					} else if (device.getPhoneType() == DeviceType.iOS)
-						iosDeviceTokens.add(device.getRegistrationId());	
+						iosDeviceTokens.add(device.getRegistrationId());
 				} else {
 					log.info("device not logged in or not most recent type");
 				}
@@ -200,13 +271,11 @@ public class NotificationUtility {
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
 					androidDeviceTokens, "ANDROID");
 		}
-		
-		if(!iosDeviceTokens.isEmpty()){
+
+		if (!iosDeviceTokens.isEmpty()) {
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
 					iosDeviceTokens, "iOS");
 		}
-
-
 
 	}
 

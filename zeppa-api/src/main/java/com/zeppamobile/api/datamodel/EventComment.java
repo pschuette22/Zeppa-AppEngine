@@ -6,7 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class EventComment {
@@ -29,24 +28,12 @@ public class EventComment {
 
 	@Persistent
 	private String text;
-
-	/*
-	 * For maintaining relationships
-	 */
-
-	@Persistent
-	private ZeppaEvent event;
-
-	@Persistent
-	@Unowned
-	private ZeppaUser commenter;
 	
 	
 	public EventComment(ZeppaEvent event, ZeppaUser commenter, Long created,
 			Long updated, String text) {
 		super();
-		this.event = event;
-		this.commenter = commenter;
+		
 		this.eventId = event.getId();
 		this.commenterId = commenter.getId();
 		this.created = created;
@@ -101,22 +88,6 @@ public class EventComment {
 
 	public void setEventId(Long eventId) {
 		this.eventId = eventId;
-	}
-
-	public ZeppaEvent getEvent() {
-		return event;
-	}
-
-	public void setEvent(ZeppaEvent event) {
-		this.event = event;
-	}
-
-	public ZeppaUser getCommenter() {
-		return commenter;
-	}
-
-	public void setCommenter(ZeppaUser commenter) {
-		this.commenter = commenter;
 	}
 
 }

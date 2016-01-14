@@ -18,6 +18,14 @@ import com.zeppamobile.api.datamodel.ZeppaNotification;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.utils.ModuleUtils;
 
+/**
+ * 
+ * @author Pete Schuette
+ * 
+ *         This servlet is used to create notifications if a slight delay isn't
+ *         a problem
+ *
+ */
 public class NotificationBuilderServlet extends HttpServlet {
 
 	/**
@@ -68,79 +76,7 @@ public class NotificationBuilderServlet extends HttpServlet {
 			List<ZeppaNotification> notifications = NotificationBuilder
 					.buildNotifications(objectType, id, action);
 
-			if (notifications != null && !notifications.isEmpty()) {
-				// Schedule delivery of notification
-				for (ZeppaNotification notification : notifications) {
-
-					// Enqueue notifications to be delivered to appropriate
-					// users
-					String payload = PayloadBuilder
-							.zeppaNotificationPayload(notification);
-
-					NotificationUtility.preprocessNotificationDelivery(payload,
-							notification.getRecipientId().longValue());
-				}
-
-				// if (SystemProperty.environment.value() ==
-				// SystemProperty.Environment.Value.Production) {
-
-				// log.info("Production run with existing tasks in queue");
-
-				// If not running locally
-				// form URL to execute notification worker
-				
-				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-notifications", "/notifications/notificationworker", null);
-
-				try {
-					// execute post method
-					HttpURLConnection connection = (HttpURLConnection) url
-							.openConnection();
-					// connection.setDoOutput(true);
-					connection.setRequestMethod("POST");
-					connection.setRequestProperty("content-type",
-							"application/x-www-form-urlencoded");
-					connection.setInstanceFollowRedirects(false);
-
-					// OutputStreamWriter writer = new OutputStreamWriter(
-					// connection.getOutputStream());
-					//
-					// String message =
-					// URLEncoder.encode("Send Notifications",
-					// "UTF-8");
-					// writer.write("message=" + message);
-					// writer.close();
-					//
-					// connection.getOutputStream();
-
-					connection.connect();
-
-					if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-						// OK
-						log.warning("Responded OK, notification worker started fine");
-					} else {
-						// Server returned HTTP error code.
-						log.warning("Something went wrong trying to start notification worker");
-					}
-
-				} catch (MalformedURLException e) {
-					// ...
-				} catch (IOException e) {
-					// ...
-				}
-				// }
-
-			} else {
-				log.info("Tried to create null number of notifications");
-			}
-
-			// If the notifications were for a deleted event, schedule removing
-			// the
-			// event relationships.
-			// This is a temporary measure until I determine the best way to do
-			// it.
-			if (action.equals("deletedEvent")) {
-				TaskUtility.scheduleDeleteEventRelationships(id.longValue());
-			}
+			NotificationUtility.enqueueNotificationsDelivery(notifications);
 
 		} finally {
 			// resp.setStatus(HttpServletResponse.SC_OK);

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -20,7 +21,11 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
+import com.zeppamobile.api.datamodel.ZeppaNotification;
+import com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
@@ -42,10 +47,10 @@ public class ZeppaEventEndpoint {
 	 * @throws UnauthorizedException
 	 *             if idToken does not represent a valid user or user makes an
 	 *             unauthorized request
-	 *             
+	 * 
 	 */
 	@SuppressWarnings({ "unchecked" })
-	@ApiMethod(name = "listZeppaEvent")
+	@ApiMethod(name = "listZeppaEvent", path = "listZeppaEvent")
 	public CollectionResponse<ZeppaEvent> listZeppaEvent(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -96,17 +101,27 @@ public class ZeppaEventEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-			/*
-			 * Initialize object and remove bad eggs Only event owners may query
-			 * for lists of events
-			 */
-			List<ZeppaEvent> badEggs = new ArrayList<ZeppaEvent>();
-			for (ZeppaEvent event : execute) {
-				if (event.getHostId().longValue() != user.getId().longValue()) {
-					badEggs.add(event);
+			if (!execute.isEmpty()) {
+				/*
+				 * Initialize object and remove bad eggs. Only event owners may
+				 * query for lists of events
+				 */
+				List<ZeppaEvent> badEggs = new ArrayList<ZeppaEvent>();
+				for (ZeppaEvent event : execute) {
+					if (event.getHostId().longValue() != user.getId()
+							.longValue()) {
+						badEggs.add(event);
+					}
+				}
+				execute.removeAll(badEggs);
+
+				/*
+				 * If user only queried for events they cannot see
+				 */
+				if (execute.isEmpty() && !badEggs.isEmpty()) {
+					// TODO: This user was being a dickhead. let them know
 				}
 			}
-			execute.removeAll(badEggs);
 
 		} finally {
 			mgr.close();
@@ -126,7 +141,7 @@ public class ZeppaEventEndpoint {
 	 * @throws OAuthRequestException
 	 */
 
-	@ApiMethod(name = "getZeppaEvent")
+	@ApiMethod(name = "getZeppaEvent", path = "getZeppaEvent")
 	public ZeppaEvent getZeppaEvent(@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
@@ -142,9 +157,6 @@ public class ZeppaEventEndpoint {
 		ZeppaEvent zeppaevent = null;
 		try {
 			zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
-			if (!zeppaevent.isAuthorized(user.getId().longValue())) {
-				throw new UnauthorizedException("Not allowed to see this event");
-			}
 
 		} finally {
 			mgr.close();
@@ -181,28 +193,58 @@ public class ZeppaEventEndpoint {
 					"Cannot insert event for other users");
 		}
 
-		zeppaevent.setHost(user);
-		zeppaevent.setCreated(System.currentTimeMillis());
-		zeppaevent.setUpdated(System.currentTimeMillis());
-
 		// Manager to insert zeppa event
-		PersistenceManager emgr = getPersistenceManager();
+		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 
 		try {
+			// Start the transaction
+			txn.begin();
+			// Fetch user object with active manager
+			user = mgr.getObjectById(ZeppaUser.class, user.getKey());
+
+			// Set event characteristics
+			zeppaevent.setHost(user);
+			zeppaevent.setCreated(System.currentTimeMillis());
+			zeppaevent.setUpdated(System.currentTimeMillis());
+
+			/*
+			 * Add this event to google calendar
+			 */
 			zeppaevent = GoogleCalendarService
 					.insertGCalEvent(user, zeppaevent);
 
 			// Persist Event
-			zeppaevent = emgr.makePersistent(zeppaevent);
+			zeppaevent = mgr.makePersistent(zeppaevent);
 
+			/*
+			 * Establish mapped relationship to the host
+			 */
+			// if (user.addEvent(zeppaevent)) {
+			// // Mapped to the host
+			// System.out.println("Event has been mapped to the host");
+			// }
+
+			// Schedule a task to create user relationships to this event
+			// TODO: create relationships before returning?
+			TaskUtility.scheduleCreateEventRelationships(zeppaevent.getId());
+
+			// commit the changes
+			txn.commit();
+
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
 		} finally {
 
-			// If
-			emgr.close();
+			if (txn.isActive()) {
+				txn.rollback();
+				zeppaevent = null;
+			}
+
+			mgr.close();
 
 		}
-
-		TaskUtility.scheduleCreateEventRelationships(zeppaevent.getId());
 
 		return zeppaevent;
 	}
@@ -265,38 +307,74 @@ public class ZeppaEventEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
+			txn.begin();
 			ZeppaEvent zeppaevent = mgr.getObjectById(ZeppaEvent.class, id);
 
 			if (zeppaevent.getHostId().longValue() != user.getId().longValue()) {
 				throw new UnauthorizedException(
 						"Can't delete event you don't host");
 			}
+			// Delete all the comments
+			long commentsDeleted = mgr.newQuery(EventComment.class,
+					"eventId==" + zeppaevent.getId()).deletePersistentAll();
 
-			/*
-			 * Update db relationship between user and hosted event
-			 */
-			user.removeEvent(zeppaevent);
-			ClientEndpointUtility.updateUserEntityRelationships(user);
+			// Delete all the prior notification objects
+			long notifsDeleted = mgr.newQuery(ZeppaNotification.class,
+					"eventId==" + zeppaevent.getId()).deletePersistentAll();
 
-			// Schedule notification to users that event was deleted
-			NotificationUtility.scheduleNotificationBuild(
-					ZeppaEvent.class.getName(), zeppaevent.getId(),
-					"deletedEvent");
-
+			// Get all the relationships to users that are attending this event
+			@SuppressWarnings("unchecked")
+			List<ZeppaEventToUserRelationship> attending = (List<ZeppaEventToUserRelationship>) mgr
+					.newQuery(ZeppaEventToUserRelationship.class,
+							"eventId==" + zeppaevent.getId()).execute();
+			List<ZeppaNotification> notifications = new ArrayList<ZeppaNotification>();
+			// If there are people going to this event, send them notifications
+			if (attending != null && !attending.isEmpty()) {
+				// Iterate through attending relationships and notify the user
+				// that the event has been deleted
+				for (ZeppaEventToUserRelationship r : attending) {
+					ZeppaNotification n = new ZeppaNotification(user.getId(),
+							r.getUserId(), zeppaevent.getId(),
+							zeppaevent.getEnd(),
+							NotificationType.EVENT_CANCELED, user.getUserInfo()
+									.getGivenName()
+									+ " cancelled "
+									+ zeppaevent.getTitle(), Boolean.FALSE);
+					notifications.add(n);
+				}
+				notifications = (List<ZeppaNotification>) mgr.makePersistentAll(notifications);
+			}
+			// Delete all relationships to this event
+			long relationshipsDeleted = mgr.newQuery(ZeppaEventToUserRelationship.class,"eventId=="+zeppaevent.getId()).deletePersistentAll();
+			
+			
 			// Remove event from calendar
 			GoogleCalendarService.deleteCalendarEvent(zeppaevent);
+
 			// Remove event from datastore
 			mgr.deletePersistent(zeppaevent);
+			
+			// Process the notifications
+			txn.commit();
+			
+			if(!notifications.isEmpty()){
+				NotificationUtility.enqueueNotificationsDelivery(notifications);
+			}
 
 		} catch (javax.jdo.JDOObjectNotFoundException | IOException ex) {
 			ex.printStackTrace();
 		} finally {
+
 			mgr.close();
 		}
 
 	}
 
+	/**
+	 * Get the persistence manager for interacting with datastore
+	 */
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}

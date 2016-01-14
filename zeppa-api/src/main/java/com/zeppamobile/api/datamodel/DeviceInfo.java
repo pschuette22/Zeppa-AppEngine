@@ -19,9 +19,6 @@ public class DeviceInfo  {
 	private Key key;
 	
 	@Persistent
-	private ZeppaUser owner;
-	
-	@Persistent
 	private Long created;
 	
 	@Persistent
@@ -41,6 +38,18 @@ public class DeviceInfo  {
 
 	@Persistent
 	private Long lastLogin;
+	
+	/**
+	 * Phone number for this device (if added)
+	 */
+	@Persistent
+	private String phoneNumber;
+	
+	/**
+	 * True if this number was verified
+	 */
+	@Persistent
+	private Boolean isVerified;
 	
 
 	/*
@@ -75,7 +84,6 @@ public class DeviceInfo  {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
-		this.owner = owner;
 		this.ownerId = owner.getId();
 		this.phoneType = phoneType;
 		this.registrationId = registrationId;
@@ -83,16 +91,6 @@ public class DeviceInfo  {
 		this.version = version;
 		this.update = update;
 		this.bugfix = bugfix;
-	}
-	
-	
-	
-	public ZeppaUser getOwner() {
-		return owner;
-	}
-
-	public void setOwner(ZeppaUser owner) {
-		this.owner = owner;
 	}
 
 	public Long getCreated() {

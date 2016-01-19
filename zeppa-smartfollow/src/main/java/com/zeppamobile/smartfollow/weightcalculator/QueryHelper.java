@@ -42,7 +42,7 @@ public class QueryHelper {
 	private static final int ERROR_THRESHOLD = 10;
 	
 	//Trials
-	private static final long NUM_TRIALS = 30000000;
+	private static final long NUM_TRIALS = 1000000;
 
 	public static void main(String[] args) {
 		FileWriter fw = null;

@@ -8,7 +8,7 @@
 	<!-- Performance Settings -->
 	<instance-class>B2</instance-class>
 	<basic-scaling>
-		<max-instances>3</max-instances>
+		<max-instances>5</max-instances>
 		<idle-timeout>1m</idle-timeout>
 	</basic-scaling>
 

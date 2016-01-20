@@ -424,7 +424,6 @@ public class NotificationWorker {
 			pnPayload.addCustomDictionary("purpose", purpose);
 
 			if (purpose.equals("zeppaNotification")) {
-
 				
 				pnPayload.addCustomDictionary("notificationId",
 						json.getString("notificationId"));
@@ -436,12 +435,14 @@ public class NotificationWorker {
 						json.getString("expires"));
 
 			} else if (purpose.equals("userRelationshipDeleted")) {
+				
 				pnPayload.addCustomDictionary("senderId",
 						json.getString("senderId"));
-				pnPayload.addCustomDictionary("recipientId",
+				pnPayload.addCustomDictionary("recipId",
 						json.getString("recipientId"));
 
 			} else if (purpose.equals("eventDeleted")) {
+
 				pnPayload.addCustomDictionary("eventId",
 						json.getString("eventId"));
 			}
@@ -453,20 +454,25 @@ public class NotificationWorker {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "JSONExceptin sending push notification: " + e.getMessage());
 			return null;
 		}
 		
 		PushedNotifications notifications = null;
 		try {
+			log.log(Level.WARNING, "Sending " + pnPayload.getPayload().toString() + " ("+pnPayload.getPayloadSize()+"/"+pnPayload.getMaximumPayloadSize()+") to devices:" + deviceTokens.toString());
 			notifications = pushNotificationSender.sendPayload(pnPayload,
 					deviceTokens);
 
 		} catch (CommunicationException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "Communcation Exception: " + e.getMessage());
 		} catch (KeystoreException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "Keystore Exception: " + e.getMessage());
 		} catch (Exception e){
 			e.printStackTrace();
+			log.log(Level.SEVERE, "General Exception: " + e.getMessage());
 		}
 
 		return notifications;

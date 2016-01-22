@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
-			<version>1.9.28</version>
+			<version>${appengine.target.version}</version>
 		</dependency>
 
 		<dependency>
@@ -128,6 +128,7 @@
 				<plugin>
 					<groupId>com.google.appengine</groupId>
 					<artifactId>appengine-maven-plugin</artifactId>
+					<version>${appengine.target.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

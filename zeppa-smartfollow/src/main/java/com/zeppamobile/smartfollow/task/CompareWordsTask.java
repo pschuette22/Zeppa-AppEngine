@@ -40,13 +40,16 @@ public class CompareWordsTask {
 	/**
 	 * Similarity calculated from this task
 	 */
-	private double weightedSimilarity = 0;
+	private double similarity = 0; // [0,1]
 
 	/**
 	 * Weight of this similarity calculation
 	 */
-	private double weight = 0;
-
+	private double weight = 0; // [0,1] but mostly small values, we scale in
+								// TagAgent.
+	
+	private double defaultWeight = 0.01;
+	
 	/**
 	 * Create a task to be used to compare words
 	 * 
@@ -64,13 +67,13 @@ public class CompareWordsTask {
 	 * 
 	 * @return
 	 */
-	public double getWeightedSimilarity() {
-		return weightedSimilarity;
+	public double getSimilarity() {
+		return similarity;
 	}
 
 	/**
-	 * Get the task's calculated similarity weight for comparing this words
-	 * similarity relative to others
+	 * Get the task's PointerType weight for comparing this words similarity
+	 * relative to others
 	 * 
 	 * @return
 	 */
@@ -141,8 +144,7 @@ public class CompareWordsTask {
 					int typeIndex = Utils.getPointerTypeIndex(type);
 					// Check to see if there are counts this pointer type
 					// between these parts of speech
-					if (Constants.POINTER_COUNTS[typeIndex][sourceIndex][targetIndex] > 0
-							|| Constants.POINTER_COUNTS[typeIndex][targetIndex][sourceIndex] > 0) {
+					if (Constants.POINTER_COUNTS[typeIndex][sourceIndex][targetIndex] > 0) {
 						relevantTypes.add(type);
 					}
 				}
@@ -176,37 +178,25 @@ public class CompareWordsTask {
 	private void compareIndexWordsForPointerTypes(IndexWord word1,
 			IndexWord word2, List<PointerType> pointerTypes)
 			throws CloneNotSupportedException, JWNLException {
-
 		System.out.println("Comparing " + word1.getLemma() + " ("
 				+ word1.getPOS().getLabel() + ") to " + word2.getLemma() + " ("
 				+ word2.getPOS().getLabel() + ")");
 
-		// First check to see if they have an immediate relationship
-		int immediateSense = RelationshipFinder.getImmediateRelationship(word1,
-				word2);
+		// Check to see if they are the same
+		if (word1.equals(word2)) {
+			similarity = 1;
+			weight = defaultWeight;
+			return;
+		}
 
 		// Check to see if there is an immediate relationship (this word is a
-		// synonym of the other in some sense)
-		if (immediateSense >= 0) {
-			System.out.println("Found immediate relationship");
-			// If they are, verify this is a relevant pointer type
-			double pointerWeight = getPointerTypeWeight(PointerType
-					.getAllPointerTypes().get(immediateSense), word1.getPOS(),
-					word2.getPOS());
-			if (pointerWeight > 0) {
-				// If this is a relevant, immediate relationship cut the
-				// execution early
-				// Immediate synonyms are 90% similar as of now
-				weightedSimilarity += pointerWeight * .9;
-				weight += pointerWeight;
-				System.out
-						.println("Found an immediate, relevant relationship with "
-								+ pointerWeight + " weight");
-				return;
-			} else {
-				System.out
-						.println("Immediate relationship found, irrelevant for calc");
-			}
+		// synonym of the other in some sense)	
+		if (RelationshipFinder.getImmediateRelationship(word1, word2) >= 0) {
+			System.out.println("Found immediate relationship");		
+			similarity = 0.9;
+			weight = defaultWeight;
+
+			return;
 		}
 
 		List<Synset> set1 = word1.getSenses();
@@ -218,7 +208,7 @@ public class CompareWordsTask {
 			// compare
 			return; // Exit without doing any calculations
 		} else {
-
+			
 			// Print out types we think are relevant
 			StringBuilder builder = new StringBuilder();
 			for (PointerType p : pointerTypes) {
@@ -255,89 +245,85 @@ public class CompareWordsTask {
 			System.out.println("Iterating through synsets, size = "
 					+ set1.size() + "X" + set2.size());
 
-			double highSimilarityWeight = 0;
-			double highWeightedSimilarity = 0;
+			double maxWeightedSimilarity = 0.0;
+			double maxSimilarity = 0.0;
+			double maxWeight = 0.0;
 
-			// Iterate through both lists and figure out the highest
-			// similarity
-			for (Synset s1 : set1) {
-				for (Synset s2 : set2) {
+			/*
+			 * Iterate through all pointer types and try to find relationships
+			 * Calculate strength of these relationships
+			 */
+			for (PointerType type : pointerTypes) {
+				double pointerWeight = getPointerTypeWeight(type,
+						word1.getPOS(), word2.getPOS());
 
-					/*
-					 * Iterate through all pointer types and try to find
-					 * relationships Calculate strength of these relationships
-					 */
-					for (PointerType type : pointerTypes) {
-						// for (PointerType type : relevantTypes) {
+				// Make sure we have a weight for this combination, or skip
+				if (pointerWeight == 0.0) {
+					// Quick print to show a relevant type that we missed
+					System.out.println("Pointer Type " + type.getLabel()
+							+ "did not have a weight for source POS "
+							+ word1.getPOS() + " and target POS "
+							+ word2.getPOS());
+					continue;
+				}
+
+				// Iterate through both lists and figure out the max similarity
+				for (Synset s1 : set1) {
+					for (Synset s2 : set2) {
 
 						// Find the relationship between synsets
 						RelationshipList relationships = RelationshipFinder
 								.findRelationships(s1, s2, type);
 
-						System.out.println("Relationship list size: " + relationships.size());
-						
 						// If there were relationships established, calculate
 						// their similarity
 						if (!relationships.isEmpty()) {
 							// Weight of this calculation
-							double pointerWeight = getPointerTypeWeight(type,
-									word1.getPOS(), word2.getPOS());
-							if (pointerWeight > 0) {
 
-								double shallowDepth = relationships
-										.getShallowest().getSize();
+							double shallowDepth = relationships.getShallowest()
+									.getSize();
 
-								System.out
-										.println("Found relationship for type "
-												+ type.getLabel()
-												+ " with shallow depth of "
-												+ shallowDepth);
+							System.out.println("Found relationship for type "
+									+ type.getLabel()
+									+ " with shallow depth of " + shallowDepth);
 
-								double similarityCalc = Math.pow(.9,
-										shallowDepth);
+							double similarityCalc = Math.pow(.9, shallowDepth);
 
-								System.out.println("Similarity calculated: "
-										+ similarityCalc + ", with weight: "
-										+ pointerWeight);
+							System.out.println("Similarity calculated: "
+									+ similarityCalc + ", with weight: "
+									+ pointerWeight);
 
-								// New high weight, reassign values
-								if (highWeightedSimilarity < (similarityCalc * pointerWeight)) {
-
-									highSimilarityWeight = pointerWeight;
-									highWeightedSimilarity = similarityCalc
-											* pointerWeight;
-
-								}
-							} else {
-								// Quick print to show a relevant type that we
-								// missed
-								System.out.println("Pointer Type "
-										+ type.getLabel()
-										+ " had relationship with depth "
-										+ relationships.getShallowest()
-												.getDepth());
+							// Discovered a relationship with higher
+							// similarity, reassign values
+							if ((similarityCalc * pointerWeight) > maxWeightedSimilarity) {
+								maxWeightedSimilarity = similarityCalc * pointerWeight;
+								maxSimilarity = similarityCalc;
+								maxWeight = pointerWeight;
 							}
 						}
-
 					}
-
 				}
-
 			}
 
 			// If we determined there is a calculated similarity between these
 			// words, add it
-			if (highWeightedSimilarity > 0) {
-				weight += highSimilarityWeight;
-				weightedSimilarity += highWeightedSimilarity;
+			if (maxWeight > 0) {
+				similarity = maxSimilarity;
+				weight = maxWeight;
 			} else {
+				System.out.println("No relationship found");
+				
 				// If not, dock it
 				// TODO: if no similarity is found, add to the
 				// calculation weight without adding to the weighted
 				// similarity
-				System.out.println("adding weight without similarity");
-				weight += .01;
+				//System.out.println("adding weight without similarity");
+				//weight += .01;
 			}
+			
+			System.out.println("Similarity between " + word1.getLemma() + " and "
+					+ word2.getLemma() + " is " + similarity + " with weight "
+					+ weight);
 
 		}
 
@@ -360,11 +346,12 @@ public class CompareWordsTask {
 		int sourceIndex = Utils.getPOSIndex(source);
 		int targetIndex = Utils.getPOSIndex(target);
 		double sourceCounts = Constants.POINTER_COUNTS[typeIndex][sourceIndex][targetIndex];
-		double targetCounts = Constants.POINTER_COUNTS[typeIndex][targetIndex][sourceIndex];
+		// double targetCounts =
+		// Constants.POINTER_COUNTS[typeIndex][targetIndex][sourceIndex];
 		double pointerCounts = Constants.TOTAL_POINTER_COUNT;
 		// Get the counts pointing both ways because target and source are not
 		// guaranteed to be ordered
-		return ((sourceCounts + targetCounts) / pointerCounts);
+		return sourceCounts / pointerCounts;
 	}
 
 	/**

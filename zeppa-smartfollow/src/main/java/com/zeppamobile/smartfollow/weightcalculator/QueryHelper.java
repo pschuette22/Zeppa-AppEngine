@@ -22,6 +22,8 @@ import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.PointerTarget;
 import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.relationship.RelationshipFinder;
+import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 import com.zeppamobile.smartfollow.Constants;
@@ -43,6 +45,9 @@ public class QueryHelper {
 
 	// Trials
 	private static final long NUM_TRIALS = 100000;
+	
+	// Search depth for findRelationships()
+	private static int searchDepth = 5;
 
 	public static void main(String[] args) {
 		FileWriter fw = null;
@@ -59,91 +64,94 @@ public class QueryHelper {
 			e.printStackTrace();
 		}
 
-		// Create/load file
 		try {
-			File file = new File(PATH_TO_DUMP_FILE);
-			if (!file.exists()) {
-				file.createNewFile();
+			IndexWord word1 = dictionary.getIndexWord(POS.VERB, "play");
+			IndexWord word2 = dictionary.getIndexWord(POS.NOUN, "soccer");
+			
+
+			for (PointerType pt : PointerType.getAllPointerTypes()) {
+				System.out.println("Trying Pointer Type: " + pt.getLabel());
+				System.out.println("It's " + (pt.isSymmetric() ? "symmetric" : "asymmetric"));
+				for (Synset s1 : word1.getSenses()) {
+					for (Synset s2 : word2.getSenses()) {
+						RelationshipList rl;
+						if (pt.isSymmetric()) {
+							rl = RelationshipFinder
+									.findRelationships(s1, s2, pt, 5);
+						} else {
+							rl = RelationshipFinder
+									.findRelationships(s1, s2, pt);
+						}
+						
+						
+						
+						if (!rl.isEmpty()) {
+							System.out.println("Relationship found");
+						} 		
+					}
+				}
 			}
 
-			System.out.println("Path to file:");
-			System.out.println(file.getAbsolutePath());
-
-			fw = new FileWriter(file.getAbsoluteFile(), true); // Append to file
-			bw = new BufferedWriter(fw);
-			pw = new PrintWriter(bw);
-		} catch (IOException e) {
-			System.err.println("Error creating file writer");
+		} catch (JWNLException | CloneNotSupportedException e) {
+			System.err.println("Error");
 			e.printStackTrace();
 		}
 
-		try {
-			System.out.println("Beginning search.");
-			// Cycle through our 3D array of POS x POS x PointerType
-			for (int i = 0; i < NUM_TRIALS; i++) {
-				for (POS posSource : POS.getAllPOS()) {
-					for (POS posTarget : POS.getAllPOS()) {
-						for (PointerType pt : PointerType
-								.getAllPointerTypesForPOS(posSource)) {
-							System.out.print(posSource.getLabel() + " -> "
-									+ pt.getLabel() + " -> "
-									+ posTarget.getLabel() + "\r");
-							Synset tuple[] = getSynsets(pt, posSource,
-									posTarget);
-
-							if (tuple != null) { // Execute google search
-								String source = tuple[0].getWords().get(0)
-										.getLemma();
-								String target = tuple[1].getWords().get(0)
-										.getLemma();
-
-								// If the words are the same get the next word
-								// from the target synset
-								if (source.equalsIgnoreCase(target)
-										&& tuple[1].getWords().size() > 1) {
-									target = tuple[1].getWords().get(1)
-											.getLemma();
-								}
-
-								resultCount = getResultsCount(source, target);
-								queryCount++;
-
-								// Check for error
-								if (resultCount == -1) {
-									if (++errorCount > ERROR_THRESHOLD) {
-										System.err.println("Maximum error threshold reached.");
-
-										return;
-									}
-									continue;
-								}
-							} else {
-								resultCount = 0;
-							}
-
-							// Write to file with the following tab-delimited
-							// format:
-							// PointerType posSource posTarget count
-							pw.println(pt.getLabel() + "\t"
-									+ posSource.getLabel() + "\t"
-									+ posTarget.getLabel() + "\t" + resultCount);
-						}
-					}
-				}
-
-				// Write results for each cycle to file in case the program
-				// crashes or gets killed
-				pw.flush();
-
-				if (i % 100 == 0) {
-					System.out.println(queryCount + " queries executed.");
-				}
-			}
-
-		} finally {
-
-			pw.close();
-		}
+		/*
+		 * // Create/load file try { File file = new File(PATH_TO_DUMP_FILE); if
+		 * (!file.exists()) { file.createNewFile(); }
+		 * 
+		 * System.out.println("Path to file:");
+		 * System.out.println(file.getAbsolutePath());
+		 * 
+		 * fw = new FileWriter(file.getAbsoluteFile(), true); // Append to file
+		 * bw = new BufferedWriter(fw); pw = new PrintWriter(bw); } catch
+		 * (IOException e) { System.err.println("Error creating file writer");
+		 * e.printStackTrace(); }
+		 * 
+		 * try { System.out.println("Beginning search."); // Cycle through our
+		 * 3D array of POS x POS x PointerType for (int i = 0; i < NUM_TRIALS;
+		 * i++) { for (POS posSource : POS.getAllPOS()) { for (POS posTarget :
+		 * POS.getAllPOS()) { for (PointerType pt : PointerType
+		 * .getAllPointerTypesForPOS(posSource)) {
+		 * System.out.print(posSource.getLabel() + " -> " + pt.getLabel() +
+		 * " -> " + posTarget.getLabel() + "\r"); Synset tuple[] =
+		 * getSynsets(pt, posSource, posTarget);
+		 * 
+		 * if (tuple != null) { // Execute google search String source =
+		 * tuple[0].getWords().get(0) .getLemma(); String target =
+		 * tuple[1].getWords().get(0) .getLemma();
+		 * 
+		 * // If the words are the same get the next word // from the target
+		 * synset if (source.equalsIgnoreCase(target) &&
+		 * tuple[1].getWords().size() > 1) { target = tuple[1].getWords().get(1)
+		 * .getLemma(); }
+		 * 
+		 * resultCount = getResultsCount(source, target); queryCount++;
+		 * 
+		 * // Check for error if (resultCount == -1) { if (++errorCount >
+		 * ERROR_THRESHOLD) {
+		 * System.err.println("Maximum error threshold reached.");
+		 * 
+		 * return; } continue; } } else { resultCount = 0; }
+		 * 
+		 * // Write to file with the following tab-delimited // format: //
+		 * PointerType posSource posTarget count pw.println(pt.getLabel() + "\t"
+		 * + posSource.getLabel() + "\t" + posTarget.getLabel() + "\t" +
+		 * resultCount); } } }
+		 * 
+		 * // Write results for each cycle to file in case the program //
+		 * crashes or gets killed pw.flush();
+		 * 
+		 * if (i % 100 == 0) { System.out.println(queryCount +
+		 * " queries executed."); } }
+		 * 
+		 * } finally {
+		 * 
+		 * pw.close(); }
+		 */
+		
+		System.out.println("Exiting");
 	}
 
 	/**

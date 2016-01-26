@@ -18,6 +18,7 @@ hs_err_pid*
 target/
 build/
 **/datanucleus.log
+datanucleus.log
 .DS_STORE
 out
 

@@ -42,6 +42,12 @@
 			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
+		
+<!-- 		<dependency>
+			<groupId>javax.servlet.jsp.jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency> -->
 
 		<dependency>
 			<groupId>javax.persistence</groupId>
@@ -124,31 +130,31 @@
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<!-- All details/versions/configurations are setup at the parent pom -->
 
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-				</plugin>
-				<plugin>
-					<groupId>com.google.appengine</groupId>
-					<artifactId>appengine-maven-plugin</artifactId>
-					<version>${appengine.target.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<configuration>
-						<archiveClasses>true</archiveClasses>
-						<webResources>
-							<!-- in order to interpolate version from pom into appengine-web.xml -->
-							<resource>
-								<directory>${basedir}/src/main/webapp/WEB-INF</directory>
-								<!-- <filtering>true</filtering> -->
-								<targetPath>WEB-INF</targetPath>
-							</resource>
-						</webResources>
-					</configuration>
-				</plugin>
-			</plugins>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>${appengine.target.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<archiveClasses>true</archiveClasses>
+					<webResources>
+						<!-- in order to interpolate version from pom into appengine-web.xml -->
+						<resource>
+							<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+							<!-- <filtering>true</filtering> -->
+							<targetPath>WEB-INF</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>

@@ -9,12 +9,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.log.LogService.LogLevel;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -193,10 +195,11 @@ public class NotificationUtility {
 
 			String line;
 			while ((line = reader.readLine()) != null) {
-				// read the output
+				// Log the output to take note
+				log.log(Level.INFO, line);
 			}
 
-			// TODO: verify proper output or
+			// TODO: verify proper output/ handle issues
 
 		} catch (MalformedURLException e) {
 			// TODO: Log this, indicates the url is not formed properly
@@ -267,12 +270,13 @@ public class NotificationUtility {
 
 		// enqueue notifications if user has logged in devices
 		if (!androidDeviceTokens.isEmpty()) {
-			log.info("enqueueing notfication to android devices");
+			log.info("enqueueing notfication to android devices with payload: " + payload.toString());
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
 					androidDeviceTokens, "ANDROID");
 		}
 
 		if (!iosDeviceTokens.isEmpty()) {
+			log.info("enqueueing notfication to iOS devices with payload: " + payload.toString());
 			NotificationUtility.enqueueNotificationDeliveryToDevices(payload,
 					iosDeviceTokens, "iOS");
 		}

@@ -31,13 +31,13 @@ public class PayloadBuilder {
 		JSONObject json = new JSONObject();
 
 		json.put("purpose", "zeppaNotification");
-		json.put("notificationId", notification.getId().longValue());
-		json.put("senderId", notification.getSenderId().longValue());
-		String eventIdString = notification.getEventId() == null ? String.valueOf(-1)
-				: String.valueOf(notification.getEventId().longValue());
-		json.put("eventId", eventIdString);
-
+		json.put("id", notification.getId().longValue());
+		json.put("title", notification.getTitle());
+		json.put("message", notification.getMessage());
+		json.put("type", notification.getType().name());
 		json.put("expires", notification.getExpires().longValue());
+		json.put("senderId", notification.getSenderId());
+		json.put("eventId", notification.getEventId()>0?notification.getEventId():Long.valueOf(-1));
 
 		return json.toString();
 	}

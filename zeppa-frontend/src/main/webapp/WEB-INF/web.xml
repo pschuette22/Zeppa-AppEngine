@@ -62,4 +62,19 @@
     <servlet-name>get-events</servlet-name>
     <url-pattern>/get-events</url-pattern>
   </servlet-mapping>
+  
+  <!-- Mapping to the hello world servlet -->
+  <servlet>
+    <display-name>HelloWorld</display-name>
+    <servlet-name>hello-world</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.helloworld.HelloWorldServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>hello-world</servlet-name>
+    <url-pattern>/hello-world</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+  	<welcome-file>hello-world.jsp</welcome-file>
+  </welcome-file-list>
+  
 </web-app>

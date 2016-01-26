@@ -176,6 +176,8 @@ public class EventCommentEndpoint {
 
 		if (eventcomment.getEventId() == null) {
 			throw new NullPointerException("Event Id Not Set");
+		} else if (Utils.isWebSafe(eventcomment.getText())) {
+			throw new IllegalArgumentException("Ilegal text (empty or too long)");
 		}
 
 		// Authorized ZeppaUser
@@ -214,7 +216,11 @@ public class EventCommentEndpoint {
 
 			eventcomment.setCreated(System.currentTimeMillis());
 			eventcomment.setUpdated(System.currentTimeMillis());
-
+			// Just in case someone tries to post a comment on someone else's behalf
+			eventcomment.setCommenterId(user.getId());
+			
+			
+			
 			// Persist the comment
 			eventcomment = mgr.makePersistent(eventcomment);
 
@@ -231,7 +237,7 @@ public class EventCommentEndpoint {
 		/*
 		 * Schedule appropriate notifications to be built and delivered 
 		 */
-		if (eventcomment.getId() != null) {
+		if (eventcomment != null) {
 			NotificationUtility.scheduleNotificationBuild(
 					EventComment.class.getName(), eventcomment.getId(),
 					"comment-posted");

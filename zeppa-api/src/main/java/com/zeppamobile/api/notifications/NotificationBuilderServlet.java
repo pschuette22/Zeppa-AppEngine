@@ -72,6 +72,7 @@ public class NotificationBuilderServlet extends HttpServlet {
 			if (action == null || action.isEmpty()) {
 				throw new IllegalArgumentException("Action is Null");
 			}
+			
 
 			List<ZeppaNotification> notifications = NotificationBuilder
 					.buildNotifications(objectType, id, action);

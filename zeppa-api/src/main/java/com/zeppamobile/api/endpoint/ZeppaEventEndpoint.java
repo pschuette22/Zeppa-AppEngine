@@ -338,9 +338,9 @@ public class ZeppaEventEndpoint {
 					ZeppaNotification n = new ZeppaNotification(user.getId(),
 							r.getUserId(), zeppaevent.getId(),
 							zeppaevent.getEnd(),
-							NotificationType.EVENT_CANCELED, user.getUserInfo()
-									.getGivenName()
-									+ " cancelled "
+							NotificationType.EVENT_CANCELED, "Canceled " + zeppaevent.getTitle() ,user.getUserInfo()
+									.getGivenName() + " " + user.getUserInfo().getFamilyName().charAt(0)
+									+ " has canceled "
 									+ zeppaevent.getTitle(), Boolean.FALSE);
 					notifications.add(n);
 				}

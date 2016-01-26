@@ -103,7 +103,8 @@ public class ZeppaNotificationEndpoint {
 					notif.getEventId();
 					notif.getRecipientId();
 					notif.getSenderId();
-					notif.getExtraMessage();
+					notif.getTitle();
+					notif.getMessage();
 					notif.getType();
 					notif.getHasSeen();
 					
@@ -228,9 +229,7 @@ public class ZeppaNotificationEndpoint {
 				throw new UnauthorizedException("This notification was not sent to you");
 			}
 
-			current.setEventId(zeppanotification.getEventId());
 			current.setExpires(zeppanotification.getExpires());
-			current.setExtraMessage(zeppanotification.getExtraMessage());
 			current.setHasSeen(zeppanotification.getHasSeen());
 			current.setUpdated(System.currentTimeMillis());
 

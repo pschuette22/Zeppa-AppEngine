@@ -83,7 +83,7 @@ public class CompareWordsTask {
 	 * Execute task comparing two words
 	 */
 	public void execute() {
-		
+
 		// first check to see if they're the same part of speech
 		try {
 			if (sourceWord.getPos() == null && targetWord.getPos() == null) {
@@ -150,16 +150,21 @@ public class CompareWordsTask {
 					}
 				}
 
-				// Iterate through pointer types adding similarity and
-				// calculation
+				// Iterate through IndexWord for relevant pointer types
 				compareIndexWordsForPointerTypes(sourceWord.getIndexWord(),
 						targetWord.getIndexWord(), relevantTypes);
-				
+
 				// If there was nothing found, try again with index word sets
-				if(weight==0){
+				if (weight == 0) {
 					IndexWordSet sourceSet = sourceWord.getIndexWordSet();
-					IndexWordSet targetSet = targetWord.getIndexWordSet();					
-					compareIndexWordSets(sourceSet, targetSet, relevantTypes);
+					IndexWordSet targetSet = targetWord.getIndexWordSet();
+					compareIndexWordSets(sourceSet, targetSet);
+
+					System.out
+							.println("Found relationship using IndexWordSets of"
+									+ " similarity "
+									+ similarity
+									+ " and weight " + weight);
 				}
 
 			}
@@ -173,36 +178,34 @@ public class CompareWordsTask {
 
 	}
 
-	
 	/**
-	 * Iterate through other forms of the word and see if they return a relationship
+	 * Iterate through other forms of the word and see if they return a
+	 * relationship
+	 * 
 	 * @param sourceSet
 	 * @param targetSet
-	 * @param pointerTypes
 	 * @throws CloneNotSupportedException
 	 * @throws JWNLException
 	 */
-	private void compareIndexWordSets(IndexWordSet sourceSet, IndexWordSet targetSet, List<PointerType> pointerTypes) throws CloneNotSupportedException, JWNLException{
-		for(IndexWord source: sourceSet.getIndexWordCollection()){
-			for(IndexWord target: targetSet.getIndexWordCollection()){
-				if(source.getPOS().equals(target.getPOS())){
-					List<PointerType> relevantTypes = new ArrayList<PointerType>();
-					for(PointerType p: pointerTypes){
-						if(p.appliesTo(source.getPOS())){
-							relevantTypes.add(p);
-						}
-					}
-					if(!relevantTypes.isEmpty()){
-						compareIndexWordsForPointerTypes(source, target, relevantTypes);
+	private void compareIndexWordSets(IndexWordSet sourceSet,
+			IndexWordSet targetSet) throws CloneNotSupportedException,
+			JWNLException {
+		for (IndexWord source : sourceSet.getIndexWordCollection()) {
+			for (IndexWord target : targetSet.getIndexWordCollection()) {
+				// Only compare like parts of speech
+				if (source.getPOS().equals(target.getPOS())) {
+					List<PointerType> relevantTypes = PointerType
+							.getAllPointerTypesForPOS(source.getPOS());
+					if (!relevantTypes.isEmpty()) {
+						compareIndexWordsForPointerTypes(source, target,
+								relevantTypes);
 					}
 				}
 			}
 		}
-		
-		
+
 	}
-	
-	
+
 	/**
 	 * Compare two indexed words based on a relationships of given pointer types
 	 * 
@@ -253,9 +256,12 @@ public class CompareWordsTask {
 			System.out.println("Iterating through synsets, size = "
 					+ set1.size() + "X" + set2.size());
 
-			double maxWeightedSimilarity = 0.0;
-			double maxSimilarity = 0.0;
-			double maxWeight = 0.0;
+			// Set these thresholds to the existing values (originally 0)
+			// so that in the case where we iterate over the IndexWordSet
+			// we end up selecting the strongest relationship
+			double maxWeightedSimilarity = similarity * weight;
+			double maxSimilarity = similarity;
+			double maxWeight = weight;
 
 			/*
 			 * Iterate through all pointer types and try to find relationships
@@ -305,8 +311,8 @@ public class CompareWordsTask {
 			}
 
 			// If we determined there is a calculated similarity between these
-			// words, add it
-			if (maxWeight > 0) {
+			// words that is greater than the current Relationship, replace
+			if (maxWeightedSimilarity > similarity * weight) {
 				similarity = maxSimilarity;
 				weight = maxWeight;
 			} else {
@@ -352,7 +358,5 @@ public class CompareWordsTask {
 		// guaranteed to be ordered
 		return sourceCounts / pointerCounts;
 	}
-
-
 
 }

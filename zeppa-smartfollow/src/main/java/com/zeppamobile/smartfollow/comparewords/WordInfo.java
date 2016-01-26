@@ -95,10 +95,11 @@ public class WordInfo {
 	/**
 	 * Get this words index word set
 	 * @return
+	 * @throws JWNLException 
 	 */
-	public IndexWordSet getIndexWordSet() {
+	public IndexWordSet getIndexWordSet() throws JWNLException {
 		if(indexWordSet==null){
-			indexWordSet = new IndexWordSet(indexWord.getLemma());
+			indexWordSet = Constants.getDictionary().lookupAllIndexWords(indexWord.getLemma());
 		}
 		return indexWordSet;
 	}

@@ -129,6 +129,9 @@
 					<groupId>com.google.appengine</groupId>
 					<artifactId>appengine-maven-plugin</artifactId>
 					<version>${appengine.target.version}</version>
+					<configuration>
+						<enableJarClasses>false</enableJarClasses>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -147,5 +150,11 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 </project>

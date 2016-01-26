@@ -24,8 +24,6 @@
 			<artifactId>zeppa-common</artifactId>
 			<version>1</version>
 		</dependency>
-		<!-- <dependency> <groupId>com.zeppamobile.appengine</groupId> <artifactId>zeppa-api</artifactId> 
-			<version>1</version> <scope>compile</scope> </dependency> -->
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
@@ -69,7 +67,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
-			<version>1.9.28</version>
+			<version>${appengine.target.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

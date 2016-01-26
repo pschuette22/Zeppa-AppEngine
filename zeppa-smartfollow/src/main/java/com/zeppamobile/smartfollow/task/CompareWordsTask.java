@@ -207,37 +207,6 @@ public class CompareWordsTask {
 			// compare
 			return; // Exit without doing any calculations
 		} else {
-			
-			// Print out types we think are relevant
-			StringBuilder builder = new StringBuilder();
-			for (PointerType p : pointerTypes) {
-				builder.append(p.getLabel() + ", ");
-			}
-			System.out.println("Our relevant types: " + builder.toString());
-
-			List<PointerType> relevantTypes = new ArrayList<PointerType>();
-			builder = new StringBuilder();
-			for (PointerType p : PointerType.getAllPointerTypes()) {
-				if (p.appliesTo(word1.getPOS()) && p.appliesTo(word2.getPOS())) {
-					relevantTypes.add(p);
-					builder.append(p.getLabel() + ", ");
-				}
-			}
-
-			System.out.println("Library relevant types: " + builder.toString());
-
-			// Create a list of types that are missing from our pointer types
-			// that are in theirs
-			List<PointerType> missingTypes = new ArrayList<PointerType>();
-			missingTypes.addAll(relevantTypes);
-			missingTypes.removeAll(pointerTypes);
-			builder = new StringBuilder();
-			for (PointerType p : missingTypes) {
-				builder.append(p.getLabel() + ", ");
-			}
-			System.out.println("Pointer types we're missing: "
-					+ builder.toString());
-
 			/*
 			 * Otherwise, perform calculations
 			 */
@@ -255,7 +224,7 @@ public class CompareWordsTask {
 			for (PointerType type : pointerTypes) {
 				double pointerWeight = getPointerTypeWeight(type,
 						word1.getPOS(), word2.getPOS());
-
+				/*
 				// Make sure we have a weight for this combination, or skip
 				if (pointerWeight == 0.0) {
 					// Quick print to show a relevant type that we missed
@@ -265,7 +234,7 @@ public class CompareWordsTask {
 							+ word2.getPOS());
 					continue;
 				}
-
+				*/
 				// Iterate through both lists and figure out the max similarity
 				for (Synset s1 : set1) {
 					for (Synset s2 : set2) {

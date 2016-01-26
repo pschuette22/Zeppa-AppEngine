@@ -66,9 +66,12 @@ public class QueryHelper {
 
 		try {
 			IndexWord word1 = dictionary.getIndexWord(POS.VERB, "play");
-			IndexWord word2 = dictionary.getIndexWord(POS.NOUN, "soccer");
+			IndexWord word2 = dictionary.getIndexWord(POS.VERB, "watch");
 			
-
+			System.out.println(word1.getSenses().toString() + "\n");
+			System.out.println(word2.getSenses().toString());
+			
+			/*
 			for (PointerType pt : PointerType.getAllPointerTypes()) {
 				System.out.println("Trying Pointer Type: " + pt.getLabel());
 				System.out.println("It's " + (pt.isSymmetric() ? "symmetric" : "asymmetric"));
@@ -89,13 +92,12 @@ public class QueryHelper {
 							System.out.println("Relationship found");
 						} 		
 					}
-				}
+				}*/
+			} catch (Exception e) {
+				
 			}
-
-		} catch (JWNLException | CloneNotSupportedException e) {
-			System.err.println("Error");
-			e.printStackTrace();
-		}
+			
+	
 
 		/*
 		 * // Create/load file try { File file = new File(PATH_TO_DUMP_FILE); if

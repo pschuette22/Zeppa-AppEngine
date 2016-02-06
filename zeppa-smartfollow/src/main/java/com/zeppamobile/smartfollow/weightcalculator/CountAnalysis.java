@@ -24,7 +24,7 @@ public class CountAnalysis {
 			for (POS target : targetParts) {
 				List<PointerType> types = PointerType.getAllPointerTypes();
 				for (PointerType type : types) {
-					sourceCount += Constants.POINTER_COUNTS[Utils
+					sourceCount += Constants.POINTER_COUNTS_BY_POS[Utils
 							.getPointerTypeIndex(type)][Utils
 							.getPOSIndex(source)][Utils.getPOSIndex(target)];
 				}
@@ -46,7 +46,7 @@ public class CountAnalysis {
 			for (POS source : sourceParts1) {
 				List<PointerType> types = PointerType.getAllPointerTypes();
 				for (PointerType type : types) {
-					sourceCount += Constants.POINTER_COUNTS[Utils
+					sourceCount += Constants.POINTER_COUNTS_BY_POS[Utils
 							.getPointerTypeIndex(type)][Utils
 							.getPOSIndex(source)][Utils.getPOSIndex(target)];
 				}
@@ -65,7 +65,7 @@ public class CountAnalysis {
 			long pointerCount = 0;
 			for (POS source : POS.getAllPOS()) {
 				for (POS target : POS.getAllPOS()) {
-					pointerCount += Constants.POINTER_COUNTS[Utils
+					pointerCount += Constants.POINTER_COUNTS_BY_POS[Utils
 												.getPointerTypeIndex(type)][Utils
 												.getPOSIndex(source)][Utils.getPOSIndex(target)];
 				}
@@ -90,7 +90,7 @@ public class CountAnalysis {
 							+ " -> "
 							+ target.getLabel()
 							+ " = "
-							+ (float) Constants.POINTER_COUNTS[Utils
+							+ (float) Constants.POINTER_COUNTS_BY_POS[Utils
 									.getPointerTypeIndex(type)][Utils
 									.getPOSIndex(source)][Utils
 									.getPOSIndex(target)]
@@ -111,7 +111,7 @@ public class CountAnalysis {
 							+ " -> "
 							+ target.getLabel()
 							+ " = "
-							+ (float) Constants.POINTER_COUNTS[Utils
+							+ (float) Constants.POINTER_COUNTS_BY_POS[Utils
 									.getPointerTypeIndex(type)][Utils
 									.getPOSIndex(source)][Utils
 									.getPOSIndex(target)]
@@ -133,10 +133,10 @@ public class CountAnalysis {
 									+ " -> "
 									+ target.getLabel()
 									+ " = "
-									+ ((float) Constants.POINTER_COUNTS[Utils
+									+ ((float) Constants.POINTER_COUNTS_BY_POS[Utils
 											.getPointerTypeIndex(type)][Utils
 											.getPOSIndex(source)][Utils
-											.getPOSIndex(target)] + (float) Constants.POINTER_COUNTS[Utils
+											.getPOSIndex(target)] + (float) Constants.POINTER_COUNTS_BY_POS[Utils
 											.getPointerTypeIndex(type)][Utils
 											.getPOSIndex(target)][Utils
 											.getPOSIndex(source)])

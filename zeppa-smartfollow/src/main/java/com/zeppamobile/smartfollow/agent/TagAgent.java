@@ -27,6 +27,7 @@ import com.zeppamobile.common.report.SmartfollowReport;
 import com.zeppamobile.smartfollow.Utils;
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 import com.zeppamobile.smartfollow.nlp.POSFactory;
+import com.zeppamobile.smartfollow.task.CompareTagsTask;
 import com.zeppamobile.smartfollow.task.CompareWordsTask;
 
 /**
@@ -34,8 +35,8 @@ import com.zeppamobile.smartfollow.task.CompareWordsTask;
  * @author Pete Schuette
  * 
  *         This agent is used to calculate the similarity between Tags It
- *         employs Java's Word Net Library (Princeton) and OpenNLP (Source
- *         Forge)
+ *         employs Java's Word Net Library (Princeton), OpenNLP (Source
+ *         Forge), and the ADW Library (Pilehvar)
  * 
  */
 public class TagAgent extends BaseAgent {
@@ -284,110 +285,19 @@ public class TagAgent extends BaseAgent {
 	 * @return calculatedSimilarity as a decimal percent
 	 */
 	public double calculateSimilarity(TagAgent tag) {
-		double similarity = 0.0;
-		double totalWeight = 0.0;
-		
 		log("Calculating similarity");
-		if (getTagText().equalsIgnoreCase(tag.getTagText())) {
+		if (this.getTagText().equalsIgnoreCase(tag.getTagText())) {
 			// Tags are the same, ignoring case. Very likely talking about the
 			// same thing therefore completely similar
-			System.out.print(getTagText() + " is the same as "
+			System.out.println(getTagText() + " is the same as "
 					+ tag.getTagText());
-			similarity = 1;
+			return 1;
 		} else {
-			// Take the average of each part of the dissected tags match count
-			try {
-				// iterate through each part of a tag
-				if(parsedTagParts.isEmpty() || tag.parsedTagParts.isEmpty()){
-					log("Empty Tag Parts");
-					return -1;
-				}
-				
-				List<Double> similarities = new ArrayList<Double>();
-				List<Double> pointerWeights = new ArrayList<Double>();
-				List<Double> relativeWeights = new ArrayList<Double>();
-				
-				for (WordInfo w1 : parsedTagParts) {
-					// compare it to each part of another tag
-					for (WordInfo w2 : tag.parsedTagParts) {
-
-						log("Comparing " + w1.getWord() + " to " + w2.getWord());
-
-						CompareWordsTask task = new CompareWordsTask(w1, w2);
-						task.execute();
-
-						// Fetch the results
-						similarities.add(task.getSimilarity());
-						pointerWeights.add(task.getWeight());
-						
-						if (task.getWeight() > 0) {
-							// Tags have made a valid comparison of content
-							log(task.getSimilarity() + " similarity");
-							
-							// Log and compound
-							//similarity = task.getSimilarity();
-							//similarityWeight = task.getWeight();
-
-						} else {
-							System.out.println("Could not establish relationship between "
-									+ w1.getWord() + " and " + w2.getWord());
-							log("Failed to compare words");
-						}
-						
-					}
-				}		
-				
-				// Get total weight
-				for (double weight : pointerWeights) {
-					totalWeight += weight;
-				}
-				
-				if (totalWeight == 0) {
-					System.out.println("Unable to make any valid relationships");
-					log("Unable to make any valid relationships");
-					
-					return similarity; // 0
-				}
-				
-				// Calculate the linear combination of each weight relative
-				// to the rest so if one weight represents .01/.20 total weight 
-				// we give it 5% for the overall similarity
-				for (double weight : pointerWeights) {
-					relativeWeights.add(weight / totalWeight);
-				}
-				
-				if (similarities.size() != relativeWeights.size()) {
-					// Something went wrong, return error
-					return -1;
-				}
-				
-				// Calculate the grand total
-				for (int i=0; i<similarities.size(); i++) {
-					similarity += similarities.get(i) * relativeWeights.get(i);
-				}
-				
-				log("Total weighted similarity: " + similarity);
-				System.out.println("Total weighted similarity: " + similarity);
-				
-				/*
-				if (similarityWeight > 0.0) {
-					similarity /= similarityWeight;
-					log("Total similarity " + similarity);
-					log("Total similarity weight " + similarityWeight);
-					log("Percent Similarity " + similarity/similarityWeight);
-				}
-				*/
-			} catch (Exception e) {
-				/*
-				 * Something went wrong. return calculations make so far
-				 */
-				if (similarity == 0) {
-					similarity = -1;
-				}
-			}
-
+			// Fire up a new task
+			CompareTagsTask task = new CompareTagsTask(this.parsedTagParts, tag.parsedTagParts);
+			task.execute();
+			return task.getSimilarity();
 		}
-		return similarity;
 	}
 
 	/**

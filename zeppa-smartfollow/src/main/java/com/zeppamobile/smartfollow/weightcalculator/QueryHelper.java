@@ -21,14 +21,17 @@ import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.PointerTarget;
 import net.sf.extjwnl.data.PointerType;
+import net.sf.extjwnl.data.PointerUtils;
 import net.sf.extjwnl.data.Synset;
+import net.sf.extjwnl.data.list.PointerTargetNodeList;
+import net.sf.extjwnl.data.list.PointerTargetTreeNodeList;
 import net.sf.extjwnl.data.relationship.RelationshipFinder;
 import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 import com.zeppamobile.smartfollow.Constants;
 
-public class QueryHelper {
+public class QueryHelper extends PointerUtils {
 	private static final String PATH_TO_DUMP_FILE = "src/main/java/com/zeppamobile/smartfollow/weightcalculator/pointer-types.txt";
 
 	private static Dictionary dictionary;
@@ -65,37 +68,29 @@ public class QueryHelper {
 		}
 
 		try {
-			IndexWord word1 = dictionary.getIndexWord(POS.VERB, "play");
-			IndexWord word2 = dictionary.getIndexWord(POS.VERB, "watch");
+			IndexWord word1 = dictionary.getIndexWord(POS.NOUN, "run");
+			IndexWord word2 = dictionary.getIndexWord(POS.VERB, "play");
 			
 			System.out.println(word1.getSenses().toString() + "\n");
-			System.out.println(word2.getSenses().toString());
+			//System.out.println(word2.getSenses().toString());
 			
-			/*
-			for (PointerType pt : PointerType.getAllPointerTypes()) {
-				System.out.println("Trying Pointer Type: " + pt.getLabel());
-				System.out.println("It's " + (pt.isSymmetric() ? "symmetric" : "asymmetric"));
+			
+			//for (PointerType pt : PointerType.HYPERNYM) {
+				//System.out.println("Trying Pointer Type: " + pt.getLabel());
+				System.out.println("It's " + (PointerType.HYPERNYM.isSymmetric() ? "symmetric" : "asymmetric"));
 				for (Synset s1 : word1.getSenses()) {
 					for (Synset s2 : word2.getSenses()) {
-						RelationshipList rl;
-						if (pt.isSymmetric()) {
-							rl = RelationshipFinder
-									.findRelationships(s1, s2, pt, 5);
-						} else {
-							rl = RelationshipFinder
-									.findRelationships(s1, s2, pt);
-						}
-						
-						
-						
+						RelationshipList rl = RelationshipFinder.findRelationships(s1, s2, PointerType.HYPERNYM);
+	
 						if (!rl.isEmpty()) {
 							System.out.println("Relationship found");
 						} 		
 					}
-				}*/
-			} catch (Exception e) {
-				
-			}
+				}
+			//}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 			
 	
 
@@ -405,4 +400,5 @@ public class QueryHelper {
 
 		return -1;
 	}
+	
 }

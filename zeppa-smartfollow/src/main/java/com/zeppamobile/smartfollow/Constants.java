@@ -78,7 +78,42 @@ public final class Constants {
 	 * TODO: research how Word Net handles short phrases and update
 	 * appropriately
 	 */
-
+	
+	/**
+	 * The sum of POINTER_COUNTS for each weight regardless of POS
+	 */
+	public static final double POINTER_COUNTS[] =
+		{
+			345488391790d, // antonym
+			245560743951d, // hypernym
+			182638708473d, // hyponym
+			55515266250d, // entailment
+			56364030070d, // similar to
+			3185421899d, // member holonym
+			6058713950d, // substance holonym
+			34275183060d, // part holonym
+			5458747452d, // member meronym
+			10524410760d, // substance meronym
+			23318446150d, // part meronym
+			169465198800d, // cause
+			32070173500d, // particple of
+			161377854460d, // see also
+			38754434530d, // pertainym
+			95228667580d, // attribute
+			213832268040d, // verb group
+			206505841906d, // derivation
+			0d, // domain all
+			0d, // member all
+			71079736795d, // category domain
+			2744592326d, // usage domain
+			82015515480d, // region domain
+			109025267620d, // member of category domain
+			12897701550d, // member of usage domain
+			12693971186d, // member of region domain
+			18367888790d, // instance hypernym
+			12152298280d // instance hyponym
+		};
+	
 	/**
 	 * Total number of pointer type count entries
 	 */
@@ -86,7 +121,7 @@ public final class Constants {
 	/**
 	 * Constant array of all counts taken with pointer types.
 	 * <p>
-	 * First index represents the pointer type (0 - 28)
+	 * First index represents the pointer type (0 - 27)
 	 * </p>
 	 * <p>
 	 * Second index represents the source word part of speech
@@ -95,7 +130,7 @@ public final class Constants {
 	 * Third index represents the target word part of speech
 	 * </p>
 	 */
-	public static double POINTER_COUNTS[][][] = { //
+	public static double POINTER_COUNTS_BY_POS[][][] = { //
 	/*
 	 * This is a constant array of all the
 	 */

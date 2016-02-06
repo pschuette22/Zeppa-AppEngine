@@ -332,7 +332,9 @@ public class Utils {
 
 	/**
 	 * Get the pointer count index of a given part of speech
-	 * @param pos - part of speech in question
+	 * 
+	 * @param pos
+	 *            - part of speech in question
 	 * @return index (0-3) or -1 if invalid
 	 */
 	public static int getPOSIndex(POS pos) {
@@ -350,4 +352,41 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Calculates the weight of this pointer type from Constants.POINTER_COUNTS
+	 * 
+	 * @param type
+	 *            pointer type
+	 * @return weight
+	 */
+	public static double getWeight(PointerType type) {
+		return (Constants.POINTER_COUNTS[getPointerTypeIndex(type)] / Constants.TOTAL_POINTER_COUNT);
+	}
+
+	/**
+	 * This method sorts an array of PointerTypes using insertion sort and
+	 * arranges them in descending order by the weights assigned to them in
+	 * Constants.POINTER_COUNTS.
+	 * 
+	 * @param pointerTypes
+	 *            list of pointertypes
+	 */
+	public static void sortDescending(PointerType[] pointerTypes) {
+		// Insertion sort
+		for (int i = 1; i < pointerTypes.length; i++) {
+			int j = i;
+			while (j > 0
+					&& Utils.getWeight(pointerTypes[j - 1]) < Utils
+							.getWeight(pointerTypes[j])) {
+				// Swap
+				PointerType temp = pointerTypes[j - 1];
+				pointerTypes[j - 1] = pointerTypes[j];
+				pointerTypes[j] = temp;
+
+				j--;
+			}
+		}
+
+		return;
+	}
 }

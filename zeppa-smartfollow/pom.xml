@@ -12,6 +12,21 @@
 		<version>1</version>
 	</parent>
 
+	<!-- Declare local repository for proprietary libraries -->
+	<repositories>
+		<repository>
+			<id>lib</id>
+			<name>lib</name>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>file://${project.basedir}/lib</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
@@ -93,6 +108,13 @@
 			<version>1.9.1</version>
 		</dependency>
 
+		<!-- ADW library for lexical comparison -->
+		<dependency>
+			<groupId>it.uniroma1.lcl</groupId>
+			<artifactId>adw.feb2015</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 		<!-- Necessary for jwktl -->
 		<dependency>
 			<groupId>xerces</groupId>
@@ -152,6 +174,29 @@
 							</resource>
 						</webResources>
 					</configuration>
+				</plugin>
+				<!-- Install ADW to the repository -->
+				<!-- This jar file must be contained in WEB-INF -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.3.1</version>
+					<executions>
+						<execution>
+							<id>install-adw</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>install-file</goal>
+							</goals>
+							<configuration>
+								<file>${basedir}/src/main/webapp/WEB-INF/lib/adw.feb2015.jar</file>
+								<groupId>it.uniroma1.lcl</groupId>
+								<artifactId>adw.feb2015</artifactId>
+								<version>1.0</version>
+								<packaging>jar</packaging>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

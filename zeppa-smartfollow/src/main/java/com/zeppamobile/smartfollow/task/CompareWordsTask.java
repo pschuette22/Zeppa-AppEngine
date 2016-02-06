@@ -145,7 +145,7 @@ public class CompareWordsTask {
 					// between these parts of speech
 					if (type.appliesTo(sourceWord.getPos())
 							&& type.appliesTo(targetWord.getPos())
-							&& Constants.POINTER_COUNTS[typeIndex][sourceIndex][targetIndex] > 0) {
+							&& Constants.POINTER_COUNTS_BY_POS[typeIndex][sourceIndex][targetIndex] > 0) {
 						relevantTypes.add(type);
 					}
 				}
@@ -350,7 +350,7 @@ public class CompareWordsTask {
 		int typeIndex = Utils.getPointerTypeIndex(type);
 		int sourceIndex = Utils.getPOSIndex(source);
 		int targetIndex = Utils.getPOSIndex(target);
-		double sourceCounts = Constants.POINTER_COUNTS[typeIndex][sourceIndex][targetIndex];
+		double sourceCounts = Constants.POINTER_COUNTS_BY_POS[typeIndex][sourceIndex][targetIndex];
 		// double targetCounts =
 		// Constants.POINTER_COUNTS[typeIndex][targetIndex][sourceIndex];
 		double pointerCounts = Constants.TOTAL_POINTER_COUNT;

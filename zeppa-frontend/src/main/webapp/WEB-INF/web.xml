@@ -63,7 +63,61 @@
     <url-pattern>/get-events</url-pattern>
   </servlet-mapping>
   
-  <!-- Mapping to the hello world servlet -->
+  <!-- Front end servlets for each page -->
+  <servlet>
+    <display-name>Dashboard</display-name>
+    <servlet-name>dashboard</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.DashboardServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dashboard</servlet-name>
+    <url-pattern>/dashboard</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>Events</display-name>
+    <servlet-name>events</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.EventsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>events</servlet-name>
+    <url-pattern>/events</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>Analytics</display-name>
+    <servlet-name>analytics</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.AnalyticsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>analytics</servlet-name>
+    <url-pattern>/analytics</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>Billing</display-name>
+    <servlet-name>billing</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.BillingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>billing</servlet-name>
+    <url-pattern>/billing</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <display-name>AccountSettings</display-name>
+    <servlet-name>accountsettings</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.AccountSettingsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>accountsettings</servlet-name>
+    <url-pattern>/account-settings</url-pattern>
+  </servlet-mapping>
+
+
+  
+  
+  
   <servlet>
     <display-name>HelloWorld</display-name>
     <servlet-name>hello-world</servlet-name>
@@ -73,6 +127,7 @@
     <servlet-name>hello-world</servlet-name>
     <url-pattern>/hello-world</url-pattern>
   </servlet-mapping>
+  
   <welcome-file-list>
   	<welcome-file>hello-world.jsp</welcome-file>
   </welcome-file-list>

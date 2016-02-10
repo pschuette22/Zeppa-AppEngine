@@ -1,0 +1,1264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="com.zeppamobile.api.Constants" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/Constants.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="108" x="160" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.zeppamobile.api.notifications.NotificationBuilder" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/notifications/NotificationBuilder.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="166" x="308" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint" 
+    project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaEventToUserRelationshipEndpoint.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="305" x="514" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint" 
+    project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaUserToUserRelationshipEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="297" x="859" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.zeppamobile.api.datamodel.ZeppaUserInfo" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaUserInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8315" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <enumeration id="6" language="java" 
+    name="com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship.UserRelationshipType" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaUserToUserRelationship.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="3519" y="326"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <class id="7" language="java" name="com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaUserToUserRelationship.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="234" x="3389" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="com.zeppamobile.api.endpoint.EventTagEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/EventTagEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="152" x="1196" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="com.zeppamobile.api.notifications.NotificationUtility" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/notifications/NotificationUtility.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="166" x="1388" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="com.zeppamobile.api.datamodel.Employee" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/Employee.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8215" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="com.zeppamobile.api.endpoint.utils.AuthChecker" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/AuthChecker.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="1594" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="com.zeppamobile.api.AppConfig" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/AppConfig.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="108" x="1807" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="com.zeppamobile.api.datamodel.ZeppaEvent" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaEvent.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8015" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="14" language="java" name="com.zeppamobile.api.datamodel.DeviceInfo" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/DeviceInfo.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8615" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="15" language="java" name="com.zeppamobile.api.googlecalendar.GoogleCalendarService" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/googlecalendar/GoogleCalendarService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="185" x="1955" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="16" language="java" name="com.zeppamobile.api.notifications.NotificationBuilderServlet" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/notifications/NotificationBuilderServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="200" x="2180" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="17" language="java" name="com.zeppamobile.api.endpoint.utils.ServletUtility" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/ServletUtility.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="2420" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="18" language="java" name="com.zeppamobile.api.Resources" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/Resources.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="108" x="9015" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="19" language="java" name="com.zeppamobile.api.datamodel.ZeppaUser" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaUser.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8415" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="20" language="java" name="com.zeppamobile.api.endpoint.PhotoInfoEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/PhotoInfoEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="155" x="2633" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="21" language="java" name="com.zeppamobile.api.endpoint.utils.TaskServlet" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/TaskServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="2828" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="22" language="java" name="com.zeppamobile.api.endpoint.AppInfoEndpoint.ClientInfo" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/AppInfoEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="152" x="9179" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <enumeration id="23" language="java" name="com.zeppamobile.api.datamodel.ZeppaEvent.EventPrivacyType" 
+    project="zeppa-api" file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaEvent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8015" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <class id="24" language="java" name="com.zeppamobile.api.PMF" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/PMF.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="108" x="3041" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="25" language="java" name="com.zeppamobile.api.datamodel.PhotoInfo" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/PhotoInfo.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="3189" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="26" language="java" name="com.zeppamobile.api.endpoint.utils.RelationshipUtility" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/RelationshipUtility.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="3663" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="27" language="java" name="com.zeppamobile.api.datamodel.EventTag" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/EventTag.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="3876" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="28" language="java" name="com.zeppamobile.api.endpoint.EventTagFollowEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/EventTagFollowEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="198" x="4076" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="29" language="java" name="com.zeppamobile.api.googlecalendar.GoogleCalendarUtils" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/googlecalendar/GoogleCalendarUtils.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="183" x="4314" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <enumeration id="30" language="java" name="com.zeppamobile.api.datamodel.ZeppaNotification.NotificationType" 
+    project="zeppa-api" file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaNotification.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="9371" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <enumeration id="31" language="java" name="com.zeppamobile.api.Resources.UpdateEventRelationshipNotificationAction" 
+    project="zeppa-api" file="/zeppa-api/src/main/java/com/zeppamobile/api/Resources.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="324" x="8815" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <enumeration id="32" language="java" name="com.zeppamobile.api.datamodel.DeviceInfo.DeviceType" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/DeviceInfo.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8615" y="255"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </enumeration>  
+  <class id="33" language="java" name="com.zeppamobile.api.datamodel.InviteGroup" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/InviteGroup.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="4537" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="34" language="java" name="com.zeppamobile.api.endpoint.EventCommentEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/EventCommentEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="191" x="4737" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="35" language="java" name="com.zeppamobile.api.datamodel.Vendor" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/Vendor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="4968" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="36" language="java" name="com.zeppamobile.api.endpoint.utils.TaskUtility" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/TaskUtility.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="5168" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="37" language="java" name="com.zeppamobile.api.endpoint.ZeppaEventEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaEventEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="169" x="5381" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="38" language="java" name="com.zeppamobile.api.endpoint.InviteGroupEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/InviteGroupEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="168" x="5590" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="39" language="java" name="com.zeppamobile.api.endpoint.AppInfoEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/AppInfoEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="152" x="9179" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="40" language="java" name="com.zeppamobile.api.datamodel.EventComment" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/EventComment.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="5798" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="41" language="java" name="com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaNotificationEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="210" x="5998" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="42" language="java" name="com.zeppamobile.api.datamodel.ZeppaFeedback" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaFeedback.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="8815" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="43" language="java" name="com.zeppamobile.api.datamodel.ZeppaNotification" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaNotification.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="9371" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="44" language="java" name="com.zeppamobile.api.endpoint.utils.ClientEndpointUtility" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/utils/ClientEndpointUtility.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="173" x="6248" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="45" language="java" name="com.zeppamobile.api.endpoint.ZeppaUserInfoEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaUserInfoEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="188" x="6461" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="46" language="java" name="com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/ZeppaEventToUserRelationship.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="242" x="6689" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="47" language="java" name="com.zeppamobile.api.endpoint.DeviceInfoEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/DeviceInfoEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="6971" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="48" language="java" name="com.zeppamobile.api.notifications.PayloadBuilder" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/notifications/PayloadBuilder.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="166" x="7171" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="49" language="java" name="com.zeppamobile.api.datamodel.EventTagFollow" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/datamodel/EventTagFollow.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="160" x="7377" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="50" language="java" name="com.zeppamobile.api.endpoint.ZeppaUserEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaUserEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="161" x="7577" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="51" language="java" name="com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint" project="zeppa-api" 
+    file="/zeppa-api/src/main/java/com/zeppamobile/api/endpoint/ZeppaFeedbackEndpoint.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="197" x="7778" y="160"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="52" language="java" name="com.zeppamobile.common.datainfo.UserDataInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/UserDataInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="174" x="1567" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="53" language="java" name="com.zeppamobile.common.datainfo.EventRelationshipInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/EventRelationshipInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="177" x="1506" y="500"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="54" language="java" name="com.zeppamobile.common.datainfo.UserRelationshipInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/UserRelationshipInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="174" x="164" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="55" language="java" name="com.zeppamobile.common.datainfo.EventTagInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/EventTagInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="174" x="1741" y="500"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="56" language="java" name="com.zeppamobile.common.utils.JSONUtils" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/utils/JSONUtils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="154" x="378" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="57" language="java" name="com.zeppamobile.common.utils.Utils" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/utils/Utils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="154" x="572" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="58" language="java" name="com.zeppamobile.common.utils.TestUtils" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/utils/TestUtils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="154" x="766" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="59" language="java" name="com.zeppamobile.common.utils.ModuleUtils" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/utils/ModuleUtils.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="154" x="960" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="60" language="java" name="com.zeppamobile.common.UniversalConstants" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/UniversalConstants.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="159" x="1154" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="61" language="java" name="com.zeppamobile.common.datainfo.EventTagFollowInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/EventTagFollowInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="174" x="1353" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="62" language="java" name="com.zeppamobile.common.report.TagComparisonReport" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/report/TagComparisonReport.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="179" x="1781" y="405"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="63" language="java" name="com.zeppamobile.common.datainfo.EventInfo" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/datainfo/EventInfo.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="174" x="1546" y="405"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="64" language="java" name="com.zeppamobile.common.report.SmartfollowReport" project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/report/SmartfollowReport.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="163" x="1781" y="310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="65" language="java" name="com.zeppamobile.frontend.imageupload.GetUploadUrl" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/imageupload/GetUploadUrl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="196" x="186" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="66" language="java" name="com.zeppamobile.frontend.comparetags.CompareTagsServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/comparetags/CompareTagsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="196" x="422" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="67" language="java" name="com.zeppamobile.frontend.webpages.AccountSettingsServlet" 
+    project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/webpages/AccountSettingsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="186" x="658" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="68" language="java" name="com.zeppamobile.frontend.webpages.DashboardServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/webpages/DashboardServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="184" x="884" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="69" language="java" name="com.zeppamobile.frontend.webpages.BillingServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/webpages/BillingServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="184" x="1108" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="70" language="java" name="com.zeppamobile.frontend.webpages.AnalyticsServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/webpages/AnalyticsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="184" x="1332" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="71" language="java" name="com.zeppamobile.frontend.imageupload.Upload" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/imageupload/Upload.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="196" x="1556" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="72" language="java" name="com.zeppamobile.frontend.login.LoginServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/login/LoginServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="158" x="1792" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="73" language="java" name="com.zeppamobile.frontend.getevents.GetEventsServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/getevents/GetEventsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="182" x="1990" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="74" language="java" name="com.zeppamobile.frontend.emailform.EmailFormServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/emailform/EmailFormServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="180" x="2212" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="75" language="java" name="com.zeppamobile.frontend.webpages.EventsServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/webpages/EventsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="184" x="2432" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="76" language="java" name="com.zeppamobile.frontend.createevent.CreateEventServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/createevent/CreateEventServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="191" x="2656" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="77" language="java" name="com.zeppamobile.frontend.helloworld.HelloWorldServlet" project="zeppa-frontend" 
+    file="/zeppa-frontend/src/main/java/com/zeppamobile/frontend/helloworld/HelloWorldServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="182" x="2887" y="488"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="78" language="java" name="com.zeppamobile.notifications.EmailSender" project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/EmailSender.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="149" x="169" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="79" language="java" name="com.zeppamobile.notifications.CloudMessagingSender" project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/CloudMessagingSender.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="188" x="995" y="714"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="80" language="java" name="com.zeppamobile.notifications.Constants" project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/Constants.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="149" x="358" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="81" language="java" name="com.zeppamobile.notifications.NotificationWorkerServlet.SyncCounter" 
+    project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/NotificationWorkerServlet.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="149" x="547" y="714"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="82" language="java" name="com.zeppamobile.notifications.NotificationCleanupServlet" 
+    project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/NotificationCleanupServlet.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="208" x="786" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="83" language="java" name="com.zeppamobile.notifications.PushNotificationSender" 
+    project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/PushNotificationSender.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="187" x="1223" y="714"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="84" language="java" name="com.zeppamobile.notifications.NotificationWorkerServlet" 
+    project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/NotificationWorkerServlet.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="55" width="199" x="547" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="85" language="java" name="com.zeppamobile.notifications.NotificationWorker" project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/NotificationWorker.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="152" x="1223" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="86" language="java" name="com.zeppamobile.notifications.StartupServlet" project="zeppa-notifications" 
+    file="/zeppa-notifications/src/main/java/com/zeppamobile/notifications/StartupServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="149" x="1034" y="619"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="87" language="java" name="com.zeppamobile.smartfollow.Constants" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/Constants.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="70" y="32"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="88" language="java" name="com.zeppamobile.smartfollow.nlp.POSFactory" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/nlp/POSFactory.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="253" y="29"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="89" language="java" name="com.zeppamobile.smartfollow.Configuration" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/Configuration.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="608" y="32"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="90" language="java" name="com.zeppamobile.smartfollow.servlet.CompareTagsServlet" 
+    project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/servlet/CompareTagsServlet.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1022" y="20"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="91" language="java" name="com.zeppamobile.smartfollow.agent.EventAgent" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/agent/EventAgent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="55" width="175" x="812" y="316"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="92" language="java" name="com.zeppamobile.smartfollow.Utils" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/Utils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1215" y="16"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="93" language="java" name="com.zeppamobile.smartfollow.servlet.RelationshipSimilarityServlet" 
+    project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/servlet/RelationshipSimilarityServlet.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1434" y="13"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="94" language="java" name="com.zeppamobile.smartfollow.agent.TagAgent" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/agent/TagAgent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1454" y="1359"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="95" language="java" name="com.zeppamobile.smartfollow.agent.TagAgent.TagPart" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/agent/TagAgent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="480" y="1366"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="96" language="java" name="com.zeppamobile.smartfollow.task.SmartFollowTask" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/task/SmartFollowTask.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="766" y="1068"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="97" language="java" name="com.zeppamobile.smartfollow.task.CreateNewTagFollows" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/task/CreateNewTagFollows.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="977" y="1196"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="98" language="java" name="com.zeppamobile.smartfollow.servlet.CreateInitialFollowsServlet" 
+    project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/servlet/CreateInitialFollowsServlet.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1689" y="13"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="99" language="java" name="com.zeppamobile.smartfollow.agent.BaseAgent" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/agent/BaseAgent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1038" y="1428"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="100" language="java" name="com.zeppamobile.smartfollow.task.CreateInitialTagFollows" 
+    project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/task/CreateInitialTagFollows.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1080" y="946"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <class id="101" language="java" name="com.zeppamobile.smartfollow.agent.UserAgent" project="zeppa-smartfollow" 
+    file="/zeppa-smartfollow/src/main/java/com/zeppamobile/smartfollow/agent/UserAgent.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1669" y="975"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
+    </display>  
+  </class>  
+  <association id="102">    
+    <end type="SOURCE" refId="42" navigable="false">      
+      <attribute id="103" name="deviceType"/>      
+      <multiplicity id="104" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="32" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="105">    
+    <end type="SOURCE" refId="94" navigable="false">      
+      <attribute id="106" name="tag"/>      
+      <multiplicity id="107" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="55" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="108">    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="109" name="events"/>      
+      <multiplicity id="110" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="63" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="111">    
+    <end type="SOURCE" refId="84" navigable="false">      
+      <attribute id="112" name="counter"/>      
+      <multiplicity id="113" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="81" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="114">    
+    <end type="SOURCE" refId="84"/>    
+    <end type="TARGET" refId="81"/>  
+  </nesting>  
+  <nesting id="115">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="6"/>  
+  </nesting>  
+  <association id="116">    
+    <end type="SOURCE" refId="101" navigable="false">      
+      <attribute id="117" name="tags"/>      
+      <multiplicity id="118" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="94" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="119">    
+    <end type="SOURCE" refId="43"/>    
+    <end type="TARGET" refId="30"/>  
+  </nesting>  
+  <association id="120">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="121" name="pushNotificationSender"/>      
+      <multiplicity id="122" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="83" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="123">    
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="124" name="userInfo"/>      
+      <multiplicity id="125" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="126">    
+    <bendpoint x="1515" y="405"/>    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="127" name="eventRelationships"/>      
+      <multiplicity id="128" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="53" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="129">    
+    <end type="SOURCE" refId="19" navigable="false">      
+      <attribute id="130" name="userInfo"/>      
+      <multiplicity id="131" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="132">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="133" name="privacy"/>      
+      <multiplicity id="134" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="23" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="135">    
+    <end type="SOURCE" refId="63" navigable="false">      
+      <attribute id="136" name="tags"/>      
+      <multiplicity id="137" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="55" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="138">    
+    <end type="SOURCE" refId="100" navigable="false">      
+      <attribute id="139" name="userAgent1"/>      
+      <multiplicity id="140" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="101" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="141">    
+    <end type="SOURCE" refId="91" navigable="false">      
+      <attribute id="142" name="event"/>      
+      <multiplicity id="143" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="63" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="144">    
+    <end type="SOURCE" refId="97"/>    
+    <end type="TARGET" refId="96"/>  
+  </generalization>  
+  <association id="145">    
+    <end type="SOURCE" refId="99" navigable="false">      
+      <attribute id="146" name="report"/>      
+      <multiplicity id="147" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="64" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="148">    
+    <end type="SOURCE" refId="101" navigable="false">      
+      <attribute id="149" name="events"/>      
+      <multiplicity id="150" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="91" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="151">    
+    <end type="SOURCE" refId="63" navigable="false">      
+      <attribute id="152" name="relationships"/>      
+      <multiplicity id="153" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="53" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="154">    
+    <end type="SOURCE" refId="94" navigable="false">      
+      <attribute id="155" name="parsedTagParts"/>      
+      <multiplicity id="156" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="95" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="157">    
+    <end type="SOURCE" refId="94"/>    
+    <end type="TARGET" refId="99"/>  
+  </generalization>  
+  <nesting id="158">    
+    <end type="SOURCE" refId="13"/>    
+    <end type="TARGET" refId="23"/>  
+  </nesting>  
+  <nesting id="159">    
+    <end type="SOURCE" refId="18"/>    
+    <end type="TARGET" refId="31"/>  
+  </nesting>  
+  <association id="160">    
+    <end type="SOURCE" refId="14" navigable="false">      
+      <attribute id="161" name="phoneType"/>      
+      <multiplicity id="162" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="32" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="163">    
+    <end type="SOURCE" refId="43" navigable="false">      
+      <attribute id="164" name="type"/>      
+      <multiplicity id="165" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="30" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="166">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="32"/>  
+  </nesting>  
+  <nesting id="167">    
+    <end type="SOURCE" refId="94"/>    
+    <end type="TARGET" refId="95"/>  
+  </nesting>  
+  <generalization id="168">    
+    <end type="SOURCE" refId="100"/>    
+    <end type="TARGET" refId="96"/>  
+  </generalization>  
+  <association id="169">    
+    <end type="SOURCE" refId="101" navigable="false">      
+      <attribute id="170" name="userData"/>      
+      <multiplicity id="171" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="52" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="172">    
+    <end type="SOURCE" refId="85" navigable="false">      
+      <attribute id="173" name="cloudMessagingSender"/>      
+      <multiplicity id="174" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="79" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="175">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="176" name="relationshipType"/>      
+      <multiplicity id="177" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="178">    
+    <bendpoint x="1750" y="405"/>    
+    <end type="SOURCE" refId="52" navigable="false">      
+      <attribute id="179" name="tags"/>      
+      <multiplicity id="180" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="55" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="181">    
+    <end type="SOURCE" refId="100" navigable="false">      
+      <attribute id="182" name="userAgent2"/>      
+      <multiplicity id="183" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="101" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="184">    
+    <end type="SOURCE" refId="39"/>    
+    <end type="TARGET" refId="22"/>  
+  </nesting>  
+  <association id="185">    
+    <end type="SOURCE" refId="100" navigable="false">      
+      <attribute id="186" name="result"/>      
+      <multiplicity id="187" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="61" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="188">    
+    <end type="SOURCE" refId="62"/>    
+    <end type="TARGET" refId="64"/>  
+  </generalization>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false" static="false"/>    
+    <operations public="false" package="false" protected="false" private="false" static="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

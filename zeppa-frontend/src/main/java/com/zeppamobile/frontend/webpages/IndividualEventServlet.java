@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  *         Event Servlet 
  *
  */
-public class EventsServlet extends HttpServlet {
+public class IndividualEventServlet extends HttpServlet {
 
 	/**
 	 * 

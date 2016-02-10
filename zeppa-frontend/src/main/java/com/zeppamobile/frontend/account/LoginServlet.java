@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.helloworld;
+package com.zeppamobile.frontend.account;
 
 import java.io.IOException;
 
@@ -9,28 +9,18 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 
- * @author Pete Schuette
+ * @author Kieran Lynn
  * 
  *         Blank servlet for testing
  *
  */
-public class HelloWorldServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6074841711114263838L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-		resp.setContentType("text/html");
-		req.setAttribute("attribute1", "This is attribute 1");
-		
-		req.getRequestDispatcher("WEB-INF/hello-world.jsp").forward(req, resp);
-	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)

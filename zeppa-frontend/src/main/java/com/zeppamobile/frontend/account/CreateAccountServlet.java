@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.webpages;
+package com.zeppamobile.frontend.account;
 
 import java.io.IOException;
 
@@ -14,22 +14,19 @@ import javax.servlet.http.HttpServletResponse;
  *         Event Servlet 
  *
  */
-public class EventsServlet extends HttpServlet {
+public class CreateAccountServlet extends HttpServlet {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6074841711114263838L;
 
+
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		resp.setContentType("text/html");
-		req.setAttribute("attribute1", "This is attribute 1");
-		
-		req.getRequestDispatcher("WEB-INF/pages/events.jsp").forward(req, resp);
+
 	}
 	
 

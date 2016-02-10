@@ -30,14 +30,6 @@ public class BillingServlet extends HttpServlet {
 		req.setAttribute("attribute1", "This is attribute 1");
 		
 		req.getRequestDispatcher("WEB-INF/pages/billing.jsp").forward(req, resp);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
-	}
-	
+	}	
 
 }

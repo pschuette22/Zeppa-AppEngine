@@ -3,6 +3,8 @@ package com.zeppamobile.smartfollow.task;
 import java.io.File;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import it.uniroma1.lcl.adw.ADW;
 import it.uniroma1.lcl.adw.ADWConfiguration;
 import it.uniroma1.lcl.adw.DisambiguationMethod;
@@ -21,7 +23,7 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  * @author Eric Most
  * 
  */
-public class CompareTagsTask {
+public class CompareTagsTask extends SmartFollowTask {
 
 	// Each tag represented as a list of word-parts (POS tagged)
 	private List<WordInfo> tag1, tag2;
@@ -38,7 +40,8 @@ public class CompareTagsTask {
 	 * @param tag2
 	 *            parsed list of words
 	 */
-	public CompareTagsTask(List<WordInfo> tag1, List<WordInfo> tag2) {
+	public CompareTagsTask(ServletContext context, List<WordInfo> tag1, List<WordInfo> tag2) {
+		super(context, "CompareTagsTask");
 		this.tag1 = tag1;
 		this.tag2 = tag2;
 	}
@@ -127,6 +130,18 @@ public class CompareTagsTask {
 	 */
 	public double getSimilarity() {
 		return similarity;
+	}
+
+	@Override
+	public void finalize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String abort(boolean doResume) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -3,6 +3,8 @@ package com.zeppamobile.smartfollow.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import net.sf.extjwnl.JWNLException;
 import net.sf.extjwnl.data.IndexWord;
 import net.sf.extjwnl.data.IndexWordSet;
@@ -23,7 +25,7 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  *         This object is used to compare two words and analyze relevant info
  * 
  */
-public class CompareWordsTask {
+public class CompareWordsTask extends SmartFollowTask {
 
 	/**
 	 * First word used in comparison
@@ -54,7 +56,8 @@ public class CompareWordsTask {
 	 * @param sourceWords
 	 * @param targetWords
 	 */
-	public CompareWordsTask(WordInfo sourceWord, WordInfo targetWord) {
+	public CompareWordsTask(ServletContext context, WordInfo sourceWord, WordInfo targetWord) {
+		super(context, "CompareWordsTask");
 		this.sourceWord = sourceWord;
 		this.targetWord = targetWord;
 	}
@@ -357,6 +360,18 @@ public class CompareWordsTask {
 		// Get the counts pointing both ways because target and source are not
 		// guaranteed to be ordered
 		return sourceCounts / pointerCounts;
+	}
+
+	@Override
+	public void finalize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String abort(boolean doResume) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

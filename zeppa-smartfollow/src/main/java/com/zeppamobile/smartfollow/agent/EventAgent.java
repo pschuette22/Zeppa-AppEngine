@@ -11,7 +11,7 @@ import com.zeppamobile.common.datainfo.EventTagInfo;
  * @author Pete Schuette
  *
  */
-public class EventAgent {
+public class EventAgent extends BaseAgent {
 
 	private EventInfo event;
 

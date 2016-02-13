@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zeppamobile.smartfollow.Configuration;
+import com.zeppamobile.smartfollow.AppConfig;
 
 
 /**
@@ -18,13 +18,13 @@ public class TestTagAgent {
 	
 	@Before
 	public void setup(){
-		Configuration.startTesting();
+		AppConfig.startTesting();
 		
 	}
 	
 	@After
 	public void teardown(){
-		Configuration.stopTesting();
+		AppConfig.stopTesting();
 	}
 	
 	@Test

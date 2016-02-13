@@ -1,12 +1,12 @@
 package com.zeppamobile.smartfollow;
 
 
-public class Configuration {
+public class AppConfig {
 
 	/**
 	 * @constructor private contructor as this is a utility class
 	 */
-	private Configuration() {
+	private AppConfig() {
 	}
 
 	

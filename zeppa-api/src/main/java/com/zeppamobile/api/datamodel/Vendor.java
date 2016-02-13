@@ -1,5 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -29,22 +31,32 @@ public class Vendor {
 	private String companyLogoUrl;
 	
 	@Persistent
-	private String addressLine1,addressLine2;
+	protected String addressLine1,addressLine2;
 	
 	@Persistent
-	private String city;
+	protected String city;
 	
 	@Persistent
-	private String state;
+	protected String state;
 	
 	@Persistent
-	private Integer zipcode;
+	protected Integer zipcode;
+	
+	// TODO: replace the above attributes with this one
+	@Persistent
+	private Address address;
 	
 	@Persistent
 	private Long masterUserId;
 	
 	@Persistent
 	private Boolean isPrivakeyEnabled;
+	
+	@Persistent
+	private BillingInfo billingInfo;
+	
+	@Persistent
+	private List<Bill> billHistory;
 
 	
 	/**
@@ -103,43 +115,43 @@ public class Vendor {
 		this.companyName = companyName;
 	}
 
-	public String getAddressLine1() {
+	protected String getAddressLine1() {
 		return addressLine1;
 	}
 
-	public void setAddressLine1(String addressLine1) {
+	protected void setAddressLine1(String addressLine1) {
 		this.addressLine1 = addressLine1;
 	}
 
-	public String getAddressLine2() {
+	protected String getAddressLine2() {
 		return addressLine2;
 	}
 
-	public void setAddressLine2(String addressLine2) {
+	protected void setAddressLine2(String addressLine2) {
 		this.addressLine2 = addressLine2;
 	}
 
-	public String getCity() {
+	protected String getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	protected void setCity(String city) {
 		this.city = city;
 	}
 
-	public String getState() {
+	protected String getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	protected void setState(String state) {
 		this.state = state;
 	}
 
-	public Integer getZipcode() {
+	protected Integer getZipcode() {
 		return zipcode;
 	}
 
-	public void setZipcode(Integer zipcode) {
+	protected void setZipcode(Integer zipcode) {
 		this.zipcode = zipcode;
 	}
 

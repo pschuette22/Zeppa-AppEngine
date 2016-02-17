@@ -51,6 +51,7 @@
     <servlet-name>accountsettings</servlet-name>
     <url-pattern>/account-settings</url-pattern>
   </servlet-mapping>
+
   
   <welcome-file-list>
   	<welcome-file>hello-world.jsp</welcome-file>

@@ -1,7 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
 import java.util.List;
-
+import com.zeppamobile.api.datamodel.BillingInfo;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -152,43 +152,43 @@ public class Vendor {
 		this.companyName = companyName;
 	}
 
-	protected String getAddressLine1() {
+	public String getAddressLine1() {
 		return addressLine1;
 	}
 
-	protected void setAddressLine1(String addressLine1) {
+	public void setAddressLine1(String addressLine1) {
 		this.addressLine1 = addressLine1;
 	}
 
-	protected String getAddressLine2() {
+	public String getAddressLine2() {
 		return addressLine2;
 	}
 
-	protected void setAddressLine2(String addressLine2) {
+	public void setAddressLine2(String addressLine2) {
 		this.addressLine2 = addressLine2;
 	}
 
-	protected String getCity() {
+	public String getCity() {
 		return city;
 	}
 
-	protected void setCity(String city) {
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	protected String getState() {
+	public String getState() {
 		return state;
 	}
 
-	protected void setState(String state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 
-	protected Integer getZipcode() {
+	public Integer getZipcode() {
 		return zipcode;
 	}
 
-	protected void setZipcode(Integer zipcode) {
+	public void setZipcode(Integer zipcode) {
 		this.zipcode = zipcode;
 	}
 

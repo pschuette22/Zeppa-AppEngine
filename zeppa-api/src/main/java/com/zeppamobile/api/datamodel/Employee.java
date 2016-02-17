@@ -31,7 +31,7 @@ public class Employee {
 	private ZeppaUserInfo userInfo;
 	
 	@Persistent
-	private Long vendorId;
+	private Key vendorId;
 	
 	@Persistent
 	private String emailAddress;
@@ -55,8 +55,14 @@ public class Employee {
 		return created;
 	}
 
+	//Default constructor
+	public Employee()
+	{
+		super();
+	}
+	
 	public Employee(Long created, Long updated, ZeppaUserInfo userInfo,
-			Long vendorId, String emailAddress, String password,
+			Key vendorId, String emailAddress, String password,
 			Boolean isEmailVerified, String privakeyGuid) {
 		super();
 		this.created = created;
@@ -89,11 +95,11 @@ public class Employee {
 		this.userInfo = userInfo;
 	}
 
-	public Long getVendorId() {
+	public Key getVendorId() {
 		return vendorId;
 	}
 
-	public void setVendorId(Long vendorId) {
+	public void setVendorId(Key vendorId) {
 		this.vendorId = vendorId;
 	}
 

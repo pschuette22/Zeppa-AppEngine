@@ -62,6 +62,7 @@
     <servlet-name>get-events</servlet-name>
     <url-pattern>/get-events</url-pattern>
   </servlet-mapping>
+
   
   <!-- Front end servlets for each page -->
   <servlet>
@@ -132,4 +133,12 @@
   	<welcome-file>hello-world.jsp</welcome-file>
   </welcome-file-list>
   
+  <servlet>
+    <servlet-name>create-account</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.account.CreateAccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>create-account</servlet-name>
+    <url-pattern>/create-account</url-pattern>
+  </servlet-mapping>
 </web-app>

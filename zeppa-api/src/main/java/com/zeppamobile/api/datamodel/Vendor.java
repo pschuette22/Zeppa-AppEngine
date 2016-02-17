@@ -7,6 +7,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.simple.JSONObject;
+
 import com.google.appengine.api.datastore.Key;
 
 
@@ -47,7 +49,7 @@ public class Vendor {
 	private Address address;
 	
 	@Persistent
-	private Long masterUserId;
+	private Key masterUserId;
 	
 	@Persistent
 	private Boolean isPrivakeyEnabled;
@@ -58,6 +60,41 @@ public class Vendor {
 	@Persistent
 	private List<Bill> billHistory;
 
+	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("key", key);
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+
+		obj.put("companyName", companyName);
+		obj.put("companyLogoUrl", companyLogoUrl);
+		obj.put("addressLine1", addressLine1);
+		obj.put("addressLine2", addressLine2);
+		obj.put("city", city);
+		obj.put("state", state);
+		obj.put("zipcode", zipcode);
+		obj.put("masterUserId", masterUserId);
+		obj.put("isPrivakeyEnabled", isPrivakeyEnabled);
+
+
+		return obj;
+	}
+	
+	/**
+	 * Default vendor constructor 
+	 **/
+	public Vendor()
+	{
+		super();
+	}
 	
 	/**
 	 * Construct a vendor object
@@ -75,7 +112,7 @@ public class Vendor {
 	 */
 	public Vendor(Long created, Long updated, String companyName,
 			String addressLine1, String addressLine2, String city,
-			String state, Integer zipcode, Long masterUserId,
+			String state, Integer zipcode, Key masterUserId,
 			Boolean isPrivakeyEnabled) {
 		super();
 		this.created = created;
@@ -155,11 +192,11 @@ public class Vendor {
 		this.zipcode = zipcode;
 	}
 
-	public Long getMasterUserId() {
+	public Key getMasterUserId() {
 		return masterUserId;
 	}
 
-	public void setMasterUserId(Long masterUserId) {
+	public void setMasterUserId(Key masterUserId) {
 		this.masterUserId = masterUserId;
 	}
 

@@ -43,12 +43,11 @@
 			<scope>provided</scope>
 		</dependency>
 		
-		<dependency>
-			<groupId>javax.servlet</groupId>
+<!-- 		<dependency>
+			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency> 
+		</dependency> -->
 
 		<dependency>
 			<groupId>javax.persistence</groupId>

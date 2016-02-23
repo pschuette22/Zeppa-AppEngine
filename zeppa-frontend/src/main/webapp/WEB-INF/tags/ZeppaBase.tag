@@ -24,7 +24,7 @@
 								<div class="inner">
 
 									<!-- Logo -->
-										<h1><a href="home.jsp" id="logo">Zeppa</a></h1>
+										<h1><a href="/dashboard" id="logo">Zeppa</a></h1>
 
 									<!-- Nav -->
 										<nav id="nav">

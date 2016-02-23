@@ -18,11 +18,6 @@
 	<jsp:attribute name="title">
 	  <h2>Account Settings</h2>
 	</jsp:attribute>
-	
-	<jsp:attribute name="footer">
-	  <p id="copyright">Copyright 1927, Future Bits When There Be Bits Inc.</p>
-	</jsp:attribute>
-	
 	<jsp:body>
 	  <table>
    		<tr>
@@ -74,5 +69,4 @@
       	  </td>
    		</tr>
 	  </table>
-	</jsp:body>
 </t:ZeppaBase>

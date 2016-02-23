@@ -18,8 +18,6 @@
 	  <p id="copyright">Copyright 1927, Future Bits When There Be Bits Inc.</p>
 	</jsp:attribute>
 	
-	
-	
 	<jsp:body>
 		<div id="filters">Filters</div>
 		<div id="tabNavBar"></div>

@@ -16,7 +16,7 @@ import com.zeppamobile.common.datainfo.FilterInfo;
  * Servlet class for interacting with analytics
  *
  */
-public class AnalyticsServlet extends HttpServlet {
+public class AnalysticsServlet extends HttpServlet {
 
 	/**
 	 * 

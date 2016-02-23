@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.account;
+package com.zeppamobile.frontend.accounts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,31 +20,18 @@ import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
 /**
- * 
- * @author Brendan
- * 
- *         Creat Account Servlet 
- *
+ * Servlet implementation class CreateAccountServlet
  */
 public class CreateAccountServlet extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6074841711114263838L;
-
-
-    
+	private static final long serialVersionUID = 1L;
+       
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/html");
-		request.setAttribute("attribute1", "This is attribute 1");
-		
-		request.getRequestDispatcher("WEB-INF/pages/create-account.jsp").forward(request, response);
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -56,41 +43,25 @@ public class CreateAccountServlet extends HttpServlet {
 		/*
 		 * Get the vendor and employee info from parameters
 		 */
-	    String firstName = request.getParameter("firstName");
-	    String lastName = request.getParameter("lastName");
-	    String emailAddress = request.getParameter("emailAddress");
-	    String companyName = request.getParameter("companyName");
-	    String addressLine1 = request.getParameter("addressLine1");
-	   	String addressLine2 = request.getParameter("addressLine2");
-	   	String city = request.getParameter("city");
-	   	String state = request.getParameter("state");
-	   	String zipcode = request.getParameter("zipcode");
-	   	String password = request.getParameter("password");
+		String name = request.getParameter("eventName");
+		// Fetch the current ID token
+		String access_token = (String)request.getSession().getAttribute(UniversalConstants.PARAM_ID_TOKEN);
 		
-		if (Utils.isWebSafe(firstName)) {
+		if (Utils.isWebSafe(name)) {
 
 			/*
 			 * Parameters accepted, making call to api servlet
 			 */
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("firstName", firstName);
-			params.put("lastName", lastName);
-			params.put("emailAddress", emailAddress);
-			params.put("companyName", companyName);
-			params.put("addressLine1", addressLine1);
-			params.put("addressLine2", addressLine2);
-			params.put("city", city);
-			params.put("state", state);
-			params.put("zipcode", zipcode);
-			params.put("password", password);
-			
+			params.put(UniversalConstants.PARAM_EVENT_NAME, name);
+			params.put(UniversalConstants.PARAM_ID_TOKEN, access_token);
 			/*
 			 * Read from the request
 			 */
 			try {
 
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
-						"/endpoint/vendor-servlet/", params);
+						"/admin/event-servlet/", params);
 				
 		        String message = URLEncoder.encode("my message", "UTF-8");
 
@@ -108,7 +79,7 @@ public class CreateAccountServlet extends HttpServlet {
 	    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	                // OK
-	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
+	            	response.getWriter().println("Connection Response: " + connection.getResponseMessage());
 
 					// Read from the buffer line by line and write to the response
 					// item					
@@ -119,7 +90,7 @@ public class CreateAccountServlet extends HttpServlet {
 					
 	            } else {
 	                // Server returned HTTP error code.
-	            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
+	            	response.getWriter().println("Connection Response: " + connection.getResponseMessage());
 	            	
 					// Read from the buffer line by line and write to the response
 					// item					
@@ -130,10 +101,18 @@ public class CreateAccountServlet extends HttpServlet {
 	            
 	            reader.close();
 	        } catch (MalformedURLException e) {
+	            // ...
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 	        } catch (IOException e) {
+	            // ...
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 			} catch (Exception e) {
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 				
 			}
@@ -145,6 +124,5 @@ public class CreateAccountServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
-	
 
 }

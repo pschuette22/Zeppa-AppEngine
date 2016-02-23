@@ -49,7 +49,7 @@ public class Vendor {
 	private Address address;
 	
 	@Persistent
-	private Key masterUserId;
+	private Long masterUserId;
 	
 	@Persistent
 	private Boolean isPrivakeyEnabled;
@@ -112,7 +112,7 @@ public class Vendor {
 	 */
 	public Vendor(Long created, Long updated, String companyName,
 			String addressLine1, String addressLine2, String city,
-			String state, Integer zipcode, Key masterUserId,
+			String state, Integer zipcode, Long masterUserId,
 			Boolean isPrivakeyEnabled) {
 		super();
 		this.created = created;
@@ -192,11 +192,11 @@ public class Vendor {
 		this.zipcode = zipcode;
 	}
 
-	public Key getMasterUserId() {
+	public Long getMasterUserId() {
 		return masterUserId;
 	}
 
-	public void setMasterUserId(Key masterUserId) {
+	public void setMasterUserId(Long masterUserId) {
 		this.masterUserId = masterUserId;
 	}
 

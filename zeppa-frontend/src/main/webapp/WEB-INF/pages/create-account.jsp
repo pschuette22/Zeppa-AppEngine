@@ -39,6 +39,8 @@ function createAccount() {
 
 <jsp:body>
 	<div>
+		<div id="successDiv" style="color: green;"></div>
+		<div id="errorDiv" style="color: red;"></div>
 	    <table style="width:600px;">
 	    	<tr>
 	    		<td>First Name</td>

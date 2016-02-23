@@ -12,7 +12,6 @@
 			$("#"+tabID).addClass("active");
 			$(".tabNav").removeClass("active");
 			$(this).addClass("active");
-			
 		});
 	});
 </script>

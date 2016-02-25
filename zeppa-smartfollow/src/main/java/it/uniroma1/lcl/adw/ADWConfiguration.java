@@ -16,7 +16,7 @@ public class ADWConfiguration
 	private static final Log log = LogFactory.getLog(ADWConfiguration.class);
 
 	private static ADWConfiguration instance = null;
-	private static final String CONFIG_DIR = "src/main/webapp/WEB-INF/config/";
+	private static String CONFIG_DIR = "src/main/resources/config/";
 	private static final String CONFIG_FILE = "adw.properties";
 
 	/**
@@ -188,5 +188,9 @@ public class ADWConfiguration
 	 */
 	public boolean getSignaturesSource() {
 		return Boolean.valueOf(config.getString("useCloudSignatures"));
+	}
+	
+	public void setConfigDir(String path) {
+		CONFIG_DIR = path;
 	}
 }

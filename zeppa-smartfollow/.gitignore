@@ -3,5 +3,3 @@
 .settings
 /target/
 /bin/
-/src/main/resources/signatures/
-/src/main/webapp/WEB-INF/signatures/

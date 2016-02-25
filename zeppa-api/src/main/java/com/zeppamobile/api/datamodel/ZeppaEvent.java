@@ -69,12 +69,6 @@ public class ZeppaEvent {
 	@Persistent
 	private String mapsLocation;
 
-	/**
-	 * Boolean operator indicating that the venue lat/long was found
-	 */
-	@Persistent
-	private Boolean isVenueFound;
-
 	@Persistent
 	private Long latitude;
 

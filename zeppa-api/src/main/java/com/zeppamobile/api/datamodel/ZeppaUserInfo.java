@@ -1,5 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.Date;
+
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -13,6 +15,10 @@ import com.google.appengine.api.datastore.Key;
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME)
 public class ZeppaUserInfo{
 
+	
+	enum Gender {
+		MALE,FEMALE,UNANSWERED
+	}
 	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY, defaultFetchGroup = "true")
@@ -32,7 +38,12 @@ public class ZeppaUserInfo{
 
 	@Persistent(defaultFetchGroup = "true")
 	private String imageUrl;
-
+	
+	@Persistent(defaultFetchGroup = "true")
+	private Gender gender;
+	
+	@Persistent(defaultFetchGroup = "true")
+	private Date dateOfBirth;
 	
 	
 	public Long getCreated() {

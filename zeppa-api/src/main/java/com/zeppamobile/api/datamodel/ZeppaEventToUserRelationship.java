@@ -1,6 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -50,6 +51,9 @@ public class ZeppaEventToUserRelationship {
 	@Persistent // Event holds a tag attendee follows
 	private Boolean isRecommended;
 	
+	// Not persistent so this value may be set as the event is listed. 
+	@NotPersistent
+	private ZeppaEvent event;
 	
 	/**
 	 * Rebuild this object from JSON object
@@ -192,5 +196,15 @@ public class ZeppaEventToUserRelationship {
 	public void setEventHostId(Long eventHostId) {
 		this.eventHostId = eventHostId;
 	}
+
+	public ZeppaEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ZeppaEvent event) {
+		this.event = event;
+	}
+	
+	
 	
 }

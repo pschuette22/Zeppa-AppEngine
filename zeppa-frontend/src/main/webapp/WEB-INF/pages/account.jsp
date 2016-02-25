@@ -6,7 +6,9 @@
 	/* Spanning the columns */
 	.column {
 	  float: left;
-	  width: 50%; }
+	  width: 50%;
+	  text-align: center; 
+	  }
 	
 	  /* Removing the margin from the last column */
 	  .column:last-child {
@@ -69,5 +71,6 @@
       	  </td>
    		</tr>
 	  </table>
+	  <div id="buttonDiv" style="width:60%;text-align:center"><input type="button" value="Submit"></div>
 	</jsp:body>
 </t:ZeppaBase>

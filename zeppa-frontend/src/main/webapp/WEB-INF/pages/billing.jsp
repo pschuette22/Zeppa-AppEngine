@@ -8,7 +8,7 @@
 	width: 90%;
 	padding-top: 25px;
 	padding-bottom: 25px;
-    border: 1px solid blue;
+    border: 1px solid rgb(31,169,255);
   }
   table{
     border-spacing: 10px 5px;
@@ -25,15 +25,15 @@
 	</jsp:attribute>
 	
 	<jsp:body>
-	  <h3 style="color:blue;text-decoration: underline;">Current Bill</h3>
+	  <h3 style="color:rgb(31,169,255);text-decoration: underline;">Current Bill</h3>
 	  <div class="box">
 	    <table width="100%" cellpadding="5px">
 	      <tr style="text-decoration: underline;">
-	        <th width="18%" align="center">Start Date</td>
-	        <th width="18%" align="center">End Date</td>
-	        <th width="18%" align="center">Amount Owed</td>
-	        <th width="18%" align="center">Due Date</td>
-	        <th width="18%" align="center">Paid Date</td>
+	        <th width="18%" align="center">Start Date</th>
+	        <th width="18%" align="center">End Date</th>
+	        <th width="18%" align="center">Amount Owed</th>
+	        <th width="18%" align="center">Due Date</th>
+	        <th width="18%" align="center">Paid Date</th>
 		  </tr>
 		  <tr>
 		    <td width="18%" align="center">[Cycle Start Date]</td>
@@ -44,15 +44,15 @@
 		  </tr>
 	    </table>
 	  </div>
-	  <h3 style="color:blue;text-decoration: underline;">Past Bills</h3>
+	  <h3 style="color:rgb(31,169,255);text-decoration: underline;">Past Bills</h3>
 	  <div class="box">
 	    <table width="100%" cellpadding="5px">
 	      <tr style="text-decoration: underline;">
-	        <th width="18%" align="center">Start Date</td>
-	        <th width="18%" align="center">End Date</td>
-	        <th width="18%" align="center">Amount Owed</td>
-	        <th width="18%" align="center">Due Date</td>
-	        <th width="18%" align="center">Paid Date</td>
+	        <th width="18%" align="center">Start Date</th>
+	        <th width="18%" align="center">End Date</th>
+	        <th width="18%" align="center">Amount Owed</th>
+	        <th width="18%" align="center">Due Date</th>
+	        <th width="18%" align="center">Paid Date</th>
 		  </tr>
 		  <tr>
 		    <td width="18%" align="center">[1.Cycle Start Date]</td>

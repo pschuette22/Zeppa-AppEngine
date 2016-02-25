@@ -1,5 +1,11 @@
 package com.zeppamobile.smartfollow.relationship;
 
+import it.uniroma1.lcl.adw.ADW;
+import it.uniroma1.lcl.adw.DisambiguationMethod;
+import it.uniroma1.lcl.adw.ItemType;
+import it.uniroma1.lcl.adw.comparison.SignatureComparison;
+import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
+
 import java.io.File;
 import java.util.List;
 
@@ -13,11 +19,6 @@ import net.sf.extjwnl.data.PointerType;
 import net.sf.extjwnl.data.Synset;
 import net.sf.extjwnl.data.relationship.Relationship;
 
-import it.uniroma1.lcl.adw.ADW;
-import it.uniroma1.lcl.adw.DisambiguationMethod;
-import it.uniroma1.lcl.adw.ItemType;
-import it.uniroma1.lcl.adw.comparison.SignatureComparison;
-import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
 
 
 

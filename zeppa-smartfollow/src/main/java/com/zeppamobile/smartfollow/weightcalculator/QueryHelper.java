@@ -3,6 +3,13 @@
  */
 package com.zeppamobile.smartfollow.weightcalculator;
 
+import it.uniroma1.lcl.adw.ADW;
+import it.uniroma1.lcl.adw.ADWConfiguration;
+import it.uniroma1.lcl.adw.DisambiguationMethod;
+import it.uniroma1.lcl.adw.ItemType;
+import it.uniroma1.lcl.adw.comparison.SignatureComparison;
+import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,6 +37,8 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 import com.zeppamobile.smartfollow.Constants;
+import com.zeppamobile.smartfollow.comparewords.WordInfo;
+import com.zeppamobile.smartfollow.task.CompareTagsTask;
 
 public class QueryHelper extends PointerUtils {
 	private static final String PATH_TO_DUMP_FILE = "src/main/java/com/zeppamobile/smartfollow/weightcalculator/pointer-types.txt";
@@ -53,7 +62,7 @@ public class QueryHelper extends PointerUtils {
 	private static int searchDepth = 5;
 
 	public static void main(String[] args) {
-		FileWriter fw = null;
+		/*FileWriter fw = null;
 		BufferedWriter bw = null;
 		PrintWriter pw = null;
 		long resultCount, queryCount = 0;
@@ -148,7 +157,83 @@ public class QueryHelper extends PointerUtils {
 		 * pw.close(); }
 		 */
 		
+		
+		//String response = doGet("http://storage.googleapis.com/zeppa-signatures/test2.txt");
+		
+		//System.out.println(response);
+		
+		try {
+			System.out.println("Comparing tags with ADW");
+			
+			List<WordInfo> tag1 = new ArrayList<>();
+			List<WordInfo> tag2 = new ArrayList<>();
+			
+			tag1.add(new WordInfo("playing", POS.VERB));
+			tag1.add(new WordInfo("football", POS.NOUN));
+			
+			tag2.add(new WordInfo("watching", POS.VERB));
+			tag2.add(new WordInfo("soccer", POS.NOUN));
+			
+			ADW pipeline = new ADW();
+
+			// The two lexical items
+			String text1 = CompareTagsTask.buildADWInput(tag1);
+			String text2 = CompareTagsTask.buildADWInput(tag2);
+
+			// Type of input (formatting)
+			ItemType text1Type = ItemType.SURFACE_TAGGED;
+			ItemType text2Type = ItemType.SURFACE_TAGGED;
+
+			// Measure for comparing semantic signatures
+			// Note that this is the only comparison method implemented by ADW
+			SignatureComparison measure = new WeightedOverlap();
+
+			// Calculate the similarity of text1 and text2
+			double similarity = pipeline.getPairSimilarity(text1, text2,
+					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
+					text2Type);
+			
+			System.out.println(similarity);
+		} catch (Exception e) {
+			// I have no idea if ADW will throw exceptions, but best catch them here.
+			System.err.println("Exception in ADW library similarity comparison");
+			e.printStackTrace();
+		}
+		
 		System.out.println("Exiting");
+	}
+	
+	/**
+	 * Retrieve file contents
+	 * 
+	 * @param targetURL
+	 * @param urlParameters
+	 * @return file contents
+	 */
+	public static String doGet(String targetURL) {
+		URLConnection connection = null;
+		try {
+			// Create connection
+			URL url = new URL(targetURL);
+			connection = url.openConnection();
+
+			// Get Response
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				response.append(line);
+				response.append('\r');
+			}
+
+			br.close();
+			return response.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

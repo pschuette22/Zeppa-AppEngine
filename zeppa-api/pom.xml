@@ -122,6 +122,13 @@
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
+			<exclusions>
+        		<!-- creates conflicts with another guava version in appengine-gcs-client -->
+        		<exclusion>
+          			<groupId>com.google.guava</groupId>
+            		<artifactId>guava-jdk5</artifactId>
+        		</exclusion>
+    		</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.json-simple</groupId>

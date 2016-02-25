@@ -17,14 +17,7 @@
 		<repository>
 			<id>lib</id>
 			<name>lib</name>
-			<releases>
-				<enabled>true</enabled>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<url>file://${project.basedir}/lib</url>
+			<url>file:${project.basedir}/src/main/webapp/WEB-INF/lib</url>
 		</repository>
 	</repositories>
 
@@ -42,6 +35,13 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>${appengine.target.version}</version>
+		</dependency>
+		
+		<!-- Google Cloud Storage client library -->
+		<dependency>
+    		<groupId>com.google.appengine.tools</groupId>
+    		<artifactId>appengine-gcs-client</artifactId>
+    		<version>RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -72,6 +72,13 @@
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
+			<exclusions>
+        		<!-- creates conflicts with another guava version in appengine-gcs-client -->
+        		<exclusion>
+          			<groupId>com.google.guava</groupId>
+            		<artifactId>guava-jdk5</artifactId>
+        		</exclusion>
+    		</exclusions>
 		</dependency>
 
 		<dependency>
@@ -107,12 +114,74 @@
 			<artifactId>extjwnl-utilities</artifactId>
 			<version>1.9.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.kie.modules</groupId>
+			<artifactId>org-junit</artifactId>
+			<version>6.1.0.CR1</version>
+			<type>pom</type>
+		</dependency>
 
-		<!-- ADW library for lexical comparison -->
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+                
+		<dependency>
+		    <groupId>edu.stanford.nlp</groupId>
+		    <artifactId>stanford-corenlp</artifactId>
+		    <version>3.4.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>edu.stanford.nlp</groupId>
+		    <artifactId>stanford-corenlp</artifactId>
+		    <version>3.4.1</version>
+		    <classifier>models</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.mit</groupId>
+			<artifactId>jwi</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sourceforge.collections</groupId>
+			<artifactId>collections-generic</artifactId>
+			<version>4.01</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.5</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+		
+		<!-- jlt library (ADW dependency) -->
 		<dependency>
 			<groupId>it.uniroma1.lcl</groupId>
-			<artifactId>adw.feb2015</artifactId>
-			<version>1.0</version>
+			<artifactId>jlt</artifactId>
+			<version>2</version>
 		</dependency>
 
 		<!-- Necessary for jwktl -->
@@ -143,11 +212,40 @@
 		<!-- <resources> <resource> <directory>src/main/webapp/WEB-INF/lib</directory> 
 			<filtering>true</filtering> <includes> <include>en-pos-maxent.bin</include> 
 			</includes> </resource> </resources> -->
+			
+		<!-- Exclude semantic signatures from maven build -->
+		<resources>
+			<resource>
+				<directory>src/main/resources/signatures</directory>
+				<excludes>
+					<exclude>**/*</exclude>
+				</excludes>
+			</resource>
+		</resources>
 
 		<outputDirectory>target/${project.artifactId}-${project.version}/WEB-INF/classes</outputDirectory>
 		<!-- All details/versions/configurations are setup at the parent pom -->
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<excludes>
+							<exclude>src/main/resources/**/*</exclude>
+							<exclude>src/main/resources/*</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+<!-- 				<plugin> -->
+<!-- 					<groupId>org.apache.maven.plugins</groupId> -->
+<!--        				<artifactId>maven-war-plugin</artifactId> -->
+<!--         			<version>2.6</version> -->
+<!--         			<configuration> -->
+<!--           				<packagingExcludes>WEB-INF/signatures/ppvs.30g.1k/**/*</packagingExcludes> -->
+<!--         			</configuration> -->
+<!--       			</plugin> -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -175,29 +273,6 @@
 						</webResources>
 					</configuration>
 				</plugin>
-				<!-- Install ADW to the repository -->
-				<!-- This jar file must be contained in WEB-INF -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-install-plugin</artifactId>
-					<version>2.3.1</version>
-					<executions>
-						<execution>
-							<id>install-adw</id>
-							<phase>generate-resources</phase>
-							<goals>
-								<goal>install-file</goal>
-							</goals>
-							<configuration>
-								<file>${basedir}/src/main/webapp/WEB-INF/lib/adw.feb2015.jar</file>
-								<groupId>it.uniroma1.lcl</groupId>
-								<artifactId>adw.feb2015</artifactId>
-								<version>1.0</version>
-								<packaging>jar</packaging>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -205,6 +280,6 @@
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+		</plugins> 	
 	</build>
 </project>

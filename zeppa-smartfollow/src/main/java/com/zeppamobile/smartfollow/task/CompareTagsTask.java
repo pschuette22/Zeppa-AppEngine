@@ -64,7 +64,7 @@ public class CompareTagsTask extends SmartFollowTask {
 				System.out.println("Config file missing");
 			}
 			
-			ADWConfiguration.getInstance().setConfigurationFile(configFile);
+			//ADWConfiguration.getInstance().setConfigurationFile(configFile);
 			
 			
 			ADW pipeline = new ADW();
@@ -100,7 +100,7 @@ public class CompareTagsTask extends SmartFollowTask {
 	 * @param tagParts
 	 * @return formatted string
 	 */
-	private String buildADWInput(List<WordInfo> tagParts) {
+	public static String buildADWInput(List<WordInfo> tagParts) {
 		StringBuilder sb = new StringBuilder();
 		for (WordInfo word : tagParts) {
 			sb.append(word.getWord());

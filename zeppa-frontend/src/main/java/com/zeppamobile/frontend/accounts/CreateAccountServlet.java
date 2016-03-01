@@ -39,7 +39,7 @@ public class CreateAccountServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		
+		System.out.println("doPost to create account servlet");
 		/*
 		 * Get the vendor and employee info from parameters
 		 */
@@ -63,9 +63,9 @@ public class CreateAccountServlet extends HttpServlet {
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
 						"/admin/event-servlet/", params);
 				
-		        String message = URLEncoder.encode("my message", "UTF-8");
-
-	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		        String encodedUrl = URLEncoder.encode(url.toString(), "UTF-8");
+		        System.out.println("Encoded URL: " + encodedUrl);
+	            HttpURLConnection connection = (HttpURLConnection) (new URL(encodedUrl)).openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("POST");
 

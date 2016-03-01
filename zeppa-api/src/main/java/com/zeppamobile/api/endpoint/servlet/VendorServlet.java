@@ -1,6 +1,8 @@
 package com.zeppamobile.api.endpoint.servlet;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 
 import javax.jdo.PersistenceManager;
@@ -15,6 +17,7 @@ import org.json.simple.JSONObject;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
+import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
@@ -66,34 +69,38 @@ public class VendorServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+				
 		try {
 			//Set vendor info
 			System.out.println("In the Vendor Servlet");
 			Vendor vendor = new Vendor();
-			vendor.setCompanyName("Zeppa");//req.getParameter("companyName"));
+			vendor.setCompanyName(URLDecoder.decode(req.getParameter("companyName"), "UTF-8"));
 			vendor.setIsPrivakeyEnabled(false);
 			vendor.setMasterUserId(Long.valueOf(-1));
-//			vendor.setAddressLine1("Line 1");//req.getParameter("addressLine1"));
-//			vendor.setAddressLine2("Line 2");//req.getParameter("addressLine2"));
-//			vendor.setCity("City");//req.getParameter("city"));
-//			vendor.setState("PA");//req.getParameter("state"));
-//			vendor.setZipcode(19103);//Integer.parseInt(req.getParameter("zipcode")));
+			
+			Address address = new Address();
+			address.setCity(URLDecoder.decode(req.getParameter("city"), "UTF-8"));
+			address.setState(URLDecoder.decode(req.getParameter("state"), "UTF-8"));
+			address.setZipCode(Integer.parseInt(URLDecoder.decode(req.getParameter("zipcode"), "UTF-8")));
+			address.setAddressLine1(URLDecoder.decode(req.getParameter("addressLine1"), "UTF-8"));
+			address.setAddressLine2(URLDecoder.decode(req.getParameter("addressLine2"), "UTF-8"));
+			
 			 
 			//Set employee info
 			Employee employee = new Employee();
-			employee.setEmailAddress("Email");//req.getParameter("emailAddress"));
+			employee.setEmailAddress(URLDecoder.decode(req.getParameter("emailAddress"), "UTF-8"));
 			employee.setIsEmailVerified(false);
-			employee.setPassword("Password");//req.getParameter("password"));
+			employee.setPassword(URLDecoder.decode(req.getParameter("password"), "UTF-8"));
 			employee.setPrivakeyGuid("");
+			
 			
 			//Set employees user info
 			ZeppaUserInfo userInfo = new ZeppaUserInfo();
-			userInfo.setFamilyName("Last");//req.getParameter("lastName"));
-			userInfo.setGivenName("First");//req.getParameter("firstName"));
+			userInfo.setFamilyName(URLDecoder.decode(req.getParameter("lastName"), "UTF-8"));
+			userInfo.setGivenName(URLDecoder.decode(req.getParameter("firstName"), "UTF-8"));
 			employee.setUserInfo(userInfo);
 			
-			insertVendor(vendor, employee);
+			vendor = insertVendor(vendor, employee);
 
 			// Convert the object to json and return in the writer
 			JSONObject json = vendor.toJson();

@@ -180,8 +180,42 @@ public class Vendor {
 //		this.zipcode = zipcode;
 //	}
 
+	
+	
 	public Long getMasterUserId() {
 		return masterUserId;
+	}
+
+	public String getCompanyLogoUrl() {
+		return companyLogoUrl;
+	}
+
+	public void setCompanyLogoUrl(String companyLogoUrl) {
+		this.companyLogoUrl = companyLogoUrl;
+	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public BillingInfo getBillingInfo() {
+		return billingInfo;
+	}
+
+	public void setBillingInfo(BillingInfo billingInfo) {
+		this.billingInfo = billingInfo;
+	}
+
+	public List<Bill> getBillHistory() {
+		return billHistory;
+	}
+
+	public void setBillHistory(List<Bill> billHistory) {
+		this.billHistory = billHistory;
 	}
 
 	public void setMasterUserId(Long masterUserId) {

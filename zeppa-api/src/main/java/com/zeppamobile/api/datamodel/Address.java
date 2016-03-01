@@ -1,10 +1,29 @@
 package com.zeppamobile.api.datamodel;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+
+@PersistenceCapable
 public class Address {
 	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
+	@Persistent
 	private String address;
+	
+	@Persistent
 	private String city;
+	
+	@Persistent
 	private String states;
+	
+	@Persistent
 	private Integer zipCode;
 	
 	

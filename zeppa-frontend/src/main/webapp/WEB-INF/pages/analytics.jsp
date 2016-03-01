@@ -5,8 +5,18 @@
 <script src="../js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+<<<<<<< HEAD
 		$("#demographicsTab").click(function(){
 			alert("asfasF");
+=======
+		$(".tabNav").click(function(){
+			//Styling stuff (changing colors and hiding/showing)
+			$(".analyticsTab").removeClass("active");
+			var tabID = $(this).data("tab");
+			$("#"+tabID).addClass("active");
+			$(".tabNav").removeClass("active");
+			$(this).addClass("active");
+>>>>>>> 75c9d67d0e338be48461c134f59b1dc521d7df3b
 		});
 	});
 </script>

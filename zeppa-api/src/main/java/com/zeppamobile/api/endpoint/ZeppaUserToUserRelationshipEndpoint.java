@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
@@ -45,7 +46,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 */
 
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "listZeppaUserToUserRelationship",path="listZeppaUserToUserRelationship")
+	@ApiMethod(name = "listZeppaUserToUserRelationship", path = "listZeppaUserToUserRelationship")
 	public CollectionResponse<ZeppaUserToUserRelationship> listZeppaUserToUserRelationship(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -97,25 +98,42 @@ public class ZeppaUserToUserRelationshipEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-			/*
-			 * Remove entities the calling user isnt allowed to see
-			 */
-			List<ZeppaUserToUserRelationship> badEggs = new ArrayList<ZeppaUserToUserRelationship>();
-			for (ZeppaUserToUserRelationship relationship : execute) {
-				if (relationship.getCreatorId().longValue() == user.getId()
-						.longValue()
-						|| relationship.getSubjectId().longValue() == user
-								.getId().longValue()
-						|| relationship.getRelationshipType().equals(
-								UserRelationshipType.MINGLING)) {
-					// Users can see relationships they are involved in
-					// They can also see who is mingling with who
+			// /*
+			// * Remove entities the calling user isnt allowed to see
+			// */
+			// List<ZeppaUserToUserRelationship> badEggs = new
+			// ArrayList<ZeppaUserToUserRelationship>();
+			// for (ZeppaUserToUserRelationship relationship : execute) {
+			// if (relationship.getCreatorId().longValue() == user.getId()
+			// .longValue()
+			// || relationship.getSubjectId().longValue() == user
+			// .getId().longValue()
+			// || relationship.getRelationshipType().equals(
+			// UserRelationshipType.MINGLING)) {
+			// // Users can see relationships they are involved in
+			// // They can also see who is mingling with who
+			//
+			// } else {
+			// badEggs.add(relationship);
+			// }
+			// }
+			// execute.removeAll(badEggs);
 
-				} else {
-					badEggs.add(relationship);
+			List<ZeppaUserToUserRelationship> unfoundUsers = new ArrayList<ZeppaUserToUserRelationship>();
+			for (ZeppaUserToUserRelationship r : execute) {
+				try {
+					Long otherUserId = r.getOtherUserId(user.getId());
+					ZeppaUser otherUser = mgr.getObjectById(ZeppaUser.class,
+							otherUserId);
+					r.setUserInfo(otherUser.getUserInfo());
+				} catch (JDOObjectNotFoundException e) {
+					// couldnt find the user, remove the relationship from the
+					// equation.. Queue for removal?
+					unfoundUsers.add(r);
 				}
+
 			}
-			execute.removeAll(badEggs);
+			execute.removeAll(unfoundUsers);
 
 		} finally {
 			mgr.close();
@@ -134,7 +152,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 * @return The entity with primary key id.
 	 * @throws OAuthRequestException
 	 */
-	@ApiMethod(name = "getZeppaUserToUserRelationship",path="getZeppaUserToUserRelationship")
+	@ApiMethod(name = "getZeppaUserToUserRelationship", path = "getZeppaUserToUserRelationship")
 	public ZeppaUserToUserRelationship getZeppaUserToUserRelationship(
 			@Named("relationshipId") Long relationshipId,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
@@ -160,6 +178,10 @@ public class ZeppaUserToUserRelationshipEndpoint {
 							.getId().longValue()) {
 				throw new UnauthorizedException(
 						"Not authorized to create relationships for other people");
+			} else {
+				Long otherUserId = zeppausertouserrelationship.getOtherUserId(user.getId());
+				ZeppaUser otherUser = mgr.getObjectById(ZeppaUser.class, otherUserId);
+				zeppausertouserrelationship.setUserInfo(otherUser.getUserInfo());
 			}
 
 		} finally {
@@ -241,7 +263,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					r = mgr.makePersistent(r);
 					// Notify both users they are now mingling?
 				}
-
+				r.setUserInfo(otherUser.getUserInfo());
 				return r;
 			}
 
@@ -272,6 +294,8 @@ public class ZeppaUserToUserRelationshipEndpoint {
 					relationship.getId(), "mingle-request");
 
 			txn.commit();
+
+			relationship.setUserInfo(otherUser.getUserInfo());
 
 		} finally {
 			if (txn.isActive()) {
@@ -363,8 +387,7 @@ public class ZeppaUserToUserRelationshipEndpoint {
 	 * 
 	 */
 	@ApiMethod(name = "removeZeppaUserToUserRelationship")
-	public void removeZeppaUserToUserRelationship(
-			@Named("id") Long id,
+	public void removeZeppaUserToUserRelationship(@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User

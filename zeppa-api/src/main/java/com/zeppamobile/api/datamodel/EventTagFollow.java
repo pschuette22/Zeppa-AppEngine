@@ -31,6 +31,9 @@ public class EventTagFollow {
 	@Persistent
 	private Long followerId;
 	
+	@Persistent
+	private double calculatedInterest;
+	
 
 	/**
 	 * Instantiate follow object

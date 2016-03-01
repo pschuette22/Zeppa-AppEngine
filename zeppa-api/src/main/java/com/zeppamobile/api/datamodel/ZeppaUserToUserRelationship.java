@@ -1,6 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -28,21 +29,27 @@ public class ZeppaUserToUserRelationship {
 
 	@Persistent
 	private Long creatorId;
-	
+
 	@Persistent
 	private Long subjectId;
 
 	@Persistent
 	private UserRelationshipType relationshipType;
 
+	/**
+	 * Not persistent entity to be set before being passed back to client so
+	 * additional get requests are not required
+	 */
+	@NotPersistent
+	private ZeppaUserInfo userInfo;
 
 	/**
 	 * Blank Constructor to make appengine happy
 	 */
-	public ZeppaUserToUserRelationship(){
+	public ZeppaUserToUserRelationship() {
 		// NOTE: needed by appengine do not delete
 	}
-	
+
 	/**
 	 * Instantiate a User To User Relationship
 	 * 
@@ -66,7 +73,7 @@ public class ZeppaUserToUserRelationship {
 	 * @param json
 	 */
 	public ZeppaUserToUserRelationship(JSONObject json) {
-		
+
 		this.key = (Key) json.get("key");
 		this.created = (Long) json.get("created");
 		this.updated = (Long) json.get("updated");
@@ -143,6 +150,15 @@ public class ZeppaUserToUserRelationship {
 			return null;
 		}
 	}
+
+	public ZeppaUserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(ZeppaUserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+	
 	
 
 }

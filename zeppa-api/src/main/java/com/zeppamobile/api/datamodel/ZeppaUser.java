@@ -53,6 +53,8 @@ public class ZeppaUser {
 	 */
 	@Persistent
 	private Long latitude;
+	
+	
 
 	/*
 	 * These are tags to be persisted as soon as the user object is created in database

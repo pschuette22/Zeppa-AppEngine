@@ -130,7 +130,6 @@ public class ZeppaUserEndpoint {
 		for (String tagText : initialTags) {
 			EventTag tag = new EventTag(zeppaUser, tagText);
 			tags.add(tag);
-//			zeppaUser.addTag(tag);
 		}
 		// Persist
 		PersistenceManager tmgr = getPersistenceManager();
@@ -218,6 +217,7 @@ public class ZeppaUserEndpoint {
 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
+			user = mgr.getObjectById(ZeppaUser.class, user.getKey());
 			ZeppaUserInfo currentInfo = user.getUserInfo();
 			ZeppaUserInfo updatedInfo = zeppauser.getUserInfo();
 

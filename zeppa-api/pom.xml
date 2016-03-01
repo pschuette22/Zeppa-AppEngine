@@ -85,18 +85,21 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-testing</artifactId>
 			<version>${appengine.target.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-stubs</artifactId>
 			<version>${appengine.target.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
 			<version>${appengine.target.version}</version>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<dependency>
@@ -180,7 +183,7 @@
 			<plugin>
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
-				<version>${appengine.target.version}</version><!--$NO-MVN-MAN-VER$-->
+				<version>${appengine.target.version}</version><!--$NO-MVN-MAN-VER$ -->
 				<configuration>
 					<enableJarClasses>false</enableJarClasses>
 					<!-- <enableJarClasses>true</enableJarClasses> -->

@@ -22,4 +22,6 @@ datanucleus.log
 .DS_STORE
 out
 
+datanucleus.log
 
+*.ucls

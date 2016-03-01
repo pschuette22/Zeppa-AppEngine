@@ -176,7 +176,7 @@ public class EventCommentEndpoint {
 
 		if (eventcomment.getEventId() == null) {
 			throw new NullPointerException("Event Id Not Set");
-		} else if (Utils.isWebSafe(eventcomment.getText())) {
+		} else if (!Utils.isWebSafe(eventcomment.getText())) {
 			throw new IllegalArgumentException("Ilegal text (empty or too long)");
 		}
 

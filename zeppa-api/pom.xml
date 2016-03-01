@@ -147,6 +147,7 @@
 				<artifactId>maven-datanucleus-plugin</artifactId>
 				<version>3.2.0-m1</version>
 				<configuration>
+					<fork>false</fork>
 					<api>JDO</api>
 					<props>${basedir}/datanucleus.properties</props>
 					<verbose>true</verbose>

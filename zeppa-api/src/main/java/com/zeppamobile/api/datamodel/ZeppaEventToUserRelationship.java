@@ -9,7 +9,6 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.labs.repackaged.org.json.JSONException;
 
 @PersistenceCapable
 public class ZeppaEventToUserRelationship {
@@ -58,7 +57,6 @@ public class ZeppaEventToUserRelationship {
 	/**
 	 * Rebuild this object from JSON object
 	 * @param json - object as JSON
-	 * @throws JSONException throws exception if there is an error converting
 	 */
 	public ZeppaEventToUserRelationship(JSONObject json) {
 		this.key = (Key) json.get("key");

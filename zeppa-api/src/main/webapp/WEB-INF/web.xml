@@ -43,7 +43,7 @@
 
 
 	<!-- Admin Servlet for events -->
-	<servlet>
+<!-- 	<servlet>
 		<servlet-name>EventAdminServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.admin.EventAdminServlet
 		</servlet-class>
@@ -51,7 +51,7 @@
 	<servlet-mapping>
 		<servlet-name>EventAdminServlet</servlet-name>
 		<url-pattern>/admin/event-servlet/</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 
 

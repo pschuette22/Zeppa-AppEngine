@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
-import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
@@ -75,13 +73,13 @@ public class VendorServlet extends HttpServlet {
 			Vendor vendor = new Vendor();
 			vendor.setCompanyName("Zeppa");//req.getParameter("companyName"));
 			vendor.setIsPrivakeyEnabled(false);
-			vendor.setMasterUserId(null);
-			vendor.setAddressLine1("Line 1");//req.getParameter("addressLine1"));
-			vendor.setAddressLine2("Line 2");//req.getParameter("addressLine2"));
-			vendor.setCity("City");//req.getParameter("city"));
-			vendor.setState("PA");//req.getParameter("state"));
-			vendor.setZipcode(19103);//Integer.parseInt(req.getParameter("zipcode")));
-			
+			vendor.setMasterUserId(Long.valueOf(-1));
+//			vendor.setAddressLine1("Line 1");//req.getParameter("addressLine1"));
+//			vendor.setAddressLine2("Line 2");//req.getParameter("addressLine2"));
+//			vendor.setCity("City");//req.getParameter("city"));
+//			vendor.setState("PA");//req.getParameter("state"));
+//			vendor.setZipcode(19103);//Integer.parseInt(req.getParameter("zipcode")));
+			 
 			//Set employee info
 			Employee employee = new Employee();
 			employee.setEmailAddress("Email");//req.getParameter("emailAddress"));
@@ -117,9 +115,7 @@ public class VendorServlet extends HttpServlet {
 	 * @return The entity with primary key id.
 	 * @throws OAuthRequestException
 	 */
-
-	@ApiMethod(name = "getVendor", path = "getVendor")
-	public Vendor getVendor(@Named("id") Long id) throws UnauthorizedException {
+	public Vendor getVendor(Long id) throws UnauthorizedException {
 
 
 		PersistenceManager mgr = getPersistenceManager();
@@ -144,7 +140,6 @@ public class VendorServlet extends HttpServlet {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	@ApiMethod(name = "insertVendor")
 	public Vendor insertVendor(Vendor vendor, Employee employee) throws UnauthorizedException,
 			IOException {
 

@@ -1,11 +1,13 @@
 package com.zeppamobile.api.datamodel;
 
 import java.util.List;
-
+import com.zeppamobile.api.datamodel.BillingInfo;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -58,6 +60,41 @@ public class Vendor {
 	@Persistent
 	private List<Bill> billHistory;
 
+	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("key", key);
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+
+		obj.put("companyName", companyName);
+		obj.put("companyLogoUrl", companyLogoUrl);
+		obj.put("addressLine1", addressLine1);
+		obj.put("addressLine2", addressLine2);
+		obj.put("city", city);
+		obj.put("state", state);
+		obj.put("zipcode", zipcode);
+		obj.put("masterUserId", masterUserId);
+		obj.put("isPrivakeyEnabled", isPrivakeyEnabled);
+
+
+		return obj;
+	}
+	
+	/**
+	 * Default vendor constructor 
+	 **/
+	public Vendor()
+	{
+		super();
+	}
 	
 	/**
 	 * Construct a vendor object
@@ -115,43 +152,43 @@ public class Vendor {
 		this.companyName = companyName;
 	}
 
-	protected String getAddressLine1() {
+	public String getAddressLine1() {
 		return addressLine1;
 	}
 
-	protected void setAddressLine1(String addressLine1) {
+	public void setAddressLine1(String addressLine1) {
 		this.addressLine1 = addressLine1;
 	}
 
-	protected String getAddressLine2() {
+	public String getAddressLine2() {
 		return addressLine2;
 	}
 
-	protected void setAddressLine2(String addressLine2) {
+	public void setAddressLine2(String addressLine2) {
 		this.addressLine2 = addressLine2;
 	}
 
-	protected String getCity() {
+	public String getCity() {
 		return city;
 	}
 
-	protected void setCity(String city) {
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	protected String getState() {
+	public String getState() {
 		return state;
 	}
 
-	protected void setState(String state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 
-	protected Integer getZipcode() {
+	public Integer getZipcode() {
 		return zipcode;
 	}
 
-	protected void setZipcode(Integer zipcode) {
+	public void setZipcode(Integer zipcode) {
 		this.zipcode = zipcode;
 	}
 

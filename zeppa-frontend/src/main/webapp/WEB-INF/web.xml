@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  
+  <!-- Front end servlets for each page -->
   <servlet>
     <display-name>Dashboard</display-name>
     <servlet-name>dashboard</servlet-name>
@@ -45,17 +47,14 @@
     <servlet-name>accountsettings</servlet-name>
     <url-pattern>/account-settings</url-pattern>
   </servlet-mapping>
-  <welcome-file-list>
-    <welcome-file>hello-world.jsp</welcome-file>
-  </welcome-file-list>
+
   <servlet>
-    <description>Servlet for the static contact us page</description>
-    <display-name>ContactUs</display-name>
-    <servlet-name>contactus</servlet-name>
-    <servlet-class>com.zeppamobile.frontend.webpages.ContactUsServlet</servlet-class>
+    <servlet-name>create-account</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.account.CreateAccountServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>contactus</servlet-name>
-    <url-pattern>/contactus</url-pattern>
+    <servlet-name>create-account</servlet-name>
+    <url-pattern>/create-account</url-pattern>
   </servlet-mapping>
+
 </web-app>

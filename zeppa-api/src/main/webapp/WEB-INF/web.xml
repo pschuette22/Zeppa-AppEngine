@@ -54,5 +54,15 @@
 	</servlet-mapping>
 
 
+	<!-- Vendor Servlet -->
+	<servlet>
+		<servlet-name>VendorServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.VendorServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>VendorServlet</servlet-name>
+		<url-pattern>/endpoint/vendor-servlet/</url-pattern>
+	</servlet-mapping>
 
 </web-app>

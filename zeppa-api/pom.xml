@@ -156,14 +156,16 @@
 					<verbose>true</verbose>
 					<enhancerName>ASM</enhancerName>
 				</configuration>
-				<!-- <executions>
+				
+				<executions>
 					<execution>
 						<phase>process-classes</phase>
 						<goals>
 							<goal>enhance</goal>
 						</goals>
 					</execution>
-				</executions> -->
+				</executions> 
+				
 				<dependencies>
 					<dependency>
 						<groupId>org.datanucleus</groupId>

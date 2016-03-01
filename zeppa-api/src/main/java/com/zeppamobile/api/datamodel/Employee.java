@@ -55,6 +55,12 @@ public class Employee {
 		return created;
 	}
 
+	//Default constructor
+	public Employee()
+	{
+		super();
+	}
+	
 	public Employee(Long created, Long updated, ZeppaUserInfo userInfo,
 			Long vendorId, String emailAddress, String password,
 			Boolean isEmailVerified, String privakeyGuid) {

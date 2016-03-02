@@ -16,7 +16,7 @@ public class ADWConfiguration
 	private static final Log log = LogFactory.getLog(ADWConfiguration.class);
 
 	private static ADWConfiguration instance = null;
-	private static String CONFIG_DIR = "src/main/resources/config/";
+	private static String CONFIG_DIR = "src/main/webapp/config/";
 	private static final String CONFIG_FILE = "adw.properties";
 
 	/**
@@ -27,6 +27,7 @@ public class ADWConfiguration
 	private ADWConfiguration()
 	{
 		File configFile = new File(CONFIG_DIR, CONFIG_FILE);
+		System.out.println("Config file path: "+configFile.getAbsolutePath());
 		
 		boolean bDone = false;
 		if (configFile.exists())
@@ -41,6 +42,8 @@ public class ADWConfiguration
 			{
 				ce.printStackTrace();
 			}
+		} else {
+			log.info("Config file not found at " + configFile.getAbsolutePath());
 		}
 		
 		if (!bDone)

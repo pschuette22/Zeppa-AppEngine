@@ -11,6 +11,7 @@ import it.uniroma1.lcl.adw.DisambiguationMethod;
 import it.uniroma1.lcl.adw.ItemType;
 import it.uniroma1.lcl.adw.comparison.SignatureComparison;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
+import it.uniroma1.lcl.jlt.Configuration;
 
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 
@@ -52,20 +53,9 @@ public class CompareTagsTask extends SmartFollowTask {
 	 */
 	public void execute() {
 		try {
-			System.out.println("Comparing tags with ADW");
-			
-			
-			File configFile = new File("config/", "adw.properties");
-			System.out.println("Absolute path: " + configFile.getAbsolutePath());
-			
-			if (configFile.exists()) {
-				System.out.println("Config file found");
-			} else {
-				System.out.println("Config file missing");
-			}
-			
-			//ADWConfiguration.getInstance().setConfigurationFile(configFile);
-			
+			File config = new File("src/main/webapp/config", "jlt.properties");
+			Configuration configuration = Configuration.getInstance();
+			configuration.setConfigurationFile(config);
 			
 			ADW pipeline = new ADW();
 
@@ -78,7 +68,7 @@ public class CompareTagsTask extends SmartFollowTask {
 			ItemType text2Type = ItemType.SURFACE_TAGGED;
 
 			// Measure for comparing semantic signatures
-			// Note that this is the only comparison method implemented by ADW
+			// See other methods in it.uniroma1.lcl.adw.comparison
 			SignatureComparison measure = new WeightedOverlap();
 
 			// Calculate the similarity of text1 and text2
@@ -86,7 +76,6 @@ public class CompareTagsTask extends SmartFollowTask {
 					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
 					text2Type);
 		} catch (Exception e) {
-			// I have no idea if ADW will throw exceptions, but best catch them here.
 			System.err.println("Exception in ADW library similarity comparison");
 			e.printStackTrace();
 			similarity = -1;

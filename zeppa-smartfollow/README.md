@@ -1,6 +1,6 @@
 Zeppa-Smartfollow
 
-When pulling from this branch you download src/main/resources/signatures, a library of semantic signatures used for ADW word comparison. This is so you can run ADW locally by setting properties in src/main/config/adw.properties.
+When pulling from this branch you download src/main/local-resources/signatures, a library of semantic signatures used for ADW word comparison. This is so you can run ADW locally by setting properties in src/main/webapp/config/adw.properties and avoid running up cloud storage costs during development. 
 
 In Eclipse, right-click on the signatures folder and select Properties. Expand Resources, select Resource Filters, Add... Set the parameters to Exclude all, Files and Folders, and check All children (recursive). Click OK out of the prompts. You will still be able to access the files even though they do not appear in the Eclipse workspace.
 

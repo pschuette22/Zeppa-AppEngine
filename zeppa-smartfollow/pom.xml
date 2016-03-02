@@ -36,12 +36,18 @@
 			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>${appengine.target.version}</version>
 		</dependency>
-		
+
 		<!-- Google Cloud Storage client library -->
 		<dependency>
-    		<groupId>com.google.appengine.tools</groupId>
-    		<artifactId>appengine-gcs-client</artifactId>
-    		<version>RELEASE</version>
+			<groupId>com.google.appengine.tools</groupId>
+			<artifactId>appengine-gcs-client</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-storage</artifactId>
+			<version>v1-rev62-1.21.0</version>
 		</dependency>
 
 		<dependency>
@@ -73,12 +79,12 @@
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
 			<exclusions>
-        		<!-- creates conflicts with another guava version in appengine-gcs-client -->
-        		<exclusion>
-          			<groupId>com.google.guava</groupId>
-            		<artifactId>guava-jdk5</artifactId>
-        		</exclusion>
-    		</exclusions>
+				<!-- creates conflicts with another guava version in appengine-gcs-client -->
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava-jdk5</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -114,13 +120,13 @@
 			<artifactId>extjwnl-utilities</artifactId>
 			<version>1.9.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.kie.modules</groupId>
 			<artifactId>org-junit</artifactId>
@@ -128,23 +134,23 @@
 			<type>pom</type>
 		</dependency>
 
-        <dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-                
 		<dependency>
-		    <groupId>edu.stanford.nlp</groupId>
-		    <artifactId>stanford-corenlp</artifactId>
-		    <version>3.4.1</version>
+			<groupId>net.sf.trove4j</groupId>
+			<artifactId>trove4j</artifactId>
+			<version>3.0.3</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>edu.stanford.nlp</groupId>
-		    <artifactId>stanford-corenlp</artifactId>
-		    <version>3.4.1</version>
-		    <classifier>models</classifier>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.4.1</version>
+			<classifier>models</classifier>
 		</dependency>
 
 		<dependency>
@@ -152,31 +158,31 @@
 			<artifactId>jwi</artifactId>
 			<version>2.2.3</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.sourceforge.collections</groupId>
 			<artifactId>collections-generic</artifactId>
 			<version>4.01</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
 			<version>1.5</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
 			<version>3.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.4</version>
 		</dependency>
-		
+
 		<!-- jlt library (ADW dependency) -->
 		<dependency>
 			<groupId>it.uniroma1.lcl</groupId>
@@ -212,13 +218,14 @@
 		<!-- <resources> <resource> <directory>src/main/webapp/WEB-INF/lib</directory> 
 			<filtering>true</filtering> <includes> <include>en-pos-maxent.bin</include> 
 			</includes> </resource> </resources> -->
-			
+
 		<!-- Exclude semantic signatures from maven build -->
 		<resources>
 			<resource>
 				<directory>src/main/resources/signatures</directory>
 				<excludes>
 					<exclude>**/*</exclude>
+					<exclude>*</exclude>
 				</excludes>
 			</resource>
 		</resources>
@@ -233,8 +240,8 @@
 					<version>2.6</version>
 					<configuration>
 						<excludes>
-							<exclude>src/main/resources/**/*</exclude>
-							<exclude>src/main/resources/*</exclude>
+							<exclude>src/main/resources/signatures/**/*</exclude>
+							<exclude>src/main/resources/signatures/*</exclude>
 						</excludes>
 					</configuration>
 				</plugin>
@@ -253,6 +260,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
+					<version>2.3</version>
 					<configuration>
 						<archiveClasses>true</archiveClasses>
 						<webResources>
@@ -272,6 +280,6 @@
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
 			</plugin>
-		</plugins> 	
+		</plugins>
 	</build>
 </project>

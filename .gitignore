@@ -24,4 +24,4 @@ out
 
 datanucleus.log
 
-*.ucls
+**/*.ucls

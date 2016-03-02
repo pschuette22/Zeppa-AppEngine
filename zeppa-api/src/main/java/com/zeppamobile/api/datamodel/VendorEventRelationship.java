@@ -1,13 +1,38 @@
 package com.zeppamobile.api.datamodel;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+
+@PersistenceCapable
 public class VendorEventRelationship {
 
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
+	@Persistent
 	private Long userId;
+	
+	@Persistent
 	private Long eventId;
+	
+	@Persistent
 	private boolean joined;
+	
+	@Persistent
 	private boolean seen;
+	
+	@Persistent
 	private boolean watched;
+	
+	@Persistent
 	private boolean shared;
+	
+	
 	public Long getUserId() {
 		return userId;
 	}

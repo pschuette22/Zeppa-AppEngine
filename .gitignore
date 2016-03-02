@@ -13,13 +13,15 @@ hs_err_pid*
 .project
 .settings
 .classpath
-
+.metadata/
 # Generated files
 target/
 build/
-**/datanucleus.log
+datanucleus.log
 datanucleus.log
 .DS_STORE
 out
 
-
+datanucleus.log
+datanucleus.log
+*.ucls

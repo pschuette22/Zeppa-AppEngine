@@ -1,12 +1,35 @@
 package com.zeppamobile.api.datamodel;
 
-public class BillingInfo {
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Key;
+
+@PersistenceCapable
+public class BillingInfo {
+	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
+	@Persistent
 	private Address address;
+
+	@Persistent
 	private String cardNumber;
+	
+	@Persistent
 	private String nameOnCard;
+	
+	@Persistent
 	private String expirationMonth;
+	
+	@Persistent
 	private String expirationYear;
+	
+	
 	public Address getAddress() {
 		return address;
 	}

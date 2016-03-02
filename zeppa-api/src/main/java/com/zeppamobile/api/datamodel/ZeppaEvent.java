@@ -69,17 +69,11 @@ public class ZeppaEvent {
 	@Persistent
 	private String mapsLocation;
 
-	/**
-	 * Boolean operator indicating that the venue lat/long was found
-	 */
 	@Persistent
-	private Boolean isVenueFound;
+	private Float latitude;
 
 	@Persistent
-	private Long latitude;
-
-	@Persistent
-	private Long longitude;
+	private Float longitude;
 	/*
 	 * ============================================
 	 */
@@ -330,5 +324,23 @@ public class ZeppaEvent {
 	public void setHost(ZeppaUser host) {
 		this.hostId = host.getId();
 	}
+
+	public Float getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Float latitude) {
+		this.latitude = latitude;
+	}
+
+	public Float getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Float longitude) {
+		this.longitude = longitude;
+	}
+	
+	
 
 }

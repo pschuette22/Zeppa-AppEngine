@@ -2,6 +2,7 @@ package com.zeppamobile.api.endpoint;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,18 +94,33 @@ public class ZeppaEventToUserRelationshipEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-//			/*
-//			 * Initialize object and remove bad eggs Badeggs are relationships
-//			 * to events user
-//			 */
-//			List<ZeppaEventToUserRelationship> badEggs = new ArrayList<ZeppaEventToUserRelationship>();
-//			for (ZeppaEventToUserRelationship relationship : execute) {
-//				ZeppaEvent event = relationship.getEvent();
-//				if (!event.isAuthorized(user.getId().longValue())) {
-//					badEggs.add(relationship);
-//				}
-//			}
-//			execute.removeAll(badEggs);
+			List<ZeppaEventToUserRelationship> unfoundEvents = new ArrayList<ZeppaEventToUserRelationship>();
+			// Iterate through, grab the event and add it to the relationship
+			for (ZeppaEventToUserRelationship r : execute) {
+				try {
+					// Fetch and set the event
+					ZeppaEvent e = mgr.getObjectById(ZeppaEvent.class,
+							r.getEventId());
+					r.setEvent(e);
+				} catch (JDOObjectNotFoundException e) {
+					unfoundEvents.add(r);
+				}
+			}
+			execute.removeAll(unfoundEvents);
+
+			// /*
+			// * Initialize object and remove bad eggs Badeggs are relationships
+			// * to events user
+			// */
+			// List<ZeppaEventToUserRelationship> badEggs = new
+			// ArrayList<ZeppaEventToUserRelationship>();
+			// for (ZeppaEventToUserRelationship relationship : execute) {
+			// ZeppaEvent event = relationship.getEvent();
+			// if (!event.isAuthorized(user.getId().longValue())) {
+			// badEggs.add(relationship);
+			// }
+			// }
+			// execute.removeAll(badEggs);
 
 		} finally {
 			mgr.close();
@@ -114,42 +130,42 @@ public class ZeppaEventToUserRelationshipEndpoint {
 				.setItems(execute).setNextPageToken(cursorString).build();
 	}
 
-//	/**
-//	 * This method gets the entity having primary key id. It uses HTTP GET
-//	 * method.
-//	 * 
-//	 * @param id
-//	 *            the primary key of the java bean.
-//	 * @return The entity with primary key id.
-//	 * @throws OAuthRequestException
-//	 */
-//	@ApiMethod(name = "getZeppaEventToUserRelationship")
-//	public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
-//			Key key, @Named("idToken") String tokenString)
-//			throws UnauthorizedException {
-//
-//		// Fetch Authorized Zeppa User
-//		ZeppaUser user = ClientEndpointUtility
-//				.getAuthorizedZeppaUser(tokenString);
-//		if (user == null) {
-//			throw new UnauthorizedException(
-//					"No matching user found for this token");
-//		}
-//
-//		PersistenceManager mgr = getPersistenceManager();
-//		ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
-//		try {
-//			zeppaeventtouserrelationship = mgr.getObjectById(
-//					ZeppaEventToUserRelationship.class, key);
-//
-//		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-//			ex.printStackTrace();
-//			throw ex;
-//		} finally {
-//			mgr.close();
-//		}
-//		return zeppaeventtouserrelationship;
-//	}
+	// /**
+	// * This method gets the entity having primary key id. It uses HTTP GET
+	// * method.
+	// *
+	// * @param id
+	// * the primary key of the java bean.
+	// * @return The entity with primary key id.
+	// * @throws OAuthRequestException
+	// */
+	// @ApiMethod(name = "getZeppaEventToUserRelationship")
+	// public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
+	// Key key, @Named("idToken") String tokenString)
+	// throws UnauthorizedException {
+	//
+	// // Fetch Authorized Zeppa User
+	// ZeppaUser user = ClientEndpointUtility
+	// .getAuthorizedZeppaUser(tokenString);
+	// if (user == null) {
+	// throw new UnauthorizedException(
+	// "No matching user found for this token");
+	// }
+	//
+	// PersistenceManager mgr = getPersistenceManager();
+	// ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
+	// try {
+	// zeppaeventtouserrelationship = mgr.getObjectById(
+	// ZeppaEventToUserRelationship.class, key);
+	//
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// ex.printStackTrace();
+	// throw ex;
+	// } finally {
+	// mgr.close();
+	// }
+	// return zeppaeventtouserrelationship;
+	// }
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
@@ -177,17 +193,14 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		if (relationship.getEventId() == null) {
 			throw new NullPointerException("Null Event Id");
 		}
-		
 
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
 		try {
-			
-			
+
 			txn.begin();
 			ZeppaEvent event = mgr.getObjectById(ZeppaEvent.class,
 					relationship.getEventId());
-			
 
 			// Update relationship values
 			relationship.setEventHostId(event.getHostId());
@@ -196,8 +209,9 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			relationship.setIsWatching(Boolean.FALSE);
 			relationship.setIsAttending(Boolean.FALSE);
 			relationship.setWasInvited(relationship.getWasInvited());
-			if(relationship.getWasInvited()){
-				relationship.setInvitedByUserId(relationship.getInvitedByUserId());
+			if (relationship.getWasInvited()) {
+				relationship.setInvitedByUserId(relationship
+						.getInvitedByUserId());
 			} else {
 				relationship.setInvitedByUserId(Long.valueOf(-1));
 			}
@@ -206,7 +220,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 
 			relationship = mgr.makePersistent(relationship);
 
-
+			relationship.setEvent(event);
 			// If relationship is inserted via http, should be an invite
 			if (relationship.getWasInvited()) {
 
@@ -217,7 +231,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			txn.commit();
 
 		} finally {
-			if(txn.isActive()){
+			if (txn.isActive()) {
 				txn.rollback();
 				relationship = null;
 			}
@@ -342,7 +356,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 					ZeppaEventToUserRelationship.class.getName(),
 					relationship.getId(), "invited");
 		}
-
+		relationship.setEvent(event);
 		return relationship;
 	}
 

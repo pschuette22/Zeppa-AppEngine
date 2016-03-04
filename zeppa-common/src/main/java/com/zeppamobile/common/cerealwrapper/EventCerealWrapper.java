@@ -1,10 +1,10 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventInfo implements Serializable {
+public class EventCerealWrapper implements Serializable {
 
 	/**
 	 * 
@@ -17,9 +17,9 @@ public class EventInfo implements Serializable {
 
 	private boolean isNewEvent = false;
 
-	private List<EventRelationshipInfo> relationships = new ArrayList<EventRelationshipInfo>();
+	private List<EventRelationshipCerealWrapper> relationships = new ArrayList<EventRelationshipCerealWrapper>();
 
-	private List<EventTagInfo> tags = new ArrayList<EventTagInfo>();
+	private List<EventTagCerealWrapper> tags = new ArrayList<EventTagCerealWrapper>();
 
 	public long getEventId() {
 		return eventId;
@@ -45,19 +45,19 @@ public class EventInfo implements Serializable {
 		this.isNewEvent = isNewEvent;
 	}
 
-	public List<EventRelationshipInfo> getRelationships() {
+	public List<EventRelationshipCerealWrapper> getRelationships() {
 		return relationships;
 	}
 
-	public void setRelationships(List<EventRelationshipInfo> relationships) {
+	public void setRelationships(List<EventRelationshipCerealWrapper> relationships) {
 		this.relationships = relationships;
 	}
 
-	public List<EventTagInfo> getTags() {
+	public List<EventTagCerealWrapper> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<EventTagInfo> tags) {
+	public void setTags(List<EventTagCerealWrapper> tags) {
 		this.tags = tags;
 	}
 

@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zeppamobile.common.datainfo.EventTagInfo;
+import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
 import com.zeppamobile.common.report.TagComparisonReport;
 import com.zeppamobile.common.utils.Utils;
 import com.zeppamobile.smartfollow.agent.TagAgent;
@@ -46,10 +46,10 @@ public class CompareTagsServlet extends HttpServlet {
 		 */
 		if (Utils.isWebSafe(tagText1) && Utils.isWebSafe(tagText2)) {
 			// Initialize the Info Classes for computing
-			EventTagInfo tagInfo1 = new EventTagInfo();
+			EventTagCerealWrapper tagInfo1 = new EventTagCerealWrapper();
 			tagInfo1.setTagText(tagText1);
 
-			EventTagInfo tagInfo2 = new EventTagInfo();
+			EventTagCerealWrapper tagInfo2 = new EventTagCerealWrapper();
 			tagInfo2.setTagText(tagText2);
 
 			// Create report

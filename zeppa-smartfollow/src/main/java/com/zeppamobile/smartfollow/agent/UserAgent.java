@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import com.zeppamobile.common.datainfo.EventRelationshipInfo;
-import com.zeppamobile.common.datainfo.UserDataInfo;
+import com.zeppamobile.common.cerealwrapper.EventRelationshipCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.UserDataInfo;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Utils;
@@ -85,7 +85,7 @@ public class UserAgent {
 
 			int invitedCount = 0, mmInvitedCount = 0, recommendedCount = 0, attendedCount = 0;
 
-			for (EventRelationshipInfo relationship : userData.getEventRelationships()) {
+			for (EventRelationshipCerealWrapper relationship : userData.getEventRelationships()) {
 
 				// If user was invited to event, increment
 				if (relationship.getInviterId() > 0) {

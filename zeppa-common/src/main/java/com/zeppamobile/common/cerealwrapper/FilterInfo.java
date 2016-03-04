@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
 import java.io.Serializable;
 

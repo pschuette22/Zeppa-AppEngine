@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import com.zeppamobile.common.report.SmartfollowReport;
  * @author Pete Schuette
  *
  */
-public class EventTagInfo implements Serializable{
+public class EventTagCerealWrapper implements Serializable{
 	
 	/**
 	 * 

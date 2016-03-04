@@ -1,4 +1,4 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,11 +18,11 @@ public class UserDataInfo implements Serializable {
 	
 	private List<Long> minglerIds = new ArrayList<Long>();
 	
-	private List<EventTagInfo> tags = new ArrayList<EventTagInfo>();
+	private List<EventTagCerealWrapper> tags = new ArrayList<EventTagCerealWrapper>();
 	
-	private List<EventInfo> events = new ArrayList<EventInfo>();
+	private List<EventCerealWrapper> events = new ArrayList<EventCerealWrapper>();
 
-	private List<EventRelationshipInfo> eventRelationships = new ArrayList<EventRelationshipInfo>();
+	private List<EventRelationshipCerealWrapper> eventRelationships = new ArrayList<EventRelationshipCerealWrapper>();
 	
 	
 	public long getIdentifier() {
@@ -49,27 +49,27 @@ public class UserDataInfo implements Serializable {
 		this.minglerIds = minglerIds;
 	}
 
-	public List<EventTagInfo> getTags() {
+	public List<EventTagCerealWrapper> getTags() {
 		return tags;
 	}
 
-	public void setTags(List<EventTagInfo> tags) {
+	public void setTags(List<EventTagCerealWrapper> tags) {
 		this.tags = tags;
 	}
 
-	public List<EventInfo> getEvents() {
+	public List<EventCerealWrapper> getEvents() {
 		return events;
 	}
 
-	public void setEvents(List<EventInfo> events) {
+	public void setEvents(List<EventCerealWrapper> events) {
 		this.events = events;
 	}
 
-	public List<EventRelationshipInfo> getEventRelationships() {
+	public List<EventRelationshipCerealWrapper> getEventRelationships() {
 		return eventRelationships;
 	}
 
-	public void setEventRelationships(List<EventRelationshipInfo> eventRelationships) {
+	public void setEventRelationships(List<EventRelationshipCerealWrapper> eventRelationships) {
 		this.eventRelationships = eventRelationships;
 	}
 	

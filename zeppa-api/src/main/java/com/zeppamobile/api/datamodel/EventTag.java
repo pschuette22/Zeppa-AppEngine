@@ -27,6 +27,25 @@ public class EventTag {
 
 	@Persistent
 	private String tagText;
+	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("key", key);
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+
+		obj.put("tagText", tagText);
+		obj.put("ownerId", ownerId);
+
+		return obj;
+	}
 
 	/**
 	 * Blank Constructor

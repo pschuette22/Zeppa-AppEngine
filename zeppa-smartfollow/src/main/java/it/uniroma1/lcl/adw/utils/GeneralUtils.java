@@ -4,6 +4,7 @@ package it.uniroma1.lcl.adw.utils;
 import it.uniroma1.lcl.adw.ADWConfiguration;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -247,5 +248,17 @@ public class GeneralUtils
 		return map;
 	}
 
+	/**
+	 * Delete any semantic signatures that were downloaded at runtime
+	 * to resources/signatures/{object name}
+	 * @return error status
+	 */
+	public static boolean deleteDownloadedSemSigs() {
+		File f = new File("resources/signatures/");
+		for (File c : f.listFiles()) {
+			c.delete();
+		}
+		return f.delete();
+	}
 }
 

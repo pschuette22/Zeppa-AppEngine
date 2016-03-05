@@ -11,8 +11,12 @@ import it.uniroma1.lcl.adw.utils.SemSigUtils;
 import it.uniroma1.lcl.adw.utils.WordNetUtils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -73,6 +77,7 @@ public class SemSigProcess {
 		}
 
 		storageService = StorageUtils.getInstance().getService();
+		log.info("Created storage service");
 	}
 
 	public boolean wordVectorsExist(LKB lkb) {
@@ -116,6 +121,7 @@ public class SemSigProcess {
 			BufferedReader br = null;
 			// Local
 			if (!ADWConfiguration.getInstance().getSignaturesSource()) {
+				log.info("Retrieving "+path);
 				if (!new File(path).exists()) {
 					if (warnings)
 						log.info("[WARNING: " + path + " does not exist]");
@@ -129,11 +135,23 @@ public class SemSigProcess {
 				String bucketName = path.substring(0, path.indexOf("/"));
 				String objectName = path.substring(path.indexOf("/") + 1);
 
-				Storage.Objects.Get getObject = storageService.objects().get(
-						bucketName, objectName);
+				File semsig = new File("resources/signatures/", objectName.replaceAll("/","-"));
+				
+				// download the signature file if we haven't already
+				if (!semsig.exists()) {
+					semsig.getParentFile().mkdirs();
+					log.info("Downloading object gs://"+bucketName+"/"+objectName+" from cloud storage");
+					
+					Storage.Objects.Get getObject = storageService.objects().get(
+							bucketName, objectName);
+										
+					// prefer to download file all at once if not appengine
+					getObject.getMediaHttpDownloader().setDirectDownloadEnabled(!ADWConfiguration.getInstance().isAppEngine());
+					getObject.executeMediaAndDownloadTo(new FileOutputStream(semsig));
+				}
 
-				br = new BufferedReader(new InputStreamReader(
-						getObject.executeMediaAsInputStream()));
+				log.info("Retrieving "+objectName);
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(semsig)));		
 			}
 
 			float prob;
@@ -339,8 +357,11 @@ public class SemSigProcess {
 	public SemSig getSemSigFromOffset(String offset, LKB lkb, int size) {
 		SemSig sig = new SemSig();
 
-		if (offset == null || offset.equals("null"))
+		if (offset == null || offset.equals("null")) {
+			log.debug("offset is null");
 			return sig;
+		}
+			
 
 		return getSemSigFromOffset(offset, lkb, size, null);
 	}

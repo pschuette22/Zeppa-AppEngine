@@ -353,10 +353,12 @@ public class TextualSimilarity
 	
 	public List<SemSig> getSenseVectorsFromOffsetSentence(List<String> offsets, ItemType type, LKB lkb, int vecSize)
 	{
+		log.info("getSenseVectorsFromOffsetSentence()");
 		List<SemSig> vectors = new ArrayList<SemSig>();
 
 		for(String offset : offsets)
 		{
+			log.info("offset: "+offset);
 			SemSig v = SemSigProcess.getInstance().getSemSigFromOffset(offset, lkb, vecSize);
 				
 			vectors.add(v);

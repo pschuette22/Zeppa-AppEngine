@@ -21,6 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.mit.jwi.item.IWord;
 import edu.stanford.nlp.util.Pair;
 
@@ -34,6 +37,8 @@ public class PairSimilarity {
 			.getMirrorPOSTaggingCondition();
 
 	static private PairSimilarity instance;
+	
+	private static final Log log = LogFactory.getLog(PairSimilarity.class);
 
 	public PairSimilarity() {
 		// the signature comparison measure used during similarity-based

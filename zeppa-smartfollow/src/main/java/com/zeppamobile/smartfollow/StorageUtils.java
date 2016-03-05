@@ -15,9 +15,14 @@ import com.google.api.services.storage.Storage;
 import com.google.api.services.storage.StorageScopes;
 import com.google.appengine.api.utils.SystemProperty;
 
+/**
+ * Storage class to get the storage service and handle local storage
+ * @author Eric
+ *
+ */
 public class StorageUtils {
 	private static final String APPLICATION_NAME = "zeppamobile";
-	private static final String CREDENTIALS_PATH = "src/main/webapp/config/serviceAccountCredentials.json";
+	private static final String CREDENTIALS_PATH = "zeppa-smartfollow-1.war/config/serviceAccountCredentials.json";
 	private static StorageUtils instance;
 	private static Storage storageService;
 	/** Global instance of the JSON factory. */
@@ -26,6 +31,11 @@ public class StorageUtils {
 
 	private StorageUtils() {
 		storageService = getService();
+		
+		// since we will be downloading semsigs locally, go ahead and
+		// register a shutdown hook to clean them up on exit
+		// since this is a singleton only one hook is ever registered
+		Runtime.getRuntime().addShutdownHook(new OnShutdown());
 	}
 
 	public static StorageUtils getInstance() {

@@ -27,12 +27,11 @@ public class ADWConfiguration
 	private ADWConfiguration()
 	{
 		File configFile = new File(CONFIG_DIR, CONFIG_FILE);
-		System.out.println("Config file path: "+configFile.getAbsolutePath());
-		
+
 		boolean bDone = false;
 		if (configFile.exists())
 		{
-			log.info("Loading " + CONFIG_FILE + " FROM " + configFile.getAbsolutePath());
+			log.debug("Loading " + CONFIG_FILE + " FROM " + configFile.getAbsolutePath());
 			try
 			{
 				config = new PropertiesConfiguration(configFile);
@@ -43,7 +42,7 @@ public class ADWConfiguration
 				ce.printStackTrace();
 			}
 		} else {
-			log.info("Config file not found at " + configFile.getAbsolutePath());
+			log.error("Config file not found at " + configFile.getAbsolutePath());
 		}
 		
 		if (!bDone)
@@ -193,7 +192,15 @@ public class ADWConfiguration
 		return Boolean.valueOf(config.getString("useCloudSignatures"));
 	}
 	
-	public void setConfigDir(String path) {
+	public static String getConfigDir() {
+		return CONFIG_DIR;
+	}
+	
+	public static void setConfigDir(String path) {
 		CONFIG_DIR = path;
+	}
+	
+	public boolean isAppEngine() {
+		return Boolean.valueOf(config.getString("isAppEngine"));
 	}
 }

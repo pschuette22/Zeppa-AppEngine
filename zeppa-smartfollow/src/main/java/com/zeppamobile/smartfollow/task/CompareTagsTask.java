@@ -25,6 +25,9 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  * 
  */
 public class CompareTagsTask extends SmartFollowTask {
+	private static String configDir = "zeppa-smartfollow-1.war/config/";
+	//JLT
+	File jltConfig = new File(configDir, "jlt.properties");
 
 	// Each tag represented as a list of word-parts (POS tagged)
 	private List<WordInfo> tag1, tag2;
@@ -53,10 +56,13 @@ public class CompareTagsTask extends SmartFollowTask {
 	 */
 	public void execute() {
 		try {
-			File config = new File("src/main/webapp/config", "jlt.properties");
-			Configuration configuration = Configuration.getInstance();
-			configuration.setConfigurationFile(config);
-			
+			if (!Configuration.CONFIG_FILE.equals(jltConfig)) {
+				Configuration.getInstance().setConfigurationFile(jltConfig);
+			}
+			if (!ADWConfiguration.getConfigDir().equalsIgnoreCase(configDir)) {
+				ADWConfiguration.setConfigDir(configDir);
+			}
+
 			ADW pipeline = new ADW();
 
 			// The two lexical items
@@ -75,6 +81,7 @@ public class CompareTagsTask extends SmartFollowTask {
 			similarity = pipeline.getPairSimilarity(text1, text2,
 					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
 					text2Type);
+			System.out.println("Calculated similarity: "+similarity);
 		} catch (Exception e) {
 			System.err.println("Exception in ADW library similarity comparison");
 			e.printStackTrace();

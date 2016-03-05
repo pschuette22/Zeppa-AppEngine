@@ -25,13 +25,7 @@ public class WordInfo {
 
 	public WordInfo(String word, POS pos) {
 
-		// Make non-noun words lowercase for library readability
-		if (Character.isLetter(word.charAt(0))
-				&& (pos == null || pos != POS.NOUN)) {
-			word = Utils.toLowercase(word);
-		}
-
-		this.word = word;
+		this.word = word.toLowerCase();
 		this.pos = pos;
 		
 		// If there is an identified part of speech, lookup the indexed word

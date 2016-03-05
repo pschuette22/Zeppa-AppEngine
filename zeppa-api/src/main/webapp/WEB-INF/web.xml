@@ -53,7 +53,16 @@
 		<url-pattern>/admin/event-servlet/</url-pattern>
 	</servlet-mapping> -->
 
-
+	<servlet> 
+		<servlet-name>StartupServlet</servlet-name> 
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet</servlet-class> 
+		<load-on-startup>0</load-on-startup> 
+	</servlet> 
+	<servlet-mapping> 
+		<servlet-name>StartupServlet</servlet-name> 
+		<url-pattern>/_ah/start</url-pattern> 
+	</servlet-mapping>
+	
 	<!-- Vendor Servlet -->
 	<servlet>
 		<servlet-name>VendorServlet</servlet-name>

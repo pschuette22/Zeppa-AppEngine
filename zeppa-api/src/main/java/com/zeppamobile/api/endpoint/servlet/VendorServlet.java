@@ -148,7 +148,7 @@ public class VendorServlet extends HttpServlet {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public Vendor insertVendor(Vendor vendor, Employee employee) throws UnauthorizedException,
+	public static Vendor insertVendor(Vendor vendor, Employee employee) throws UnauthorizedException,
 			IOException {
 
 

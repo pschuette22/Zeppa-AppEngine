@@ -1,7 +1,9 @@
 package com.zeppamobile.common.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,9 +27,10 @@ public class ModuleUtils {
 	 *            for the request
 	 * @return URL for request
 	 * @throws MalformedURLException
+	 * @throws UnsupportedEncodingException 
 	 */
 	public static URL getZeppaModuleUrl(String moduleName, String methodName,
-			Map<String, String> params) throws MalformedURLException {
+			Map<String, String> params) throws MalformedURLException, UnsupportedEncodingException {
 
 		String paramString = null;
 
@@ -50,10 +53,13 @@ public class ModuleUtils {
 				}
 				paramsBuilder.append(key);
 				paramsBuilder.append("=");
+				
 				paramsBuilder.append(param);
 			}
 
 			paramString = paramsBuilder.toString();
+//			paramString.replaceAll(" ", "%20");
+//			paramString = URLEncoder.encode(paramString,"UTF-8");
 		}
 
 		ModulesService modulesApi = ModulesServiceFactory.getModulesService();

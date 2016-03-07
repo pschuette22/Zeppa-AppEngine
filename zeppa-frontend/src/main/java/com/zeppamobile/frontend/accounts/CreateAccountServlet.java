@@ -1,4 +1,4 @@
-package com.zeppamobile.frontend.account;
+package com.zeppamobile.frontend.accounts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,31 +20,18 @@ import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
 /**
- * 
- * @author Brendan
- * 
- *         Creat Account Servlet 
- *
+ * Servlet implementation class CreateAccountServlet
  */
 public class CreateAccountServlet extends HttpServlet {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6074841711114263838L;
-
-
-    
+	private static final long serialVersionUID = 1L;
+       
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/html");
-		request.setAttribute("attribute1", "This is attribute 1");
-		
-		request.getRequestDispatcher("WEB-INF/pages/create-account.jsp").forward(request, response);
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -52,49 +39,33 @@ public class CreateAccountServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		
+		System.out.println("doPost to create account servlet");
 		/*
 		 * Get the vendor and employee info from parameters
 		 */
-	    String firstName = request.getParameter("firstName");
-	    String lastName = request.getParameter("lastName");
-	    String emailAddress = request.getParameter("emailAddress");
-	    String companyName = request.getParameter("companyName");
-	    String addressLine1 = request.getParameter("addressLine1");
-	   	String addressLine2 = request.getParameter("addressLine2");
-	   	String city = request.getParameter("city");
-	   	String state = request.getParameter("state");
-	   	String zipcode = request.getParameter("zipcode");
-	   	String password = request.getParameter("password");
+		String name = request.getParameter("eventName");
+		// Fetch the current ID token
+		String access_token = (String)request.getSession().getAttribute(UniversalConstants.PARAM_ID_TOKEN);
 		
-		if (Utils.isWebSafe(firstName)) {
+		if (Utils.isWebSafe(name)) {
 
 			/*
 			 * Parameters accepted, making call to api servlet
-			 * Encode each param before building the URL
 			 */
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("firstName", URLEncoder.encode(firstName, "UTF-8"));
-			params.put("lastName", URLEncoder.encode(lastName, "UTF-8"));
-			params.put("emailAddress", URLEncoder.encode(emailAddress, "UTF-8"));
-			params.put("companyName", URLEncoder.encode(companyName, "UTF-8"));
-			params.put("addressLine1", URLEncoder.encode(addressLine1, "UTF-8"));
-			params.put("addressLine2", URLEncoder.encode(addressLine2, "UTF-8"));
-			params.put("city", URLEncoder.encode(city, "UTF-8"));
-			params.put("state", URLEncoder.encode(state, "UTF-8"));
-			params.put("zipcode", URLEncoder.encode(zipcode, "UTF-8"));
-			params.put("password", URLEncoder.encode(password, "UTF-8"));
-			
+			params.put(UniversalConstants.PARAM_EVENT_NAME, name);
+			params.put(UniversalConstants.PARAM_ID_TOKEN, access_token);
 			/*
 			 * Read from the request
 			 */
 			try {
-				
-				// Generate the url to go to the VendorServlet on the api module
+
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
-						"/endpoint/vendor-servlet/", params);
+						"/admin/event-servlet/", params);
 				
-	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		        String encodedUrl = URLEncoder.encode(url.toString(), "UTF-8");
+		        System.out.println("Encoded URL: " + encodedUrl);
+	            HttpURLConnection connection = (HttpURLConnection) (new URL(encodedUrl)).openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("POST");
 
@@ -102,9 +73,13 @@ public class CreateAccountServlet extends HttpServlet {
 						new InputStreamReader(connection.getInputStream()));
 				String line;
 				
+//	            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+//	            writer.write("message=" + message);
+//	            writer.close();
+	    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	                // OK
-	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
+	            	response.getWriter().println("Connection Response: " + connection.getResponseMessage());
 
 					// Read from the buffer line by line and write to the response
 					// item					
@@ -115,7 +90,7 @@ public class CreateAccountServlet extends HttpServlet {
 					
 	            } else {
 	                // Server returned HTTP error code.
-	            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
+	            	response.getWriter().println("Connection Response: " + connection.getResponseMessage());
 	            	
 					// Read from the buffer line by line and write to the response
 					// item					
@@ -126,10 +101,18 @@ public class CreateAccountServlet extends HttpServlet {
 	            
 	            reader.close();
 	        } catch (MalformedURLException e) {
+	            // ...
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 	        } catch (IOException e) {
+	            // ...
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 			} catch (Exception e) {
+				response.getWriter().println("Event Name: " + name);
+				response.getWriter().println("ID Token: " + access_token);
 				e.printStackTrace(response.getWriter());
 				
 			}
@@ -141,6 +124,5 @@ public class CreateAccountServlet extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
-	
 
 }

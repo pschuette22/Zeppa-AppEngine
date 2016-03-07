@@ -5,17 +5,19 @@
 <script src="../js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$("#demographicsTab").click(function(){
-			alert("asfasF");
+		$(".tabNav").click(function(){
+			//Styling stuff (changing colors and hiding/showing)
+			$(".analyticsTab").removeClass("active");
+			var tabID = $(this).data("tab");
+			$("#"+tabID).addClass("active");
+			$(".tabNav").removeClass("active");
+			$(this).addClass("active");
 		});
 	});
 </script>
 <t:ZeppaBase>
 	<jsp:attribute name="title">
 	  <h2>Analytics</h2>
-	</jsp:attribute>
-	<jsp:attribute name="footer">
-	  <p id="copyright">Copyright 1927, Future Bits When There Be Bits Inc.</p>
 	</jsp:attribute>
 	
 	

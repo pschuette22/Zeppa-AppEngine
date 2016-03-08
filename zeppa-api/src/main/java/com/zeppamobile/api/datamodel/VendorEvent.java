@@ -3,15 +3,42 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VendorEvent {
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Key;
+
+@PersistenceCapable
+public class VendorEvent {
+	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+
+	@Persistent
 	private Long vendorId;
+	
+	@Persistent
 	private Long eventId;
+	
+	@Persistent
 	private String title;
+	
+	@Persistent
 	private String description;
+	
+	@Persistent
 	private Long start;
+	
+	@Persistent
 	private Long end;
+	
+	@Persistent
 	private Long created;
+	
+	@Persistent
 	List<EventTag> tags = new ArrayList<EventTag>();
 	
 	

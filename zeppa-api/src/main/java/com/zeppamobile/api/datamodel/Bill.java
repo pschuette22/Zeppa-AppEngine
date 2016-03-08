@@ -2,14 +2,38 @@ package com.zeppamobile.api.datamodel;
 
 import java.util.Calendar;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+
+@PersistenceCapable
 public class Bill {
 
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
+	@Persistent
 	private Calendar cycleStartDate;
+	
+	@Persistent
 	private Calendar cycleEndDate;
+	
+	@Persistent
 	private Long amountOwed;
+	
+	@Persistent
 	private boolean paid;
+	
+	@Persistent
 	private Long vendorId;
+	
+	@Persistent
 	private Long billId;
+	
 	public Calendar getCycleStartDate() {
 		return cycleStartDate;
 	}

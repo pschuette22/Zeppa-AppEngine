@@ -1,6 +1,5 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 
 /**
  * 
@@ -9,7 +8,7 @@ import java.io.Serializable;
  * 
  *
  */
-public class FilterInfo implements Serializable {
+public class FilterCerealWrapper extends CerealWrapper {
 
 	/**
 	 * 
@@ -34,6 +33,14 @@ public class FilterInfo implements Serializable {
 	private int minAge;
 	
 	private Gender gender;
+	
+
+	public FilterCerealWrapper(int maxAge, int minAge, Gender gender) {
+		super();
+		this.maxAge = maxAge;
+		this.minAge = minAge;
+		this.gender = gender;
+	}
 
 	public int getMaxAge() {
 		return maxAge;

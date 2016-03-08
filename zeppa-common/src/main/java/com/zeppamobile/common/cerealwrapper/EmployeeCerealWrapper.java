@@ -16,13 +16,13 @@ public class EmployeeCerealWrapper extends CerealWrapper {
 	private static final long serialVersionUID = 1L;
 	
 	
-	protected Long created;
+	protected long created;
 
-	protected Long updated;
+	protected long updated;
 	
 	protected UserInfoCerealWrapper userInfoCereal;
 	
-	protected Long vendorId;
+	protected long vendorId;
 	
 	protected String emailAddress;
 	
@@ -33,11 +33,8 @@ public class EmployeeCerealWrapper extends CerealWrapper {
 	protected String privakeyGuid;
 
 	
-	
-	
-	
-	public EmployeeCerealWrapper(Long created, Long updated,
-			UserInfoCerealWrapper userInfoCereal, Long vendorId,
+	public EmployeeCerealWrapper(long created, long updated,
+			UserInfoCerealWrapper userInfoCereal, long vendorId,
 			String emailAddress, String password, Boolean isEmailVerified,
 			String privakeyGuid) {
 		super();
@@ -51,19 +48,19 @@ public class EmployeeCerealWrapper extends CerealWrapper {
 		this.privakeyGuid = privakeyGuid;
 	}
 
-	public Long getCreated() {
+	public long getCreated() {
 		return created;
 	}
 
-	public void setCreated(Long created) {
+	public void setCreated(long created) {
 		this.created = created;
 	}
 
-	public Long getUpdated() {
+	public long getUpdated() {
 		return updated;
 	}
 
-	public void setUpdated(Long updated) {
+	public void setUpdated(long updated) {
 		this.updated = updated;
 	}
 
@@ -75,11 +72,11 @@ public class EmployeeCerealWrapper extends CerealWrapper {
 		this.userInfoCereal = userInfoCereal;
 	}
 
-	public Long getVendorId() {
+	public long getVendorId() {
 		return vendorId;
 	}
 
-	public void setVendorId(Long vendorId) {
+	public void setVendorId(long vendorId) {
 		this.vendorId = vendorId;
 	}
 

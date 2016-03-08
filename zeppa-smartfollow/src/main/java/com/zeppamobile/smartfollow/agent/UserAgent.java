@@ -14,7 +14,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import com.zeppamobile.common.cerealwrapper.EventRelationshipCerealWrapper;
-import com.zeppamobile.common.cerealwrapper.UserDataInfo;
+import com.zeppamobile.common.cerealwrapper.UserCerealWrapper;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Utils;
@@ -24,7 +24,7 @@ public class UserAgent {
 	/*
 	 * Values needed to calculations for this agent
 	 */
-	private UserDataInfo userData;
+	private UserCerealWrapper userData;
 	private List<EventAgent> events = new ArrayList<EventAgent>();
 	private List<TagAgent> tags = new ArrayList<TagAgent>();
 
@@ -39,7 +39,7 @@ public class UserAgent {
 	 * @param userId
 	 *            - userId of user agent should represent
 	 */
-	public UserAgent(UserDataInfo userData) {
+	public UserAgent(UserCerealWrapper userData) {
 		this.userData = userData;
 	}
 

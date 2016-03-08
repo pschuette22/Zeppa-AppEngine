@@ -521,9 +521,10 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="54" language="java" name="com.zeppamobile.common.cerealwrapper.UserRelationshipInfo" project="zeppa-common" 
-    file="/zeppa-common/src/main/java/com/zeppamobile/common/cerealwrapper/UserRelationshipInfo.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <class id="54" language="java" name="com.zeppamobile.common.cerealwrapper.UserRelationshipCerealWrapper" 
+    project="zeppa-common" 
+    file="/zeppa-common/src/main/java/com/zeppamobile/common/cerealwrapper/UserRelationshipCerealWrapper.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="55" width="174" x="164" y="310"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      

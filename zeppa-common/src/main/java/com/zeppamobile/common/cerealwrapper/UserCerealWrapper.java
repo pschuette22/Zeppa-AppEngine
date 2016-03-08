@@ -1,10 +1,9 @@
 package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDataInfo implements Serializable {
+public class UserCerealWrapper extends CerealWrapper {
 
 	/**
 	 * 
@@ -12,9 +11,9 @@ public class UserDataInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	
-	private long identifier = -1;
+	private Long identifier = Long.valueOf(-1);
 	
-	private boolean isNewUser = false;
+	private Boolean isNewUser = Boolean.FALSE;
 	
 	private List<Long> minglerIds = new ArrayList<Long>();
 	
@@ -25,7 +24,20 @@ public class UserDataInfo implements Serializable {
 	private List<EventRelationshipCerealWrapper> eventRelationships = new ArrayList<EventRelationshipCerealWrapper>();
 	
 	
-	public long getIdentifier() {
+	public UserCerealWrapper(Long identifier, Boolean isNewUser,
+			List<Long> minglerIds, List<EventTagCerealWrapper> tags,
+			List<EventCerealWrapper> events,
+			List<EventRelationshipCerealWrapper> eventRelationships) {
+		super();
+		this.identifier = identifier;
+		this.isNewUser = isNewUser;
+		this.minglerIds = minglerIds;
+		this.tags = tags;
+		this.events = events;
+		this.eventRelationships = eventRelationships;
+	}
+
+	public Long getIdentifier() {
 		return identifier;
 	}
 

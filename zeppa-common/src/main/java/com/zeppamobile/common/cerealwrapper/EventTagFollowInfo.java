@@ -1,8 +1,7 @@
 package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 
-public class EventTagFollowInfo implements Serializable {
+public class EventTagFollowInfo extends CerealWrapper {
 
 	/**
 	 * 
@@ -16,6 +15,18 @@ public class EventTagFollowInfo implements Serializable {
 	private long tagOwnerId = -1;
 	
 	private long followerId = -1;
+
+	
+	
+	
+	public EventTagFollowInfo(long followId, long tagId, long tagOwnerId,
+			long followerId) {
+		super();
+		this.followId = followId;
+		this.tagId = tagId;
+		this.tagOwnerId = tagOwnerId;
+		this.followerId = followerId;
+	}
 
 	public long getFollowId() {
 		return followId;

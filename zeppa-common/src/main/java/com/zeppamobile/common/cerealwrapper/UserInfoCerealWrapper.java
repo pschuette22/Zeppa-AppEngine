@@ -48,6 +48,8 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	
+	
 	public Long getCreated() {
 		return created;
 	}

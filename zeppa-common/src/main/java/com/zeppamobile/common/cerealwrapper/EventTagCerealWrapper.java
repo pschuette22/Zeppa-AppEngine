@@ -1,10 +1,7 @@
 package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.zeppamobile.common.report.SmartfollowReport;
 
 /**
  * Class used to let modules outside of zeppa-api use data objects
@@ -13,7 +10,7 @@ import com.zeppamobile.common.report.SmartfollowReport;
  * @author Pete Schuette
  *
  */
-public class EventTagCerealWrapper implements Serializable{
+public class EventTagCerealWrapper extends CerealWrapper {
 	
 	/**
 	 * 
@@ -35,6 +32,18 @@ public class EventTagCerealWrapper implements Serializable{
 	// True if tag was just created
 	private boolean isNewTag = false;
 	
+
+	
+	
+	public EventTagCerealWrapper(long tagId, String tagText, long ownerId,
+			List<Long> followerIds, boolean isNewTag) {
+		super();
+		this.tagId = tagId;
+		this.tagText = tagText;
+		this.ownerId = ownerId;
+		this.followerIds = followerIds;
+		this.isNewTag = isNewTag;
+	}
 
 	/**
 	 * @return identifier of the EventTag

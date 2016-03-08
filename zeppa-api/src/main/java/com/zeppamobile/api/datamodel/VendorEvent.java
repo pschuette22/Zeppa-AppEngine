@@ -19,8 +19,6 @@ public class VendorEvent {
 		return vendorId;
 	}
 	public void setVendorId(Long vendorId) {
-		// To get dependency in UML
-		Vendor v;
 		this.vendorId = vendorId;
 	}
 	public Long getEventId() {

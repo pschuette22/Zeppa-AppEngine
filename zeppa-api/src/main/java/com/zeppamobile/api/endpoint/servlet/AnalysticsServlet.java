@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zeppamobile.common.cerealwrapper.FilterInfo;
+import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
 
 /**
  * 
@@ -31,27 +31,27 @@ public class AnalysticsServlet extends HttpServlet {
 	}
 	
 	
-	private String getAllEventInfoDemographic(FilterInfo filter, long vendorId){
+	private String getAllEventInfoDemographic(FilterCerealWrapper filter, long vendorId){
 		return "";
 	}
 	
-	private String getAllEventTags(FilterInfo filter, long vendorId){
+	private String getAllEventTags(FilterCerealWrapper filter, long vendorId){
 		return "";
 	}
 	
-	private String getAllEventPopularDay(FilterInfo filter, long vendorId) {
+	private String getAllEventPopularDay(FilterCerealWrapper filter, long vendorId) {
 		return "";
 	}
 	
-	private String getAllEventPopularEvents(FilterInfo filter, long vendorId) {
+	private String getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
 		return "";
 	}
 	
-	private String getIndividualEventInfoTags(FilterInfo filter, long vendorId) {
+	private String getIndividualEventInfoTags(FilterCerealWrapper filter, long vendorId) {
 		return "";
 	}
 	
-	private String getIndividualEventInfoDemographics(FilterInfo filter, long vendorId) {
+	private String getIndividualEventInfoDemographics(FilterCerealWrapper filter, long vendorId) {
 		return "";
 	}
 

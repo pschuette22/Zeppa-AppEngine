@@ -15,9 +15,15 @@ import com.google.appengine.api.datastore.Key;
 @PersistenceCapable
 public class ZeppaEvent {
 
+	public enum HostType {
+		USER,
+		VENDOR
+	}
+	
 	public enum EventPrivacyType {
 		CASUAL, // Friends
-		PRIVATE // Invite Only
+		PRIVATE, // Invite Only
+		PUBLIC // Anyone can see and join
 	}
 
 	@PrimaryKey

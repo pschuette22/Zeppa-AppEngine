@@ -1,10 +1,9 @@
 package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventCerealWrapper implements Serializable {
+public class EventCerealWrapper extends CerealWrapper {
 
 	/**
 	 * 
@@ -20,6 +19,29 @@ public class EventCerealWrapper implements Serializable {
 	private List<EventRelationshipCerealWrapper> relationships = new ArrayList<EventRelationshipCerealWrapper>();
 
 	private List<EventTagCerealWrapper> tags = new ArrayList<EventTagCerealWrapper>();
+
+	
+	
+	/**
+	 * Construct some event cereal
+	 * this is called from 
+	 * 
+	 * @param eventId
+	 * @param hostId
+	 * @param isNewEvent
+	 * @param relationships
+	 * @param tags
+	 */
+	public EventCerealWrapper(long eventId, long hostId, boolean isNewEvent,
+			List<EventRelationshipCerealWrapper> relationships,
+			List<EventTagCerealWrapper> tags) {
+		super();
+		this.eventId = eventId;
+		this.hostId = hostId;
+		this.isNewEvent = isNewEvent;
+		this.relationships = relationships;
+		this.tags = tags;
+	}
 
 	public long getEventId() {
 		return eventId;

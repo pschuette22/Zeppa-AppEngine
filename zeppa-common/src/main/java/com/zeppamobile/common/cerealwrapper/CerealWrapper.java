@@ -14,6 +14,11 @@ import java.io.Serializable;
 public abstract class CerealWrapper implements Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Entity id (key.getId)
 	 */
 	protected Long identifier;

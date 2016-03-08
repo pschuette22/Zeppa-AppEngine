@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.api.client.http.HttpResponse;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
@@ -27,7 +26,7 @@ import com.zeppamobile.common.utils.Utils;
  *         Event Servlet 
  *
  */
-public class CreateEventServlet extends HttpServlet {
+public class CreateTagServlet extends HttpServlet {
 
 	/**
 	 * 
@@ -35,94 +34,26 @@ public class CreateEventServlet extends HttpServlet {
 	private static final long serialVersionUID = -6074841711114263838L;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Get users tags and send them back.
-		//Get the user ID.
-		
-		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("-1", "UTF-8"));
-		
-		try {
-
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
-					"/endpoint/event-tag-servlet/", params);
-			
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(false);
-            connection.setRequestMethod("GET");
-
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(connection.getInputStream()));
-			String line;
-			
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				// Read from the buffer line by line and write to the response
-				// item					
-            	
-            	String responseString = "";
-				while ((line = reader.readLine()) != null) {
-					responseString+=line;
-				}
-
-				request.setAttribute("test", responseString);
-            } else {
-                // Server returned HTTP error code.
-            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
-            	
-				// Read from the buffer line by line and write to the response
-				// item			
-     			while ((line = reader.readLine()) != null) {
-					response.getWriter().println(line);
-				}
-            }
-            
-            reader.close();
-        } catch (MalformedURLException e) {
-			e.printStackTrace(response.getWriter());
-        } catch (IOException e) {
-			e.printStackTrace(response.getWriter());
-		} catch (Exception e) {
-			e.printStackTrace(response.getWriter());
-			
-		}
-		
-		request.getRequestDispatcher("WEB-INF/pages/create-event.jsp").forward(request, response);
-		
-
-	}
-	
-	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		
 		/*
 		 * Get the vendor and employee info from parameters
 		 */
-	    String title = request.getParameter("title");
-	    String description = request.getParameter("description");
-	    String start = request.getParameter("start");
-	    String end = request.getParameter("end");
-	    String address = request.getParameter("address");
+	    String tagText = request.getParameter(UniversalConstants.PARAM_TAG_TEXT);
 	    String vendorId = request.getParameter(UniversalConstants.PARAM_VENDOR_ID);//???
 	    vendorId = "-1";
 	   	
 	    //TO DO tags still
 		
-		if (Utils.isWebSafe(title)) {
+		if (Utils.isWebSafe(tagText)) {
 
 			/*
 			 * Parameters accepted, making call to api servlet
 			 */
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("title", URLEncoder.encode(title, "UTF-8"));
-			params.put("description", URLEncoder.encode(description, "UTF-8"));
-			params.put("start", URLEncoder.encode(start, "UTF-8"));
-			params.put("end", URLEncoder.encode(end, "UTF-8"));
-			params.put("address", URLEncoder.encode(address, "UTF-8"));
-			params.put("vendorId", URLEncoder.encode(vendorId, "UTF-8"));
+			params.put(UniversalConstants.PARAM_TAG_TEXT, URLEncoder.encode(tagText, "UTF-8"));
+			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId, "UTF-8"));
 			//Do tags
 			
 			
@@ -132,7 +63,7 @@ public class CreateEventServlet extends HttpServlet {
 			try {
 
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
-						"/endpoint/vendor-event-servlet/", params);
+						"/endpoint/event-tag-servlet/", params);
 				
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	            connection.setDoOutput(false);
@@ -180,8 +111,11 @@ public class CreateEventServlet extends HttpServlet {
 			 */
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
-
 	}
+	
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {}
 	
 
 }

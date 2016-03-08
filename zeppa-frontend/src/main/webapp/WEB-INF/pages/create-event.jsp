@@ -19,11 +19,27 @@ $(document).ready(function() {
 	$('#startTimePicker').datetimepicker();
 	$('#endTimePicker').datetimepicker();
 	
-	$("#button").click(function(){
+	$("#submitBtn").click(function(){
 		createEvent();
+	});
+	
+	$("#newTagBtn").click(function(){
+		postTag();
 	});
 });
 
+function postTag(){
+	var tagText = $("#tagText").val();
+	var data = {'tagText': tagText};
+	
+	console.log("Posting tag: "+tagText);
+	 $.post( "/create-tag", data, function( resp ) {
+ 	 	console.log("success");
+ 	 	console.log(resp);
+ 	}).fail(function() {
+ 	    console.log( "error" );
+ 	});
+}
 
 function createEvent() {
 	var title = $("#txtTitle").val();
@@ -143,6 +159,11 @@ function createEvent() {
     .controls:focus {
       border-color: #4d90fe;
     }
+    .smallButton{
+    	font-size:13px!important;
+    	padding:5px 10px!important;
+    
+    }
 </style>
 <t:ZeppaBase>
 <jsp:body>
@@ -181,7 +202,15 @@ function createEvent() {
 	    	 <tr>
 	    		<td colspan="2"><textarea class="descriptionText" id="txtDescription"></textarea></td>
 	    	</tr>
-	    	<tr><td style="padding:10px;"><input type="submit" id="button"/></td></tr> 
+	    	<tr><td>Select Tags</td></tr>
+	    	<tr>
+	    		<td>Old tags go here</td>
+	    	</tr>
+	    	<tr>
+	    		<td><input type='text' placeholder='New Tag' id='tagText' /><input type="button" class="smallButton" id="newTagBtn" value="Add Tag"/></td>
+	    	</tr>
+	    	<tr><td style="padding:10px;"><input type="submit" id="submitBtn"/></td></tr> 
+	    	
 	    </table>
     </div>
 </jsp:body>

@@ -21,6 +21,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.common.UniversalConstants;
 
 /**
  * @author Kevin Moratelli
@@ -45,17 +46,19 @@ public class EventTagServlet extends HttpServlet {
 		
 		try {
 			// Fetch the owner ID
-			Long ownerId = Long.parseLong(req.getParameter("ownerId"));
+			Long ownerId = Long.parseLong(req.getParameter(UniversalConstants.PARAM_VENDOR_ID));
 
 			List<EventTag> tags = getTags(ownerId);
 
 			resp.setStatus(HttpServletResponse.SC_OK);
-			
+			resp.setContentType("application/json");
 			// Convert the object to json and return in the writer
 			for(EventTag tag : tags) {
 				JSONObject json = tag.toJson();
-				resp.getWriter().write(json.toJSONString());
+				resp.getOutputStream().print(json.toJSONString());
 			}
+			resp.getOutputStream().flush();
+			resp.getOutputStream().close();
 			
 		} catch (UnauthorizedException e) {
 			// user is not authorized to make this call
@@ -70,7 +73,7 @@ public class EventTagServlet extends HttpServlet {
 		
 		try {
 			EventTag tag = new EventTag();
-			tag.setOwnerId(Long.valueOf(URLDecoder.decode(req.getParameter("ownerId"), "UTF-8")));
+			tag.setOwnerId(Long.valueOf(URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_VENDOR_ID), "UTF-8")));
 			tag.setTagText(URLDecoder.decode(req.getParameter("tagText"), "UTF-8"));
 			
 			tag = insertVendor(tag);

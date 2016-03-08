@@ -66,13 +66,22 @@
     <url-pattern>/create-account</url-pattern>
   </servlet-mapping>
   
-    <servlet>
+  <servlet>
     <servlet-name>create-event</servlet-name>
     <servlet-class>com.zeppamobile.frontend.webpages.CreateEventServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>create-event</servlet-name>
     <url-pattern>/create-event</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>create-tag</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.CreateTagServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>create-tag</servlet-name>
+    <url-pattern>/create-tag</url-pattern>
   </servlet-mapping>
 
 </web-app>

@@ -1,9 +1,14 @@
 package com.zeppamobile.common.cerealwrapper;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
+
+import org.datanucleus.util.Base64;
+
 
 /**
  * 
@@ -48,9 +53,27 @@ public abstract class CerealWrapperFactory {
 			e.printStackTrace();
 		}
 		
-		
-		
 		return result;
+	}
+	
+	/**
+	 * Take a wrapper and make some cereal
+	 * @param cerealWrapper
+	 * @return serialized string representing this object
+	 */
+	public String toCereal(CerealWrapper cerealWrapper) {
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream( baos );
+			oos.writeObject( cerealWrapper );
+	        oos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return new String(Base64.encode(baos.toByteArray())); 
 	}
 		
 }

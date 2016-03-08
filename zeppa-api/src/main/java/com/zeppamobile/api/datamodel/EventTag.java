@@ -11,6 +11,9 @@ import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
 public class EventTag {
+	
+	// This enum tells whether the event is owned by a user or a vendro
+	public enum TagType {USER, VENDOR};
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -28,6 +31,9 @@ public class EventTag {
 	@Persistent
 	private String tagText;
 	
+	@Persistent
+	private TagType type;
+
 	/**
 	 * Convert this object to a json object
 	 * 
@@ -121,6 +127,14 @@ public class EventTag {
 
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
+	}
+	
+	public TagType getType() {
+		return type;
+	}
+
+	public void setType(TagType type) {
+		this.type = type;
 	}
 
 }

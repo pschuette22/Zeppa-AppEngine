@@ -129,7 +129,7 @@ public class EventTagServlet extends HttpServlet {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public EventTag insertVendor(EventTag tag) throws UnauthorizedException,
+	public static EventTag insertVendor(EventTag tag) throws UnauthorizedException,
 			IOException {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();

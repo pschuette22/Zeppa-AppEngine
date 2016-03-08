@@ -71,29 +71,29 @@ public class CreateAccountServlet extends HttpServlet {
 
 			/*
 			 * Parameters accepted, making call to api servlet
+			 * Encode each param before building the URL
 			 */
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("firstName", firstName);
-			params.put("lastName", lastName);
-			params.put("emailAddress", emailAddress);
-			params.put("companyName", companyName);
-			params.put("addressLine1", addressLine1);
-			params.put("addressLine2", addressLine2);
-			params.put("city", city);
-			params.put("state", state);
-			params.put("zipcode", zipcode);
-			params.put("password", password);
+			params.put("firstName", URLEncoder.encode(firstName, "UTF-8"));
+			params.put("lastName", URLEncoder.encode(lastName, "UTF-8"));
+			params.put("emailAddress", URLEncoder.encode(emailAddress, "UTF-8"));
+			params.put("companyName", URLEncoder.encode(companyName, "UTF-8"));
+			params.put("addressLine1", URLEncoder.encode(addressLine1, "UTF-8"));
+			params.put("addressLine2", URLEncoder.encode(addressLine2, "UTF-8"));
+			params.put("city", URLEncoder.encode(city, "UTF-8"));
+			params.put("state", URLEncoder.encode(state, "UTF-8"));
+			params.put("zipcode", URLEncoder.encode(zipcode, "UTF-8"));
+			params.put("password", URLEncoder.encode(password, "UTF-8"));
 			
 			/*
 			 * Read from the request
 			 */
 			try {
-
+				
+				// Generate the url to go to the VendorServlet on the api module
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
 						"/endpoint/vendor-servlet/", params);
 				
-		        String message = URLEncoder.encode("my message", "UTF-8");
-
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("POST");
@@ -102,10 +102,6 @@ public class CreateAccountServlet extends HttpServlet {
 						new InputStreamReader(connection.getInputStream()));
 				String line;
 				
-//	            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
-//	            writer.write("message=" + message);
-//	            writer.close();
-	    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	                // OK
 	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());

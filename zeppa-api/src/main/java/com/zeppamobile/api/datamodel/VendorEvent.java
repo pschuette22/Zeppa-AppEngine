@@ -8,6 +8,8 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import org.json.simple.JSONObject;
+
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
@@ -19,9 +21,6 @@ public class VendorEvent {
 
 	@Persistent
 	private Long vendorId;
-	
-	@Persistent
-	private Long eventId;
 	
 	@Persistent
 	private String title;
@@ -45,17 +44,33 @@ public class VendorEvent {
 	public Long getVendorId() {
 		return vendorId;
 	}
+	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("key", key);
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("start", start == null ? Long.valueOf(-1) : start);
+		obj.put("end", start == null ? Long.valueOf(-1) : end);
+		obj.put("title", title);
+		obj.put("description", description);
+		obj.put("vendorId", vendorId);
+
+		return obj;
+	}
+	
 	public void setVendorId(Long vendorId) {
 		// To get dependency in UML
 		Vendor v;
 		this.vendorId = vendorId;
 	}
-	public Long getEventId() {
-		return eventId;
-	}
-	public void setEventId(Long eventId) {
-		this.eventId = eventId;
-	}
+
 	public String getTitle() {
 		return title;
 	}

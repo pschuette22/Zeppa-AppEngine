@@ -84,6 +84,7 @@ public class VendorServlet extends HttpServlet {
 			address.setZipCode(Integer.parseInt(URLDecoder.decode(req.getParameter("zipcode"), "UTF-8")));
 			address.setAddressLine1(URLDecoder.decode(req.getParameter("addressLine1"), "UTF-8"));
 			address.setAddressLine2(URLDecoder.decode(req.getParameter("addressLine2"), "UTF-8"));
+			vendor.setAddress(address);
 			
 			 
 			//Set employee info

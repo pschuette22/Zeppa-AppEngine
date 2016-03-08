@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 
@@ -22,6 +23,7 @@ public class StartupServlet extends HttpServlet {
 	 */
     public void init() {
 
+    	// Add Vendor and Employee to the datastore
 		Address add = new Address();
 		add.setAddressLine1("123 Test Street");
 		add.setCity("Philadelphia");
@@ -36,6 +38,9 @@ public class StartupServlet extends HttpServlet {
 		ui.setFamilyName("McGreevey");
 		Employee employee = new Employee();
 		employee.setUserInfo(ui);
+		
+		// Add EventTags to the datastore
+		EventTag tag = new EventTag();
 		
 		try {
 			VendorServlet.insertVendor(vendor, employee);

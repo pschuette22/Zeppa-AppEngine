@@ -9,6 +9,7 @@ import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
+import com.zeppamobile.api.datamodel.EventTag.TagType;
 
 /**
  * Servlet implementation class StartupServlet
@@ -39,9 +40,6 @@ public class StartupServlet extends HttpServlet {
 		Employee employee = new Employee();
 		employee.setUserInfo(ui);
 		
-		// Add EventTags to the datastore
-		EventTag tag = new EventTag();
-		
 		try {
 			VendorServlet.insertVendor(vendor, employee);
 		} catch (UnauthorizedException e) {
@@ -52,6 +50,27 @@ public class StartupServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+		// Add EventTags to the datastore
+		EventTag tag = new EventTag();
+		tag.setOwnerId(vendor.getKey().getId());
+		tag.setTagText("Happy Hour");
+		tag.setType(TagType.VENDOR);
+		
+		EventTag tag2 = new EventTag();
+		tag2.setOwnerId(vendor.getKey().getId());
+		tag2.setTagText("Drink Special");
+		tag2.setType(TagType.VENDOR);
+		
+		try {
+			EventTagServlet.insertVendor(tag);
+			EventTagServlet.insertVendor(tag2);
+		} catch (UnauthorizedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }

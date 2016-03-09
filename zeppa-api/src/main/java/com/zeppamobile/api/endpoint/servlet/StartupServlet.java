@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 
 import com.google.api.server.spi.response.UnauthorizedException;
+import com.google.appengine.api.utils.SystemProperty;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EventTag;
@@ -24,7 +25,68 @@ public class StartupServlet extends HttpServlet {
 	 */
     public void init() {
 
-    	// Add Vendor and Employee to the datastore
+    	// If not running in Development environment then just return without running anything
+    	if(SystemProperty.environment.value() != SystemProperty.Environment.Value.Development) {
+    		return;
+    	}
+    	
+    	
+    	// Kevin Account
+    	ZeppaUserInfo kevinUI = new ZeppaUserInfo();
+    	kevinUI.setGivenName("Kevin");
+    	kevinUI.setFamilyName("Moratelli");
+    	Employee employeeKevin = new Employee();
+    	employeeKevin.setUserInfo(kevinUI);
+    	employeeKevin.setEmailAddress("kevin.moratelli@gmail.com");
+    	
+    	// Kieran Account
+    	ZeppaUserInfo kieranUI = new ZeppaUserInfo();
+    	kieranUI.setGivenName("Kieran");
+    	kieranUI.setFamilyName("Lynn");
+    	Employee employeeKieran = new Employee();
+    	employeeKieran.setUserInfo(kieranUI);
+    	employeeKieran.setEmailAddress("kieran.j.lynn@gmail.com");
+    	
+    	// Pete Account
+    	ZeppaUserInfo peteUI = new ZeppaUserInfo();
+    	peteUI.setGivenName("Pete");
+    	peteUI.setFamilyName("Schuette");
+    	Employee employeePete = new Employee();
+    	employeePete.setUserInfo(peteUI);
+    	employeePete.setEmailAddress("pschuette22@gmail.com");
+    	
+    	// Brendan Account
+    	ZeppaUserInfo brendanUI = new ZeppaUserInfo();
+    	brendanUI.setGivenName("Brendan");
+    	brendanUI.setFamilyName("Kennedy");
+    	Employee employeeBrendan = new Employee();
+    	employeeBrendan.setUserInfo(brendanUI);
+    	employeeBrendan.setEmailAddress("bken123@gmail.com");
+    	
+    	// Eric Account
+    	ZeppaUserInfo ericUI = new ZeppaUserInfo();
+    	ericUI.setGivenName("Eric");
+    	ericUI.setFamilyName("Most");
+    	Employee employeeEric = new Employee();
+    	employeeEric.setUserInfo(ericUI);
+    	employeeEric.setEmailAddress("ericmmost@gmail.com");
+    	
+    	try {
+			EmployeeServlet.insertVendor(employeeKevin);
+			EmployeeServlet.insertVendor(employeeKieran);
+			EmployeeServlet.insertVendor(employeePete);
+			EmployeeServlet.insertVendor(employeeBrendan);
+			EmployeeServlet.insertVendor(employeeEric);
+		} catch (UnauthorizedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+    	
+    	
+    	// Add Vendor and address to data store
 		Address add = new Address();
 		add.setAddressLine1("123 Test Street");
 		add.setCity("Philadelphia");
@@ -34,14 +96,9 @@ public class StartupServlet extends HttpServlet {
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
 		vendor.setMasterUserId(Long.valueOf("123"));
-		ZeppaUserInfo ui = new ZeppaUserInfo();
-		ui.setGivenName("Jim");
-		ui.setFamilyName("McGreevey");
-		Employee employee = new Employee();
-		employee.setUserInfo(ui);
 		
 		try {
-			VendorServlet.insertVendor(vendor, employee);
+			VendorServlet.insertVendor(vendor, employeeKevin);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
 
 <script type="text/javascript">
+var tagQueue = [];
 $(document).ready(function() {
 	$('#startTimePicker').datetimepicker();
 	$('#endTimePicker').datetimepicker();
@@ -26,8 +27,32 @@ $(document).ready(function() {
 	$("#newTagBtn").click(function(){
 		postTag();
 	});
+	parseTags('${tags}');
+	
+	$(".tag").click(function(){
+		$(this).toggleClass("active");
+		if(!$(this).hasClass("active")){
+			var index = tagQueue.indexOf($(this));
+			tagQueue.splice(index,1);
+		}else{
+			tagQueue.push($(this));
+			if (tagQueue.length > 6){
+				//popqueue 
+				var popped = tagQueue.shift();
+				popped.removeClass("active");
+			}
+		}
+	});
 });
 
+function parseTags(tagsString){
+	var tags = jQuery.parseJSON(tagsString);
+	for (var i = 0; i < tags.length; i++){
+		var text = tags[i].tagText;
+		var id = tags[i].id;
+		$("#tagsContainer").append("<div class='tag' data-tagid='"+id+"'>"+text+"</div> ");
+	}
+}
 function postTag(){
 	var tagText = $("#tagText").val();
 	var data = {'tagText': tagText};
@@ -36,6 +61,11 @@ function postTag(){
 	 $.post( "/create-tag", data, function( resp ) {
  	 	console.log("success");
  	 	console.log(resp);
+ 	 	var tagInfo = jQuery.parseJSON(resp);
+ 	 	var id = tagInfo.id;
+ 	 	var text = tagInfo.tagText;
+ 	 	$("#tagsContainer").append("<div class='tag' data-tagid='"+id+"'>"+text+"</div>");
+ 	 	$("#tagsContainer").last().click();
  	}).fail(function() {
  	    console.log( "error" );
  	});
@@ -48,9 +78,16 @@ function createEvent() {
 	var address = $("#addressInput").val();
 	var description = $("#txtDescription").val();
 	
-	
+	var tags = [];
+	$(".tag.active").each(function(){
+		tags.push({
+			"tagText":$(this).html(),
+			"id":$(this).data("tagid")
+		});
+	})
+	tags = JSON.stringify(tags);
     var data = {'title': title, 'start': start, 'end': end,
-    		'address': address, 'description':description };
+    		'address': address, 'description':description, 'tag-list':tags };
     
     console.log("event Info: ", data);
     $.post( "/create-event", data, function( resp ) {
@@ -135,6 +172,23 @@ function createEvent() {
 	.picker{
 		width:auto;
 	}
+	
+	
+	.tag{
+    	float:left!important;
+    	border: 1px solid rgb(31,169,255)!important;
+    	border-radius: 3px!important; 
+    	width:auto!important;
+    	padding: 5px;
+    	margin: 3px;
+    	cursor: pointer;
+    	
+    }
+    .tag.active{
+    	background-color:rgb(31,169,255)!important;
+    	color:#FFF!important;'
+    }
+	
 	#map {
         height: 300px;
       }
@@ -162,8 +216,8 @@ function createEvent() {
     .smallButton{
     	font-size:13px!important;
     	padding:5px 10px!important;
-    
     }
+    
 </style>
 <t:ZeppaBase>
 <jsp:body>
@@ -203,8 +257,8 @@ function createEvent() {
 	    		<td colspan="2"><textarea class="descriptionText" id="txtDescription"></textarea></td>
 	    	</tr>
 	    	<tr><td>Select Tags</td></tr>
-	    	<tr>
-	    		<td>Old tags go here</td>
+	    	<tr id="tagsRow">
+	    		<td><div id="tagsContainer"></div></td>
 	    	</tr>
 	    	<tr>
 	    		<td><input type='text' placeholder='New Tag' id='tagText' /><input type="button" class="smallButton" id="newTagBtn" value="Add Tag"/></td>

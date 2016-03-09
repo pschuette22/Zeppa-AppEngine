@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -53,10 +54,14 @@ public class EventTagServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			// Convert the object to json and return in the writer
+			JSONArray arr = new JSONArray();
+			req.setAttribute(UniversalConstants.PARAM_TAG_LIST, tags);
 			for(EventTag tag : tags) {
 				JSONObject json = tag.toJson();
-				resp.getOutputStream().print(json.toJSONString());
+				arr.add(json);
 			}
+			
+			resp.getOutputStream().print(arr.toJSONString());
 			resp.getOutputStream().flush();
 			resp.getOutputStream().close();
 			
@@ -84,7 +89,7 @@ public class EventTagServlet extends HttpServlet {
 			
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			resp.getWriter().print(e.getStackTrace());
+			e.printStackTrace(resp.getWriter());
 		}
 	}
 	

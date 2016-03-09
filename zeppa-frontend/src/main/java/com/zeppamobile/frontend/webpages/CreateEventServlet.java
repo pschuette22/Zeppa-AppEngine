@@ -42,7 +42,7 @@ public class CreateEventServlet extends HttpServlet {
 		
 		
 		Map<String, String> params = new HashMap<String, String>();
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("-1", "UTF-8"));
+		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("5629499534213120", "UTF-8"));
 		
 		try {
 
@@ -65,8 +65,7 @@ public class CreateEventServlet extends HttpServlet {
 				while ((line = reader.readLine()) != null) {
 					responseString+=line;
 				}
-
-				request.setAttribute("test", responseString);
+				request.setAttribute("tags", responseString);
             } else {
                 // Server returned HTTP error code.
             	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
@@ -107,6 +106,7 @@ public class CreateEventServlet extends HttpServlet {
 	    String end = request.getParameter("end");
 	    String address = request.getParameter("address");
 	    String vendorId = request.getParameter(UniversalConstants.PARAM_VENDOR_ID);//???
+	    String tagsList = request.getParameter(UniversalConstants.PARAM_TAG_LIST);
 	    vendorId = "-1";
 	   	
 	    //TO DO tags still
@@ -123,8 +123,7 @@ public class CreateEventServlet extends HttpServlet {
 			params.put("end", URLEncoder.encode(end, "UTF-8"));
 			params.put("address", URLEncoder.encode(address, "UTF-8"));
 			params.put("vendorId", URLEncoder.encode(vendorId, "UTF-8"));
-			//Do tags
-			
+			params.put(UniversalConstants.PARAM_TAG_LIST, URLEncoder.encode(tagsList, "UTF-8"));
 			
 			/*
 			 * Read from the request
@@ -145,14 +144,11 @@ public class CreateEventServlet extends HttpServlet {
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	                // OK
 	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
-
 					// Read from the buffer line by line and write to the response
 					// item					
 					while ((line = reader.readLine()) != null) {
-						response.getWriter().println(line);
+						response.getWriter().write(line);
 					}
-
-					
 	            } else {
 	                // Server returned HTTP error code.
 	            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());

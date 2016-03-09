@@ -43,7 +43,7 @@ public class EventTag {
 	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
 
-		obj.put("key", key);
+		obj.put("id", key.getId());
 		obj.put("created", created == null ? Long.valueOf(-1) : created);
 		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
 

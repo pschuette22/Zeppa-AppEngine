@@ -1,5 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -32,7 +34,23 @@ public class VendorEventRelationship {
 	@Persistent
 	private boolean shared;
 	
+	@Persistent
+	private List<Long> shareIds;
 	
+	
+	
+	public VendorEventRelationship(Key key, Long userId, Long eventId,
+			boolean joined, boolean seen, boolean watched, boolean shared,
+			List<Long> shareIds) {
+		super();
+		this.userId = userId;
+		this.eventId = eventId;
+		this.joined = joined;
+		this.seen = seen;
+		this.watched = watched;
+		this.shared = shared;
+		this.shareIds = shareIds;
+	}
 	public Long getUserId() {
 		return userId;
 	}
@@ -72,6 +90,14 @@ public class VendorEventRelationship {
 	public void setShared(boolean shared) {
 		this.shared = shared;
 	}
+	public List<Long> getShareIds() {
+		return shareIds;
+	}
+	public void setShareIds(List<Long> shareIds) {
+		this.shareIds = shareIds;
+	}
+	
+	
 	
 	
 }

@@ -31,7 +31,7 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import com.zeppamobile.common.datainfo.EventTagInfo;
+import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
 import com.zeppamobile.common.report.SmartfollowReport;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
@@ -39,7 +39,7 @@ import com.zeppamobile.smartfollow.nlp.POSFactory;
 
 public class TagAgent extends BaseAgent {
 
-	private EventTagInfo tag;
+	private EventTagCerealWrapper tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
 
@@ -47,7 +47,7 @@ public class TagAgent extends BaseAgent {
 	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
 
 	public TagAgent(ServletContext context,
-			EventTagInfo tag, SmartfollowReport report) {
+			EventTagCerealWrapper tag, SmartfollowReport report) {
 		this.tag = tag;
 		this.report = report;
 		
@@ -71,7 +71,7 @@ public class TagAgent extends BaseAgent {
 		}
 	}
 
-	public EventTagInfo getTagInfo() {
+	public EventTagCerealWrapper getTagInfo() {
 		return tag;
 	}
 

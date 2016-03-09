@@ -1,5 +1,8 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -52,6 +55,7 @@ public class EventTag {
 
 		return obj;
 	}
+	private List<String> indexedWords;
 
 	/**
 	 * Blank Constructor
@@ -72,6 +76,7 @@ public class EventTag {
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
 		this.ownerId = owner.getId();
+		this.indexedWords = new ArrayList<String>();
 	}
 
 	/**
@@ -86,7 +91,7 @@ public class EventTag {
 		this.updated = (Long) json.get("updated");
 		this.ownerId = (Long) json.get("ownerId");
 		this.tagText = (String) json.get("tagText");
-
+		this.indexedWords = (List<String>) json.get("indexedWords");
 	}
 
 	public Long getCreated() {

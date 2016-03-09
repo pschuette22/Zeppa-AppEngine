@@ -31,7 +31,6 @@ public class Address {
 	private Integer zipCode;
 	
 	
-	
 	public String getAddressLine1() {
 		return addressLine1;
 	}

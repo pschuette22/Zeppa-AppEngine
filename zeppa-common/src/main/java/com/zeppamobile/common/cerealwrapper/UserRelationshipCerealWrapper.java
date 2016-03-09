@@ -1,8 +1,7 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 
-public class UserRelationshipInfo implements Serializable {
+public class UserRelationshipCerealWrapper extends CerealWrapper {
 
 	/**
 	 * 
@@ -18,7 +17,15 @@ public class UserRelationshipInfo implements Serializable {
 	
 	private boolean isMingling = false;
 	
-	
+
+	public UserRelationshipCerealWrapper(long relationshipId, long creatorId,
+			long subjectId, boolean isMingling) {
+		super();
+		this.relationshipId = relationshipId;
+		this.creatorId = creatorId;
+		this.subjectId = subjectId;
+		this.isMingling = isMingling;
+	}
 
 	public long getRelationshipId() {
 		return relationshipId;

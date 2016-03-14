@@ -27,7 +27,7 @@ public class ZeppaEvent {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+	protected Key key;
 
 	@Persistent
 	protected Long created;
@@ -161,6 +161,7 @@ public class ZeppaEvent {
 		JSONObject obj = new JSONObject();
 
 		obj.put("key", key);
+		obj.put("id", key.getId());
 		obj.put("created", created == null ? Long.valueOf(-1) : created);
 		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
 		obj.put("googleCalendarId",

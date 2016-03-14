@@ -53,7 +53,30 @@ public class VendorEventServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		try{
+			// TODO Auto-generated method stub
+			String vendorId = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_VENDOR_ID), "UTF-8");
+			String eventId = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_EVENT_ID), "UTF-8");
+			JSONArray results = new JSONArray();
+			
+			//Determine if calling for individual event or all user events.
+			if (eventId != null && !eventId.isEmpty()){
+				results = getIndividualEventJSON(eventId);
+			}else if(vendorId != null && !vendorId.isEmpty()){
+				results = getAllEventsJSON(eventId);
+			}
+			
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.setContentType("application/json");
+			
+			//send Json back
+			resp.getWriter().write(results.toJSONString());
+		
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			e.printStackTrace(resp.getWriter());
+		}
+		
 	}
 
 	@Override

@@ -20,15 +20,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.google.api.server.spi.response.UnauthorizedException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.datamodel.Address;
-import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EventTag;
-import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.VendorEvent;
-import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.UniversalConstants;
 
 /**
@@ -55,15 +49,17 @@ public class VendorEventServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try{
 			// TODO Auto-generated method stub
-			String vendorId = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_VENDOR_ID), "UTF-8");
-			String eventId = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_EVENT_ID), "UTF-8");
+			String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
+			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 			JSONArray results = new JSONArray();
 			
 			//Determine if calling for individual event or all user events.
 			if (eventId != null && !eventId.isEmpty()){
-				results = getIndividualEventJSON(eventId);
+				eventId = URLDecoder.decode(eventId,"UTF-8");
+				//results = getIndividualEventJSON(eventId);
 			}else if(vendorId != null && !vendorId.isEmpty()){
-				results = getAllEventsJSON(eventId);
+				vendorId = URLDecoder.decode(vendorId,"UTF-8");
+				results = getAllEventsJSON(Long.parseLong(vendorId));
 			}
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
@@ -79,6 +75,35 @@ public class VendorEventServlet extends HttpServlet {
 		
 	}
 
+	public JSONArray getAllEventsJSON(Long vendorId){
+		JSONArray results = new JSONArray();
+		
+		List<VendorEvent> events = new ArrayList<VendorEvent>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEvent.class,
+					"hostId == " + vendorId);
+
+			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
+			if(response.size()>0) {
+				// This was a success
+				// TODO: implement any extra initialization if desired
+				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
+				events.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		for(VendorEvent event : events) {
+			JSONObject json = event.toJson();
+			results.add(json);
+		}
+		return results;
+	}
+	
+	
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -89,6 +114,7 @@ public class VendorEventServlet extends HttpServlet {
 			Long start = Long.parseLong(URLDecoder.decode(req.getParameter("start"), "UTF-8"));
 			Long end = Long.parseLong(URLDecoder.decode(req.getParameter("end"), "UTF-8"));
 			Long vendorId = Long.parseLong(URLDecoder.decode(req.getParameter("vendorId"), "UTF-8"));
+			String address = URLDecoder.decode(req.getParameter("address"), "UTF-8");
 			
 			//Get all of the tags and then add them to the event
 			List<Long> tagIds = new ArrayList<Long>();
@@ -105,7 +131,7 @@ public class VendorEventServlet extends HttpServlet {
 				Long id = (Long) obj.get("id");
 				tagIds.add(id);
 			}
-			VendorEvent event = new VendorEvent(title,description,start,end,vendorId,tagIds);
+			VendorEvent event = new VendorEvent(title,description,start,end,vendorId,tagIds,address);
 			event = insertEvent(event);
 
 			// Convert the object to json and return in the writer

@@ -45,22 +45,6 @@ $(document).ready(function() {
 	});
 });
 
-function addTagListeners(){
-	$(".tag").click(function(){
-		$(this).toggleClass("active");
-		if(!$(this).hasClass("active")){
-			var index = tagQueue.indexOf($(this));
-			tagQueue.splice(index,1);
-		}else{
-			tagQueue.push($(this));
-			if (tagQueue.length > 6){
-				//popqueue 
-				var popped = tagQueue.shift();
-				popped.removeClass("active");
-			}
-		}
-	});
-}
 function parseTags(tagsString){
 	var tags = jQuery.parseJSON(tagsString);
 	for (var i = 0; i < tags.length; i++){

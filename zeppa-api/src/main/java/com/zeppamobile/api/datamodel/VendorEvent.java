@@ -1,15 +1,19 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.List;
+
+import javax.jdo.annotations.Discriminator;
+import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 import org.json.simple.JSONObject;
-
-import com.google.appengine.api.datastore.Key;
+import com.zeppamobile.api.datamodel.ZeppaEvent;
 
 @PersistenceCapable
+@Discriminator(strategy=DiscriminatorStrategy.CLASS_NAME)
 public class VendorEvent extends ZeppaEvent {
-
+	
 
 	public VendorEvent(JSONObject json) {
 		super(json);
@@ -17,9 +21,12 @@ public class VendorEvent extends ZeppaEvent {
 	}
 
 	
+	public VendorEvent(String title,String description,Long start, Long end, Long vendorId,List<Long> tagIds){
+		super("","","",ZeppaEvent.EventPrivacyType.PUBLIC,vendorId,title,description,true,start,end,"","",tagIds,null);		
+	}
+	
 	@Persistent
 	private String placeId;
-
 
 //	@PrimaryKey
 //	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)

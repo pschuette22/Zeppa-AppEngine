@@ -81,7 +81,7 @@ public class EventTagServlet extends HttpServlet {
 			tag.setOwnerId(Long.valueOf(URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_VENDOR_ID), "UTF-8")));
 			tag.setTagText(URLDecoder.decode(req.getParameter("tagText"), "UTF-8"));
 			
-			tag = insertVendor(tag);
+			tag = insertTag(tag);
 
 			// Convert the object to json and return in the writer
 			JSONObject json = tag.toJson();
@@ -134,7 +134,7 @@ public class EventTagServlet extends HttpServlet {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static EventTag insertVendor(EventTag tag) throws UnauthorizedException,
+	public static EventTag insertTag(EventTag tag) throws UnauthorizedException,
 			IOException {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();

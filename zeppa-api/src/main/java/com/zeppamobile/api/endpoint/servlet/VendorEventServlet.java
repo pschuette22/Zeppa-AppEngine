@@ -61,23 +61,28 @@ public class VendorEventServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			//Set vendor info
+			String title = URLDecoder.decode(req.getParameter("title"), "UTF-8");
+			String description = URLDecoder.decode(req.getParameter("description"), "UTF-8");
+			Long start = Long.parseLong(URLDecoder.decode(req.getParameter("start"), "UTF-8"));
+			Long end = Long.parseLong(URLDecoder.decode(req.getParameter("end"), "UTF-8"));
+			Long vendorId = Long.parseLong(URLDecoder.decode(req.getParameter("vendorId"), "UTF-8"));
 			
-			VendorEvent event = new VendorEvent();
-			event.setTitle(URLDecoder.decode(req.getParameter("title"), "UTF-8"));
-			event.setDescription(URLDecoder.decode(req.getParameter("description"), "UTF-8"));
-			event.setStart(Long.parseLong(URLDecoder.decode(req.getParameter("start"), "UTF-8")));
-			event.setEnd(Long.parseLong(URLDecoder.decode(req.getParameter("end"), "UTF-8")));
-			event.setVendorId(Long.parseLong(URLDecoder.decode(req.getParameter("vendorId"), "UTF-8")));			
 			//Get all of the tags and then add them to the event
+			List<Long> tagIds = new ArrayList<Long>();
 			String tagsString = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_TAG_LIST), "UTF-8");
+			
+
+			resp.getWriter().write("Tags String" + tagsString+"\n\n");
+			
+			
 			JSONParser parser = new JSONParser();
 			JSONArray tags_json = (JSONArray) parser.parse(tagsString);
 			for (int i = 0; i < tags_json.size(); i++) {
 				JSONObject obj = (JSONObject) tags_json.get(i);
 				Long id = (Long) obj.get("id");
-				EventTag tag = getTag(id);
-				event.addTag(tag);
+				tagIds.add(id);
 			}
+			VendorEvent event = new VendorEvent(title,description,start,end,vendorId,tagIds);
 			event = insertEvent(event);
 
 			// Convert the object to json and return in the writer
@@ -90,37 +95,6 @@ public class VendorEventServlet extends HttpServlet {
 		}
 	}
 	
-	/**
-	 * This method gets the tags having the owner id given.
-	 * 
-	 * @param id
-	 *            the id of the tag
-	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
-	 */
-	@SuppressWarnings("unchecked")
-	public EventTag getTag(Long id) throws UnauthorizedException {
-		EventTag e;
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			e = mgr.getObjectById(EventTag.class, id);
-			
-//			Query q = mgr.newQuery(EventTag.class,
-//					"key.getId() == " + id);
-//			Collection<EventTag> response = (Collection<EventTag>) q.execute();
-//			if(response.size()>0) {
-//				// This was a success
-//				// TODO: implement any extra initialization if desired
-//				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-//				results.addAll(response);
-//			}
-			
-			
-		} finally {
-			mgr.close();
-		}
-		return e;
-	}
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown. It uses HTTP
@@ -143,9 +117,6 @@ public class VendorEventServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-
-			// Set event characteristics
-			event.setCreated(System.currentTimeMillis());
 
 			// Persist event
 			event = mgr.makePersistent(event);

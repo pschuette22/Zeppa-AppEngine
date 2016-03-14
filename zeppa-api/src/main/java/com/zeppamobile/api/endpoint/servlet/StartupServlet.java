@@ -62,8 +62,8 @@ public class StartupServlet extends HttpServlet {
 		tag2.setType(TagType.VENDOR);
 		
 		try {
-			EventTagServlet.insertVendor(tag);
-			EventTagServlet.insertVendor(tag2);
+			EventTagServlet.insertTag(tag);
+			EventTagServlet.insertTag(tag2);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

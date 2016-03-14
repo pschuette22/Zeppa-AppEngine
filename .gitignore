@@ -23,5 +23,5 @@ datanucleus.log
 out
 
 datanucleus.log
-datanucleus.log
-*.ucls
+**/*.jpg
+**/*.ucls

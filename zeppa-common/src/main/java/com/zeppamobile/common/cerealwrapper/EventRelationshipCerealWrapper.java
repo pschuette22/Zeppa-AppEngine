@@ -1,8 +1,7 @@
-package com.zeppamobile.common.datainfo;
+package com.zeppamobile.common.cerealwrapper;
 
-import java.io.Serializable;
 
-public class EventRelationshipInfo implements Serializable {
+public class EventRelationshipCerealWrapper extends CerealWrapper {
 
 	/**
 	 * 
@@ -22,6 +21,20 @@ public class EventRelationshipInfo implements Serializable {
 	private boolean isRecommended = false;
 		
 	private long inviterId = -1;
+
+	
+	public EventRelationshipCerealWrapper(long relationshipId, long userId,
+			long eventId, boolean isWatching, boolean isAttending,
+			boolean isRecommended, long inviterId) {
+		super();
+		this.relationshipId = relationshipId;
+		this.userId = userId;
+		this.eventId = eventId;
+		this.isWatching = isWatching;
+		this.isAttending = isAttending;
+		this.isRecommended = isRecommended;
+		this.inviterId = inviterId;
+	}
 
 	public long getRelationshipId() {
 		return relationshipId;

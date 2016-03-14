@@ -16,7 +16,7 @@ import com.google.appengine.api.datastore.Key;
 public class ZeppaUserInfo{
 
 	
-	enum Gender {
+	public enum Gender {
 		MALE,FEMALE,UNANSWERED
 	}
 	
@@ -43,7 +43,7 @@ public class ZeppaUserInfo{
 	private Gender gender;
 	
 	@Persistent(defaultFetchGroup = "true")
-	private Date dateOfBirth;
+	private Long dateOfBirth;
 	
 	
 	public Long getCreated() {
@@ -94,4 +94,22 @@ public class ZeppaUserInfo{
 		this.imageUrl = imageUrl;
 	}
 
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
+
+	public Long getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Long dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	
+	
 }

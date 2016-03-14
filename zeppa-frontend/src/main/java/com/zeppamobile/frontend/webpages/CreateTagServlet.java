@@ -74,11 +74,7 @@ public class CreateTagServlet extends HttpServlet {
 				String line;
 	    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-	                // OK
-	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
-
-					// Read from the buffer line by line and write to the response
-					// item					
+	                //Print the tag info back to the page so it can be added.
 					while ((line = reader.readLine()) != null) {
 						response.getWriter().println(line);
 					}

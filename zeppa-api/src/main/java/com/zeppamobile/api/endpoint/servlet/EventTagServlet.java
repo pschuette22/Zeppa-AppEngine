@@ -80,7 +80,7 @@ public class EventTagServlet extends HttpServlet {
 			EventTag tag = new EventTag();
 			tag.setOwnerId(Long.valueOf(URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_VENDOR_ID), "UTF-8")));
 			tag.setTagText(URLDecoder.decode(req.getParameter("tagText"), "UTF-8"));
-			
+			tag.setType(EventTag.TagType.VENDOR);
 			tag = insertTag(tag);
 
 			// Convert the object to json and return in the writer

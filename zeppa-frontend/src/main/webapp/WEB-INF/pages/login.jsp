@@ -11,7 +11,7 @@
 
 
 
-<script src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 
 function login() {
@@ -39,10 +39,6 @@ function onSuccess(googleUser) {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
-    	 	if(resp.getResponseHeader('isAuthorized') == "true")
-    	 	{
-    	 		window.location = "/dashboard";
-    	 	}
     	}).fail(function() {
     	    console.log( "error" );
     	});

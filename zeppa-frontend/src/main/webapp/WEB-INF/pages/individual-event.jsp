@@ -5,12 +5,13 @@
 
 <link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
+<script src="../js/Chart.js/Chart.js"></script>
 <script>
 var tagQueue = [];
 $( document ).ready(function() {
 	parseEventInfo('${eventInfo}');
 	parseTags('${tags}');
-	
+	createGraphs();
 	/*$("body").on("click", ".tag", function(){
 		$(this).toggleClass("active");
 		if(!$(this).hasClass("active")){
@@ -74,8 +75,29 @@ function getDateString(date) {
     var dateString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
     return dateString;
 }
+
+
+
+var options = {
+		responsive: true,
+		animationEasing: "easeOutQuart"
+	};
+	
+	function createGraphs() {
+		// Get the context of the canvas element we want to select
+		var ctx1 = document.getElementById("event1").getContext("2d");
+		//var ctx2 = document.getElementById("event2").getContext("2d");
+		//var ctx3 = document.getElementById("event3").getContext("2d");
+		// ${genderData} accesses gender data attribute set by the Analytics Servlet
+		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
+		//var chart2 = new Chart(ctx2).Doughnut(${genderData}, options);
+		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
+	}
 </script>
 <style>
+	#eventForm{
+	
+	}
 	.tag{
     	float:left!important;
     	border: 1px solid rgb(31,169,255)!important;
@@ -98,10 +120,24 @@ function getDateString(date) {
 		color:#000;
 		margin-top:5px;
 	}
+	.column-right{
+		float:right;
+		overflow: auto;
+		width:30%;
+		height:auto;
+	}
+	.event-desc {
+		text-align: center;
+		padding: 10px;
+	}
 </style>
 <t:ZeppaBase>
 	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
 	<jsp:body>
+		<div class="column-right">
+			<canvas id="event1" width="150" height="150"></canvas>
+			<div class="event-desc">Total Attendee Gender</div>
+		</div>
 		<form id="eventForm" action="post">
 			<div style="width:50%">
 				<div class="label">Event Title</div>
@@ -118,6 +154,8 @@ function getDateString(date) {
 			<div class="label">Event Tags</div>
 			<div id="tagsContainer"></div>
 		</form>
+		
+		
 	</jsp:body>
 	
 	

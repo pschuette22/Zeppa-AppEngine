@@ -109,7 +109,7 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf(employeeBrendan.getKey().getId()));
+		vendor.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
 		
 		try {
 			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
@@ -167,10 +167,10 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
 		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
 		
 		try {
 			VendorEventServlet.insertEvent(event);

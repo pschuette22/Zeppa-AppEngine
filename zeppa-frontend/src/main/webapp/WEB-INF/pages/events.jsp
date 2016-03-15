@@ -22,7 +22,7 @@ function parseEvents(eventsString){
 		var description = events[i].description;
 		var start = events[i].start;
 		var location = events[i].displayLocation;
-		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+start+"</td><td>"+location+"</td><td><a href='/individual-events?event-id="+id+"'>More info</a></td></tr>");
+		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+start+"</td><td>"+location+"</td><td><a href='/individual-event?event-id="+id+"'>More info</a></td></tr>");
 	}
 }
 

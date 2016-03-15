@@ -21,7 +21,6 @@ import org.json.simple.parser.JSONParser;
 
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
-import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.common.UniversalConstants;
 
@@ -44,6 +43,7 @@ public class VendorEventServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -56,10 +56,17 @@ public class VendorEventServlet extends HttpServlet {
 			//Determine if calling for individual event or all user events.
 			if (eventId != null && !eventId.isEmpty()){
 				eventId = URLDecoder.decode(eventId,"UTF-8");
-				//results = getIndividualEventJSON(eventId);
-			}else if(vendorId != null && !vendorId.isEmpty()){
+				VendorEvent result = getIndividualEventJSON(eventId);
+				// If nothing is found with that EventID then return a not found code
+				if(result == null) {
+					resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					return;
+				}
+				results.add(result.toJson());
+			} else if(vendorId != null && !vendorId.isEmpty()){
 				vendorId = URLDecoder.decode(vendorId,"UTF-8");
 				results = getAllEventsJSON(Long.parseLong(vendorId));
+				
 			}
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
@@ -143,6 +150,25 @@ public class VendorEventServlet extends HttpServlet {
 			e.printStackTrace(resp.getWriter());
 		}
 	}
+
+	/**
+	 * Find an event with the given ID and return its JSON info
+	 * @param eventId - the id of the desired event
+	 * @return - the JSON with the event info
+	 */
+	private VendorEvent getIndividualEventJSON(String eventId) {
+		
+		PersistenceManager mgr = getPersistenceManager();
+		VendorEvent event = null;
+		try {
+			// Query for the event with the given ID
+			event = mgr.getObjectById(VendorEvent.class, Long.valueOf(eventId));
+		} finally {
+			mgr.close();
+		}
+		
+		return event;
+	}
 	
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
@@ -155,7 +181,7 @@ public class VendorEventServlet extends HttpServlet {
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public VendorEvent insertEvent(VendorEvent event) throws UnauthorizedException,
+	public static VendorEvent insertEvent(VendorEvent event) throws UnauthorizedException,
 			IOException {
 
 

@@ -1,6 +1,9 @@
 package com.zeppamobile.api.endpoint.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServlet;
 
 import com.google.api.server.spi.response.UnauthorizedException;
@@ -9,6 +12,7 @@ import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
+import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.datamodel.EventTag.TagType;
 
@@ -95,7 +99,7 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf("123"));
+		vendor.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
 		
 		try {
 			VendorServlet.insertVendor(vendor, employeeKevin);
@@ -125,6 +129,19 @@ public class StartupServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		List<Long> tagIds = new ArrayList<Long>();
+		tagIds.add(tag.getId());
+		tagIds.add(tag2.getId());
+		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
+				(System.currentTimeMillis() + 10000), -1L, tagIds, "Address Holder");
+		
+		try {
+			VendorEventServlet.insertEvent(event);
+		} catch (UnauthorizedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

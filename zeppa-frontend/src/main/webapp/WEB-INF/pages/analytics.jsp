@@ -29,12 +29,12 @@
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
 		var ctx1 = document.getElementById("event1").getContext("2d");
-		var ctx2 = document.getElementById("event2").getContext("2d");
-		var ctx3 = document.getElementById("event3").getContext("2d");
-		// ${data} accesses data attribute set by the Analytics Servlet
-		var chart1 = new Chart(ctx1).Doughnut(${data}, options);
-		var chart2 = new Chart(ctx2).Doughnut(${data}, options);
-		var chart3 = new Chart(ctx3).Doughnut(${data}, options);
+		//var ctx2 = document.getElementById("event2").getContext("2d");
+		//var ctx3 = document.getElementById("event3").getContext("2d");
+		// ${genderData} accesses gender data attribute set by the Analytics Servlet
+		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
+		//var chart2 = new Chart(ctx2).Doughnut(${genderData}, options);
+		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
 	}
 	
 </script>
@@ -112,15 +112,15 @@
 			<div class="container">
 				<div class="column-left">
 					<canvas id="event1" width="150" height="150"></canvas>
-					<div class="event-desc">Event Name 1</div>
+					<div class="event-desc">Total Attendee Gender</div>
 				</div>
 				<div class="column-center">
-					<canvas id="event2" width="150" height="150"></canvas>
-					<div class="event-desc">Event Name 2</div>
+					<!--<canvas id="event2" width="150" height="150"></canvas>-->
+					<!--<div class="event-desc">Event Name 2</div>-->
 				</div>
 				<div class="column-right">
-					<canvas id="event3" width="150" height="150"></canvas>
-					<div class="event-desc">Event Name 3</div>
+					<!--<canvas id="event3" width="150" height="150"></canvas>-->
+					<!--<div class="event-desc">Event Name 3</div>-->
 				</div>
 			</div>
  		</div>

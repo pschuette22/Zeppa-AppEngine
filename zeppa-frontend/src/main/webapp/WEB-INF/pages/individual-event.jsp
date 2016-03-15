@@ -115,7 +115,7 @@ function getDateString(date) {
 				<div class="label">End Time</div>
 				<input type='text' class="form-control picker" id='endTime' readonly/><br />
 			</div>
-			<div class="label">Event Tags</label>
+			<div class="label">Event Tags</div>
 			<div id="tagsContainer"></div>
 		</form>
 	</jsp:body>

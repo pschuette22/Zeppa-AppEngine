@@ -2,19 +2,28 @@ package com.zeppamobile.api.endpoint.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServlet;
 
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.utils.SystemProperty;
+import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.VendorEvent;
+import com.zeppamobile.api.datamodel.VendorEventRelationship;
+import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
+import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
+import com.zeppamobile.api.endpoint.InviteGroupEndpoint;
+import com.zeppamobile.api.endpoint.ZeppaUserEndpoint;
+import com.zeppamobile.common.utils.TestUtils;
 import com.zeppamobile.api.datamodel.EventTag.TagType;
+import com.zeppamobile.api.datamodel.InviteGroup;
 
 /**
  * Servlet implementation class StartupServlet
@@ -137,7 +146,8 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), -1L, tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
+		
 		
 		try {
 			VendorEventServlet.insertEvent(event);
@@ -145,6 +155,71 @@ public class StartupServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+		// Create Users
+		AppConfig.setTestConfig();
+//		LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
+//		.setDefaultHighRepJobPolicyRandomSeed(100)
+//		.setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
+//		helper.setUp();
+		String u1AuthEmail = "testuser1@example.com";
+		String u2AuthEmail = "testuser2@example.com";
+		List<String> initialTags = Arrays.asList("TestTag1", "TestTag2", "TestTag3", "TestTag4", "TestTag5",
+				"TestTag6");
+		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui = testUser.getUserInfo();
+		ui.setGender(Gender.MALE);
+		testUser.setUserInfo(ui);
+		String testToken = TestUtils.buildTestAuthToken(u1AuthEmail);
+		
+		ZeppaUser testUser2 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui2 = testUser2.getUserInfo();
+		ui2.setGender(Gender.FEMALE);
+		testUser2.setUserInfo(ui2);
+		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
+		
+		// Make sure this user is invited
+		InviteGroup group = new InviteGroup();
+		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail));
+		group.setSuggestedTags(Arrays.asList("TestTag1", "TestTag2",
+				"TestTag3", "TestTag4", "TestTag5", "TestTag6"));
+
+		// Insert the invite group to make sure this user is authorized to make
+		// an account
+		InviteGroup insertedGroup = (new InviteGroupEndpoint())
+				.insertInviteGroup(group);
+		try {
+			// Insert and assert
+			(new ZeppaUserEndpoint()).insertZeppaUser(
+					testUser, testToken);
+
+			(new ZeppaUserEndpoint()).insertZeppaUser(
+					testUser2, testToken2);
+		} catch (UnauthorizedException e) {
+			// Auth exception (probably didn't set to test)
+			e.printStackTrace();
+		} catch (IOException e) {
+			// IO Exception.. here to make compiler happy
+			e.printStackTrace();
+		}
+		
+		System.out.println("------------" + testUser.getAuthEmail());
+		System.out.println("------------" + testUser.getKey());
+		// Create user relationships to event
+		VendorEventRelationship ver = new VendorEventRelationship(5699868278390784L, event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver2 = new VendorEventRelationship(5840605766746112L, event.getId(), true, false, false, false, new ArrayList<Long>());
+		
+		try {
+			VendorEventRelationshipServlet.insertEventRelationship(ver);
+			VendorEventRelationshipServlet.insertEventRelationship(ver2);
+		} catch (UnauthorizedException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+//		helper.tearDown();
+		AppConfig.doneTesting();
     }
 
 }

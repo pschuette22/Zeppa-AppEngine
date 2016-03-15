@@ -96,6 +96,16 @@
 		<url-pattern>/endpoint/event-tag-servlet/</url-pattern>
 	</servlet-mapping>	
 
+	<servlet>
+		<servlet-name>VendorEventRelationshipServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.VendorEventRelationshipServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>VendorEventRelationshipServlet</servlet-name>
+		<url-pattern>/endpoint/event-relationship-servlet/</url-pattern>
+	</servlet-mapping>	
+	
 	<!-- Employee Servlet -->
 	<servlet>
 		<servlet-name>EmployeeServlet</servlet-name>
@@ -119,4 +129,14 @@
 		<url-pattern>/endpoint/authentication-servlet/</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>ZeppaUserServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.ZeppaUserServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ZeppaUserServlet</servlet-name>
+		<url-pattern>/endpoint/user-servlet/</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

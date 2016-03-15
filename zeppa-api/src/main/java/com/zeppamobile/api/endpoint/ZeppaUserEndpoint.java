@@ -93,6 +93,9 @@ public class ZeppaUserEndpoint {
 		insertInfo.setGivenName(userInfo.getGivenName());
 		insertInfo.setFamilyName(userInfo.getFamilyName());
 		insertInfo.setImageUrl(userInfo.getImageUrl());
+		if(userInfo.getGender() != null) {
+			insertInfo.setGender(userInfo.getGender());
+		}
 
 		/*
 		 * Create User Data Object

@@ -22,7 +22,8 @@
 	
 	// Override default Chart.js options here
 	var options = {
-		responsive: true
+		responsive: true,
+		animationEasing: "easeOutQuart"
 	};
 	
 	function createGraphs() {

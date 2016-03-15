@@ -77,6 +77,7 @@ public class UniversalConstants {
 	public static final String PARAM_VENDOR_ID = "vendorId";
 	public static final String PARAM_TAG_TEXT = "tagText";
 	public static final String PARAM_EVENT_ID = "event-id";
+	public static final String PARAM_TAG_ID = "tag-id";
 
 	/*
 	 * Return argument keys

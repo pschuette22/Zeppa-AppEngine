@@ -43,16 +43,26 @@ function parseEvents(eventsString){
 }
 
 </script>
+<style>
+	.headerRow td{
+		font-weight:bold;
+		font-size:15pt;
+	}
+	#newEventDiv{
+		margin-top:25px;
+	}
+</style>
 <t:ZeppaBase>
 	<jsp:attribute name="title">
 	  <h2>Events</h2>
 	</jsp:attribute>
 
 <jsp:body>
+	
 	<div>
 	    <table style="width:60%;" id="eventsTable">
 	    	<tbody>
-		    	<tr>
+		    	<tr class="headerRow">
 		    		<td>Event Title</td>
 		    		<td>Description</td>
 		    		<td>Start Time</td>
@@ -62,5 +72,8 @@ function parseEvents(eventsString){
 	    	</tbody>
 	    </table>
     </div>
+    <div id="newEventDiv">
+	<input type="button" value="Create Event" onclick="location.href='/create-event';"/>
+	</div>
 </jsp:body>
 </t:ZeppaBase>

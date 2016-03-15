@@ -3,6 +3,8 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.annotations.Discriminator;
+import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -13,6 +15,7 @@ import org.json.simple.JSONObject;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
+@Discriminator(strategy=DiscriminatorStrategy.CLASS_NAME)
 public class ZeppaEvent {
 
 	
@@ -24,68 +27,68 @@ public class ZeppaEvent {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+	protected Key key;
 
 	@Persistent
-	private Long created;
+	protected Long created;
 
 	@Persistent
-	private Long updated;
+	protected Long updated;
 
 	@Persistent
-	private String googleCalendarId;
+	protected String googleCalendarId;
 
 	@Persistent
-	private String googleCalendarEventId;
+	protected String googleCalendarEventId;
 
 	@Persistent
-	private String iCalUID; // verify what this is
+	protected String iCalUID; // verify what this is
 
 	@Persistent
-	private EventPrivacyType privacy;
+	protected EventPrivacyType privacy;
 
 	@Persistent
-	private Long hostId;
+	protected Long hostId;
 
 	@Persistent
-	private String title;
+	protected String title;
 
 	@Persistent
-	private String description;
+	protected String description;
 
 	@Persistent
-	private Boolean guestsMayInvite;
+	protected Boolean guestsMayInvite;
 
 	@Persistent
-	private Long start;
+	protected Long start;
 
 	@Persistent
-	private Long end;
+	protected Long end;
 
 	/*
 	 * ===== Information relevant to location =====
 	 */
 	@Persistent
-	private String displayLocation;
+	protected String displayLocation;
 
 	@Persistent
-	private String mapsLocation;
+	protected String mapsLocation;
 
 	@Persistent
-	private Float latitude;
+	protected Float latitude;
 
 	@Persistent
-	private Float longitude;
+	protected Float longitude;
 	/*
 	 * ============================================
 	 */
 
 	@Persistent(defaultFetchGroup = "true")
-	private List<Long> tagIds = new ArrayList<Long>();
+	protected List<Long> tagIds = new ArrayList<Long>();
 
 	// Initially invited users
 	@Persistent
-	private List<Long> invitedUserIds;
+	protected List<Long> invitedUserIds;
 
 
 	public ZeppaEvent(String googleCalendarId,
@@ -158,6 +161,7 @@ public class ZeppaEvent {
 		JSONObject obj = new JSONObject();
 
 		obj.put("key", key);
+		obj.put("id", key.getId());
 		obj.put("created", created == null ? Long.valueOf(-1) : created);
 		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
 		obj.put("googleCalendarId",
@@ -180,6 +184,9 @@ public class ZeppaEvent {
 				: displayLocation);
 		obj.put("mapsLocation", mapsLocation == null ? "mapsLocation"
 				: mapsLocation);
+		obj.put("tagIds",
+				tagIds == null ? (new ArrayList<Long>())
+						: tagIds);
 		obj.put("invitedUserIds",
 				invitedUserIds == null ? (new ArrayList<Long>())
 						: invitedUserIds);

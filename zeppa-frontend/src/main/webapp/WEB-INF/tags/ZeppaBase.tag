@@ -198,7 +198,6 @@
 
 		<!-- Scripts -->
 
-			<script src="../template/assets/js/jquery.min.js"></script>
 			<script src="../template/assets/js/jquery.dropotron.min.js"></script>
 			<script src="../template/assets/js/skel.min.js"></script>
 			<script src="../template/assets/js/skel-viewport.min.js"></script>

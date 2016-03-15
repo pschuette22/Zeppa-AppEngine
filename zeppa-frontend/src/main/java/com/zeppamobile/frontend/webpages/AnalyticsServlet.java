@@ -24,6 +24,9 @@ import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 /**
  * 
  * @author Pete Schuette
@@ -51,6 +54,7 @@ public class AnalyticsServlet extends HttpServlet {
 		// Variables to hold the gender demographic counts
 		int maleCount = 0;
 		int femaleCount = 0;
+		int unidentified = 0;
 		resp.setContentType("text/html");
 
 		Map<String, String> params = new HashMap<String, String>();
@@ -80,7 +84,8 @@ public class AnalyticsServlet extends HttpServlet {
 					JSONObject user = (JSONObject) resultsArray.get(i);
 					String id = (String) String.valueOf(user.get("userId"));
 					params.put(UniversalConstants.PARAM_USER_ID, id);
-					// Call the zeppa user servlet with the userId param
+					System.out.println("Userr id:"+id);
+					// Call the zeppa user servlet" with the userId param
 					URL urlUser = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/user-servlet/", params);
 
 					HttpURLConnection connectionUser = (HttpURLConnection) urlUser.openConnection();
@@ -95,13 +100,15 @@ public class AnalyticsServlet extends HttpServlet {
 						while ((line = reader.readLine()) != null) {
 							responseUser += line;
 						}
+						System.out.println("--------USER RESPONSE " + responseUser);
 						// Parse the JSON, get the gender and increment the count
 						JSONObject userInfo = (JSONObject) parser.parse(responseUser);
 						String gender = (String) userInfo.get("gender");
-						if (gender != null && gender.equalsIgnoreCase(("MALE")))
+						if (gender != null && gender.equalsIgnoreCase(("MALE"))) {
 							maleCount++;
-						else if (gender != null && gender.equalsIgnoreCase("FEMALE"))
+						} else if (gender != null && gender.equalsIgnoreCase("FEMALE")) {
 							femaleCount++;
+						}
 					}
 
 				}
@@ -124,12 +131,13 @@ public class AnalyticsServlet extends HttpServlet {
 			}
 		}
 
-		String data = "[" + "{" + "    value: 300," + "    color:\"#F7464A\"," + "    highlight: \"#FF5A5E\","
-				+ "    label: \"Over 21\"" + "}," + "{" + "    value: 50," + "    color: \"#46BFBD\","
-				+ "    highlight: \"#5AD3D1\"," + "    label: \"Under 18\"" + "}," + "{" + "    value: 100,"
-				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"18-21\"" + "}" + "]";
+		String data = "[" + "{" + "    value: " +String.valueOf(maleCount)+ "," + "    color:\"#F7464A\"," + "    highlight: \"#FF5A5E\","
+				+ "    label: \"Male\"" + "}," + "{" + "    value: " +String.valueOf(femaleCount)+ "," + "    color: \"#46BFBD\","
+				+ "    highlight: \"#5AD3D1\"," + "    label: \"Female\"" + "}," + "{" + "    value: " +String.valueOf(unidentified)+ ","
+				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
 
-		req.setAttribute("data", data);
+		System.out.println(data);
+		req.setAttribute("genderData", data);
 
 		req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		
@@ -143,5 +151,4 @@ public class AnalyticsServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 	}
-
 }

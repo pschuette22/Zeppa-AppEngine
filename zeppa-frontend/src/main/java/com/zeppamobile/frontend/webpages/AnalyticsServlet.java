@@ -34,19 +34,19 @@ public class AnalyticsServlet extends HttpServlet {
 		            "    value: 300,"+
 		            "    color:\"#F7464A\","+
 		            "    highlight: \"#FF5A5E\","+
-		            "    label: \"Red\""+
+		            "    label: \"Over 21\""+
 		            "},"+
 		            "{"+
 		            "    value: 50,"+
 		            "    color: \"#46BFBD\","+
 		            "    highlight: \"#5AD3D1\","+
-		            "    label: \"Green\""+
+		            "    label: \"Under 18\""+
 		            "},"+
 		            "{"+
 		            "    value: 100,"+
 		            "    color: \"#FDB45C\","+
 		            "    highlight: \"#FFC870\","+
-		            "   label: \"Yellow\""+
+		            "   label: \"18-21\""+
 		            "}"+
 		        "]";
 		

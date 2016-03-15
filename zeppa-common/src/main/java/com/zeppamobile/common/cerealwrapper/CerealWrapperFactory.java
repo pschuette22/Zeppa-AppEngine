@@ -20,13 +20,16 @@ import org.datanucleus.util.Base64;
  *         in the api module.</p>
  *
  */
-public abstract class CerealWrapperFactory {
+public class CerealWrapperFactory {
 
 	/**
 	 * Build a cereal wrapper object from a given object. 
 	 * @return cereal - cereal wrapper object of Employee option or null
 	 */
-	public abstract CerealWrapper makeCereal(Object obj);
+	public CerealWrapper makeCereal(Object obj)
+	{
+		return null;
+	}
 	
 	/**
 	 * deserializes a cereal wrapper object from an encoded string
@@ -39,7 +42,8 @@ public abstract class CerealWrapperFactory {
 		// Initialized to null in case object is not recognized
 		CerealWrapper result = null;
 		// Data of the cereal string
-		byte[] data = cereal.getBytes(StandardCharsets.UTF_8);
+		
+		byte[] data = Base64.decode(cereal);//cereal.getBytes(StandardCharsets.UTF_8);
 
 		try {
 			ObjectInputStream ois = new ObjectInputStream(

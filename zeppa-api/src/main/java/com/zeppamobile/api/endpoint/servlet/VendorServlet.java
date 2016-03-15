@@ -21,6 +21,7 @@ import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
+import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
 
 /**
  * 
@@ -99,6 +100,7 @@ public class VendorServlet extends HttpServlet {
 			ZeppaUserInfo userInfo = new ZeppaUserInfo();
 			userInfo.setFamilyName(URLDecoder.decode(req.getParameter("lastName"), "UTF-8"));
 			userInfo.setGivenName(URLDecoder.decode(req.getParameter("firstName"), "UTF-8"));
+			userInfo.setGender(Gender.UNANSWERED);
 			employee.setUserInfo(userInfo);
 			
 			vendor = insertVendor(vendor, employee);

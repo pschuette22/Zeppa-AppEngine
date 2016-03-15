@@ -33,15 +33,18 @@ function login() {
 function onSuccess(googleUser) {
 	var profile = googleUser.getBasicProfile();
     console.log(googleUser);
-    console.log(googleUser.hg.access_token);
+    //console.log(googleUser.hg.access_token);
     var access_token = googleUser.hg.id_token;
     var data = {'token': access_token};
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
+    	 	if(resp.getResponseHeader('isAuthorized') == "true")
+    	 	{
+    	 		window.location = "/dashboard";
+    	 	}
     	}).fail(function() {
     	    console.log( "error" );
-    	    console.log(resp);
     	});
 }
 

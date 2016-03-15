@@ -14,7 +14,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.zeppamobile.common.cerealwrapper.CerealWrapperFactory;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
@@ -76,34 +79,45 @@ public class LoginServlet extends HttpServlet {
 	    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	                // OK
-	            	resp.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
+	            	//resp.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
 
 					// Read from the buffer line by line and write to the response
-					// item					
+					// item	
+	            	String s = ""; 
 					while ((line = reader.readLine()) != null) {
-						resp.getWriter().println(line);
+						s += line;
 					}
+					
+					//resp.getWriter().println(s);
+					
+					CerealWrapperFactory fact = new CerealWrapperFactory();
+					UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)fact.getFromCereal(s);
+					
+					
+					HttpSession session = req.getSession(true);
+					session.setAttribute("UserInfo", userInfo);
+					
+					//resp.getWriter().println("User Info Object: " + userInfo.toString());
+					//resp.getWriter().println("User Info Name: " + userInfo.getGivenName() + " " + userInfo.getFamilyName());
 					resp.setStatus(HttpURLConnection.HTTP_OK);
 					
-					resp.sendRedirect("/dashboard");
-					
+					//resp.addHeader("isAuthorized", "true");
+					//resp.sendRedirect("/dashboard");
 					
 	            }
-	            else if(connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+	            else if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
 	            {
 	            	resp.getWriter().println("Employee Not Found: " + connection.getResponseMessage());
 	            	
-	            	resp.setStatus(HttpURLConnection.HTTP_NOT_FOUND);
+	            	resp.setStatus(HttpURLConnection.HTTP_UNAUTHORIZED);
+	            	
+	            	//resp.addHeader("isAuthorized", "false");
 	            }
 	            else {
 	                // Server returned HTTP error code.
 	            	resp.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
 	            	
-					// Read from the buffer line by line and write to the response
-					// item					
-					while ((line = reader.readLine()) != null) {
-						resp.getWriter().println(line);
-					}
+	            	resp.addHeader("isAuthorized", "false");
 	            }
 	            
 	            reader.close();

@@ -17,8 +17,10 @@ import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.ZeppaUser;
+import com.zeppamobile.api.endpoint.utils.ApiCerealWrapperFactory;
 import com.zeppamobile.api.endpoint.utils.AuthChecker;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.Utils;
 
 /**
@@ -48,11 +50,15 @@ public class AuthenticationServlet extends HttpServlet {
 		Employee employee = getAuthorizedEmployee(token);
 		if(employee != null)
 		{
+			ApiCerealWrapperFactory fact = new ApiCerealWrapperFactory();
+			UserInfoCerealWrapper wrapper = (UserInfoCerealWrapper)fact.makeCereal(employee.getUserInfo());
+			String userInfoString = fact.toCereal(wrapper);
 			response.setStatus(HttpServletResponse.SC_OK);
+			response.getWriter().write(userInfoString);
 		}
 		else
 		{
-			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 		}
 
 

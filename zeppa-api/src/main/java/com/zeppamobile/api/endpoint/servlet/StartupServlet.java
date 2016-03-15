@@ -10,6 +10,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.utils.SystemProperty;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.VendorEvent;
@@ -36,7 +37,7 @@ public class StartupServlet extends HttpServlet {
     	
     	
     	// Kevin Account
-    	ZeppaUserInfo kevinUI = new ZeppaUserInfo();
+    	EmployeeUserInfo kevinUI = new EmployeeUserInfo();
     	kevinUI.setGivenName("Kevin");
     	kevinUI.setFamilyName("Moratelli");
     	Employee employeeKevin = new Employee();
@@ -44,7 +45,7 @@ public class StartupServlet extends HttpServlet {
     	employeeKevin.setEmailAddress("kevin.moratelli@gmail.com");
     	
     	// Kieran Account
-    	ZeppaUserInfo kieranUI = new ZeppaUserInfo();
+    	EmployeeUserInfo kieranUI = new EmployeeUserInfo();
     	kieranUI.setGivenName("Kieran");
     	kieranUI.setFamilyName("Lynn");
     	Employee employeeKieran = new Employee();
@@ -52,7 +53,7 @@ public class StartupServlet extends HttpServlet {
     	employeeKieran.setEmailAddress("kieran.j.lynn@gmail.com");
     	
     	// Pete Account
-    	ZeppaUserInfo peteUI = new ZeppaUserInfo();
+    	EmployeeUserInfo peteUI = new EmployeeUserInfo();
     	peteUI.setGivenName("Pete");
     	peteUI.setFamilyName("Schuette");
     	Employee employeePete = new Employee();
@@ -60,7 +61,7 @@ public class StartupServlet extends HttpServlet {
     	employeePete.setEmailAddress("pschuette22@gmail.com");
     	
     	// Brendan Account
-    	ZeppaUserInfo brendanUI = new ZeppaUserInfo();
+    	EmployeeUserInfo brendanUI = new EmployeeUserInfo();
     	brendanUI.setGivenName("Brendan");
     	brendanUI.setFamilyName("Kennedy");
     	Employee employeeBrendan = new Employee();
@@ -68,7 +69,7 @@ public class StartupServlet extends HttpServlet {
     	employeeBrendan.setEmailAddress("bken123@gmail.com");
     	
     	// Eric Account
-    	ZeppaUserInfo ericUI = new ZeppaUserInfo();
+    	EmployeeUserInfo ericUI = new EmployeeUserInfo();
     	ericUI.setGivenName("Eric");
     	ericUI.setFamilyName("Most");
     	Employee employeeEric = new Employee();
@@ -76,11 +77,11 @@ public class StartupServlet extends HttpServlet {
     	employeeEric.setEmailAddress("ericmmost@gmail.com");
     	
     	try {
-			EmployeeServlet.insertVendor(employeeKevin);
-			EmployeeServlet.insertVendor(employeeKieran);
-			EmployeeServlet.insertVendor(employeePete);
-			EmployeeServlet.insertVendor(employeeBrendan);
-			EmployeeServlet.insertVendor(employeeEric);
+    		employeeKevin = EmployeeServlet.insertVendor(employeeKevin);
+    		employeeKieran = EmployeeServlet.insertVendor(employeeKieran);
+    		employeePete = EmployeeServlet.insertVendor(employeePete);
+    		employeeBrendan = EmployeeServlet.insertVendor(employeeBrendan);
+    		employeeEric = EmployeeServlet.insertVendor(employeeEric);
 		} catch (UnauthorizedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -99,10 +100,10 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
+		vendor.setMasterUserId(Long.valueOf(employeeBrendan.getKey().getId()));
 		
 		try {
-			VendorServlet.insertVendor(vendor, employeeKevin);
+			vendor = VendorServlet.insertVendor(vendor, employeeBrendan);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,6 +112,21 @@ public class StartupServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
+		Vendor vendor1 = new Vendor();
+		vendor1.setAddress(add);
+		vendor1.setCompanyName("Test Company 2");
+		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
+		
+		try {
+			vendor1 = VendorServlet.insertVendor(vendor1, employeeKieran);
+		} catch (UnauthorizedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		// Add EventTags to the datastore
 		EventTag tag = new EventTag();
 		tag.setOwnerId(vendor.getKey().getId());
@@ -137,7 +153,7 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), -1L, tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		
 		try {
 			VendorEventServlet.insertEvent(event);

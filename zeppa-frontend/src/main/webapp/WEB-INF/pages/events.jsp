@@ -22,18 +22,21 @@ function parseEvents(eventsString){
 		var description = events[i].description;
 		var location = events[i].displayLocation;
 		
-		var start = newDate(events[i].start);
+		var start = new Date(events[i].start);
 		var date = start.getDate();
 	    var month = start.getMonth() + 1; //Months are zero based
 	    var year = start.getFullYear();
 	    var hour = start.getHours();
 	    var minutes = start.getMinutes();
+	    if (minutes < 10){
+	    	minutes = "0"+minutes
+	    }
 	    var ampm = "AM";
 	    if (hour>12){
 	    	hour = hour-12;
 	    	ampm = "PM";
 	    }
-	    var startTimeString = date+"/"+month+"/"+year+"\t"+hour+":"minutes+" "ampm;
+	    var startTimeString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
 		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+startTimeString+"</td><td>"+location+"</td><td><a href='/individual-event?event-id="+id+"'>More info</a></td></tr>");
 
 	}

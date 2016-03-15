@@ -22,6 +22,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.common.UniversalConstants;
 
 /**
@@ -47,23 +48,25 @@ public class EventTagServlet extends HttpServlet {
 		
 		try {
 			// Fetch the owner ID
-			Long ownerId = Long.parseLong(req.getParameter(UniversalConstants.PARAM_VENDOR_ID));
-
-			List<EventTag> tags = getTags(ownerId);
+			String ownerId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
+			String tagId = req.getParameter(UniversalConstants.PARAM_TAG_ID);
+			String responseString = "";
+			
+			if(ownerId!=null && !ownerId.isEmpty()){
+				ownerId = URLDecoder.decode(ownerId,"UTF-8");
+				responseString = getTags(Long.parseLong(ownerId));
+			}else if(tagId!=null && !tagId.isEmpty()){
+				tagId = URLDecoder.decode(tagId,"UTF-8");
+				responseString = getTag(Long.parseLong(tagId));
+			}
+			
 
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			// Convert the object to json and return in the writer
-			JSONArray arr = new JSONArray();
-			req.setAttribute(UniversalConstants.PARAM_TAG_LIST, tags);
-			for(EventTag tag : tags) {
-				JSONObject json = tag.toJson();
-				arr.add(json);
-			}
 			
-			resp.getOutputStream().print(arr.toJSONString());
-			resp.getOutputStream().flush();
-			resp.getOutputStream().close();
+			resp.getWriter().print(responseString);
+			
 			
 		} catch (UnauthorizedException e) {
 			// user is not authorized to make this call
@@ -71,6 +74,7 @@ public class EventTagServlet extends HttpServlet {
 			e.printStackTrace(resp.getWriter());
 		} 
 	}
+
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -98,14 +102,15 @@ public class EventTagServlet extends HttpServlet {
 	 * 
 	 * @param id
 	 *            the id of the owner of the tag
-	 * @return The entity with primary key id.
+	 * @return The json of all of the tags
 	 * @throws OAuthRequestException
 	 */
 	@SuppressWarnings("unchecked")
-	public List<EventTag> getTags(Long ownerId) throws UnauthorizedException {
+	public String getTags(Long ownerId) throws UnauthorizedException {
 
 		List<EventTag> results = new ArrayList<EventTag>();
 		PersistenceManager mgr = getPersistenceManager();
+		String responseString ="";
 		try {
 			Query q = mgr.newQuery(EventTag.class,
 					"ownerId == " + ownerId);
@@ -117,13 +122,40 @@ public class EventTagServlet extends HttpServlet {
 				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
 				results.addAll(response);
 			}
+			JSONArray arr = new JSONArray();
+			for(EventTag tag : results) {
+				JSONObject json = tag.toJson();
+				arr.add(json);
+			}
+			responseString = arr.toJSONString();
 			
 		} finally {
 			mgr.close();
 		}
-		return results;
+		return responseString;
 	}
 
+	/**
+	 * This method gets the tag based on id.
+	 * 
+	 * @param id
+	 *            the id of the owner of the tag
+	 * @return The JSON of the tags
+	 * @throws OAuthRequestException
+	 */
+	private String getTag(Long tagId) {
+		PersistenceManager mgr = getPersistenceManager();
+		String responseString ="";
+		EventTag tag = null;
+		try {
+			tag = mgr.getObjectById(EventTag.class, tagId);
+			responseString = tag.toJson().toJSONString();
+			
+		} finally {
+			mgr.close();
+		}
+		return responseString;
+	}
 	/**
 	 * This inserts a new Employee entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown. 

@@ -41,7 +41,7 @@ public class CreateEventServlet extends HttpServlet {
 		//Get the user ID.
 		Long vendorId = 5629499534213120L; //getVendorId();
 		Map<String, String> params = new HashMap<String, String>();
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("5629499534213120", "UTF-8"));
+		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("-1", "UTF-8"));
 		
 		try {
 

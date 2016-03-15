@@ -65,10 +65,11 @@ function postTag(){
  	 	var id = tagInfo.id;
  	 	var text = tagInfo.tagText;
  	 	$("#tagsContainer").append("<div class='tag' data-tagid='"+id+"'>"+text+"</div>");
- 	 	$("#tagsContainer").last().click();
+ 	 	
  	}).fail(function() {
  	    console.log( "error" );
  	});
+	$("#tagsContainer").last().click();
 }
 
 function createEvent() {

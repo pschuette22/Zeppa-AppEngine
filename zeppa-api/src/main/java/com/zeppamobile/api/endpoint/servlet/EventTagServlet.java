@@ -125,9 +125,8 @@ public class EventTagServlet extends HttpServlet {
 	}
 
 	/**
-	 * This inserts a new EventTag entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown. It uses HTTP
-	 * POST method.
+	 * This inserts a new Employee entity into App Engine datastore. If the entity
+	 * already exists in the datastore, an exception is thrown. 
 	 * 
 	 * @param tag - the entity to be inserted.
 	 * @return The inserted entity.

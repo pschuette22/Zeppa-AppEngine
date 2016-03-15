@@ -83,5 +83,14 @@
     <servlet-name>create-tag</servlet-name>
     <url-pattern>/create-tag</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>individual-event</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.webpages.IndividualEventServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>individual-event</servlet-name>
+    <url-pattern>/individual-event</url-pattern>
+  </servlet-mapping>
 
 </web-app>

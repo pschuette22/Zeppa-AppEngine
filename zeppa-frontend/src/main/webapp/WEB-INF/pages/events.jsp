@@ -34,7 +34,8 @@ function parseEvents(eventsString){
 	    	ampm = "PM";
 	    }
 	    var startTimeString = date+"/"+month+"/"+year+"\t"+hour+":"minutes+" "ampm;
-		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+startTimeString+"</td><td>"+location+"</td><td><a href='/individual-events?event-id="+id+"'>More info</a></td></tr>");
+		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+startTimeString+"</td><td>"+location+"</td><td><a href='/individual-event?event-id="+id+"'>More info</a></td></tr>");
+
 	}
 }
 

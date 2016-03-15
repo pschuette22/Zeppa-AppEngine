@@ -19,6 +19,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
@@ -97,7 +98,7 @@ public class VendorServlet extends HttpServlet {
 			
 			
 			//Set employees user info
-			ZeppaUserInfo userInfo = new ZeppaUserInfo();
+			EmployeeUserInfo userInfo = new EmployeeUserInfo();
 			userInfo.setFamilyName(URLDecoder.decode(req.getParameter("lastName"), "UTF-8"));
 			userInfo.setGivenName(URLDecoder.decode(req.getParameter("firstName"), "UTF-8"));
 			userInfo.setGender(Gender.UNANSWERED);
@@ -173,8 +174,11 @@ public class VendorServlet extends HttpServlet {
 			employee.setCreated(System.currentTimeMillis());
 			employee.setUpdated(System.currentTimeMillis());
 			employee.setVendorId(vendor.getKey().getId());
-			
+			EmployeeUserInfo userinfo = employee.getUserInfo();
+			userinfo.setVendorID(vendor.getKey().getId());
+			employee.setUserInfo(userinfo);
 			employee = mgr.makePersistent(employee);
+			
 			
 			//Update vendor with the employee master key
 			vendor.setMasterUserId(employee.getKey().getId());

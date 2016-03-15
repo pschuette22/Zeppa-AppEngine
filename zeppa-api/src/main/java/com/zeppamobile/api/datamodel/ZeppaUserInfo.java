@@ -95,6 +95,9 @@ public class ZeppaUserInfo{
 	}
 
 	public Gender getGender() {
+		if(gender == null)
+			return Gender.UNANSWERED;
+		
 		return gender;
 	}
 

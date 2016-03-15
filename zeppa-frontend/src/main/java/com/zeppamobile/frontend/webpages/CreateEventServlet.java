@@ -14,9 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.api.client.http.HttpResponse;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
@@ -37,56 +39,68 @@ public class CreateEventServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//Get users tags and send them back.
-		//Get the user ID.
-		Long vendorId = 5629499534213120L; //getVendorId();
-		Map<String, String> params = new HashMap<String, String>();
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("-1", "UTF-8"));
 		
-		try {
-
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
-					"/endpoint/event-tag-servlet/", params);
+		HttpSession session = request.getSession(true);
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null)
+		{
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 			
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(false);
-            connection.setRequestMethod("GET");
-
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(connection.getInputStream()));
-			String line;
+			//Get users tags and send them back.
+			//Get the user ID.
+			Long vendorId = userInfo.getVendorID();
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId.toString(), "UTF-8"));
 			
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				// Read from the buffer line by line and write to the response
-				// item					
-            	
-            	String responseString = "";
-				while ((line = reader.readLine()) != null) {
-					responseString+=line;
-				}
-				request.setAttribute("tags", responseString);
-            } else {
-                // Server returned HTTP error code.
-            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
-            	
-				// Read from the buffer line by line and write to the response
-				// item			
-     			while ((line = reader.readLine()) != null) {
-					response.getWriter().println(line);
-				}
-            }
-            
-            reader.close();
-        } catch (MalformedURLException e) {
-			e.printStackTrace(response.getWriter());
-        } catch (IOException e) {
-			e.printStackTrace(response.getWriter());
-		} catch (Exception e) {
-			e.printStackTrace(response.getWriter());
+			try {
+	
+				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api",
+						"/endpoint/event-tag-servlet/", params);
+				
+	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	            connection.setDoOutput(false);
+	            connection.setRequestMethod("GET");
+	
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(connection.getInputStream()));
+				String line;
+				
+	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					// Read from the buffer line by line and write to the response
+					// item					
+	            	
+	            	String responseString = "";
+					while ((line = reader.readLine()) != null) {
+						responseString+=line;
+					}
+					request.setAttribute("tags", responseString);
+	            } else {
+	                // Server returned HTTP error code.
+	            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
+	            	
+					// Read from the buffer line by line and write to the response
+					// item			
+	     			while ((line = reader.readLine()) != null) {
+						response.getWriter().println(line);
+					}
+	            }
+	            
+	            reader.close();
+	        } catch (MalformedURLException e) {
+				e.printStackTrace(response.getWriter());
+	        } catch (IOException e) {
+				e.printStackTrace(response.getWriter());
+			} catch (Exception e) {
+				e.printStackTrace(response.getWriter());
+				
+			}
 			
+			request.getRequestDispatcher("WEB-INF/pages/create-event.jsp").forward(request, response);
 		}
-		
-		request.getRequestDispatcher("WEB-INF/pages/create-event.jsp").forward(request, response);
+		else
+		{
+			request.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(request, response);
+		}
 		
 
 	}
@@ -106,7 +120,14 @@ public class CreateEventServlet extends HttpServlet {
 	    String address = request.getParameter("address");
 	    String vendorId = request.getParameter(UniversalConstants.PARAM_VENDOR_ID);//???
 	    String tagsList = request.getParameter(UniversalConstants.PARAM_TAG_LIST);
-	    vendorId = "-1";
+	    
+		HttpSession session = request.getSession(true);
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null)
+		{
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
+			vendorId = userInfo.getVendorID().toString();
+		}
 	   	
 	    //TO DO tags still
 		

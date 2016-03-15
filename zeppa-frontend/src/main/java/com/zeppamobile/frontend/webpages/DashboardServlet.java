@@ -38,8 +38,9 @@ public class DashboardServlet extends HttpServlet {
 			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 		
 			//resp.getWriter().println("User Info Name: " + userInfo.getGivenName() + " " + userInfo.getFamilyName());
-			
-			if(userInfo.getCreated() > 0)
+			//resp.getWriter().println("User Info Employee ID: " + userInfo.getEmployeeID());
+			//resp.getWriter().println("User Info Vendor ID: " + userInfo.getVendorID());
+			if(userInfo.getEmployeeID() > 0)
 			{
 				req.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(req, resp);
 			}

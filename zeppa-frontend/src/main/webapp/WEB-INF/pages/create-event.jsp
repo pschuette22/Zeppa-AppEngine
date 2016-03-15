@@ -114,7 +114,7 @@ function createEvent() {
 
       function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -33.8688, lng: 151.2195},
+        	center: {lat: 39.9540, lng: -75.1880},
           zoom: 13
         });
 
@@ -232,41 +232,35 @@ function createEvent() {
 	    <table style="width:600px;">
 	    	<tr>
 	    		<td>Event Title</td>
+	    		<td>Start Time</td>
+	    		<td>End Time</td>  
 	    	</tr>
 	    	<tr>
-	    		<td><input type="text" id="txtTitle" /></td>
+	    		<td><input type="text" id="txtTitle" style="display:table-cell;" /></td>
+	    		<td><input type='text' class="form-control picker" style="display:table-cell;" id='startTimePicker' /></td>
+	    		<td><input type='text' class="form-control picker" style="display:table-cell;" id='endTimePicker' /></td>
 	    	</tr>
-	  	    <tr>
-	    		<td>Start Time</td>
-	    		<td>End Time</td>   		 
+	    	<tr><td>Select Tags</td></tr>
+	    	<tr id="tagsRow">
+	    		<td colspan="3"><div id="tagsContainer"></div></td>
+	    	</tr>
+	    	<tr>
+	    		<td colspan="3"><input type='text' placeholder='New Tag' id='tagText' /> <input type="button" class="smallButton" id="newTagBtn" value="Add Tag"/></td>
+	    	</tr>
+	    	<tr>
+	    		<td>Description</td>    		 
 	    	</tr>
 	    	 <tr>
-	    		<td>
-            		<input type='text' class="form-control picker" id='startTimePicker' />
-        		</td>
-	    		<td><input type='text' class="form-control picker" id='endTimePicker' /></td>
+	    		<td colspan="3"><textarea class="descriptionText" id="txtDescription"></textarea></td>
 	    	</tr>
 	    	<tr>
 	    		<td>Address</td> 		 
 	    	</tr>
 	    	<tr>
-	    		<td colspan="2">
+	    		<td colspan="3">
 	    			<input id="addressInput" class="controls" type="text" placeholder="Enter a location">
     				<div id="map"></div>
     			</td>   		 
-	    	</tr>
- 		  	<tr>
-	    		<td>Description</td>    		 
-	    	</tr>
-	    	 <tr>
-	    		<td colspan="2"><textarea class="descriptionText" id="txtDescription"></textarea></td>
-	    	</tr>
-	    	<tr><td>Select Tags</td></tr>
-	    	<tr id="tagsRow">
-	    		<td><div id="tagsContainer"></div></td>
-	    	</tr>
-	    	<tr>
-	    		<td><input type='text' placeholder='New Tag' id='tagText' /><input type="button" class="smallButton" id="newTagBtn" value="Add Tag"/></td>
 	    	</tr>
 	    	<tr><td style="padding:10px;"><input type="submit" id="submitBtn"/></td></tr> 
 	    	

@@ -138,9 +138,13 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag2.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
 				(System.currentTimeMillis() + 10000), -1L, tagIds, "Address Holder");
+		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
+		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, System.currentTimeMillis(), 
+				(System.currentTimeMillis() + 10000), -1L, tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
 		
 		try {
 			VendorEventServlet.insertEvent(event);
+			VendorEventServlet.insertEvent(event2);
 		} catch (UnauthorizedException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

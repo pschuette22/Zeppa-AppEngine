@@ -11,7 +11,7 @@ $( document ).ready(function() {
 	parseEventInfo('${eventInfo}');
 	parseTags('${tags}');
 	
-	$("body").on("click", ".tag", function(){
+	/*$("body").on("click", ".tag", function(){
 		$(this).toggleClass("active");
 		if(!$(this).hasClass("active")){
 			var index = tagQueue.indexOf($(this));
@@ -24,7 +24,7 @@ $( document ).ready(function() {
 				popped.removeClass("active");
 			}
 		}
-	});
+	});*/
 });
 
 function parseTags(tagsString){
@@ -64,9 +64,12 @@ function getDateString(date) {
     	minutes = "0"+minutes
     }
     var ampm = "AM";
-    if (hour>12){
+    if (hour>11){
     	hour = hour-12;
     	ampm = "PM";
+    }
+    if (hour == 0 ){
+    	hour = 12;
     }
     var dateString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
     return dateString;
@@ -87,24 +90,32 @@ function getDateString(date) {
     	background-color:rgb(31,169,255)!important;
     	color:#FFF!important;'
     }
+    textarea:focus, input:focus,textarea,input{
+    	outline: none;
+	}
+	.label{
+		font-weight:bold;
+		color:#000;
+		margin-top:5px;
+	}
 </style>
 <t:ZeppaBase>
 	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
 	<jsp:body>
 		<form id="eventForm" action="post">
 			<div style="width:50%">
-				<label for="title">Event Title</label>
-				<input id="title" type="text" maxlength="255"/>
-				<label for="description">Event Description</label>
-				<textarea id="description"></textarea> 
-				<label for="location">Location</label>
-				<input id="location" type="text" maxlength="255"/>
-				<label for="startTimePicker">Start Time</label>
-				<input type='text' class="form-control picker" id='startTime' />
-				<label for="endTimePicker">End Time</label>
-				<input type='text' class="form-control picker" id='endTime' /><br />
+				<div class="label">Event Title</div>
+				<input id="title" type="text" maxlength="255" readonly/>
+				<div class="label" >Event Description</div>
+				<textarea id="description" readonly></textarea> 
+				<div class="label">Location</div>
+				<input id="location" type="text" maxlength="255" readonly/>
+				<div class="label" >Start Time</div>
+				<input type='text' class="form-control picker" id='startTime' readonly/>
+				<div class="label">End Time</div>
+				<input type='text' class="form-control picker" id='endTime' readonly/><br />
 			</div>
-			<label for="tags">Event Tags</label>
+			<div class="label">Event Tags</label>
 			<div id="tagsContainer"></div>
 		</form>
 	</jsp:body>

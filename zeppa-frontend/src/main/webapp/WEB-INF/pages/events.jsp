@@ -32,18 +32,50 @@ function parseEvents(eventsString){
 	    	minutes = "0"+minutes
 	    }
 	    var ampm = "AM";
-	    if (hour>12){
+	    if (hour>11){
 	    	hour = hour-12;
 	    	ampm = "PM";
 	    }
+	    if (hour == 0 ){
+	    	hour = 12;
+	    }
 	    var startTimeString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
-		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+startTimeString+"</td><td>"+location+"</td><td><a href='/individual-event?event-id="+id+"'>More info</a></td></tr>");
+		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td><div class='descriptionDiv'>"+description+"</div></td><td>"+startTimeString+"</td><td><div class='addressDiv'>"+location+"</div></td><td><a href='/individual-event?event-id="+id+"'>More info</a></td></tr>");
 
 	}
 }
 
 </script>
 <style>
+	#eventsTable{
+		width:100%;
+		border-collapse: separate;
+	}
+	#eventsTable td { 
+		padding: 5px; 
+	}
+	#eventsTable tr:nth-child(odd) {
+    	background-color: #EEE;
+	}
+	.descriptionDiv{
+		width:400px;
+		overflow:hidden;
+		text-overflow: ellipsis;
+		max-height:60px;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+	.addressDiv{
+		width:300px;
+		max-height:60px;
+		overflow:hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+	
 	.headerRow td{
 		font-weight:bold;
 		font-size:15pt;
@@ -51,6 +83,8 @@ function parseEvents(eventsString){
 	#newEventDiv{
 		margin-top:25px;
 	}
+	
+	
 </style>
 <t:ZeppaBase>
 	<jsp:attribute name="title">
@@ -60,14 +94,13 @@ function parseEvents(eventsString){
 <jsp:body>
 	
 	<div>
-	    <table style="width:60%;" id="eventsTable">
+	    <table id="eventsTable">
 	    	<tbody>
 		    	<tr class="headerRow">
 		    		<td>Event Title</td>
 		    		<td>Description</td>
 		    		<td>Start Time</td>
-		    		<td>Location</td>
-		    		<td></td>
+		    		<td colspan="2">Location</td>
 		    	</tr>
 	    	</tbody>
 	    </table>

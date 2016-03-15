@@ -95,6 +95,7 @@ function createEvent() {
     	 	console.log("success");
     	 	console.log(resp);
     	 	document.getElementById("successDiv").innerHTML = "Your event was added successfully";
+    	 	window.location.href = "/events";
     	}).fail(function() {
     	    console.log( "error" );
     	    document.getElementById("errorDiv").innerHTML = "We were unable to create your event";

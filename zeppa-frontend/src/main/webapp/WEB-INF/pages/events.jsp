@@ -20,9 +20,21 @@ function parseEvents(eventsString){
 		var id = events[i].id;
 		var title = events[i].title;
 		var description = events[i].description;
-		var start = events[i].start;
 		var location = events[i].displayLocation;
-		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+start+"</td><td>"+location+"</td><td><a href='/individual-events?event-id="+id+"'>More info</a></td></tr>");
+		
+		var start = newDate(events[i].start);
+		var date = start.getDate();
+	    var month = start.getMonth() + 1; //Months are zero based
+	    var year = start.getFullYear();
+	    var hour = start.getHours();
+	    var minutes = start.getMinutes();
+	    var ampm = "AM";
+	    if (hour>12){
+	    	hour = hour-12;
+	    	ampm = "PM";
+	    }
+	    var startTimeString = date+"/"+month+"/"+year+"\t"+hour+":"minutes+" "ampm;
+		$("#eventsTable tbody").append("<tr class='eventRow' data-eventid='"+id+"'><td>"+title+"</td><td>"+description+"</td><td>"+startTimeString+"</td><td>"+location+"</td><td><a href='/individual-events?event-id="+id+"'>More info</a></td></tr>");
 	}
 }
 
@@ -35,13 +47,15 @@ function parseEvents(eventsString){
 <jsp:body>
 	<div>
 	    <table style="width:60%;" id="eventsTable">
-	    	<tr>
-	    		<td>Event Title</td>
-	    		<td>Description</td>
-	    		<td>Start Time</td>
-	    		<td>Location</td>
-	    		<td></td>
-	    	</tr>
+	    	<tbody>
+		    	<tr>
+		    		<td>Event Title</td>
+		    		<td>Description</td>
+		    		<td>Start Time</td>
+		    		<td>Location</td>
+		    		<td></td>
+		    	</tr>
+	    	</tbody>
 	    </table>
     </div>
 </jsp:body>

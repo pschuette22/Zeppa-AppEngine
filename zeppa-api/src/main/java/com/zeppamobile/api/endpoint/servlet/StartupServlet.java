@@ -167,10 +167,10 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), -1L, tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
 		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), -1L, tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
 		
 		try {
 			VendorEventServlet.insertEvent(event);
@@ -189,6 +189,7 @@ public class StartupServlet extends HttpServlet {
 //		helper.setUp();
 		String u1AuthEmail = "testuser1@example.com";
 		String u2AuthEmail = "testuser2@example.com";
+		String u3AuthEmail = "testuser3@example.com";
 		List<String> initialTags = Arrays.asList("TestTag1", "TestTag2", "TestTag3", "TestTag4", "TestTag5",
 				"TestTag6");
 		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
@@ -203,9 +204,15 @@ public class StartupServlet extends HttpServlet {
 		testUser2.setUserInfo(ui2);
 		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
 		
+		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui3 = testUser3.getUserInfo();
+		ui2.setGender(Gender.FEMALE);
+		testUser3.setUserInfo(ui3);
+		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
+		
 		// Make sure this user is invited
 		InviteGroup group = new InviteGroup();
-		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail));
+		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail, u3AuthEmail));
 		group.setSuggestedTags(Arrays.asList("TestTag1", "TestTag2",
 				"TestTag3", "TestTag4", "TestTag5", "TestTag6"));
 
@@ -220,6 +227,9 @@ public class StartupServlet extends HttpServlet {
 
 			testUser2 = (new ZeppaUserEndpoint()).insertZeppaUser(
 					testUser2, testToken2);
+			
+			testUser3 = (new ZeppaUserEndpoint()).insertZeppaUser(
+					testUser2, testToken2);
 		} catch (UnauthorizedException e) {
 			// Auth exception (probably didn't set to test)
 			e.printStackTrace();
@@ -231,10 +241,16 @@ public class StartupServlet extends HttpServlet {
 		// Create user relationships to event
 		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		
 		try {
 			VendorEventRelationshipServlet.insertEventRelationship(ver);
 			VendorEventRelationshipServlet.insertEventRelationship(ver2);
+			VendorEventRelationshipServlet.insertEventRelationship(ver3);
+			VendorEventRelationshipServlet.insertEventRelationship(ver4);
+			VendorEventRelationshipServlet.insertEventRelationship(ver5);
 		} catch (UnauthorizedException | IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

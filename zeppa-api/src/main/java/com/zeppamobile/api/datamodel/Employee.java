@@ -28,7 +28,7 @@ public class Employee {
 	private Long updated;
 	
 	@Persistent(embeddedElement = "true", dependent = "true", defaultFetchGroup = "true")
-	private ZeppaUserInfo userInfo;
+	private EmployeeUserInfo userInfo;
 	
 	@Persistent
 	private Long vendorId;
@@ -61,7 +61,7 @@ public class Employee {
 		super();
 	}
 	
-	public Employee(Long created, Long updated, ZeppaUserInfo userInfo,
+	public Employee(Long created, Long updated, EmployeeUserInfo userInfo,
 			Long vendorId, String emailAddress, String password,
 			Boolean isEmailVerified, String privakeyGuid) {
 		super();
@@ -87,11 +87,11 @@ public class Employee {
 		this.updated = updated;
 	}
 
-	public ZeppaUserInfo getUserInfo() {
+	public EmployeeUserInfo getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(ZeppaUserInfo userInfo) {
+	public void setUserInfo(EmployeeUserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
 

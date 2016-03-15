@@ -1,11 +1,14 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
+
+import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
@@ -39,7 +42,7 @@ public class VendorEventRelationship {
 	
 	
 	
-	public VendorEventRelationship(Key key, Long userId, Long eventId,
+	public VendorEventRelationship(Long userId, Long eventId,
 			boolean joined, boolean seen, boolean watched, boolean shared,
 			List<Long> shareIds) {
 		super();
@@ -97,7 +100,29 @@ public class VendorEventRelationship {
 		this.shareIds = shareIds;
 	}
 	
-	
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("id", key.getId());
+		obj.put("userId", userId == null ? Long.valueOf(-1) : userId);
+		obj.put("eventId", eventId == null ? Long.valueOf(-1) : eventId);
+
+		obj.put("joined", joined);
+		obj.put("seen", seen);
+		obj.put("watched", watched);
+		obj.put("shared", shared);
+		obj.put("shareIds",
+				shareIds == null ? (new ArrayList<Long>())
+						: shareIds);
+
+		return obj;
+	}
 	
 	
 }

@@ -22,7 +22,9 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 	
 	protected Long dateOfBirth;
 	
+	protected Long vendorID;
 	
+	protected Long employeeID;
 	
 	
 	/**
@@ -36,9 +38,11 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 	 * @param gender
 	 * @param dateOfBirth
 	 */
-	public UserInfoCerealWrapper(Long created, Long updated, String givenName,
+	public UserInfoCerealWrapper(Long vendorID, Long employeeID, Long created, Long updated, String givenName,
 			String familyName, String imageUrl, String gender, Long dateOfBirth) {
 		super();
+		this.vendorID = vendorID;
+		this.employeeID = employeeID;
 		this.created = created;
 		this.updated = updated;
 		this.givenName = givenName;
@@ -48,7 +52,21 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public Long getVendorID() {
+		return vendorID;
+	}
+
+	public void setVendorID(Long vendorID) {
+		this.vendorID = vendorID;
+	}
 	
+	public Long getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(Long employeeID) {
+		this.employeeID = employeeID;
+	}
 	
 	public Long getCreated() {
 		return created;

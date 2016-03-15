@@ -1,6 +1,7 @@
 package com.zeppamobile.api.endpoint.utils;
 
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.cerealwrapper.CerealWrapper;
 import com.zeppamobile.common.cerealwrapper.CerealWrapperFactory;
@@ -28,9 +29,9 @@ public class ApiCerealWrapperFactory extends CerealWrapperFactory {
 		// Result object that will be returned
 		// Initialized to null in case object is not recognized
 		CerealWrapper result = null;
-		if (obj instanceof ZeppaUserInfo) {
-			ZeppaUserInfo info = (ZeppaUserInfo) obj;
-			result = new UserInfoCerealWrapper(info.getCreated(),
+		if (obj instanceof EmployeeUserInfo) {
+			EmployeeUserInfo info = (EmployeeUserInfo) obj;
+			result = new UserInfoCerealWrapper(info.getVendorID(), info.getId(), info.getCreated(),
 					info.getUpdated(), info.getGivenName(),
 					info.getFamilyName(), info.getImageUrl(), info.getGender().toString(), info.getDateOfBirth());
 		} else if (obj instanceof Employee) {

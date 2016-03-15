@@ -69,7 +69,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForEventJSON(Long eventId){
 		JSONArray results = new JSONArray();
-		System.out.println("---------IN getAllRelationshipsForEventJSON------------");
 		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -88,7 +87,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			mgr.close();
 		}
 		for(VendorEventRelationship rel : relationships) {
-			System.out.println("----------FOUND EVENT---------");
 			JSONObject json = rel.toJson();
 			results.add(json);
 		}
@@ -98,7 +96,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
 		JSONArray results = new JSONArray();
-		System.out.println("---------IN getAllRelationshipsForVendorJSON------------");
 		PersistenceManager mgr = getPersistenceManager();
 		List<VendorEvent> events = new ArrayList<VendorEvent>();
 		// Get all events for the given vendor ID
@@ -108,7 +105,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 
 			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
 			if(response.size()>0) {
-				System.out.println("---------VENDOR HAS EVENT------------");
 				// This was a success
 				// TODO: implement any extra initialization if desired
 				// Sometimes, jdo objects want to be touched when fetch strategy is not defined

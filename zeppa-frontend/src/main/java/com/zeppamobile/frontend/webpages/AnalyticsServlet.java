@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,6 +21,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 
 /**
@@ -40,6 +42,12 @@ public class AnalyticsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
+		HttpSession session = req.getSession(true);
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null)
+		{
+			UserInfoCerealWrapper sessionInfo = (UserInfoCerealWrapper)obj;
+			
 		// Variables to hold the gender demographic counts
 		int maleCount = 0;
 		int femaleCount = 0;
@@ -47,7 +55,7 @@ public class AnalyticsServlet extends HttpServlet {
 
 		Map<String, String> params = new HashMap<String, String>();
 		// TODO: REPLACE HARD CODED VENDOR ID
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode("6333186975989760", "UTF-8"));
+		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
 
 		URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/event-relationship-servlet/", params);
 
@@ -59,13 +67,10 @@ public class AnalyticsServlet extends HttpServlet {
 		String line;
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			// Read from the buffer line by line and write to the response
-			// item
 			String responseString = "";
 			while ((line = reader.readLine()) != null) {
 				responseString += line;
-				// resp.getWriter().println(line);
 			}
-			System.out.println(responseString);
 			JSONParser parser = new JSONParser();
 			JSONArray resultsArray;
 			try {
@@ -73,7 +78,6 @@ public class AnalyticsServlet extends HttpServlet {
 				// For each user found, get their gender info
 				for (int i = 0; i < resultsArray.size(); i++) {
 					JSONObject user = (JSONObject) resultsArray.get(i);
-					System.out.println("------USER JSON:" + user.toJSONString());
 					String id = (String) String.valueOf(user.get("userId"));
 					params.put(UniversalConstants.PARAM_USER_ID, id);
 					// Call the zeppa user servlet with the userId param
@@ -91,7 +95,6 @@ public class AnalyticsServlet extends HttpServlet {
 						while ((line = reader.readLine()) != null) {
 							responseUser += line;
 						}
-						System.out.println("------USER INFO JSON " + responseUser);
 						// Parse the JSON, get the gender and increment the count
 						JSONObject userInfo = (JSONObject) parser.parse(responseUser);
 						String gender = (String) userInfo.get("gender");
@@ -129,6 +132,10 @@ public class AnalyticsServlet extends HttpServlet {
 		req.setAttribute("data", data);
 
 		req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
+		
+		} else {
+			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
+		}
 	}
 
 	@Override

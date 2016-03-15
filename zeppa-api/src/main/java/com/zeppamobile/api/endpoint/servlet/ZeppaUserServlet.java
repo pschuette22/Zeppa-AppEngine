@@ -66,9 +66,11 @@ public class ZeppaUserServlet extends HttpServlet {
 		try {
 			// Query for the event with the given ID
 			user = mgr.getObjectById(ZeppaUser.class, Long.valueOf(userId));
+			user.getKey();
+			user.getId();
 			user.getUserInfo();
-			System.out.println("------USER SERVLET Name " + user.getUserInfo().getGivenName());
-			System.out.println("------USER SERVLET GENDER " + user.getUserInfo().getGender());
+			user.getUserInfo().getGivenName();
+			user.getUserInfo().getGender();
 		} finally {
 			mgr.close();
 		}

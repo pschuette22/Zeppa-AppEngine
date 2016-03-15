@@ -112,7 +112,7 @@ public class StartupServlet extends HttpServlet {
 		vendor.setMasterUserId(Long.valueOf(employeeBrendan.getKey().getId()));
 		
 		try {
-			vendor = VendorServlet.insertVendor(vendor, employeeBrendan);
+			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
 		} catch (UnauthorizedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -122,7 +122,12 @@ public class StartupServlet extends HttpServlet {
 		}
 
 		Vendor vendor1 = new Vendor();
-		vendor1.setAddress(add);
+		Address add2 = new Address();
+		add2.setAddressLine1("2 street");
+		add2.setCity("Philadelphia");
+		add2.setState("PA");
+		add2.setZipCode(19104);
+		vendor1.setAddress(add2);
 		vendor1.setCompanyName("Test Company 2");
 		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
 		
@@ -206,10 +211,10 @@ public class StartupServlet extends HttpServlet {
 				.insertInviteGroup(group);
 		try {
 			// Insert and assert
-			(new ZeppaUserEndpoint()).insertZeppaUser(
+			testUser = (new ZeppaUserEndpoint()).insertZeppaUser(
 					testUser, testToken);
 
-			(new ZeppaUserEndpoint()).insertZeppaUser(
+			testUser2 = (new ZeppaUserEndpoint()).insertZeppaUser(
 					testUser2, testToken2);
 		} catch (UnauthorizedException e) {
 			// Auth exception (probably didn't set to test)
@@ -219,11 +224,9 @@ public class StartupServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		System.out.println("------------" + testUser.getAuthEmail());
-		System.out.println("------------" + testUser.getKey());
 		// Create user relationships to event
-		VendorEventRelationship ver = new VendorEventRelationship(5699868278390784L, event.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver2 = new VendorEventRelationship(5840605766746112L, event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		
 		try {
 			VendorEventRelationshipServlet.insertEventRelationship(ver);

@@ -94,6 +94,29 @@
 	<servlet-mapping>
 		<servlet-name>EventTagServlet</servlet-name>
 		<url-pattern>/endpoint/event-tag-servlet/</url-pattern>
+	</servlet-mapping>	
+
+	<!-- Employee Servlet -->
+	<servlet>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.EmployeeServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<url-pattern>/endpoint/employee-servlet/</url-pattern>
 	</servlet-mapping>
 	
+	
+		<!-- Authentication Servlet -->
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.AuthenticationServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/endpoint/authentication-servlet/</url-pattern>
+	</servlet-mapping>
+
 </web-app>

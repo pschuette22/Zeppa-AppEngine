@@ -6,6 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 
 /**
  * 
@@ -27,9 +30,28 @@ public class DashboardServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		resp.setContentType("text/html");
-		req.setAttribute("attribute1", "This is attribute 1");
 		
-		req.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(req, resp);
+		HttpSession session = req.getSession(true);
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null)
+		{
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
+		
+			//resp.getWriter().println("User Info Name: " + userInfo.getGivenName() + " " + userInfo.getFamilyName());
+			
+			if(userInfo.getCreated() > 0)
+			{
+				req.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(req, resp);
+			}
+			else
+			{
+				req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
+			}
+		}
+		else 
+		{
+			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
+		}
 	}
 
 	

@@ -32,8 +32,7 @@ public class ApiCerealWrapperFactory extends CerealWrapperFactory {
 			ZeppaUserInfo info = (ZeppaUserInfo) obj;
 			result = new UserInfoCerealWrapper(info.getCreated(),
 					info.getUpdated(), info.getGivenName(),
-					info.getFamilyName(), info.getImageUrl(), info.getGender()
-							.toString(), info.getDateOfBirth());
+					info.getFamilyName(), info.getImageUrl(), info.getGender().toString(), info.getDateOfBirth());
 		} else if (obj instanceof Employee) {
 			Employee employee = (Employee) obj;
 			result = new EmployeeCerealWrapper(employee.getCreated(),

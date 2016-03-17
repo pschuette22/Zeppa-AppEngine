@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
@@ -18,6 +19,7 @@ import com.google.appengine.datanucleus.query.JDOCursorHelper;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
+import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.utils.Utils;
@@ -94,8 +96,20 @@ public class VendorEventEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
-			for (VendorEvent obj : execute)
-				;
+			for (VendorEvent obj : execute) {
+				Query rQuery = mgr.newQuery(
+						VendorEventRelationship.class,
+						"userId==" + user.getId() + " && eventId=="
+								+ obj.getId());
+				rQuery.setUnique(true);
+				try {
+					VendorEventRelationship r = (VendorEventRelationship) rQuery
+							.execute();
+					obj.setRelationship(r);
+				} catch (JDOObjectNotFoundException e) {
+
+				}
+			}
 		} finally {
 			mgr.close();
 		}
@@ -105,7 +119,6 @@ public class VendorEventEndpoint {
 				.setNextPageToken(cursorString).build();
 	}
 
-	
 	/**
 	 * This method gets the entity having primary key id. It uses HTTP GET
 	 * method.
@@ -138,10 +151,10 @@ public class VendorEventEndpoint {
 		}
 		return VendorEvent;
 	}
-	
-	
+
 	/**
 	 * Get the persistence manager to make changes to the datastore
+	 * 
 	 * @return persistence manager instance
 	 */
 	private static PersistenceManager getPersistenceManager() {

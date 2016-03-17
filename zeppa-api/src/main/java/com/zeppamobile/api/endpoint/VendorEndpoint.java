@@ -130,14 +130,14 @@ public class VendorEndpoint {
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
-		Vendor Vendor = null;
+		Vendor vendor = null;
 		try {
-			Vendor = mgr.getObjectById(Vendor.class, id);
+			vendor = mgr.getObjectById(Vendor.class, id);
 
 		} finally {
 			mgr.close();
 		}
-		return Vendor;
+		return vendor;
 	}
 	
 	

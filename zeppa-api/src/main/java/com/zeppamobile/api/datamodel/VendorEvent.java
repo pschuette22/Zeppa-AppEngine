@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
@@ -15,6 +16,7 @@ import com.zeppamobile.api.datamodel.ZeppaEvent;
 @PersistenceCapable
 @Discriminator(strategy=DiscriminatorStrategy.CLASS_NAME)
 public class VendorEvent extends ZeppaEvent {
+	
 	
 
 	public VendorEvent(JSONObject json) {
@@ -72,6 +74,31 @@ public class VendorEvent extends ZeppaEvent {
 	
 	@Persistent
 	private String placeId;
+	
+	@NotPersistent
+	private  VendorEventRelationship relationship;
+
+	public String getPlaceId() {
+		return placeId;
+	}
+
+
+	public void setPlaceId(String placeId) {
+		this.placeId = placeId;
+	}
+
+
+	public VendorEventRelationship getRelationship() {
+		return relationship;
+	}
+
+
+	public void setRelationship(VendorEventRelationship relationship) {
+		this.relationship = relationship;
+	}
+	
+	
+	
 
 //	@PrimaryKey
 //	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)

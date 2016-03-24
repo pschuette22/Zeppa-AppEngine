@@ -79,6 +79,17 @@ public class UniversalConstants {
 	public static final String PARAM_EVENT_ID = "event-id";
 	public static final String PARAM_TAG_ID = "tag-id";
 	public static final String PARAM_USER_ID = "userId";
+	
+	// Parameter key to differentiate calls to the Analytics API server
+	public static final String ANALYTICS_TYPE = "analyticsType";
+	// Parameter values to differentiate calls to the Analytics API server
+	public static final String INDIV_EVENT_DEMOGRAPHICS = "indivDemographics";
+	public static final String INDIV_EVENT_TAGS = "indivTags";
+	public static final String OVERALL_EVENT_DEMOGRAPHICS = "overallDemographics";
+	public static final String OVERALL_EVENT_TAGS = "overallTags";
+	public static final String OVERALL_EVENT_POPULAR_DAYS = "overallPopularDays";
+	public static final String OVERALL_EVENT_POPULAR_EVENTS = "overallPopularEvents";
+	
 	/*
 	 * Return argument keys
 	 */

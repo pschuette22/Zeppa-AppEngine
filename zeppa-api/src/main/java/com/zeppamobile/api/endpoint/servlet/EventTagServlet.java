@@ -139,11 +139,11 @@ public class EventTagServlet extends HttpServlet {
 	 * This method gets the tag based on id.
 	 * 
 	 * @param id
-	 *            the id of the owner of the tag
+	 *            the id of the tag
 	 * @return The JSON of the tags
 	 * @throws OAuthRequestException
 	 */
-	private String getTag(Long tagId) {
+	public static String getTag(Long tagId) {
 		PersistenceManager mgr = getPersistenceManager();
 		String responseString ="";
 		EventTag tag = null;

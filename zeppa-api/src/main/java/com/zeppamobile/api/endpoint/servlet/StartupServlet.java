@@ -134,10 +134,8 @@ public class StartupServlet extends HttpServlet {
 		try {
 			vendor1 = VendorServlet.insertVendor(vendor1, employeeKieran);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -152,14 +150,22 @@ public class StartupServlet extends HttpServlet {
 		tag2.setTagText("Drink Special");
 		tag2.setType(TagType.VENDOR);
 		
+		EventTag tag3 = new EventTag();
+		tag2.setOwnerId(vendor.getKey().getId());
+		tag2.setTagText("Test Tag");
+		tag2.setType(TagType.USER);
+		
+		EventTag tag4 = new EventTag();
+		tag2.setOwnerId(vendor.getKey().getId());
+		tag2.setTagText("Play Basketball");
+		tag2.setType(TagType.USER);
+		
 		try {
 			EventTagServlet.insertTag(tag);
 			EventTagServlet.insertTag(tag2);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -229,7 +235,7 @@ public class StartupServlet extends HttpServlet {
 					testUser2, testToken2);
 			
 			testUser3 = (new ZeppaUserEndpoint()).insertZeppaUser(
-					testUser2, testToken2);
+					testUser3, testToken3);
 		} catch (UnauthorizedException e) {
 			// Auth exception (probably didn't set to test)
 			e.printStackTrace();

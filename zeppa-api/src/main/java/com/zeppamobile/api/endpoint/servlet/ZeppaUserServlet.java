@@ -60,17 +60,19 @@ public class ZeppaUserServlet extends HttpServlet {
 		response.getWriter().write(obj.toJSONString());
 	}
 
-	public ZeppaUser getUser(Long userId) {
+	public static ZeppaUser getUser(Long userId) {
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUser user = null;
 		try {
 			// Query for the event with the given ID
 			user = mgr.getObjectById(ZeppaUser.class, Long.valueOf(userId));
+			// touch the attributes that are needed in other classes
 			user.getKey();
 			user.getId();
 			user.getUserInfo();
 			user.getUserInfo().getGivenName();
 			user.getUserInfo().getGender();
+			user.getInitialTags();
 		} finally {
 			mgr.close();
 		}

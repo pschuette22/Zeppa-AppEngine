@@ -139,4 +139,14 @@
 		<url-pattern>/endpoint/user-servlet/</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>AnalyticsServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.AnalyticsServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AnalyticsServlet</servlet-name>
+		<url-pattern>/endpoint/analytics-servlet/</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

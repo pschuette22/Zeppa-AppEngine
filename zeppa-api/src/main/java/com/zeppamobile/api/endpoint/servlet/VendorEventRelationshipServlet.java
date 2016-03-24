@@ -69,23 +69,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForEventJSON(Long eventId){
 		JSONArray results = new JSONArray();
-		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			Query q = mgr.newQuery(VendorEventRelationship.class,
-					"eventId == " + eventId);
-
-			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
-			if(response.size()>0) {
-				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-				relationships.addAll(response);
-			}
-			
-		} finally {
-			mgr.close();
-		}
+		List<VendorEventRelationship> relationships = getAllRelationshipsForEvent(eventId);
 		for(VendorEventRelationship rel : relationships) {
 			JSONObject json = rel.toJson();
 			results.add(json);
@@ -93,27 +77,36 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		return results;
 	}
 	
+	/**
+	 * Get all of the VendorEventRelationships for a specific event
+	 * @param eventId - the id of the event to get relationships for
+	 * @return - the list of relationships
+	 */
 	@SuppressWarnings("unchecked")
-	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
-		JSONArray results = new JSONArray();
+	public static List<VendorEventRelationship> getAllRelationshipsForEvent(Long eventId){
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 		PersistenceManager mgr = getPersistenceManager();
-		List<VendorEvent> events = new ArrayList<VendorEvent>();
-		// Get all events for the given vendor ID
 		try {
-			Query q = mgr.newQuery(VendorEvent.class,
-					"hostId == " + vendorId);
-
-			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
+			Query q = mgr.newQuery(VendorEventRelationship.class,
+					"eventId == " + eventId);
+			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
 			if(response.size()>0) {
-				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-				events.addAll(response);
+				relationships.addAll(response);
 			}
 			
 		} finally {
 			mgr.close();
 		}
+		
+		return relationships;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
+		JSONArray results = new JSONArray();
+		PersistenceManager mgr = getPersistenceManager();
+		// Get all events for the vendor
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		
 		// Go through each event for the vendor and find all relationships
 		for(VendorEvent event : events) {

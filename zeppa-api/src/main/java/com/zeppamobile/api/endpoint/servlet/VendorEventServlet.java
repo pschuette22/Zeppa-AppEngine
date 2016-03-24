@@ -48,7 +48,6 @@ public class VendorEventServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		try{
-			// TODO Auto-generated method stub
 			String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 			JSONArray results = new JSONArray();
@@ -82,9 +81,20 @@ public class VendorEventServlet extends HttpServlet {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	public JSONArray getAllEventsJSON(Long vendorId){
 		JSONArray results = new JSONArray();
 		
+		List<VendorEvent> events = getAllEvents(vendorId);
+		
+		for(VendorEvent event : events) {
+			JSONObject json = event.toJson();
+			results.add(json);
+		}
+		return results;
+	}
+	
+	public static List<VendorEvent> getAllEvents(Long vendorId) {
 		List<VendorEvent> events = new ArrayList<VendorEvent>();
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -94,22 +104,15 @@ public class VendorEventServlet extends HttpServlet {
 			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
 			if(response.size()>0) {
 				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
 				events.addAll(response);
 			}
 			
 		} finally {
 			mgr.close();
 		}
-		for(VendorEvent event : events) {
-			JSONObject json = event.toJson();
-			results.add(json);
-		}
-		return results;
+		
+		return events;
 	}
-	
-	
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -229,8 +232,5 @@ public class VendorEventServlet extends HttpServlet {
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
-	
-	
-	
 
 }

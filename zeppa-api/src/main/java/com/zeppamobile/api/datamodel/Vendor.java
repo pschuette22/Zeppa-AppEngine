@@ -32,7 +32,9 @@ public class Vendor {
 	@Persistent
 	private String companyLogoUrl;
 	
-	// TODO: replace the above attributes with this one
+	@Persistent
+	private String placeId;
+
 	@Persistent
 	private Address address;
 	

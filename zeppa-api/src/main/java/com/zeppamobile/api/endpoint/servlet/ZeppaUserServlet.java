@@ -72,6 +72,7 @@ public class ZeppaUserServlet extends HttpServlet {
 			user.getUserInfo();
 			user.getUserInfo().getGivenName();
 			user.getUserInfo().getGender();
+			user.getUserInfo().getDateOfBirth();
 			user.getInitialTags();
 		} finally {
 			mgr.close();

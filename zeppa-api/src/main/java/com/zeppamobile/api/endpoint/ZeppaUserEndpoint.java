@@ -96,6 +96,7 @@ public class ZeppaUserEndpoint {
 		if(userInfo.getGender() != null) {
 			insertInfo.setGender(userInfo.getGender());
 		}
+		insertInfo.setDateOfBirth(userInfo.getDateOfBirth());
 
 		/*
 		 * Create User Data Object

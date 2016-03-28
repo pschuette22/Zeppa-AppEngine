@@ -55,7 +55,7 @@ public class VendorEventServlet extends HttpServlet {
 			//Determine if calling for individual event or all user events.
 			if (eventId != null && !eventId.isEmpty()){
 				eventId = URLDecoder.decode(eventId,"UTF-8");
-				VendorEvent result = getIndividualEventJSON(eventId);
+				VendorEvent result = getIndividualEvent(eventId);
 				// If nothing is found with that EventID then return a not found code
 				if(result == null) {
 					resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -159,7 +159,7 @@ public class VendorEventServlet extends HttpServlet {
 	 * @param eventId - the id of the desired event
 	 * @return - the JSON with the event info
 	 */
-	private VendorEvent getIndividualEventJSON(String eventId) {
+	public static VendorEvent getIndividualEvent(String eventId) {
 		
 		PersistenceManager mgr = getPersistenceManager();
 		VendorEvent event = null;

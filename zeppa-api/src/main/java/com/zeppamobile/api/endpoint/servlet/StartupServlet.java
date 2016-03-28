@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.utils.SystemProperty;
+import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
@@ -92,10 +93,8 @@ public class StartupServlet extends HttpServlet {
     		employeeBrendan = EmployeeServlet.insertVendor(employeeBrendan);
     		employeeEric = EmployeeServlet.insertVendor(employeeEric);
 		} catch (UnauthorizedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
     	
@@ -114,10 +113,8 @@ public class StartupServlet extends HttpServlet {
 		try {
 			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -182,7 +179,6 @@ public class StartupServlet extends HttpServlet {
 			VendorEventServlet.insertEvent(event);
 			VendorEventServlet.insertEvent(event2);
 		} catch (UnauthorizedException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -200,19 +196,26 @@ public class StartupServlet extends HttpServlet {
 				"TestTag6");
 		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui = testUser.getUserInfo();
+		// 1993
 		ui.setGender(Gender.MALE);
+		ui.setDateOfBirth(746232615000L);
 		testUser.setUserInfo(ui);
 		String testToken = TestUtils.buildTestAuthToken(u1AuthEmail);
 		
 		ZeppaUser testUser2 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui2 = testUser2.getUserInfo();
 		ui2.setGender(Gender.FEMALE);
+		// 1983
+		ui2.setDateOfBirth(430613415000L);
 		testUser2.setUserInfo(ui2);
 		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
 		
-		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
+		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui3 = testUser3.getUserInfo();
-		ui2.setGender(Gender.FEMALE);
+		ui3.setGender(Gender.FEMALE);
+		// 2003
+		ui3.setDateOfBirth(1061765415000L);
+		LocalDate d = new LocalDate(ui3.getDateOfBirth());
 		testUser3.setUserInfo(ui3);
 		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
 		
@@ -258,7 +261,6 @@ public class StartupServlet extends HttpServlet {
 			VendorEventRelationshipServlet.insertEventRelationship(ver4);
 			VendorEventRelationshipServlet.insertEventRelationship(ver5);
 		} catch (UnauthorizedException | IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		

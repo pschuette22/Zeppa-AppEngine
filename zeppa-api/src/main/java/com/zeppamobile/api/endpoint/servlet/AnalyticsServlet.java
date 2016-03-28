@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.appengine.repackaged.org.joda.time.LocalDate;
+import com.google.appengine.repackaged.org.joda.time.Years;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.VendorEvent;
@@ -52,15 +54,30 @@ public class AnalyticsServlet extends HttpServlet {
 		
 		if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_DEMOGRAPHICS)) {
 			// Get map with the gender counts
-			Map<String, Integer> counts = getAllEventInfoDemographic(null, Long.valueOf(vendorId));
+			Map<String, Integer> genderCounts = getAllEventInfoDemographic(null, Long.valueOf(vendorId));
 			JSONObject json = new JSONObject();
 			// put the counts in the JSON object so they can be returned to the frontend in the response
-			json.put("maleCount", counts.get("MALE"));
-			json.put("femaleCount", counts.get("FEMALE"));
-			json.put("unidentified", counts.get("UNIDENTIFIED"));
-			System.out.println("--------"+json.toJSONString()+"--------");
+			json.put("maleCount", genderCounts.get("MALE"));
+			json.put("femaleCount", genderCounts.get("FEMALE"));
+			json.put("unidentified", genderCounts.get("UNIDENTIFIED"));
+			
+			Map<String, Integer> ageCounts = getAgeCountAllEvents(null, Long.valueOf(vendorId));
+			JSONObject ageJson = new JSONObject();
+			ageJson.put("under18", ageCounts.get("under18"));
+			ageJson.put("18to20", ageCounts.get("18to20"));
+			ageJson.put("21to24", ageCounts.get("21to24"));
+			ageJson.put("25to29", ageCounts.get("25to29"));
+			ageJson.put("30to39", ageCounts.get("30to39"));
+			ageJson.put("40to49", ageCounts.get("40to49"));
+			ageJson.put("50to59", ageCounts.get("50to59"));
+			ageJson.put("over60", ageCounts.get("over60"));
+			
 			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().write(json.toJSONString());
+			JSONArray respArray = new JSONArray();
+			respArray.add(json);
+			respArray.add(ageJson);
+			resp.getWriter().write(respArray.toJSONString());
+			//resp.getWriter().write(ageJson.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
 			Map<String, Integer> tags = getAllEventTags(null, Long.valueOf(vendorId));
@@ -218,7 +235,65 @@ public class AnalyticsServlet extends HttpServlet {
 		return ret;
 	}
 	
-	
+
+	private Map<String, Integer> getAgeCountAllEvents(FilterCerealWrapper filter, Long vendorId) {
+		Map<String, Integer> ret = new HashMap<String, Integer>();
+		int under18 = 0;
+		int age18to20 = 0;
+		int age21to24 = 0;
+		int age25to29 = 0;
+		int age30to39 = 0;
+		int age40to49 = 0;
+		int age50to59 = 0;
+		int over60 = 0;
+		
+		// Get all events for the vendor
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+
+		// Go through each event for the vendor and find all relationships
+		for (VendorEvent event : events) {
+			relationships.addAll(VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()));
+		}
+		
+		// Loop through all relationships
+		for (VendorEventRelationship rel : relationships) {
+			// Find the user
+			Long id = rel.getUserId();
+			ZeppaUser user = ZeppaUserServlet.getUser(id);
+			// Get the user's date of birth
+			LocalDate dob = new LocalDate(user.getUserInfo().getDateOfBirth());
+			VendorEvent event = VendorEventServlet.getIndividualEvent(String.valueOf(rel.getEventId()));
+			LocalDate eventTime = new LocalDate(event.getStart());
+			Years age = Years.yearsBetween(dob, eventTime);
+			// Find out the age range the user falls into and increment the 
+			if(age.getYears() < 18) {
+				under18++;
+			} else if(age.getYears() >= 18 && age.getYears() <= 24) {
+				age21to24++;
+			} else if(age.getYears() >= 25 && age.getYears() <= 29) {
+				age25to29++;
+			} else if(age.getYears() >= 30 && age.getYears() <= 39) {
+				age30to39++;
+			} else if(age.getYears() >= 40 && age.getYears() <= 49) {
+				age40to49++;
+			} else if(age.getYears() >= 50 && age.getYears() <= 59) {
+				age50to59++;
+			} else {
+				over60++;
+			}
+		}
+		
+		ret.put("under18", under18);
+		ret.put("18to20", age18to20);
+		ret.put("21to24", age21to24);
+		ret.put("25to29", age25to29);
+		ret.put("30to39", age30to39);
+		ret.put("40to49", age40to49);
+		ret.put("50to59", age50to59);
+		ret.put("over60", over60);
+		return ret;
+	}
 	
 	/**
 	 * Get the number of attendees of the given event

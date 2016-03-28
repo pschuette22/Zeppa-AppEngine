@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -74,6 +75,14 @@ public class AnalyticsServlet extends HttpServlet {
 		Long maleCount = 0L;
 		Long femaleCount = 0L;
 		Long unidentified = 0L;
+		Long under18 = 0L;
+		Long age18to20 = 0L;
+		Long age21to24 = 0L;
+		Long age25to29 = 0L;
+		Long age30to39 = 0L;
+		Long age40to49 = 0L;
+		Long age50to59 = 0L;
+		Long over60 = 0L;
 		try {
 			// Set up the call to the analytics api servlet
 			Map<String, String> params = new HashMap<String, String>();
@@ -96,13 +105,34 @@ public class AnalyticsServlet extends HttpServlet {
 				}
 				JSONParser parser = new JSONParser();
 				// Parse the JSON in the response, get the count of each gender
-				JSONObject userInfo = (JSONObject) parser.parse(responseGender);
-				maleCount = (Long) userInfo.get("maleCount");
-				femaleCount = (Long) userInfo.get("femaleCount");
-				unidentified = (Long) userInfo.get("unidentified");
-				System.out.println("-------MALE: " + maleCount + "------");
-				System.out.println("-------FEMALE: " + femaleCount + "------");
-				System.out.println("-------UNID: " + unidentified + "------");
+				System.out.println("------RESPONSE: " + responseGender + "------");
+				JSONArray demoInfo = (JSONArray) parser.parse(responseGender);
+				if(demoInfo.size() == 2) {
+					JSONObject genderInfo = (JSONObject) demoInfo.get(0);
+					maleCount = (Long) genderInfo.get("maleCount");
+					femaleCount = (Long) genderInfo.get("femaleCount");
+					unidentified = (Long) genderInfo.get("unidentified");
+					System.out.println("-------MALE: " + maleCount + "------");
+					System.out.println("-------FEMALE: " + femaleCount + "------");
+					System.out.println("-------UNID: " + unidentified + "------");
+					JSONObject ageInfo = (JSONObject) demoInfo.get(1);
+					under18 = (Long) ageInfo.get("under18");
+					age18to20 = (Long) ageInfo.get("18to20");
+					age21to24 = (Long) ageInfo.get("21to24");
+					age25to29 = (Long) ageInfo.get("25to29");
+					age30to39 = (Long) ageInfo.get("30to39");
+					age40to49 = (Long) ageInfo.get("40to49");
+					age50to59 = (Long) ageInfo.get("50to59");
+					over60 = (Long) ageInfo.get("over60");
+					System.out.println("-------under18: " + under18 + "------");
+					System.out.println("-------18to20: " + age18to20 + "------");
+					System.out.println("-------21to24: " + age21to24 + "------");
+					System.out.println("-------25to29: " + age25to29 + "------");
+					System.out.println("-------30to39: " + age30to39 + "------");
+					System.out.println("-------40to49: " + age40to49 + "------");
+					System.out.println("-------50to59: " + age50to59+ "------");
+					System.out.println("-------over60: " + over60 + "------");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

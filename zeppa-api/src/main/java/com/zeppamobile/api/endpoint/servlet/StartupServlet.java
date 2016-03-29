@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.utils.SystemProperty;
-import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
@@ -25,6 +24,7 @@ import com.zeppamobile.api.endpoint.InviteGroupEndpoint;
 import com.zeppamobile.api.endpoint.ZeppaUserEndpoint;
 import com.zeppamobile.common.utils.TestUtils;
 import com.zeppamobile.api.datamodel.EventTag.TagType;
+import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.InviteGroup;
 
 /**
@@ -38,7 +38,8 @@ public class StartupServlet extends HttpServlet {
 	 * Create any data objects you need for testing and and insert them in the data store
 	 * in this method.
 	 */
-    public void init() {
+    @SuppressWarnings("unused")
+	public void init() {
 
     	// If not running in Development environment then just return without running anything
     	if(SystemProperty.environment.value() != SystemProperty.Environment.Value.Development) {
@@ -148,18 +149,20 @@ public class StartupServlet extends HttpServlet {
 		tag2.setType(TagType.VENDOR);
 		
 		EventTag tag3 = new EventTag();
-		tag2.setOwnerId(vendor.getKey().getId());
-		tag2.setTagText("Test Tag");
-		tag2.setType(TagType.USER);
+		tag3.setOwnerId(vendor.getKey().getId());
+		tag3.setTagText("Marathon");
+		tag3.setType(TagType.VENDOR);
 		
 		EventTag tag4 = new EventTag();
-		tag2.setOwnerId(vendor.getKey().getId());
-		tag2.setTagText("Play Basketball");
-		tag2.setType(TagType.USER);
+		tag4.setOwnerId(vendor.getKey().getId());
+		tag4.setTagText("Play Basketball");
+		tag4.setType(TagType.USER);
 		
 		try {
 			EventTagServlet.insertTag(tag);
 			EventTagServlet.insertTag(tag2);
+			EventTagServlet.insertTag(tag3);
+			EventTagServlet.insertTag(tag4);
 		} catch (UnauthorizedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -169,6 +172,8 @@ public class StartupServlet extends HttpServlet {
 		List<Long> tagIds = new ArrayList<Long>();
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
+		tagIds.add(tag3.getId());
+		tagIds.add(tag4.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
 				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
@@ -185,10 +190,6 @@ public class StartupServlet extends HttpServlet {
 
 		// Create Users
 		AppConfig.setTestConfig();
-//		LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
-//		.setDefaultHighRepJobPolicyRandomSeed(100)
-//		.setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
-//		helper.setUp();
 		String u1AuthEmail = "testuser1@example.com";
 		String u2AuthEmail = "testuser2@example.com";
 		String u3AuthEmail = "testuser3@example.com";
@@ -215,7 +216,6 @@ public class StartupServlet extends HttpServlet {
 		ui3.setGender(Gender.FEMALE);
 		// 2003
 		ui3.setDateOfBirth(1061765415000L);
-		LocalDate d = new LocalDate(ui3.getDateOfBirth());
 		testUser3.setUserInfo(ui3);
 		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
 		
@@ -264,7 +264,22 @@ public class StartupServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-//		helper.tearDown();
+		EventTagFollow etf1 = new EventTagFollow(tag, testUser.getId());
+		EventTagFollow etf2 = new EventTagFollow(tag2, testUser.getId());
+		EventTagFollow etf3 = new EventTagFollow(tag, testUser2.getId());
+		EventTagFollow etf4 = new EventTagFollow(tag3, testUser2.getId());
+		EventTagFollow etf5 = new EventTagFollow(tag4, testUser2.getId());
+		
+		try {
+			EventTagFollowServlet.insertTagFollow(etf1);
+			EventTagFollowServlet.insertTagFollow(etf2);
+			EventTagFollowServlet.insertTagFollow(etf3);
+			EventTagFollowServlet.insertTagFollow(etf4);
+			EventTagFollowServlet.insertTagFollow(etf5);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		AppConfig.doneTesting();
     }
 

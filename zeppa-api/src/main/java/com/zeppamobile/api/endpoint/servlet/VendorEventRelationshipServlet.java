@@ -101,10 +101,39 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		return relationships;
 	}
 	
+	/**
+	 * Get all of the joined VendorEventRelationships for a specific event
+	 * @param eventId - the id of the event to get relationships for
+	 * @return - the list of relationships
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<VendorEventRelationship> getAllJoinedRelationshipsForEvent(Long eventId){
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEventRelationship.class,
+					"eventId == " + eventId);
+			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
+			if(response.size()>0) {
+				relationships.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		// Create list with only joined relationships
+		List<VendorEventRelationship> joinedList = new ArrayList<VendorEventRelationship>(); 
+		for(VendorEventRelationship rel : relationships) {
+			if(rel.isJoined()) 
+				joinedList.add(rel);
+		}
+		
+		return joinedList;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
 		JSONArray results = new JSONArray();
-		PersistenceManager mgr = getPersistenceManager();
 		// Get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		

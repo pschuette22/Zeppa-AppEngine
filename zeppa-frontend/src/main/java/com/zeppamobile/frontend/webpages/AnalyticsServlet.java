@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -44,13 +45,23 @@ public class AnalyticsServlet extends HttpServlet {
 		Object obj = session.getAttribute("UserInfo");
 		if (obj != null) {
 			UserInfoCerealWrapper sessionInfo = (UserInfoCerealWrapper) obj;
+			
+			System.out.println("Demographics");
 			// Strings to hold the info for chart.js
 			String allEventGender = getGenderCountAllEvents(sessionInfo);
 			req.setAttribute("genderData", allEventGender);
 
-			// TODO: Discuss tag follow design
-			/*String allEventTags = getTagsAllEvents(sessionInfo);
-			req.setAttribute("tagData", allEventTags);*/
+			System.out.println("Tags");
+			String allEventTags = getTagsAllEvents(sessionInfo);
+			req.setAttribute("tagData", allEventTags);
+			
+			System.out.println("Popular Events");
+			String popularEvents = getPopularEventsAllEvents(sessionInfo);
+			req.setAttribute("popEvents", popularEvents);
+			
+			System.out.println("Popular Days");
+			String popularDays = getPopularDaysAllEvents(sessionInfo);
+			req.setAttribute("popDays", popularDays);
 			
 			req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		} else {
@@ -124,14 +135,14 @@ public class AnalyticsServlet extends HttpServlet {
 					age40to49 = (Long) ageInfo.get("40to49");
 					age50to59 = (Long) ageInfo.get("50to59");
 					over60 = (Long) ageInfo.get("over60");
-					System.out.println("-------under18: " + under18 + "------");
-					System.out.println("-------18to20: " + age18to20 + "------");
-					System.out.println("-------21to24: " + age21to24 + "------");
-					System.out.println("-------25to29: " + age25to29 + "------");
-					System.out.println("-------30to39: " + age30to39 + "------");
-					System.out.println("-------40to49: " + age40to49 + "------");
-					System.out.println("-------50to59: " + age50to59+ "------");
-					System.out.println("-------over60: " + over60 + "------");
+//					System.out.println("-------under18: " + under18 + "------");
+//					System.out.println("-------18to20: " + age18to20 + "------");
+//					System.out.println("-------21to24: " + age21to24 + "------");
+//					System.out.println("-------25to29: " + age25to29 + "------");
+//					System.out.println("-------30to39: " + age30to39 + "------");
+//					System.out.println("-------40to49: " + age40to49 + "------");
+//					System.out.println("-------50to59: " + age50to59+ "------");
+//					System.out.println("-------over60: " + over60 + "------");
 				}
 			}
 		} catch (Exception e) {
@@ -178,7 +189,53 @@ public class AnalyticsServlet extends HttpServlet {
 				}
 				JSONParser parser = new JSONParser();
 				JSONObject tags = (JSONObject) parser.parse(responseTags);
-				System.out.println("-------TYPE: "+tags.entrySet().toArray().getClass()+"------");
+				for(Iterator iterator = tags.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    System.out.println("-------" + key + ": "+ tags.get(key));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		return "";
+	}
+	
+	/**
+	 * Call the api analytics servlet to get
+	 * the 5 most popular events for the given 
+	 * @param sessionInfo
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getPopularEventsAllEvents(UserInfoCerealWrapper sessionInfo) {
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String response = "";
+				while ((line = reader.readLine()) != null) {
+					response += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject events = (JSONObject) parser.parse(response);
+				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    System.out.println("-------" + key + ": "+ events.get(key));
+				}
 				
 			}
 		} catch (Exception e) {
@@ -188,4 +245,46 @@ public class AnalyticsServlet extends HttpServlet {
 		return "";
 	}
 
+	/**
+	 * Call the api analytics servlet to get
+	 * the 5 most popular events for the given 
+	 * @param sessionInfo
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getPopularDaysAllEvents(UserInfoCerealWrapper sessionInfo) {
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_DAYS);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String response = "";
+				while ((line = reader.readLine()) != null) {
+					response += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject events = (JSONObject) parser.parse(response);
+				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    System.out.println("-------" + key + ": "+ events.get(key));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		return "";
+	}
 }

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.google.appengine.repackaged.org.joda.time.Years;
 import com.zeppamobile.api.PMF;
@@ -48,7 +49,6 @@ public class AnalyticsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO get all gender counts and return JSON in the resp
 		String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 		String type = req.getParameter(UniversalConstants.ANALYTICS_TYPE);
 		
@@ -77,7 +77,6 @@ public class AnalyticsServlet extends HttpServlet {
 			respArray.add(json);
 			respArray.add(ageJson);
 			resp.getWriter().write(respArray.toJSONString());
-			//resp.getWriter().write(ageJson.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
 			Map<String, Integer> tags = getAllEventTags(null, Long.valueOf(vendorId));
@@ -96,6 +95,25 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("-------"+json.toJSONString()+"-------");
 			resp.getWriter().write(json.toJSONString());
+		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
+			// Get the most popular events and return their title and count in JSON
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(null, Long.valueOf(vendorId));
+			JSONObject jsonPopEvents = new JSONObject();
+			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
+				jsonPopEvents.put(entry.getKey().getTitle(), entry.getValue());
+			}
+			resp.getWriter().write(jsonPopEvents.toJSONString());
+		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_DAYS)) {
+			Map<Integer, Integer> dayCounts = getAllEventPopularDay(null, Long.valueOf(vendorId));
+			JSONObject days = new JSONObject();
+			days.put("Monday", dayCounts.get(1));
+			days.put("Tuesday", dayCounts.get(2));
+			days.put("Wednesday", dayCounts.get(3));
+			days.put("Thursday", dayCounts.get(4));
+			days.put("Friday", dayCounts.get(5));
+			days.put("Saturday", dayCounts.get(6));
+			days.put("Sunday", dayCounts.get(7));
+			resp.getWriter().write(days.toJSONString());
 		}
 		
 	}
@@ -122,49 +140,55 @@ public class AnalyticsServlet extends HttpServlet {
 		return allEventGender;
 	}
 	
-	/**
-	 * Gets all of the info needed for the all events tag demographics
-	 * @param filter - the filter information entered by the user
-	 * @param vendorId - the id of the current vendor
-	 * @return 
-	 */
-	private Map<String, Integer> getAllEventTags(FilterCerealWrapper filter, long vendorId) {
-		HashMap<String, Integer> tagsHash = new HashMap<String, Integer>();
-		// First get all events for the vendor
-		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
-		// Loop through each event for the vendor
-		for(VendorEvent event : events) {
-			// Create a list that will store all of the tags that were used for the event
-			List<String> tagList = new ArrayList<>();
-			for(Long id : event.getTagIds()) {
-				// Get the tag text from each tag
-				EventTag tag = null;
-				PersistenceManager mgr = getPersistenceManager();
-				try {
-					tag = mgr.getObjectById(EventTag.class, id);
-					// If the tag hasn't been seen yet add it to the list
-					if(!tagList.contains(tag.getTagText())) {
-						tagList.add(tag.getTagText());
-					}
-				} finally {
-					mgr.close();
-				}
-			}
-			// This hash map contains all tag texts that are common 
-			// between one of the vendor's events and a user with a relationship to it
-			tagsHash.putAll(getRelatedUserTagInfo(tagList, event.getId()));
+	private Map<Integer, Integer> getAllEventPopularDay(FilterCerealWrapper filter, long vendorId) {
+		Map<Integer, Integer> dayCounts = new HashMap<Integer, Integer>();
+		// Initialize each day of week to have a 0 count
+		for(int i=1; i < 8; i++) {
+			dayCounts.put(i, 0);
 		}
 		
-		return tagsHash;
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
+		// Populate the map with the counts for each day
+		for(VendorEvent event : events) {
+			DateTime dt = new DateTime(event.getStart());
+			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			dayCounts.put(dt.getDayOfWeek(), (dayCounts.get(dt.getDayOfWeek()) + relationships.size()));
+			System.out.println("EVENT: "+event.getTitle()+", DAY: "+dt.getDayOfWeek()+", j: "+relationships.size()+", n: "+VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()).size());
+		}
+		
+		return dayCounts;
 	}
 	
-
-	private String getAllEventPopularDay(FilterCerealWrapper filter, long vendorId) {
-		return "";
-	}
-	
-	private String getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
-		return "";
+	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
+		Map<VendorEvent, Integer> eventCounts = new HashMap<VendorEvent, Integer>();
+		// Populate the map with the counts for each event
+		for(VendorEvent event : events) {
+			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			eventCounts.put(event, relationships.size());
+		}
+		
+		// If there are no more than 5 events then return all of them
+		if(eventCounts.size() <= 5) {
+			return eventCounts;
+		}
+		
+		Map<VendorEvent, Integer> maxCounts = new HashMap<VendorEvent, Integer>();
+		for(int i=0; i < 5; i++) {
+			Entry<VendorEvent, Integer> max = null;
+			// find the maximum count
+			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
+				if(max == null || entry.getValue() > max.getValue()) {
+					max = entry;
+				}
+			}
+			// add the max to the return map and remove it from the eventCounts map so the next max can be found
+			maxCounts.put(max.getKey(), max.getValue());
+			eventCounts.remove(max.getKey());
+		}
+		
+		return maxCounts;
+		
 	}
 	
 	private String getIndividualEventInfoTags(FilterCerealWrapper filter, long vendorId) {
@@ -296,6 +320,42 @@ public class AnalyticsServlet extends HttpServlet {
 	}
 	
 	/**
+	 * Gets all of the info needed for the all events tag demographics
+	 * @param filter - the filter information entered by the user
+	 * @param vendorId - the id of the current vendor
+	 * @return 
+	 */
+	private Map<String, Integer> getAllEventTags(FilterCerealWrapper filter, long vendorId) {
+		HashMap<String, Integer> tagsHash = new HashMap<String, Integer>();
+		// First get all events for the vendor
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
+		// Loop through each event for the vendor
+		for(VendorEvent event : events) {
+			// Create a list that will store all of the tags that were used for the event
+			List<String> tagList = new ArrayList<>();
+			for(Long id : event.getTagIds()) {
+				// Get the tag text from each tag
+				EventTag tag = null;
+				PersistenceManager mgr = getPersistenceManager();
+				try {
+					tag = mgr.getObjectById(EventTag.class, id);
+					// If the tag hasn't been seen yet add it to the list
+					if(!tagList.contains(tag.getTagText())) {
+						tagList.add(tag.getTagText());
+					}
+				} finally {
+					mgr.close();
+				}
+			}
+			// This hash map contains all tag texts that are common 
+			// between one of the vendor's events and a user with a relationship to it
+			tagsHash.putAll(getRelatedUserTagInfo(tagList, event.getId()));
+		}
+		
+		return tagsHash;
+	}
+	
+	/**
 	 * Get the number of attendees of the given event
 	 * who follow each tag associated with the event
 	 * @param eventTags - the text of the tags associated with the event
@@ -308,20 +368,28 @@ public class AnalyticsServlet extends HttpServlet {
 		List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllRelationshipsForEvent(eventId);
 		HashMap<String, Integer> tagHash = new HashMap<String, Integer>();
 		for(VendorEventRelationship rel : relationships) {
-			// Get the user and their tags
+			// Get the user and their initial tags
 			ZeppaUser user = ZeppaUserServlet.getUser(rel.getUserId());
-			List<String> userTags = user.getInitialTags();
+			List<String> userTags = new ArrayList<String>();
+			if(user.getInitialTags() != null && user.getInitialTags().size() > 0)
+				userTags.addAll(user.getInitialTags());
+			
+			// Get all tags followed by the user and add them to the list
+			List<EventTag> tags = EventTagServlet.getAllUserTags(user.getId());
+			for(EventTag tag : tags) {
+				userTags.add(tag.getTagText());
+			}
 			if(userTags != null && !userTags.isEmpty()) {
 				for(String tagText : userTags) {
 					// Check if the user's tag was used in an event for this vendor
 					if(eventTags.contains(tagText)) {
 						int curVal;
-						// If the the tag was used and is already in the hashmap then increment the count for that tag
+						// If the the tag was followed and is already in the hashmap then increment the count for that tag
 					    if (tagHash.containsKey(tagText)) {
 					        curVal = tagHash.get(tagText);
 					        tagHash.put(tagText, curVal + 1);
 					    } else {
-					    	// If the tag was used but isn't already in the hashmap then set count to 1
+					    	// If the tag was followed but isn't already in the hashmap then set count to 1
 					    	tagHash.put(tagText, 1);
 					    }
 					}

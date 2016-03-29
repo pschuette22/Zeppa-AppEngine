@@ -36,6 +36,16 @@ public class ZeppaUserToUserRelationship {
 	@Persistent
 	private UserRelationshipType relationshipType;
 
+	/*
+	 * This is our calculation of how interested one of this users in this
+	 * relationship is in doing activities with another user
+	 */
+	@Persistent(defaultFetchGroup = "false")
+	private Double creatorInterest;
+
+	@Persistent(defaultFetchGroup = "false")
+	private Double subjectInterest;
+
 	/**
 	 * Not persistent entity to be set before being passed back to client so
 	 * additional get requests are not required
@@ -158,7 +168,5 @@ public class ZeppaUserToUserRelationship {
 	public void setUserInfo(ZeppaUserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
-	
-	
 
 }

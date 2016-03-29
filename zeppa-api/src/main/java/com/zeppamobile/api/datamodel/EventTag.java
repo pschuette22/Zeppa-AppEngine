@@ -15,7 +15,7 @@ import com.google.appengine.api.datastore.Key;
 @PersistenceCapable
 public class EventTag {
 	
-	// This enum tells whether the event is owned by a user or a vendro
+	// This enum tells whether the tag is owned by a user or a vendor
 	public enum TagType {USER, VENDOR};
 
 	@PrimaryKey
@@ -35,10 +35,13 @@ public class EventTag {
 	private String tagText;
 	
 	@Persistent
+	private List<String> indexedWords;
+	
+	@Persistent
 	private TagType type;
 
-	private List<String> indexedWords;
-
+	
+	
 	/**
 	 * Blank Constructor
 	 */
@@ -73,7 +76,7 @@ public class EventTag {
 		this.updated = (Long) json.get("updated");
 		this.ownerId = (Long) json.get("ownerId");
 		this.tagText = (String) json.get("tagText");
-		this.indexedWords = (List<String>) json.get("indexedWords");
+//		this.indexedWords = (List<String>) json.get("indexedWords");
 	}
 
 	/**

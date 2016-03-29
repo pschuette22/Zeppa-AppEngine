@@ -32,7 +32,7 @@ public class EventTagFollow {
 	private Long followerId;
 	
 	@Persistent
-	private double calculatedInterest;
+	private double interest;
 	
 
 	/**
@@ -64,7 +64,6 @@ public class EventTagFollow {
 		this.tagId = tag.getId();
 		this.tagOwnerId = tag.getOwnerId();
 		this.followerId = followerId;
-		
 		
 	}
 

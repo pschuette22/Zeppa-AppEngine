@@ -1,6 +1,7 @@
 <datastore-indexes autoGenerate="true">
-	
-	<datastore-index kind="EventTag" ancestor="false" source="manual">
+
+	<datastore-index kind="EventTag" ancestor="false"
+		source="manual">
 		<property name="ownerId" direction="asc" />
 		<property name="created" direction="desc" />
 	</datastore-index>
@@ -18,10 +19,22 @@
 
 	<datastore-index kind="ZeppaEvent" ancestor="false"
 		source="manual">
+		<property name="DISCRIMINATOR" direction="asc" />
+		<property name="hostId" direction="asc" />
+		<property name="end" direction="asc" />
+	</datastore-index>
+
+	<datastore-index kind="ZeppaEvent" ancestor="false"
+		source="manual">
 		<property name="hostId" direction="asc" />
 		<property name="privacy" direction="asc" />
 		<property name="end" direction="asc" />
 	</datastore-index>
+	
+	<datastore-index kind="ZeppaEvent" ancestor="false" source="manual">
+        <property name="DISCRIMINATOR" direction="asc"/>
+        <property name="end" direction="asc"/>
+    </datastore-index>
 
 	<datastore-index kind="ZeppaNotification" ancestor="false"
 		source="manual">
@@ -139,9 +152,9 @@
 		<property name="subjectId" direction="asc" />
 		<property name="created" direction="desc" />
 	</datastore-index>
-	
-	<datastore-index kind="ZeppaUser"
-		ancestor="false" source="manual">
+
+	<datastore-index kind="ZeppaUser" ancestor="false"
+		source="manual">
 		<property name="authEmail" direction="asc" />
 		<property name="created" direction="desc" />
 	</datastore-index>

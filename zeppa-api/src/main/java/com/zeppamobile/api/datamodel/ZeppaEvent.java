@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -81,6 +82,7 @@ public class ZeppaEvent {
 	protected Float longitude;
 	/*
 	 * ============================================
+	 * 
 	 */
 
 	@Persistent(defaultFetchGroup = "true")
@@ -351,5 +353,4 @@ public class ZeppaEvent {
 	}
 	
 	
-
 }

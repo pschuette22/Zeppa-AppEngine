@@ -25,7 +25,7 @@ public class ZeppaEventToUserRelationship {
 
 	@Persistent
 	private Long eventId;
-	
+
 	@Persistent
 	private Long eventHostId;
 
@@ -41,22 +41,33 @@ public class ZeppaEventToUserRelationship {
 	@Persistent
 	private Boolean isAttending;
 
+	// What percent of time is this user busy during this event
+	@Persistent
+	private Double conflictPercent;
+
 	@Persistent
 	private Boolean wasInvited;
 
 	@Persistent
 	private Long invitedByUserId;
-	
-	@Persistent // Event holds a tag attendee follows
+
+	@Persistent // sent a recommendation notification
 	private Boolean isRecommended;
 	
-	// Not persistent so this value may be set as the event is listed. 
+	@Persistent // Calculated interest this user has in attending
+	private Double interest;
+	
+	
+
+	// Not persistent so this value may be set as the event is listed.
 	@NotPersistent
 	private ZeppaEvent event;
-	
+
 	/**
 	 * Rebuild this object from JSON object
-	 * @param json - object as JSON
+	 * 
+	 * @param json
+	 *            - object as JSON
 	 */
 	public ZeppaEventToUserRelationship(JSONObject json) {
 		this.key = (Key) json.get("key");
@@ -71,21 +82,23 @@ public class ZeppaEventToUserRelationship {
 		this.wasInvited = (Boolean) json.get("wasInvited");
 		try {
 			this.invitedByUserId = (Long) json.get("invitedByUserId");
-		} catch (Exception e){
+		} catch (Exception e) {
 			invitedByUserId = Long.valueOf(-1);
 		}
-		this.isRecommended = (Boolean) json.get("isRecommended");
+//		this.isRecommended = (Boolean) json.get("isRecommended");
 	}
-	
+
 	/**
 	 * Constructor for instantiating a relationship on the backend
+	 * 
 	 * @param event
 	 * @param userId
 	 * @param wasInvited
 	 * @param isRecommended
 	 * @param invitedByUserId
 	 */
-	public ZeppaEventToUserRelationship(ZeppaEvent event, Long userId, Boolean wasInvited, Boolean isRecommended, Long invitedByUserId){
+	public ZeppaEventToUserRelationship(ZeppaEvent event, Long userId,
+			Boolean wasInvited, Boolean isRecommended, Long invitedByUserId) {
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.eventId = event.getId();
@@ -95,7 +108,7 @@ public class ZeppaEventToUserRelationship {
 		this.isWatching = Boolean.FALSE;
 		this.isAttending = Boolean.FALSE;
 		this.wasInvited = wasInvited;
-		this.isRecommended = isRecommended;
+//		this.isRecommended = isRecommended;
 		this.invitedByUserId = invitedByUserId;
 	}
 
@@ -179,13 +192,6 @@ public class ZeppaEventToUserRelationship {
 		this.invitedByUserId = invitedByUserId;
 	}
 
-	public Boolean getIsRecommended() {
-		return isRecommended;
-	}
-
-	public void setIsRecommended(Boolean isRecommended) {
-		this.isRecommended = isRecommended;
-	}
 
 	public Long getEventHostId() {
 		return eventHostId;
@@ -202,7 +208,31 @@ public class ZeppaEventToUserRelationship {
 	public void setEvent(ZeppaEvent event) {
 		this.event = event;
 	}
-	
+
+	public Double getConflictPercent() {
+		return conflictPercent;
+	}
+
+	public void setConflictPercent(Double conflictPercent) {
+		this.conflictPercent = conflictPercent;
+	}
+
+	public Boolean getIsRecommended() {
+		return isRecommended;
+	}
+
+	public void setIsRecommended(Boolean isRecommended) {
+		this.isRecommended = isRecommended;
+	}
+
+	public Double getInterest() {
+		return interest;
+	}
+
+	public void setInterest(Double interest) {
+		this.interest = interest;
+	}
+
 	
 	
 }

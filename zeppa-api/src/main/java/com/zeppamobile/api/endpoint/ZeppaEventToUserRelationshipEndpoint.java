@@ -209,6 +209,8 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			relationship.setIsWatching(Boolean.FALSE);
 			relationship.setIsAttending(Boolean.FALSE);
 			relationship.setWasInvited(relationship.getWasInvited());
+			relationship.setInterest(Double.valueOf(-1)); // -1 because it is irrelevant 
+			relationship.setConflictPercent(Double.valueOf(-1)); // -1 becuase we are not sure yet
 			if (relationship.getWasInvited()) {
 				relationship.setInvitedByUserId(relationship
 						.getInvitedByUserId());

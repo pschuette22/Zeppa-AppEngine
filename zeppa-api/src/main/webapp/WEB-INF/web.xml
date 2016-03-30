@@ -8,7 +8,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>services</param-name>
-			<param-value>com.zeppamobile.api.endpoint.AppInfoEndpoint,com.zeppamobile.api.endpoint.DeviceInfoEndpoint,com.zeppamobile.api.endpoint.EventCommentEndpoint,com.zeppamobile.api.endpoint.EventTagEndpoint,com.zeppamobile.api.endpoint.EventTagFollowEndpoint,com.zeppamobile.api.endpoint.InviteGroupEndpoint,com.zeppamobile.api.endpoint.PhotoInfoEndpoint,com.zeppamobile.api.endpoint.ZeppaEventEndpoint,com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint,com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint,com.zeppamobile.api.endpoint.ZeppaUserEndpoint,com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaUserInfoEndpoint
+			<param-value>com.zeppamobile.api.endpoint.AppInfoEndpoint,com.zeppamobile.api.endpoint.DeviceInfoEndpoint,com.zeppamobile.api.endpoint.EventCommentEndpoint,com.zeppamobile.api.endpoint.EventTagEndpoint,com.zeppamobile.api.endpoint.EventTagFollowEndpoint,com.zeppamobile.api.endpoint.InviteGroupEndpoint,com.zeppamobile.api.endpoint.PhotoInfoEndpoint,com.zeppamobile.api.endpoint.ZeppaEventEndpoint,com.zeppamobile.api.endpoint.ZeppaEventToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaFeedbackEndpoint,com.zeppamobile.api.endpoint.ZeppaNotificationEndpoint,com.zeppamobile.api.endpoint.ZeppaUserEndpoint,com.zeppamobile.api.endpoint.ZeppaUserToUserRelationshipEndpoint,com.zeppamobile.api.endpoint.ZeppaUserInfoEndpoint,com.zeppamobile.api.endpoint.VendorEndpoint,com.zeppamobile.api.endpoint.VendorEventEndpoint,com.zeppamobile.api.endpoint.VendorEventRelationshipEndpoint
 			</param-value>
 		</init-param>
 	</servlet>
@@ -31,8 +31,112 @@
 
 	<!-- Notification Building Servlet -->
 
-	<!-- <servlet> <servlet-name>NotificationBuilder</servlet-name> <servlet-class>com.zeppamobile.api.endpoint.utils.NotificationBuilderServlet 
-		</servlet-class> </servlet> <servlet-mapping> <servlet-name>NotificationBuilder</servlet-name> 
-		<url-pattern>/notifications/builder/</url-pattern> </servlet-mapping> -->
+	<servlet>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<servlet-class>com.zeppamobile.api.notifications.NotificationBuilderServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>NotificationBuilder</servlet-name>
+		<url-pattern>/notifications/builder/</url-pattern>
+	</servlet-mapping>
 
+
+	<!-- Admin Servlet for events -->
+<!-- 	<servlet>
+		<servlet-name>EventAdminServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.admin.EventAdminServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventAdminServlet</servlet-name>
+		<url-pattern>/admin/event-servlet/</url-pattern>
+	</servlet-mapping> -->
+
+	<servlet> 
+		<servlet-name>StartupServlet</servlet-name> 
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet</servlet-class> 
+		<load-on-startup>0</load-on-startup> 
+	</servlet> 
+	<servlet-mapping> 
+		<servlet-name>StartupServlet</servlet-name> 
+		<url-pattern>/_ah/start</url-pattern> 
+	</servlet-mapping>
+	
+	<!-- Vendor Servlet -->
+	<servlet>
+		<servlet-name>VendorServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.VendorServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>VendorServlet</servlet-name>
+		<url-pattern>/endpoint/vendor-servlet/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- VendorEvent Servlet -->
+	<servlet>
+		<servlet-name>VendorEventServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.VendorEventServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>VendorEventServlet</servlet-name>
+		<url-pattern>/endpoint/vendor-event-servlet/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Tags Servlet -->
+		<servlet>
+		<servlet-name>EventTagServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.EventTagServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EventTagServlet</servlet-name>
+		<url-pattern>/endpoint/event-tag-servlet/</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<servlet-name>VendorEventRelationshipServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.VendorEventRelationshipServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>VendorEventRelationshipServlet</servlet-name>
+		<url-pattern>/endpoint/event-relationship-servlet/</url-pattern>
+	</servlet-mapping>	
+	
+	<!-- Employee Servlet -->
+	<servlet>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.EmployeeServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<url-pattern>/endpoint/employee-servlet/</url-pattern>
+	</servlet-mapping>
+	
+	
+		<!-- Authentication Servlet -->
+	<servlet>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.AuthenticationServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AuthenticationServlet</servlet-name>
+		<url-pattern>/endpoint/authentication-servlet/</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>ZeppaUserServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.ZeppaUserServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ZeppaUserServlet</servlet-name>
+		<url-pattern>/endpoint/user-servlet/</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

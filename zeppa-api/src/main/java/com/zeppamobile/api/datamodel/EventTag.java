@@ -3,7 +3,6 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -15,6 +14,9 @@ import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
 public class EventTag {
+	
+	// This enum tells whether the tag is owned by a user or a vendor
+	public enum TagType {USER, VENDOR};
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -31,12 +33,21 @@ public class EventTag {
 
 	@Persistent
 	private String tagText;
-
+	
 	@Persistent
-	private ZeppaUser owner;
-
+	private List<String> indexedWords;
+	
 	@Persistent
-	private List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+	private TagType type;
+
+	
+	
+	/**
+	 * Blank Constructor
+	 */
+	public EventTag() {
+
+	}
 
 	/**
 	 * Create a new EventTag Instance
@@ -49,19 +60,8 @@ public class EventTag {
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
-		this.owner = owner;
 		this.ownerId = owner.getId();
-	}
-
-	/**
-	 * TEMPORARY
-	 */
-	public EventTag(Long ownerId, String tagText) {
-
-		this.created = System.currentTimeMillis();
-		this.updated = System.currentTimeMillis();
-		this.tagText = tagText;
-		this.ownerId = ownerId;
+		this.indexedWords = new ArrayList<String>();
 	}
 
 	/**
@@ -76,9 +76,28 @@ public class EventTag {
 		this.updated = (Long) json.get("updated");
 		this.ownerId = (Long) json.get("ownerId");
 		this.tagText = (String) json.get("tagText");
-
+//		this.indexedWords = (List<String>) json.get("indexedWords");
 	}
 
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("id", key.getId());
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+
+		obj.put("tagText", tagText);
+		obj.put("ownerId", ownerId);
+
+		return obj;
+	}
+	
 	public Long getCreated() {
 		return created;
 	}
@@ -118,21 +137,13 @@ public class EventTag {
 	public void setOwnerId(Long ownerId) {
 		this.ownerId = ownerId;
 	}
-
-	public ZeppaUser getOwner() {
-		return owner;
-	}
-
-	public void setOwner(ZeppaUser owner) {
-		this.owner = owner;
-	}
 	
-	public boolean addEventTagFollow(EventTagFollow follow){
-		return this.follows.add(follow);
+	public TagType getType() {
+		return type;
 	}
-	
-	public boolean removeFollow(EventTagFollow follow){
-		return this.follows.remove(follow);
+
+	public void setType(TagType type) {
+		this.type = type;
 	}
 
 }

@@ -137,8 +137,13 @@ public class NotificationWorker {
 		return null;
 	}
 
+	/**
+	 * Delete previously executed tasks (good house keeping!)
+	 * 
+	 * @param tasks - tasks that have been executed
+	 */
 	private void deleteTasks(List<TaskHandle> tasks) {
-		for (int attemptNo = 1;; attemptNo++) {
+		for (int attemptNo = 1;!backOff(attemptNo); attemptNo++) {
 			try {
 				queue.deleteTask(tasks);
 				break;
@@ -149,16 +154,13 @@ public class NotificationWorker {
 				log.warning("ApiDeadlineExceededException when deleting tasks from queue '"
 						+ queue.getQueueName() + "'. Attempt=" + attemptNo);
 			}
-			if (!backOff(attemptNo)) {
-				break;
-			}
 		}
 	}
 
 	/**
 	 * Process a batch of tasks and send notifications appropriately
 	 * 
-	 * @param tasks
+	 * @param tasks - tasks to be executed
 	 */
 	private void processLeasedTasks(List<TaskHandle> tasks) {
 
@@ -172,11 +174,14 @@ public class NotificationWorker {
 		
 		boolean backOff = false;
 
+		// Iterate through the tasks and execute them
 		for (TaskHandle task : tasks) {
+			// Unless the instance is being sut down
 			if (LifecycleManager.getInstance().isShuttingDown()) {
 				break;
 			}
 
+			// Mark a task as being processed so other processes don't run it simultaniously 
 			processedTasks.add(task);
 			if (previouslyProcessedTaskNames.contains(task.getName())) {
 				log.info("Ignoring a task " + task.getName()
@@ -187,6 +192,7 @@ public class NotificationWorker {
 
 			try {
 
+				// Process the task and figure out what's what
 				Object result = processLeasedTask(task);
 
 				if(result == null){
@@ -313,6 +319,7 @@ public class NotificationWorker {
 			}
 		}
 
+		// If one is missing, this is a bad task (Exception?)
 		if (payload == null || deviceTokens == null || deviceType == null) {
 			log.warning("issue with params");
 			return null;
@@ -354,12 +361,13 @@ public class NotificationWorker {
 			builder.addData("purpose", purpose);
 
 			if (purpose.equals("zeppaNotification")) {
-				builder.addData("notificationId",
-						json.getString("notificationId"));
-				builder.addData("senderId", json.getString("senderId"));
-				builder.addData("eventId", json.getString("eventId"));
+				
+				builder.addData("id",json.getString("id"));
+				builder.addData("title", json.getString("title"));
+				builder.addData("message", json.getString("message"));
+				builder.addData("type", json.getString("type"));
 				builder.addData("expires", json.getString("expires"));
-
+				
 				if (json.getString("eventId").equals("-1")) {
 					builder.collapseKey(json.getString("senderId"));
 				} else {
@@ -416,32 +424,31 @@ public class NotificationWorker {
 		PushNotificationPayload pnPayload = PushNotificationPayload.complex();
 		try {
 			JSONObject json = new JSONObject(payload);
-
-//			json.put("content_available", new Boolean(true));
 			
-			
+			// Fetch the purpose of this notification
 			String purpose = json.getString("purpose");
 			pnPayload.addCustomDictionary("purpose", purpose);
 
+			// Zeppa Notifications are notifications to be displayed to the user
+			// The come accompanied with a message that corresponds to a notification object
 			if (purpose.equals("zeppaNotification")) {
-
 				
-				pnPayload.addCustomDictionary("notificationId",
-						json.getString("notificationId"));
-//				pnPayload.addCustomDictionary("senderId",
-//						json.getString("senderId"));
-//				pnPayload.addCustomDictionary("eventId",
-//						json.getString("eventId"));
-				pnPayload.addCustomDictionary("expires",
-						json.getString("expires"));
+				// Build custom library for delivering a notification
+				pnPayload.addCustomDictionary("id",json.getString("id"));
+				pnPayload.addCustomDictionary("title", json.getString("title"));
+				pnPayload.addCustomDictionary("message", json.getString("message"));
+				pnPayload.addCustomDictionary("type", json.getString("type"));
+				pnPayload.addCustomDictionary("expires",json.getString("expires"));
 
 			} else if (purpose.equals("userRelationshipDeleted")) {
+				// If a user to user relationship is deleted, silently clear everything between the two of you
 				pnPayload.addCustomDictionary("senderId",
 						json.getString("senderId"));
-				pnPayload.addCustomDictionary("recipientId",
+				pnPayload.addCustomDictionary("recipId",
 						json.getString("recipientId"));
 
 			} else if (purpose.equals("eventDeleted")) {
+				// If an event was deleted, make sure it is not longer in app
 				pnPayload.addCustomDictionary("eventId",
 						json.getString("eventId"));
 			}
@@ -453,20 +460,25 @@ public class NotificationWorker {
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "JSONExceptin sending push notification: " + e.getMessage());
 			return null;
 		}
 		
 		PushedNotifications notifications = null;
 		try {
+			log.log(Level.WARNING, "Sending " + pnPayload.getPayload().toString() + " ("+pnPayload.getPayloadSize()+"/"+pnPayload.getMaximumPayloadSize()+") to devices:" + deviceTokens.toString());
 			notifications = pushNotificationSender.sendPayload(pnPayload,
 					deviceTokens);
 
 		} catch (CommunicationException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "Communcation Exception: " + e.getMessage());
 		} catch (KeystoreException e) {
 			e.printStackTrace();
+			log.log(Level.SEVERE, "Keystore Exception: " + e.getMessage());
 		} catch (Exception e){
 			e.printStackTrace();
+			log.log(Level.SEVERE, "General Exception: " + e.getMessage());
 		}
 
 		return notifications;

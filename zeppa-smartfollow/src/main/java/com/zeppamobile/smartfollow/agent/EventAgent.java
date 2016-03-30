@@ -1,8 +1,8 @@
 package com.zeppamobile.smartfollow.agent;
 
-import com.zeppamobile.common.datainfo.EventInfo;
-import com.zeppamobile.common.datainfo.EventRelationshipInfo;
-import com.zeppamobile.common.datainfo.EventTagInfo;
+import com.zeppamobile.common.cerealwrapper.EventCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.EventRelationshipCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
 
 /**
  * 
@@ -13,7 +13,7 @@ import com.zeppamobile.common.datainfo.EventTagInfo;
  */
 public class EventAgent extends BaseAgent {
 
-	private EventInfo event;
+	private EventCerealWrapper event;
 
 	// Total calculated popularity of a given event
 	// -1 before it is instantiated
@@ -25,7 +25,7 @@ public class EventAgent extends BaseAgent {
 	 * @param event
 	 *            - event to wrap around
 	 */
-	public EventAgent(EventInfo event) {
+	public EventAgent(EventCerealWrapper event) {
 		this.event = event;
 		if (!event.isNewEvent()) {
 			calculatePopularity();
@@ -40,7 +40,7 @@ public class EventAgent extends BaseAgent {
 	 */
 	public boolean containsTag(long tagId) {
 		try {
-			for (EventTagInfo info : event.getTags()) {
+			for (EventTagCerealWrapper info : event.getTags()) {
 				if (info.getTagId() == tagId) {
 					return true;
 				}
@@ -98,7 +98,7 @@ public class EventAgent extends BaseAgent {
 		/*
 		 * Iterate through all relationships and determine
 		 */
-		for (EventRelationshipInfo relationship : event.getRelationships()) {
+		for (EventRelationshipCerealWrapper relationship : event.getRelationships()) {
 			// Event was recommended
 			if (relationship.isRecommended()) {
 				recommended += 1;

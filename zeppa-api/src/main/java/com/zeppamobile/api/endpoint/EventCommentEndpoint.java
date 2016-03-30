@@ -1,12 +1,13 @@
 package com.zeppamobile.api.endpoint;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -20,6 +21,7 @@ import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventComment;
 import com.zeppamobile.api.datamodel.ZeppaEvent;
+import com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.notifications.NotificationUtility;
@@ -37,7 +39,7 @@ public class EventCommentEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "listEventComment")
+	@ApiMethod(name = "listEventComment", path = "listEventComment")
 	public CollectionResponse<EventComment> listEventComment(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -89,23 +91,31 @@ public class EventCommentEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			List<Long> authedEventIds = new ArrayList<Long>();
-			List<Long> unauthorizedEventIds = new ArrayList<Long>();
+			// // Tight loop for fetching all entities from datastore and
+			// // accomodate
+			// // for lazy fetch.
+			// List<Long> authedEventIds = new ArrayList<Long>();
+			// List<Long> unauthorizedEventIds = new ArrayList<Long>();
 			for (EventComment comment : execute) {
-				if (!Utils.listContainsLong(authedEventIds,
-						comment.getEventId())
-						&& !Utils.listContainsLong(unauthorizedEventIds,
-								comment.getEventId())) {
-					ZeppaEvent event = comment.getEvent();
-					if (event.isAuthorized(user.getId().longValue())) {
-						authedEventIds.add(event.getId());
-					} else {
-						unauthorizedEventIds.add(event.getId());
-					}
-				}
+				// Touch the fields we want
+				comment.getKey();
+				comment.getCreated();
+				comment.getUpdated();
+				comment.getCommenterId();
+				comment.getEventId();
+				comment.getText();
+
+				// if (!Utils.listContainsLong(authedEventIds,
+				// comment.getEventId())
+				// && !Utils.listContainsLong(unauthorizedEventIds,
+				// comment.getEventId())) {
+				// ZeppaEvent event = comment.getEvent();
+				// if (event.isAuthorized(user.getId().longValue())) {
+				// authedEventIds.add(event.getId());
+				// } else {
+				// unauthorizedEventIds.add(event.getId());
+				// }
+				// }
 
 			}
 		} finally {
@@ -125,7 +135,7 @@ public class EventCommentEndpoint {
 	 * @return The entity with primary key id.
 	 * @throws OAuthRequestException
 	 */
-	@ApiMethod(name = "getEventComment")
+	@ApiMethod(name = "getEventComment", path = "getEventComment")
 	public EventComment getEventComment(@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
@@ -142,13 +152,7 @@ public class EventCommentEndpoint {
 		try {
 			eventcomment = mgr.getObjectById(EventComment.class, id);
 
-			// Do this to verify user is allowed to retrieve this comment
-			if (eventcomment.getCommenterId().longValue() != user.getId()
-					.longValue()
-					&& !eventcomment.getEvent().isAuthorized(
-							user.getId().longValue())) {
-				throw new UnauthorizedException("User can't see this comment");
-			}
+			// TODO: verify this user can get the requested comment
 		} finally {
 			mgr.close();
 		}
@@ -172,6 +176,8 @@ public class EventCommentEndpoint {
 
 		if (eventcomment.getEventId() == null) {
 			throw new NullPointerException("Event Id Not Set");
+		} else if (!Utils.isWebSafe(eventcomment.getText())) {
+			throw new IllegalArgumentException("Ilegal text (empty or too long)");
 		}
 
 		// Authorized ZeppaUser
@@ -183,33 +189,54 @@ public class EventCommentEndpoint {
 					"No matching user found for this token");
 		}
 
-		ZeppaEvent event = getEventForComment(eventcomment, user);
-
-		eventcomment.setCreated(System.currentTimeMillis());
-		eventcomment.setUpdated(System.currentTimeMillis());
-
 		PersistenceManager mgr = getPersistenceManager();
-
+		Transaction txn = mgr.currentTransaction();
 		try {
 
+			txn.begin();
+
+			// Fetch the event to make sure it exists
+			ZeppaEvent e = mgr.getObjectById(ZeppaEvent.class,
+					eventcomment.getEventId());
+			
+			// If the commenter is not the host of the event, make sure they
+			// have a relationship to it
+			if (e.getHostId().longValue() != user.getId().longValue()) {
+				@SuppressWarnings("unchecked")
+				Collection<ZeppaEventToUserRelationship> c = (Collection<ZeppaEventToUserRelationship>) mgr
+						.newQuery(
+								ZeppaEventToUserRelationship.class,
+								"eventId==" + e.getId() + " && userId=="
+										+ user.getId()).execute();
+				if (c == null || c.isEmpty()) {
+					throw new UnauthorizedException(
+							"Cannot comment on events you don't hold a relationship to");
+				}
+			}
+
+			eventcomment.setCreated(System.currentTimeMillis());
+			eventcomment.setUpdated(System.currentTimeMillis());
+			// Just in case someone tries to post a comment on someone else's behalf
+			eventcomment.setCommenterId(user.getId());
+			
+			
+			
 			// Persist the comment
 			eventcomment = mgr.makePersistent(eventcomment);
 
-			// Add relationship to user who commented
-			if (user.addComment(eventcomment)) {
-				ClientEndpointUtility.updateUserEntityRelationships(user);
-			}
-
-			// Add relationship to event commented on
-			if (event.addComment(eventcomment)) {
-				ClientEndpointUtility.updateEventRelationships(event);
-			}
+			txn.commit();
 
 		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+				eventcomment = null;
+			}
 			mgr.close();
 		}
 
-		// If success, notify
+		/*
+		 * Schedule appropriate notifications to be built and delivered 
+		 */
 		if (eventcomment != null) {
 			NotificationUtility.scheduleNotificationBuild(
 					EventComment.class.getName(), eventcomment.getId(),
@@ -219,32 +246,33 @@ public class EventCommentEndpoint {
 		return eventcomment;
 	}
 
-	/**
-	 * Fetch the event this user is commenting on
-	 * 
-	 * @param comment
-	 * @param auth
-	 * @return
-	 * @throws UnauthorizedException
-	 */
-	private ZeppaEvent getEventForComment(EventComment comment, ZeppaUser user) throws UnauthorizedException {
-		PersistenceManager mgr = getPersistenceManager();
-		ZeppaEvent event = null;
-		try {
-			event = mgr.getObjectById(ZeppaEvent.class, comment.getEventId());
-			// Make sure user can comment on this
+	// /**
+	// * Fetch the event this user is commenting on
+	// *
+	// * @param comment
+	// * @param auth
+	// * @return
+	// * @throws UnauthorizedException
+	// */
+	// private ZeppaEvent getEventForComment(EventComment comment, ZeppaUser
+	// user) throws UnauthorizedException {
+	// PersistenceManager mgr = getPersistenceManager();
+	// ZeppaEvent event = null;
+	// try {
+	// event = mgr.getObjectById(ZeppaEvent.class, comment.getEventId());
+	// // Make sure user can comment on this
+	//
+	// if (!event.isAuthorized(user.getId().longValue())) {
+	// throw new UnauthorizedException(
+	// "User is not authorized to see this event");
+	// }
+	//
+	// } finally {
+	// mgr.close();
+	// }
+	// return event;
+	// }
 
-			if (!event.isAuthorized(user.getId().longValue())) {
-				throw new UnauthorizedException(
-						"User is not authorized to see this event");
-			}
-
-		} finally {
-			mgr.close();
-		}
-		return event;
-	}
-	
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}

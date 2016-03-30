@@ -36,18 +36,11 @@ public class EmailFormServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		
-		// Set status to found at first just in case uncaught error occurs
-		response.setStatus(HttpServletResponse.SC_FOUND);
-		
 		
 		String toAddress = request.getParameter("toAddress");
 		String fromAddress = "zeppa-cloud-1821@appspot.gserviceaccount.com";
 		String subject = request.getParameter("subject");
 		String body = request.getParameter("body");
-		
-		response.getWriter().println(toAddress + "\n}");
 		
 		if (Utils.isWebSafe(toAddress) && Utils.isWebSafe(fromAddress) &&
 				Utils.isWebSafe(subject) && Utils.isWebSafe(body)) {
@@ -63,9 +56,7 @@ public class EmailFormServlet extends HttpServlet {
 		      
 			Session session = Session.getDefaultInstance(properties, null);
 
-			try {
-				response.getWriter().println("In try Block \n}");
-				
+			try {				
 			    Message msg = new MimeMessage(session);
 			    msg.setFrom(new InternetAddress(toAddress));
 			    msg.addRecipient(Message.RecipientType.TO,
@@ -73,6 +64,8 @@ public class EmailFormServlet extends HttpServlet {
 			    msg.setSubject(subject);
 			    msg.setText(body);
 			    Transport.send(msg);
+			    
+			    response.setStatus(HttpServletResponse.SC_OK);
 
 			} catch (AddressException e) {
 			    // ...

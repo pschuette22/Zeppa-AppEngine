@@ -22,7 +22,7 @@ import net.sf.extjwnl.data.POS;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
-import com.zeppamobile.common.datainfo.EventTagInfo;
+import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
 import com.zeppamobile.common.report.SmartfollowReport;
 import com.zeppamobile.smartfollow.Utils;
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
@@ -41,7 +41,7 @@ import com.zeppamobile.smartfollow.task.CompareWordsTask;
  */
 public class TagAgent extends BaseAgent {
 
-	private EventTagInfo tag;
+	private EventTagCerealWrapper tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
 	private ServletContext context;
@@ -49,9 +49,10 @@ public class TagAgent extends BaseAgent {
 	// Parse the tag
 	private List<WordInfo> parsedTagParts = new ArrayList<WordInfo>();
 
-	public TagAgent(ServletContext context, EventTagInfo tag,
+	public TagAgent(ServletContext context, EventTagCerealWrapper tag,
 			SmartfollowReport report) {
 		this.context = context;
+
 		this.tag = tag;
 		this.report = report;
 
@@ -75,7 +76,7 @@ public class TagAgent extends BaseAgent {
 		}
 	}
 
-	public EventTagInfo getTagInfo() {
+	public EventTagCerealWrapper getTagInfo() {
 		return tag;
 	}
 

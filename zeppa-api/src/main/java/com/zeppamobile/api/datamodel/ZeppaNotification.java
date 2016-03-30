@@ -6,7 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
 public class ZeppaNotification {
@@ -49,22 +48,13 @@ public class ZeppaNotification {
 	private NotificationType type;
 
 	@Persistent
-	private String extraMessage;
+	private String message;
+	
+	@Persistent
+	private String title;
 
 	@Persistent
 	private Boolean hasSeen;
-	
-	/*
-	 * For maintaining relationship
-	 */
-	@Persistent(defaultFetchGroup="false")
-	@Unowned
-	private ZeppaUser recipient;
-	
-	@Persistent(defaultFetchGroup="false")
-	@Unowned
-	private ZeppaUser sender;
-	
 
 	/**
 	 * Construct a new Notification that can be persisted and viewed by the user
@@ -78,7 +68,7 @@ public class ZeppaNotification {
 	 * @param hasSeen
 	 */
 	public ZeppaNotification(Long senderId, Long recipientId, Long eventId,
-			Long expires, NotificationType type, String extraMessage,
+			Long expires, NotificationType type, String title, String message,
 			Boolean hasSeen) {
 
 		this.created = System.currentTimeMillis();
@@ -88,10 +78,10 @@ public class ZeppaNotification {
 		this.eventId = eventId;
 		this.expires = expires;
 		this.type = type;
-		this.extraMessage = extraMessage;
+		this.title = title;
+		this.message = message;
 		this.hasSeen = hasSeen;
 	}
-
 
 	public Long getCreated() {
 		return created;
@@ -149,12 +139,20 @@ public class ZeppaNotification {
 		this.type = type;
 	}
 
-	public String getExtraMessage() {
-		return extraMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setExtraMessage(String extraMessage) {
-		this.extraMessage = extraMessage;
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public Boolean getHasSeen() {
@@ -173,27 +171,4 @@ public class ZeppaNotification {
 		this.senderId = userId;
 	}
 
-
-	public ZeppaUser getRecipient() {
-		return recipient;
-	}
-
-
-	public void setRecipient(ZeppaUser recipient) {
-		this.recipient = recipient;
-		this.recipientId = recipient.getId();
-	}
-
-
-	public ZeppaUser getSender() {
-		return sender;
-	}
-
-
-	public void setSender(ZeppaUser sender) {
-		this.sender = sender;
-		this.senderId = sender.getId();
-	}
-
-	
 }

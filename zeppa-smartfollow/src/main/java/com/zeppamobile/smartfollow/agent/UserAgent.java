@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import com.zeppamobile.common.datainfo.EventRelationshipInfo;
-import com.zeppamobile.common.datainfo.UserDataInfo;
+import com.zeppamobile.common.cerealwrapper.EventRelationshipCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.UserCerealWrapper;
 import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Utils;
@@ -24,7 +24,7 @@ public class UserAgent extends BaseAgent {
 	/*
 	 * Values needed to calculations for this agent
 	 */
-	private UserDataInfo userData;
+	private UserCerealWrapper userData;
 	private List<EventAgent> events = new ArrayList<EventAgent>();
 	private List<TagAgent> tags = new ArrayList<TagAgent>();
 
@@ -39,7 +39,7 @@ public class UserAgent extends BaseAgent {
 	 * @param userId
 	 *            - userId of user agent should represent
 	 */
-	public UserAgent(UserDataInfo userData) {
+	public UserAgent(UserCerealWrapper userData) {
 		this.userData = userData;
 	}
 
@@ -85,7 +85,7 @@ public class UserAgent extends BaseAgent {
 
 			int invitedCount = 0, mmInvitedCount = 0, recommendedCount = 0, attendedCount = 0;
 
-			for (EventRelationshipInfo relationship : userData.getEventRelationships()) {
+			for (EventRelationshipCerealWrapper relationship : userData.getEventRelationships()) {
 
 				// If user was invited to event, increment
 				if (relationship.getInviterId() > 0) {

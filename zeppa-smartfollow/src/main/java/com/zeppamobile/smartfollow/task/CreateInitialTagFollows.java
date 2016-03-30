@@ -13,7 +13,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import com.zeppamobile.common.datainfo.EventTagFollowInfo;
+import com.zeppamobile.common.cerealwrapper.EventTagFollowInfo;
 import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.agent.TagAgent;
 import com.zeppamobile.smartfollow.agent.UserAgent;

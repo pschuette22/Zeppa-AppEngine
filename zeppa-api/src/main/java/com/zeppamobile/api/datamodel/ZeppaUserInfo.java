@@ -1,5 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
+import java.util.Date;
+
 import javax.jdo.annotations.Discriminator;
 import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -13,6 +15,10 @@ import com.google.appengine.api.datastore.Key;
 @Discriminator(strategy = DiscriminatorStrategy.CLASS_NAME)
 public class ZeppaUserInfo{
 
+	
+	public enum Gender {
+		MALE,FEMALE,UNANSWERED
+	}
 	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY, defaultFetchGroup = "true")
@@ -32,13 +38,12 @@ public class ZeppaUserInfo{
 
 	@Persistent(defaultFetchGroup = "true")
 	private String imageUrl;
-
-	@Persistent(defaultFetchGroup = "true")
-	private String googleAccountEmail;
-
-	@Persistent(defaultFetchGroup = "true")
-	private String primaryUnformattedNumber;
 	
+	@Persistent(defaultFetchGroup = "true")
+	private Gender gender;
+	
+	@Persistent(defaultFetchGroup = "true")
+	private Long dateOfBirth;
 	
 	
 	public Long getCreated() {
@@ -89,20 +94,25 @@ public class ZeppaUserInfo{
 		this.imageUrl = imageUrl;
 	}
 
-	public String getGoogleAccountEmail() {
-		return googleAccountEmail;
+	public Gender getGender() {
+		if(gender == null)
+			return Gender.UNANSWERED;
+		
+		return gender;
 	}
 
-	public void setGoogleAccountEmail(String googleAccountEmail) {
-		this.googleAccountEmail = googleAccountEmail;
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
-	public String getPrimaryUnformattedNumber() {
-		return primaryUnformattedNumber;
+	public Long getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setPrimaryUnformattedNumber(String primaryUnformattedNumber) {
-		this.primaryUnformattedNumber = primaryUnformattedNumber;
+	public void setDateOfBirth(Long dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
+	
+	
 }

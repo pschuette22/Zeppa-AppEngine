@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -35,7 +36,7 @@ public class ZeppaNotificationEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@SuppressWarnings("unchecked")
-	@ApiMethod(name = "listZeppaNotification")
+	@ApiMethod(name = "listZeppaNotification",path="listZeppaNotification")
 	public CollectionResponse<ZeppaNotification> listZeppaNotification(
 			@Nullable @Named("filter") String filterString,
 			@Nullable @Named("cursor") String cursorString,
@@ -94,6 +95,19 @@ public class ZeppaNotificationEndpoint {
 				if (notif.getRecipientId().longValue() != user.getId()
 						.longValue()) {
 					badEggs.add(notif);
+				} else {
+					notif.getKey();
+					notif.getId();
+					notif.getCreated();
+					notif.getUpdated();
+					notif.getEventId();
+					notif.getRecipientId();
+					notif.getSenderId();
+					notif.getTitle();
+					notif.getMessage();
+					notif.getType();
+					notif.getHasSeen();
+					
 				}
 			}
 			execute.removeAll(badEggs);
@@ -115,7 +129,7 @@ public class ZeppaNotificationEndpoint {
 	 * @return The entity with primary key id.
 	 * @throws OAuthRequestException
 	 */
-	@ApiMethod(name = "getZeppaNotification")
+	@ApiMethod(name = "getZeppaNotification",path="getZeppaNotification")
 	public ZeppaNotification getZeppaNotification(@Named("id") Long id,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
@@ -204,24 +218,29 @@ public class ZeppaNotificationEndpoint {
 
 		zeppanotification.setUpdated(System.currentTimeMillis());
 		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
+			txn.begin();
 			ZeppaNotification current = mgr.getObjectById(
 					ZeppaNotification.class, zeppanotification.getId());
 
 			if (current.getRecipientId().longValue() != user.getId()
 					.longValue()) {
-				throw new UnauthorizedException("");
+				throw new UnauthorizedException("This notification was not sent to you");
 			}
 
-			current.setEventId(zeppanotification.getEventId());
 			current.setExpires(zeppanotification.getExpires());
-			current.setExtraMessage(zeppanotification.getExtraMessage());
 			current.setHasSeen(zeppanotification.getHasSeen());
 			current.setUpdated(System.currentTimeMillis());
 
-			zeppanotification = mgr.makePersistent(current);
+			txn.commit();
 
 		} finally {
+			
+			if(txn.isActive()){
+				txn.rollback();
+			}
+			
 			mgr.close();
 		}
 		return zeppanotification;

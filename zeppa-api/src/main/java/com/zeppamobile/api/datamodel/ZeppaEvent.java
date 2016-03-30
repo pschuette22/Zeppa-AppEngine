@@ -3,8 +3,10 @@ package com.zeppamobile.api.datamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Element;
+import javax.jdo.annotations.Discriminator;
+import javax.jdo.annotations.DiscriminatorStrategy;
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -12,95 +14,94 @@ import javax.jdo.annotations.PrimaryKey;
 import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.datanucleus.annotations.Unowned;
 
 @PersistenceCapable
+@Discriminator(strategy=DiscriminatorStrategy.CLASS_NAME)
 public class ZeppaEvent {
 
+	
 	public enum EventPrivacyType {
 		CASUAL, // Friends
-		PRIVATE // Invite Only
+		PRIVATE, // Invite Only
+		PUBLIC // Anyone can see and join
 	}
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+	protected Key key;
 
 	@Persistent
-	private Long created;
+	protected Long created;
 
 	@Persistent
-	private Long updated;
+	protected Long updated;
 
 	@Persistent
-	private String googleCalendarId;
+	protected String googleCalendarId;
 
 	@Persistent
-	private String googleCalendarEventId;
+	protected String googleCalendarEventId;
 
 	@Persistent
-	private String iCalUID; // verify what this is
+	protected String iCalUID; // verify what this is
 
 	@Persistent
-	private EventPrivacyType privacy;
+	protected EventPrivacyType privacy;
 
 	@Persistent
-	private Long hostId;
+	protected Long hostId;
 
 	@Persistent
-	private String title;
+	protected String title;
 
 	@Persistent
-	private String description;
+	protected String description;
 
 	@Persistent
-	private Boolean guestsMayInvite;
+	protected Boolean guestsMayInvite;
 
 	@Persistent
-	private Long start;
+	protected Long start;
 
 	@Persistent
-	private Long end;
+	protected Long end;
+
+	/*
+	 * ===== Information relevant to location =====
+	 */
+	@Persistent
+	protected String displayLocation;
 
 	@Persistent
-	private String displayLocation;
+	protected String mapsLocation;
 
 	@Persistent
-	private String mapsLocation;
+	protected Float latitude;
+
+	@Persistent
+	protected Float longitude;
+	/*
+	 * ============================================
+	 * 
+	 */
 
 	@Persistent(defaultFetchGroup = "true")
-	private List<Long> tagIds = new ArrayList<Long>();
+	protected List<Long> tagIds = new ArrayList<Long>();
 
 	// Initially invited users
 	@Persistent
-	private List<Long> invitedUserIds;
+	protected List<Long> invitedUserIds;
 
-	/*
-	 * Entity relationships
-	 */
-	@Persistent
-	@Unowned
-	private ZeppaUser host;
 
-	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<ZeppaEventToUserRelationship> attendeeRelationships = new ArrayList<ZeppaEventToUserRelationship>();
-
-	@Persistent(mappedBy = "event", defaultFetchGroup = "false")
-	@Element(dependent = "true")
-	private List<EventComment> comments = new ArrayList<EventComment>();
-	
-	
-
-	public ZeppaEvent(Long created, Long updated, String googleCalendarId,
+	public ZeppaEvent(String googleCalendarId,
 			String googleCalendarEventId, String iCalUID,
 			EventPrivacyType privacy, Long hostId, String title,
 			String description, Boolean guestsMayInvite, Long start, Long end,
 			String displayLocation, String mapsLocation, List<Long> tagIds,
 			List<Long> invitedUserIds) {
 
-		this.created = created;
-		this.updated = updated;
+		this.created = System.currentTimeMillis();
+		this.updated = System.currentTimeMillis();
 		this.googleCalendarId = googleCalendarId;
 		this.googleCalendarEventId = googleCalendarEventId;
 		this.iCalUID = iCalUID;
@@ -150,6 +151,49 @@ public class ZeppaEvent {
 		 */
 		this.invitedUserIds = (ArrayList<Long>) json.get("invitedUserIds");
 
+	}
+
+	/**
+	 * Convert this object to a json object
+	 * 
+	 * @return jsonObject
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+
+		obj.put("key", key);
+		obj.put("id", key.getId());
+		obj.put("created", created == null ? Long.valueOf(-1) : created);
+		obj.put("updated", updated == null ? Long.valueOf(-1) : updated);
+		obj.put("googleCalendarId",
+				googleCalendarId == null ? "googleCalendarId"
+						: googleCalendarId);
+		obj.put("googleCalendarEventId",
+				googleCalendarEventId == null ? "googleCalendarEventId"
+						: googleCalendarEventId);
+		obj.put("iCalUID", iCalUID == null ? "iCalUID" : iCalUID);
+		obj.put("privacy", privacy == null ? "privacy" : privacy.toString());
+		obj.put("hostId", hostId == null ? Long.valueOf(-1) : hostId);
+		obj.put("title", title == null ? "title" : title);
+		obj.put("description", description == null ? "description"
+				: description);
+		obj.put("guestsMayInvite", guestsMayInvite == null ? false
+				: guestsMayInvite);
+		obj.put("start", start == null ? Long.valueOf(-1) : start);
+		obj.put("end", end == null ? Long.valueOf(-1) : end);
+		obj.put("displayLocation", displayLocation == null ? "displayLocation"
+				: displayLocation);
+		obj.put("mapsLocation", mapsLocation == null ? "mapsLocation"
+				: mapsLocation);
+		obj.put("tagIds",
+				tagIds == null ? (new ArrayList<Long>())
+						: tagIds);
+		obj.put("invitedUserIds",
+				invitedUserIds == null ? (new ArrayList<Long>())
+						: invitedUserIds);
+
+		return obj;
 	}
 
 	public Long getCreated() {
@@ -288,60 +332,25 @@ public class ZeppaEvent {
 		this.invitedUserIds = invitedUserIds;
 	}
 
-	public ZeppaUser getHost() {
-		return host;
-	}
-
 	public void setHost(ZeppaUser host) {
-		this.host = host;
+		this.hostId = host.getId();
 	}
 
-	public List<ZeppaEventToUserRelationship> getAttendeeRelationships() {
-		return attendeeRelationships;
+	public Float getLatitude() {
+		return latitude;
 	}
 
-	public void setAttendeeRelationships(
-			List<ZeppaEventToUserRelationship> attendeeRelationships) {
-		this.attendeeRelationships = attendeeRelationships;
+	public void setLatitude(Float latitude) {
+		this.latitude = latitude;
 	}
 
-	public boolean addAttendeeRelationship(
-			ZeppaEventToUserRelationship relationship) {
-		return this.attendeeRelationships.add(relationship);
+	public Float getLongitude() {
+		return longitude;
 	}
 
-	public List<EventComment> getComments() {
-		return comments;
+	public void setLongitude(Float longitude) {
+		this.longitude = longitude;
 	}
-
-	public void setComments(List<EventComment> comments) {
-		this.comments = comments;
-	}
-
-	public boolean addComment(EventComment comment) {
-		return this.comments.add(comment);
-	}
-
-	/**
-	 * Helper method to make sure calling user is allowed to see this event
-	 * 
-	 * @param user
-	 * @return true if user is authorized to see this
-	 */
-	public boolean isAuthorized(long userId) {
-
-		boolean isAuthorized = false;
-		if(getHostId().longValue() == userId) {
-			isAuthorized = true;
-		} else {
-			for(ZeppaEventToUserRelationship relationship: attendeeRelationships){
-				if(relationship.getUserId().longValue() == userId){
-					isAuthorized = true;
-					break;
-				}
-			}
-		}
-		return isAuthorized;
-	}
-
+	
+	
 }

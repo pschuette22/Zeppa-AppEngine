@@ -70,8 +70,15 @@ class PushNotificationSender {
 
 	}
 
+	/**
+	 * Get a stream to load the .p12 certificate needed to send push
+	 * notifications
+	 * 
+	 * @return appropriate certificate stream
+	 */
 	private InputStream getCertificateStream() {
-		return PushNotificationSender.class.getClassLoader()
+		// return ClassLoader.getSystemResourceAsStream(CERTIFICATE_NAME);
+		return this.getClass().getClassLoader()
 				.getResourceAsStream(CERTIFICATE_NAME);
 	}
 
@@ -153,11 +160,13 @@ class PushNotificationSender {
 		PushedNotifications notifications = new PushedNotifications();
 
 		if (payload == null) {
+			log.log(Level.SEVERE, "Payload is null");
 			return notifications;
 		}
 
 		try {
 			if (!isConnected && !initializeConnection()) {
+				log.log(Level.SEVERE, "Connection Failed");
 				return null;
 			}
 
@@ -173,23 +182,23 @@ class PushNotificationSender {
 
 					// Add delivered notification instance to array
 
-					log.warning("iOS Notification: " + payload.toString()
+					log.log(Level.WARNING,"iOS Notification: " + payload.toString()
 							+ " \nTo device: " + device.toString());
 
 					if (notification.isSuccessful()) {
 						try {
-							log.warning("Delivery Succcess: payload size "
+							log.log(Level.WARNING,"Delivery Succcess: payload size "
 									+ payload.getPayloadSize() + " / "
 									+ payload.getMaximumPayloadSize());
 						} catch (Exception e) {
-							log.warning("Delivery Success but couldn't retrieve size");
+							log.log(Level.WARNING,"Delivery Success but couldn't retrieve size");
 						}
 					} else {
-						log.warning("Notification was not delivered successfully");
+						log.log(Level.WARNING,"Notification was not delivered successfully");
 
 						Exception theProblem = notification.getException();
-						log.warning(theProblem.getMessage());
-						log.warning(theProblem.toString());
+						log.log(Level.WARNING,theProblem.getMessage());
+						log.log(Level.WARNING,theProblem.toString());
 
 						/*
 						 * If the problem was an error-response packet returned
@@ -198,14 +207,14 @@ class PushNotificationSender {
 						ResponsePacket theErrorResponse = notification
 								.getResponse();
 						if (theErrorResponse != null) {
-							log.warning(theErrorResponse.getMessage());
+							log.log(Level.WARNING,theErrorResponse.getMessage());
 						}
 
 					}
 
 				} catch (InvalidDeviceTokenFormatException e) {
 					notification = new PushedNotification(device, payload, e);
-					log.warning("Error Sending notificaiton to device "
+					log.log(Level.WARNING,"Error Sending notificaiton to device "
 							+ device.toString());
 
 					/* Find out more about what the problem was */
@@ -213,6 +222,10 @@ class PushNotificationSender {
 				}
 				// Add result notification to pushed notifications list result
 				notifications.add(notification);
+			}
+			
+			if(deviceList.isEmpty()){
+				log.log(Level.WARNING,"Recipient Device List empty");
 			}
 
 			// Push.payload(payload, notifications, PASSWORD, production,
@@ -228,7 +241,7 @@ class PushNotificationSender {
 	 * Read and process any pending error-responses.
 	 */
 	public void processedPendingNotificationResponses() {
-		log.log(Level.INFO, "Processing sent notifications.");
+		log.log(Level.WARNING, "Processing sent notifications.");
 
 		if (processedFailedNotificationsMethod == null) {
 			return;

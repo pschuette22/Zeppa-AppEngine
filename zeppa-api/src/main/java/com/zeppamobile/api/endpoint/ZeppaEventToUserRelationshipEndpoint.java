@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
+import javax.jdo.Transaction;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -93,18 +94,33 @@ public class ZeppaEventToUserRelationshipEndpoint {
 				cursorString = cursor.toWebSafeString();
 			}
 
-			/*
-			 * Initialize object and remove bad eggs Badeggs are relationships
-			 * to events user
-			 */
-			List<ZeppaEventToUserRelationship> badEggs = new ArrayList<ZeppaEventToUserRelationship>();
-			for (ZeppaEventToUserRelationship relationship : execute) {
-				ZeppaEvent event = relationship.getEvent();
-				if (!event.isAuthorized(user.getId().longValue())) {
-					badEggs.add(relationship);
+			List<ZeppaEventToUserRelationship> unfoundEvents = new ArrayList<ZeppaEventToUserRelationship>();
+			// Iterate through, grab the event and add it to the relationship
+			for (ZeppaEventToUserRelationship r : execute) {
+				try {
+					// Fetch and set the event
+					ZeppaEvent e = mgr.getObjectById(ZeppaEvent.class,
+							r.getEventId());
+					r.setEvent(e);
+				} catch (JDOObjectNotFoundException e) {
+					unfoundEvents.add(r);
 				}
 			}
-			execute.removeAll(badEggs);
+			execute.removeAll(unfoundEvents);
+
+			// /*
+			// * Initialize object and remove bad eggs Badeggs are relationships
+			// * to events user
+			// */
+			// List<ZeppaEventToUserRelationship> badEggs = new
+			// ArrayList<ZeppaEventToUserRelationship>();
+			// for (ZeppaEventToUserRelationship relationship : execute) {
+			// ZeppaEvent event = relationship.getEvent();
+			// if (!event.isAuthorized(user.getId().longValue())) {
+			// badEggs.add(relationship);
+			// }
+			// }
+			// execute.removeAll(badEggs);
 
 		} finally {
 			mgr.close();
@@ -114,42 +130,42 @@ public class ZeppaEventToUserRelationshipEndpoint {
 				.setItems(execute).setNextPageToken(cursorString).build();
 	}
 
-	/**
-	 * This method gets the entity having primary key id. It uses HTTP GET
-	 * method.
-	 * 
-	 * @param id
-	 *            the primary key of the java bean.
-	 * @return The entity with primary key id.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "getZeppaEventToUserRelationship")
-	public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
-			@Named("id") Long id, @Named("idToken") String tokenString)
-			throws UnauthorizedException {
-
-		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
-		}
-
-		PersistenceManager mgr = getPersistenceManager();
-		ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
-		try {
-			zeppaeventtouserrelationship = mgr.getObjectById(
-					ZeppaEventToUserRelationship.class, id);
-
-		} catch (javax.jdo.JDOObjectNotFoundException ex) {
-			ex.printStackTrace();
-			throw ex;
-		} finally {
-			mgr.close();
-		}
-		return zeppaeventtouserrelationship;
-	}
+	// /**
+	// * This method gets the entity having primary key id. It uses HTTP GET
+	// * method.
+	// *
+	// * @param id
+	// * the primary key of the java bean.
+	// * @return The entity with primary key id.
+	// * @throws OAuthRequestException
+	// */
+	// @ApiMethod(name = "getZeppaEventToUserRelationship")
+	// public ZeppaEventToUserRelationship getZeppaEventToUserRelationship(
+	// Key key, @Named("idToken") String tokenString)
+	// throws UnauthorizedException {
+	//
+	// // Fetch Authorized Zeppa User
+	// ZeppaUser user = ClientEndpointUtility
+	// .getAuthorizedZeppaUser(tokenString);
+	// if (user == null) {
+	// throw new UnauthorizedException(
+	// "No matching user found for this token");
+	// }
+	//
+	// PersistenceManager mgr = getPersistenceManager();
+	// ZeppaEventToUserRelationship zeppaeventtouserrelationship = null;
+	// try {
+	// zeppaeventtouserrelationship = mgr.getObjectById(
+	// ZeppaEventToUserRelationship.class, key);
+	//
+	// } catch (javax.jdo.JDOObjectNotFoundException ex) {
+	// ex.printStackTrace();
+	// throw ex;
+	// } finally {
+	// mgr.close();
+	// }
+	// return zeppaeventtouserrelationship;
+	// }
 
 	/**
 	 * This inserts a new entity into App Engine datastore. If the entity
@@ -178,64 +194,50 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			throw new NullPointerException("Null Event Id");
 		}
 
-		relationship.setCreated(System.currentTimeMillis());
-		relationship.setUpdated(System.currentTimeMillis());
-
 		PersistenceManager mgr = getPersistenceManager();
-		PersistenceManager emgr = getPersistenceManager();
-		PersistenceManager umgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
-			ZeppaEvent event = emgr.getObjectById(ZeppaEvent.class,
+
+			txn.begin();
+			ZeppaEvent event = mgr.getObjectById(ZeppaEvent.class,
 					relationship.getEventId());
-			// Make sure user doesn't already have a relationship
-			if (!event.isAuthorized(user.getId().longValue())) {
-				throw new UnauthorizedException(
-						"Cannot send invites for this event");
-			}
-
-			// Check to see if user already has relationship to this event
-			for (ZeppaEventToUserRelationship r : event
-					.getAttendeeRelationships()) {
-				if (r.getUserId().longValue() == relationship.getUserId()
-						.longValue()) {
-					// Throw an exception?
-					return r;
-				}
-			}
-
-			ZeppaUser attendee = umgr.getObjectById(ZeppaUser.class,
-					relationship.getUserId());
 
 			// Update relationship values
 			relationship.setEventHostId(event.getHostId());
 			relationship.setExpires(event.getEnd());
+			relationship.setIsRecommended(Boolean.FALSE);
 			relationship.setIsWatching(Boolean.FALSE);
 			relationship.setIsAttending(Boolean.FALSE);
-			relationship.setAttendee(attendee);
-			relationship.setEvent(event);
+			relationship.setWasInvited(relationship.getWasInvited());
+			relationship.setInterest(Double.valueOf(-1)); // -1 because it is irrelevant 
+			relationship.setConflictPercent(Double.valueOf(-1)); // -1 becuase we are not sure yet
+			if (relationship.getWasInvited()) {
+				relationship.setInvitedByUserId(relationship
+						.getInvitedByUserId());
+			} else {
+				relationship.setInvitedByUserId(Long.valueOf(-1));
+			}
+			relationship.setCreated(System.currentTimeMillis());
+			relationship.setUpdated(System.currentTimeMillis());
 
 			relationship = mgr.makePersistent(relationship);
 
-			event.addAttendeeRelationship(relationship);
-			attendee.addEventRelationship(relationship);
-
-			// Update entity relationships
-			ClientEndpointUtility.updateEventRelationships(event);
-			ClientEndpointUtility.updateUserEntityRelationships(attendee);
-
+			relationship.setEvent(event);
 			// If relationship is inserted via http, should be an invite
 			if (relationship.getWasInvited()) {
 
 				NotificationUtility.scheduleNotificationBuild(
 						ZeppaEventToUserRelationship.class.getName(),
 						relationship.getId(), "invited");
-
 			}
+			txn.commit();
 
 		} finally {
+			if (txn.isActive()) {
+				txn.rollback();
+				relationship = null;
+			}
 			mgr.close();
-			emgr.close();
-			umgr.close();
 		}
 
 		return relationship;
@@ -272,10 +274,6 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		try {
 			event = mgr.getObjectById(ZeppaEvent.class,
 					relationship.getEventId());
-			if (!event.isAuthorized(user.getId().longValue())) {
-				throw new UnauthorizedException(
-						"User isnt authorized to see this event");
-			}
 
 		} catch (JDOObjectNotFoundException e) {
 			e.printStackTrace();
@@ -300,7 +298,10 @@ public class ZeppaEventToUserRelationshipEndpoint {
 		Resources.UpdateEventRelationshipNotificationAction action = Resources.UpdateEventRelationshipNotificationAction.NONE;
 
 		mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
 		try {
+			txn.begin();
+
 			ZeppaEventToUserRelationship current = mgr.getObjectById(
 					ZeppaEventToUserRelationship.class, relationship.getId());
 
@@ -327,19 +328,18 @@ public class ZeppaEventToUserRelationshipEndpoint {
 			current.setWasInvited(relationship.getWasInvited());
 			current.setUpdated(System.currentTimeMillis());
 
-			mgr.currentTransaction().begin();
 			relationship = mgr.makePersistent(current);
-			mgr.currentTransaction().commit();
+			txn.commit();
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {
 			e.printStackTrace();
 			throw (e);
 		} finally {
-			if (mgr.currentTransaction().isActive()) {
-				mgr.currentTransaction().rollback();
+			if (txn.isActive()) {
+				txn.rollback();
 				action = Resources.UpdateEventRelationshipNotificationAction.NONE;
 			}
-
+			mgr.close();
 		}
 
 		// Send notification if appropriate
@@ -358,7 +358,7 @@ public class ZeppaEventToUserRelationshipEndpoint {
 					ZeppaEventToUserRelationship.class.getName(),
 					relationship.getId(), "invited");
 		}
-
+		relationship.setEvent(event);
 		return relationship;
 	}
 

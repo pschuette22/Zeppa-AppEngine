@@ -1,10 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -32,7 +29,6 @@ public class ZeppaUserToUserRelationship {
 
 	@Persistent
 	private Long creatorId;
-	
 
 	@Persistent
 	private Long subjectId;
@@ -41,18 +37,28 @@ public class ZeppaUserToUserRelationship {
 	private UserRelationshipType relationshipType;
 
 	/*
-	 * For maintaining relationships
+	 * This is our calculation of how interested one of this users in this
+	 * relationship is in doing activities with another user
 	 */
-	@Persistent
-	private ZeppaUser creator;
-	
-	@Persistent
-	private ZeppaUser subject;
-	
-	@Persistent(mappedBy="relationship", defaultFetchGroup="false")
-	@Element(dependent="true")
-	private List<EventTagFollow> tagFollows = new ArrayList<EventTagFollow>();
-	
+	@Persistent(defaultFetchGroup = "false")
+	private Double creatorInterest;
+
+	@Persistent(defaultFetchGroup = "false")
+	private Double subjectInterest;
+
+	/**
+	 * Not persistent entity to be set before being passed back to client so
+	 * additional get requests are not required
+	 */
+	@NotPersistent
+	private ZeppaUserInfo userInfo;
+
+	/**
+	 * Blank Constructor to make appengine happy
+	 */
+	public ZeppaUserToUserRelationship() {
+		// NOTE: needed by appengine do not delete
+	}
 
 	/**
 	 * Instantiate a User To User Relationship
@@ -61,13 +67,13 @@ public class ZeppaUserToUserRelationship {
 	 * @param subjectId
 	 * @param relationshipType
 	 */
-	public ZeppaUserToUserRelationship(Long creatorId, Long subjectId,
+	public ZeppaUserToUserRelationship(ZeppaUser creator, ZeppaUser subject,
 			UserRelationshipType relationshipType) {
 
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
-		this.creatorId = creatorId;
-		this.subjectId = subjectId;
+		this.creatorId = creator.getId();
+		this.subjectId = subject.getId();
 		this.relationshipType = relationshipType;
 	}
 
@@ -77,15 +83,14 @@ public class ZeppaUserToUserRelationship {
 	 * @param json
 	 */
 	public ZeppaUserToUserRelationship(JSONObject json) {
+
 		this.key = (Key) json.get("key");
 		this.created = (Long) json.get("created");
 		this.updated = (Long) json.get("updated");
 		this.creatorId = (Long) json.get("creatorId");
 		this.subjectId = (Long) json.get("subjectId");
-		
 		this.relationshipType = UserRelationshipType.valueOf((String) json
 				.get("relationshipType"));
-
 	}
 
 	public Long getCreated() {
@@ -120,30 +125,12 @@ public class ZeppaUserToUserRelationship {
 		this.creatorId = creatorId;
 	}
 
-	public ZeppaUser getCreator() {
-		return creator;
-	}
-
-	public void setCreator(ZeppaUser creator) {
-		this.creator = creator;
-		this.creatorId = creator.getId();
-	}
-
 	public Long getSubjectId() {
 		return subjectId;
 	}
 
 	public void setSubjectId(Long subjectId) {
 		this.subjectId = subjectId;
-	}
-
-	public ZeppaUser getSubject() {
-		return subject;
-	}
-
-	public void setSubject(ZeppaUser subject) {
-		this.subject = subject;
-		this.subjectId = subject.getId();
 	}
 
 	public UserRelationshipType getRelationshipType() {
@@ -173,19 +160,13 @@ public class ZeppaUserToUserRelationship {
 			return null;
 		}
 	}
-	
-	
-	public boolean addTagFollow(EventTagFollow follow){
-		return this.tagFollows.add(follow);
-	}
-	
-	public boolean removeTagFollow(EventTagFollow follow) {
-		return this.tagFollows.remove(follow);
+
+	public ZeppaUserInfo getUserInfo() {
+		return userInfo;
 	}
 
-	public List<EventTagFollow> getTagFollows() {
-		return tagFollows;
+	public void setUserInfo(ZeppaUserInfo userInfo) {
+		this.userInfo = userInfo;
 	}
-	
 
 }

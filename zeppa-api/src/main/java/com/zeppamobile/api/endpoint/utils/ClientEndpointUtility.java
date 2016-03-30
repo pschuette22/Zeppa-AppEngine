@@ -1,6 +1,5 @@
 package com.zeppamobile.api.endpoint.utils;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;

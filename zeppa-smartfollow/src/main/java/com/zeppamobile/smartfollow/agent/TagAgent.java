@@ -44,12 +44,14 @@ public class TagAgent extends BaseAgent {
 	private EventTagInfo tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
+	private ServletContext context;
 
 	// Parse the tag
 	private List<WordInfo> parsedTagParts = new ArrayList<WordInfo>();
 
 	public TagAgent(ServletContext context, EventTagInfo tag,
 			SmartfollowReport report) {
+		this.context = context;
 		this.tag = tag;
 		this.report = report;
 
@@ -294,7 +296,7 @@ public class TagAgent extends BaseAgent {
 			return 1;
 		} else {
 			// Fire up a new task
-			CompareTagsTask task = new CompareTagsTask(this.parsedTagParts, tag.parsedTagParts);
+			CompareTagsTask task = new CompareTagsTask(this.context, this.parsedTagParts, tag.parsedTagParts);
 			task.execute();
 			return task.getSimilarity();
 		}

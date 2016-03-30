@@ -62,7 +62,12 @@ public class UniversalConstants {
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
 	
 	
-	
-	
+	/*
+	 * Request keys used when making calls between modules
+	 */
+	public static final String kREQ_TAG_TEXT = "tag-text";	
 
+	
+	
+	
 }

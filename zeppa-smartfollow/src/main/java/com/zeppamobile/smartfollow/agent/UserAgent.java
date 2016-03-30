@@ -19,7 +19,7 @@ import com.zeppamobile.common.utils.JSONUtils;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.smartfollow.Utils;
 
-public class UserAgent {
+public class UserAgent extends BaseAgent {
 
 	/*
 	 * Values needed to calculations for this agent

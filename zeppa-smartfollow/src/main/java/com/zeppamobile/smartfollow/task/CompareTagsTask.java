@@ -3,12 +3,15 @@ package com.zeppamobile.smartfollow.task;
 import java.io.File;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import it.uniroma1.lcl.adw.ADW;
 import it.uniroma1.lcl.adw.ADWConfiguration;
 import it.uniroma1.lcl.adw.DisambiguationMethod;
 import it.uniroma1.lcl.adw.ItemType;
 import it.uniroma1.lcl.adw.comparison.SignatureComparison;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
+import it.uniroma1.lcl.jlt.Configuration;
 
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 
@@ -21,7 +24,10 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  * @author Eric Most
  * 
  */
-public class CompareTagsTask {
+public class CompareTagsTask extends SmartFollowTask {
+	private static String configDir = "zeppa-smartfollow-1.war/config/";
+	//JLT
+	File jltConfig = new File(configDir, "jlt.properties");
 
 	// Each tag represented as a list of word-parts (POS tagged)
 	private List<WordInfo> tag1, tag2;
@@ -38,7 +44,8 @@ public class CompareTagsTask {
 	 * @param tag2
 	 *            parsed list of words
 	 */
-	public CompareTagsTask(List<WordInfo> tag1, List<WordInfo> tag2) {
+	public CompareTagsTask(ServletContext context, List<WordInfo> tag1, List<WordInfo> tag2) {
+		super(context, "CompareTagsTask");
 		this.tag1 = tag1;
 		this.tag2 = tag2;
 	}
@@ -49,21 +56,13 @@ public class CompareTagsTask {
 	 */
 	public void execute() {
 		try {
-			System.out.println("Comparing tags with ADW");
-			
-			
-			File configFile = new File("config/", "adw.properties");
-			System.out.println("Absolute path: " + configFile.getAbsolutePath());
-			
-			if (configFile.exists()) {
-				System.out.println("Config file found");
-			} else {
-				System.out.println("Config file missing");
+			if (!Configuration.CONFIG_FILE.equals(jltConfig)) {
+				Configuration.getInstance().setConfigurationFile(jltConfig);
 			}
-			
-			ADWConfiguration.getInstance().setConfigurationFile(configFile);
-			
-			
+			if (!ADWConfiguration.getConfigDir().equalsIgnoreCase(configDir)) {
+				ADWConfiguration.setConfigDir(configDir);
+			}
+
 			ADW pipeline = new ADW();
 
 			// The two lexical items
@@ -75,15 +74,15 @@ public class CompareTagsTask {
 			ItemType text2Type = ItemType.SURFACE_TAGGED;
 
 			// Measure for comparing semantic signatures
-			// Note that this is the only comparison method implemented by ADW
+			// See other methods in it.uniroma1.lcl.adw.comparison
 			SignatureComparison measure = new WeightedOverlap();
 
 			// Calculate the similarity of text1 and text2
 			similarity = pipeline.getPairSimilarity(text1, text2,
 					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
 					text2Type);
+			System.out.println("Calculated similarity: "+similarity);
 		} catch (Exception e) {
-			// I have no idea if ADW will throw exceptions, but best catch them here.
 			System.err.println("Exception in ADW library similarity comparison");
 			e.printStackTrace();
 			similarity = -1;
@@ -97,7 +96,7 @@ public class CompareTagsTask {
 	 * @param tagParts
 	 * @return formatted string
 	 */
-	private String buildADWInput(List<WordInfo> tagParts) {
+	public static String buildADWInput(List<WordInfo> tagParts) {
 		StringBuilder sb = new StringBuilder();
 		for (WordInfo word : tagParts) {
 			sb.append(word.getWord());
@@ -127,6 +126,18 @@ public class CompareTagsTask {
 	 */
 	public double getSimilarity() {
 		return similarity;
+	}
+
+	@Override
+	public void finalize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String abort(boolean doResume) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

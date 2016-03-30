@@ -426,7 +426,7 @@ public class CreateInitialTagFollows extends SmartFollowTask {
 			return -1;
 		}
 
-		return result;
+		return (result/totalWeight);
 	}
 
 }

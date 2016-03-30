@@ -3,6 +3,14 @@
  */
 package com.zeppamobile.smartfollow.weightcalculator;
 
+import it.uniroma1.lcl.adw.ADW;
+import it.uniroma1.lcl.adw.ADWConfiguration;
+import it.uniroma1.lcl.adw.DisambiguationMethod;
+import it.uniroma1.lcl.adw.ItemType;
+import it.uniroma1.lcl.adw.comparison.SignatureComparison;
+import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
+import it.uniroma1.lcl.jlt.Configuration;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -30,6 +38,8 @@ import net.sf.extjwnl.data.relationship.RelationshipList;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 import com.zeppamobile.smartfollow.Constants;
+import com.zeppamobile.smartfollow.comparewords.WordInfo;
+import com.zeppamobile.smartfollow.task.CompareTagsTask;
 
 public class QueryHelper extends PointerUtils {
 	private static final String PATH_TO_DUMP_FILE = "src/main/java/com/zeppamobile/smartfollow/weightcalculator/pointer-types.txt";
@@ -53,102 +63,89 @@ public class QueryHelper extends PointerUtils {
 	private static int searchDepth = 5;
 
 	public static void main(String[] args) {
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		PrintWriter pw = null;
-		long resultCount, queryCount = 0;
-		int errorCount = 0;
-
-		// Initialize dictionary
+		
 		try {
-			dictionary = Constants.getDictionary();
-		} catch (JWNLException e) {
-			System.err.println("Error retrieving JWNL Dictionary");
-			e.printStackTrace();
-		}
+			
+			System.out.println("Comparing tags with ADW");
+			
+			List<WordInfo> tag1 = new ArrayList<>();
+			List<WordInfo> tag2 = new ArrayList<>();
+			
+			//tag1.add(new WordInfo("banjo", POS.NOUN));
+			//tag2.add(new WordInfo("guitar", POS.NOUN));
+			tag1.add(new WordInfo("playing", POS.VERB));
+			tag1.add(new WordInfo("football", POS.NOUN));
+			
+			tag2.add(new WordInfo("watching", POS.VERB));
+			tag2.add(new WordInfo("soccer", POS.NOUN));
+			
+			File config = new File("src/main/webapp/config", "jlt.properties");
+			Configuration configuration = Configuration.getInstance();
+			configuration.setConfigurationFile(config);
+			
+			ADW pipeline = new ADW();
 
-		try {
-			IndexWord word1 = dictionary.getIndexWord(POS.NOUN, "run");
-			IndexWord word2 = dictionary.getIndexWord(POS.VERB, "play");
+			// The two lexical items
+			String text1 = CompareTagsTask.buildADWInput(tag1);
+			String text2 = CompareTagsTask.buildADWInput(tag2);
 			
-			System.out.println(word1.getSenses().toString() + "\n");
-			//System.out.println(word2.getSenses().toString());
+			System.out.println(text1);
+			System.out.println(text2);
+
+			// Type of input (formatting)
+			ItemType text1Type = ItemType.SURFACE_TAGGED;
+			ItemType text2Type = ItemType.SURFACE_TAGGED;
+
+			// Measure for comparing semantic signatures
+			// Note that this is the only comparison method implemented by ADW
+			SignatureComparison measure = new WeightedOverlap();
+
+			// Calculate the similarity of text1 and text2
+			double similarity = pipeline.getPairSimilarity(text1, text2,
+					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
+					text2Type);
 			
-			
-			//for (PointerType pt : PointerType.HYPERNYM) {
-				//System.out.println("Trying Pointer Type: " + pt.getLabel());
-				System.out.println("It's " + (PointerType.HYPERNYM.isSymmetric() ? "symmetric" : "asymmetric"));
-				for (Synset s1 : word1.getSenses()) {
-					for (Synset s2 : word2.getSenses()) {
-						RelationshipList rl = RelationshipFinder.findRelationships(s1, s2, PointerType.HYPERNYM);
-	
-						if (!rl.isEmpty()) {
-							System.out.println("Relationship found");
-						} 		
-					}
-				}
-			//}
+			System.out.println(similarity);
 		} catch (Exception e) {
+			// I have no idea if ADW will throw exceptions, but best catch them here.
+			System.err.println("Exception in ADW library similarity comparison");
 			e.printStackTrace();
 		}
-			
-	
-
-		/*
-		 * // Create/load file try { File file = new File(PATH_TO_DUMP_FILE); if
-		 * (!file.exists()) { file.createNewFile(); }
-		 * 
-		 * System.out.println("Path to file:");
-		 * System.out.println(file.getAbsolutePath());
-		 * 
-		 * fw = new FileWriter(file.getAbsoluteFile(), true); // Append to file
-		 * bw = new BufferedWriter(fw); pw = new PrintWriter(bw); } catch
-		 * (IOException e) { System.err.println("Error creating file writer");
-		 * e.printStackTrace(); }
-		 * 
-		 * try { System.out.println("Beginning search."); // Cycle through our
-		 * 3D array of POS x POS x PointerType for (int i = 0; i < NUM_TRIALS;
-		 * i++) { for (POS posSource : POS.getAllPOS()) { for (POS posTarget :
-		 * POS.getAllPOS()) { for (PointerType pt : PointerType
-		 * .getAllPointerTypesForPOS(posSource)) {
-		 * System.out.print(posSource.getLabel() + " -> " + pt.getLabel() +
-		 * " -> " + posTarget.getLabel() + "\r"); Synset tuple[] =
-		 * getSynsets(pt, posSource, posTarget);
-		 * 
-		 * if (tuple != null) { // Execute google search String source =
-		 * tuple[0].getWords().get(0) .getLemma(); String target =
-		 * tuple[1].getWords().get(0) .getLemma();
-		 * 
-		 * // If the words are the same get the next word // from the target
-		 * synset if (source.equalsIgnoreCase(target) &&
-		 * tuple[1].getWords().size() > 1) { target = tuple[1].getWords().get(1)
-		 * .getLemma(); }
-		 * 
-		 * resultCount = getResultsCount(source, target); queryCount++;
-		 * 
-		 * // Check for error if (resultCount == -1) { if (++errorCount >
-		 * ERROR_THRESHOLD) {
-		 * System.err.println("Maximum error threshold reached.");
-		 * 
-		 * return; } continue; } } else { resultCount = 0; }
-		 * 
-		 * // Write to file with the following tab-delimited // format: //
-		 * PointerType posSource posTarget count pw.println(pt.getLabel() + "\t"
-		 * + posSource.getLabel() + "\t" + posTarget.getLabel() + "\t" +
-		 * resultCount); } } }
-		 * 
-		 * // Write results for each cycle to file in case the program //
-		 * crashes or gets killed pw.flush();
-		 * 
-		 * if (i % 100 == 0) { System.out.println(queryCount +
-		 * " queries executed."); } }
-		 * 
-		 * } finally {
-		 * 
-		 * pw.close(); }
-		 */
 		
 		System.out.println("Exiting");
+	}
+	
+	/**
+	 * Retrieve file contents
+	 * 
+	 * @param targetURL
+	 * @param urlParameters
+	 * @return file contents
+	 */
+	public static String doGet(String targetURL) {
+		URLConnection connection = null;
+		try {
+			// Create connection
+			URL url = new URL(targetURL);
+			connection = url.openConnection();
+
+			// Get Response
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					connection.getInputStream()));
+
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = br.readLine()) != null) {
+				response.append(line);
+				response.append('\r');
+			}
+
+			br.close();
+			return response.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

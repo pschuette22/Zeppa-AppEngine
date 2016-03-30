@@ -24,7 +24,7 @@ public class MetaTagEntity {
 	private Key metaTagKey;
 
 	/*
-	 * True the tag this maps to is owned by a user, false if owned by a vendor
+	 * True if tag is owned by a user, false if owned by a vendor
 	 */
 	@Persistent
 	private Boolean isUserTag;
@@ -34,7 +34,6 @@ public class MetaTagEntity {
 	 */
 	@Persistent
 	private Double weightInTag;
-	
 	
 	
 

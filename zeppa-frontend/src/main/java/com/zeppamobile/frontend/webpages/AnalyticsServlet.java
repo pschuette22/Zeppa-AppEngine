@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -21,6 +23,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 
@@ -48,8 +51,9 @@ public class AnalyticsServlet extends HttpServlet {
 			
 			System.out.println("Demographics");
 			// Strings to hold the info for chart.js
-			String allEventGender = getGenderCountAllEvents(sessionInfo);
-			req.setAttribute("genderData", allEventGender);
+			String[] allEventDemo = getGenderCountAllEvents(sessionInfo);
+			req.setAttribute("genderData", allEventDemo[0]);
+			req.setAttribute("ageData", allEventDemo[1]);
 
 			System.out.println("Tags");
 			String allEventTags = getTagsAllEvents(sessionInfo);
@@ -82,7 +86,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param resultsArray
 	 * @return
 	 */
-	public static String getGenderCountAllEvents(UserInfoCerealWrapper sessionInfo) {
+	public static String[] getGenderCountAllEvents(UserInfoCerealWrapper sessionInfo) {
 		Long maleCount = 0L;
 		Long femaleCount = 0L;
 		Long unidentified = 0L;
@@ -119,13 +123,11 @@ public class AnalyticsServlet extends HttpServlet {
 				System.out.println("------RESPONSE: " + responseGender + "------");
 				JSONArray demoInfo = (JSONArray) parser.parse(responseGender);
 				if(demoInfo.size() == 2) {
+					// Get all of the demographic info from the json response
 					JSONObject genderInfo = (JSONObject) demoInfo.get(0);
 					maleCount = (Long) genderInfo.get("maleCount");
 					femaleCount = (Long) genderInfo.get("femaleCount");
 					unidentified = (Long) genderInfo.get("unidentified");
-					System.out.println("-------MALE: " + maleCount + "------");
-					System.out.println("-------FEMALE: " + femaleCount + "------");
-					System.out.println("-------UNID: " + unidentified + "------");
 					JSONObject ageInfo = (JSONObject) demoInfo.get(1);
 					under18 = (Long) ageInfo.get("under18");
 					age18to20 = (Long) ageInfo.get("18to20");
@@ -135,29 +137,30 @@ public class AnalyticsServlet extends HttpServlet {
 					age40to49 = (Long) ageInfo.get("40to49");
 					age50to59 = (Long) ageInfo.get("50to59");
 					over60 = (Long) ageInfo.get("over60");
-//					System.out.println("-------under18: " + under18 + "------");
-//					System.out.println("-------18to20: " + age18to20 + "------");
-//					System.out.println("-------21to24: " + age21to24 + "------");
-//					System.out.println("-------25to29: " + age25to29 + "------");
-//					System.out.println("-------30to39: " + age30to39 + "------");
-//					System.out.println("-------40to49: " + age40to49 + "------");
-//					System.out.println("-------50to59: " + age50to59+ "------");
-//					System.out.println("-------over60: " + over60 + "------");
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "";
+			return new String[] {"", ""};
 		}
 		
-		// Create the string for chart.js and return it
-		String data = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
+		// Create the string for chart.js for the gender pie chart
+		String genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
 				+ "    highlight: \"#FF5A5E\"," + "    label: \"Male\"" + "}," + "{" + "    value: "
 				+ String.valueOf(femaleCount) + "," + "    color: \"#46BFBD\"," + "    highlight: \"#5AD3D1\","
 				+ "    label: \"Female\"" + "}," + "{" + "    value: " + String.valueOf(unidentified) + ","
 				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
 		
-		return data;
+		String ageData = "{labels: [\"under18\", \"18to20\", \"21to24\", \"25to29\", \"30to39\", \"40to49\", \"50to59\", \"over60\"],"
+				+ "    datasets: [ {"
+				+ "label: \"Age dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ "data: ["+under18+", "+age18to20+", "+age21to24+", "+age25to29+", "+age30to39+", "+age40to49+", "+age50to59+", "+over60+"]}]}";
+		
+		return new String[] {genderData, ageData};
 	}
 
 	/**
@@ -253,6 +256,8 @@ public class AnalyticsServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static String getPopularDaysAllEvents(UserInfoCerealWrapper sessionInfo) {
+		Map<String, Integer> dayData = new HashMap<String, Integer>();
+		
 		try {
 			// Set up the call to the analytics api servlet
 			Map<String, String> params = new HashMap<String, String>();
@@ -277,7 +282,8 @@ public class AnalyticsServlet extends HttpServlet {
 				JSONObject events = (JSONObject) parser.parse(response);
 				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
-				    System.out.println("-------" + key + ": "+ events.get(key));
+				    dayData.put(key, ((int) (long) events.get(key)));
+				    System.out.println("-------DAYS" + key + ": "+ events.get(key));
 				}
 				
 			}
@@ -285,6 +291,18 @@ public class AnalyticsServlet extends HttpServlet {
 			e.printStackTrace();
 			return "";
 		}
-		return "";
+		
+		String ret = "{labels: [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", \"Sunday\" ], "
+			+ "datasets: [ {"
+			+ "label: \"Day-of-Week dataset\","
+			+ "fillColor: \"rgba(220,220,220,0.5)\","
+			+ "strokeColor: \"rgba(220,220,220,0.8)\","
+			+ "highlightFill: \"rgba(220,220,220,0.75)\","
+			+ "highlightStroke: \"rgba(220,220,220,1)\","
+			+ "data: [" + dayData.get("Monday")+", "+dayData.get("Tuesday")+", "+dayData.get("Wednesday")+", "+dayData.get("Thursday")+", "
+			+ dayData.get("Friday")+", "+dayData.get("Saturday")+", "+dayData.get("Sunday")
+			+ "]}]}";
+		System.out.println("----DAYS: " + ret);
+		return ret;
 	}
 }

@@ -29,6 +29,7 @@ import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
 
 /**
@@ -79,18 +80,10 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			Map<String, Integer> tags = getAllEventTags(null, Long.valueOf(vendorId));
-			// Sort the map by the number of followers
-			tags = sortMapByValue(tags);
+			List<AnalyticsDataWrapper> tags = getAllEventTags(null, Long.valueOf(vendorId));
 			JSONObject json = new JSONObject();
-			int count = 0;
-			for(Entry<String, Integer> entry : tags.entrySet()) {
-				if(count < 5) {
-					json.put(entry.getKey(), entry.getValue());
-					count++;
-				} else {
-					break;
-				}
+			for(AnalyticsDataWrapper adw : tags) {
+				json.put(adw.getKey(), adw.getValue());
 			}
 			resp.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("-------"+json.toJSONString()+"-------");
@@ -118,6 +111,14 @@ public class AnalyticsServlet extends HttpServlet {
 		
 	}
 	
+	private String getIndividualEventInfoTags(FilterCerealWrapper filter, long vendorId) {
+		return "";
+	}
+	
+	private String getIndividualEventInfoDemographics(FilterCerealWrapper filter, long vendorId) {
+		return "";
+	}
+	
 	/**
 	 * Gets the demographic gender info for all events for a vendor
 	 * @param filter - filter information given by the user
@@ -140,6 +141,12 @@ public class AnalyticsServlet extends HttpServlet {
 		return allEventGender;
 	}
 	
+	/**
+	 * Get the counts of attendees of events for each day of the week
+	 * @param filter - filter info entered by user
+	 * @param vendorId - the id of the vendor
+	 * @return - a map with 1-7 as keys corresponding to Monday-Sunday and the counts as the value
+	 */
 	private Map<Integer, Integer> getAllEventPopularDay(FilterCerealWrapper filter, long vendorId) {
 		Map<Integer, Integer> dayCounts = new HashMap<Integer, Integer>();
 		// Initialize each day of week to have a 0 count
@@ -153,12 +160,18 @@ public class AnalyticsServlet extends HttpServlet {
 			DateTime dt = new DateTime(event.getStart());
 			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
 			dayCounts.put(dt.getDayOfWeek(), (dayCounts.get(dt.getDayOfWeek()) + relationships.size()));
-			System.out.println("EVENT: "+event.getTitle()+", DAY: "+dt.getDayOfWeek()+", j: "+relationships.size()+", n: "+VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()).size());
+			//System.out.println("EVENT: "+event.getTitle()+", DAY: "+dt.getDayOfWeek()+", j: "+relationships.size()+", n: "+VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()).size());
 		}
 		
 		return dayCounts;
 	}
 	
+	/**
+	 * Get the counts for the most popular events for the given user
+	 * @param filter - the filter info entered by the user
+	 * @param vendorId - the vendor id
+	 * @return - a map with the counts for the popular events
+	 */
 	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		Map<VendorEvent, Integer> eventCounts = new HashMap<VendorEvent, Integer>();
@@ -191,13 +204,6 @@ public class AnalyticsServlet extends HttpServlet {
 		
 	}
 	
-	private String getIndividualEventInfoTags(FilterCerealWrapper filter, long vendorId) {
-		return "";
-	}
-	
-	private String getIndividualEventInfoDemographics(FilterCerealWrapper filter, long vendorId) {
-		return "";
-	}
 	
 	/**
 	 * Sorts a map by value
@@ -325,8 +331,8 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the id of the current vendor
 	 * @return 
 	 */
-	private Map<String, Integer> getAllEventTags(FilterCerealWrapper filter, long vendorId) {
-		HashMap<String, Integer> tagsHash = new HashMap<String, Integer>();
+	private List<AnalyticsDataWrapper> getAllEventTags(FilterCerealWrapper filter, long vendorId) {
+		Map<String, Integer> tagsHash = new HashMap<String, Integer>();
 		// First get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		// Loop through each event for the vendor
@@ -352,7 +358,30 @@ public class AnalyticsServlet extends HttpServlet {
 			tagsHash.putAll(getRelatedUserTagInfo(tagList, event.getId()));
 		}
 		
-		return tagsHash;
+		List<AnalyticsDataWrapper> maxTags = new ArrayList<AnalyticsDataWrapper>();
+		// If there are 5 or fewer tags then just return all of them
+		if(tagsHash.size() <= 5) {
+			for(Entry<String, Integer> ent : tagsHash.entrySet()) {
+				maxTags.add(new AnalyticsDataWrapper(ent.getKey(), ent.getValue()));
+			}
+			return maxTags;
+		}
+		
+		// If there are more than 5 tags found then find the 5 max
+		for(int i=0; i < 5; i++) {
+			AnalyticsDataWrapper max = null;
+			// find the maximum count
+			for (Entry<String, Integer> entry : tagsHash.entrySet()) {
+				if (max == null || entry.getValue() > max.getValue()) {
+					max = new AnalyticsDataWrapper(entry.getKey(), entry.getValue());
+				}
+			}
+			// add the max to the return map and remove it from the tagsHash map so the next max can be found
+			maxTags.add(max);
+			tagsHash.remove(max.getKey());
+		}
+		
+		return maxTags;
 	}
 	
 	/**

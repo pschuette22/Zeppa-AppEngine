@@ -29,11 +29,13 @@
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
 		var ctx1 = document.getElementById("event1").getContext("2d");
-		//var ctx2 = document.getElementById("event2").getContext("2d");
+		var ctx2 = document.getElementById("event2").getContext("2d");
+		var ctx3 = document.getElementById("dayOfWeek").getContext("2d");
 		//var ctx3 = document.getElementById("event3").getContext("2d");
 		// ${genderData} accesses gender data attribute set by the Analytics Servlet
 		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
-		//var chart2 = new Chart(ctx2).Doughnut(${genderData}, options);
+		var chart2 = new Chart(ctx2).Bar(${ageData}, options);
+		var chart3 = new Chart(ctx3).Bar(${popDays}, options);
 		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
 	}
 	
@@ -112,20 +114,26 @@
 			<div class="container">
 				<div class="column-left">
 					<canvas id="event1" width="150" height="150"></canvas>
-					<div class="event-desc">Total Attendee Gender</div>
+					<div class="event-desc">Total Attendee Gender Breakdown</div>
 				</div>
 				<div class="column-center">
-					<!--<canvas id="event2" width="150" height="150"></canvas>-->
-					<!--<div class="event-desc">Event Name 2</div>-->
+					<canvas id="event2" width="150" height="150"></canvas>
+					<div class="event-desc">Total Attendee Age Breakdown</div>
 				</div>
-				<div class="column-right">
-					<!--<canvas id="event3" width="150" height="150"></canvas>-->
-					<!--<div class="event-desc">Event Name 3</div>-->
-				</div>
+<!-- 				<div class="column-right"> -->
+<!-- 					<canvas id="event3" width="150" height="150"></canvas> -->
+<!-- 					<div class="event-desc">Event Name 3</div> -->
+<!-- 				</div> -->
 			</div>
  		</div>
  		
- 		<div class="analyticsTab" id="popularDaysTab">popularDaysTab</div>
+ 		<div class="analyticsTab" id="popularDaysTab">popularDaysTab
+ 			<p><h3>Event Day-of-Week Data</h3></p>
+ 			<div class="container">
+ 				<canvas id="dayOfWeek" width="400" height="400"></canvas>
+				<div class="event-desc">Total Attendee Day-of-Week Breakdown</div>
+ 			</div>
+ 		</div>
  		<div class="analyticsTab" id="popularEventsTab">popularEventsTab</div>
  		<div class="analyticsTab" id="tagsTab">tagsTab</div>
 		

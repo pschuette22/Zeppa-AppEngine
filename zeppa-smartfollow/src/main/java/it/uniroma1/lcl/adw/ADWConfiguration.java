@@ -16,7 +16,10 @@ public class ADWConfiguration
 	private static final Log log = LogFactory.getLog(ADWConfiguration.class);
 
 	private static ADWConfiguration instance = null;
-	private static String CONFIG_DIR = "WEB-INF/config";
+	//Local
+	//private static String CONFIG_DIR = "src/main/webapp/WEB-INF/config";
+	//AppEngine
+	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config";
 	private static final String CONFIG_FILE = "adw.properties";
 
 	/**

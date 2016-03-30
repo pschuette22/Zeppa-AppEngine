@@ -142,6 +142,11 @@ public class SemSigProcess {
 					semsig.getParentFile().mkdirs();
 					log.info("Downloading object gs://"+bucketName+"/"+objectName+" from cloud storage");
 					
+					// Make sure the service is started
+					if (storageService == null) {
+						storageService = StorageUtils.getInstance().getService();
+					}
+					
 					Storage.Objects.Get getObject = storageService.objects().get(
 							bucketName, objectName);
 										

@@ -22,7 +22,10 @@ import com.google.appengine.api.utils.SystemProperty;
  */
 public class StorageUtils {
 	private static final String APPLICATION_NAME = "zeppamobile";
-	private static final String CREDENTIALS_PATH = "zeppa-smartfollow-1/WEB-INF/config/serviceAccountCredentials.json";
+	//Local
+	//private static final String CREDENTIALS_PATH = "src/main/webapp/WEB-INF/config/serviceAccountCredentials.json";
+	//AppEngine
+	private static final String CREDENTIALS_PATH = "zeppa-smartfollow-1.war/WEB-INF/config/serviceAccountCredentials.json";
 	private static StorageUtils instance;
 	private static Storage storageService;
 	/** Global instance of the JSON factory. */

@@ -30,10 +30,9 @@ public class EventTagFollow {
 
 	@Persistent
 	private Long followerId;
-	
+
 	@Persistent
-	private double interest;
-	
+	private Double interest;
 
 	/**
 	 * Instantiate follow object
@@ -41,16 +40,18 @@ public class EventTagFollow {
 	 * @param tag
 	 * @param followerId
 	 */
-	public EventTagFollow(EventTag tag, ZeppaUser follower, ZeppaUserToUserRelationship relationship) {
+	public EventTagFollow(EventTag tag, ZeppaUser follower,
+			ZeppaUserToUserRelationship relationship) {
 
+		// If relationship does not indicate users are mingling, throw an exception
 		this.created = System.currentTimeMillis();
 		this.updated = System.currentTimeMillis();
 		this.tagId = tag.getId();
 		this.tagOwnerId = tag.getOwnerId();
 		this.followerId = follower.getId();
-		
+
 	}
-	
+
 	/**
 	 * Instantiate follow object
 	 * 
@@ -64,9 +65,10 @@ public class EventTagFollow {
 		this.tagId = tag.getId();
 		this.tagOwnerId = tag.getOwnerId();
 		this.followerId = followerId;
-		
-	}
+		this.interest = Double.valueOf(-1); // -1 by default to indicate no
+											// logic has been executed on it yet
 
+	}
 
 	/**
 	 * Rebuild an EventTagFollow from json
@@ -80,32 +82,31 @@ public class EventTagFollow {
 		} catch (Exception e) {
 			// When rebuilding for insert, object will not have key
 		}
-		this.created = (Long)json.get("created");
-		this.updated = (Long)json.get("updated");
-		this.tagId = (Long)json.get("tagId");
+		this.created = (Long) json.get("created");
+		this.updated = (Long) json.get("updated");
+		this.tagId = (Long) json.get("tagId");
 		this.tagOwnerId = (Long) json.get("tagOwnerId");
 		this.followerId = (Long) json.get("followerId");
 	}
-	
+
 	/**
 	 * Convert this object to @JSONObject
+	 * 
 	 * @return @JSONObject mapped to this object
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject toJson(){
+	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
 		obj.put("key", key);
 		obj.put("created", created);
-		obj.put("updated",updated);
-		obj.put("tagId",tagId);
-		obj.put("tagOwnerId",tagOwnerId);
+		obj.put("updated", updated);
+		obj.put("tagId", tagId);
+		obj.put("tagOwnerId", tagOwnerId);
 		obj.put("followerId", followerId);
-		
+
 		return obj;
 	}
 
-	
-	
 	public Long getCreated() {
 		return created;
 	}
@@ -162,5 +163,12 @@ public class EventTagFollow {
 		this.followerId = follower.getId();
 	}
 
+	public Double getInterest() {
+		return interest;
+	}
+
+	public void setInterest(Double interest) {
+		this.interest = interest;
+	}
 
 }

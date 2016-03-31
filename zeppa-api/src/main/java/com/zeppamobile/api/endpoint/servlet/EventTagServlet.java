@@ -152,7 +152,7 @@ public class EventTagServlet extends HttpServlet {
 	 * @param tagId - the id of the tag to get
 	 * @return - the tag with the given ID
 	 */
-	private static EventTag getTag(Long tagId) {
+	public static EventTag getTag(Long tagId) {
 		PersistenceManager mgr = getPersistenceManager();
 		EventTag tag = new EventTag();
 		try {

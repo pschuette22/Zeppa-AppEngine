@@ -169,7 +169,9 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param sessionInfo
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public static String getTagsAllEvents(UserInfoCerealWrapper sessionInfo) {
+		List<AnalyticsDataWrapper> tagCounts = new ArrayList<AnalyticsDataWrapper>();
 		try {
 			// Set up the call to the analytics api servlet
 			Map<String, String> params = new HashMap<String, String>();
@@ -194,6 +196,7 @@ public class AnalyticsServlet extends HttpServlet {
 				JSONObject tags = (JSONObject) parser.parse(responseTags);
 				for(Iterator iterator = tags.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
+				    tagCounts.add(new AnalyticsDataWrapper(key, ((int)(long)tags.get(key))));
 				    System.out.println("-------" + key + ": "+ tags.get(key));
 				}
 				
@@ -202,7 +205,31 @@ public class AnalyticsServlet extends HttpServlet {
 			e.printStackTrace();
 			return "";
 		}
-		return "";
+		
+		String label = "labels: [";
+		String data = "data: [";
+		for(int i=0; i < tagCounts.size(); i++) {
+			AnalyticsDataWrapper adw = tagCounts.get(i);
+			// If it's not the last element then add comma at the end otherwise don't
+			if (i < (tagCounts.size() - 1)) {
+				label = label.concat("\"" + adw.getKey() + "\",");
+				data = data.concat(String.valueOf(adw.getValue()) + ",");
+			} else {
+				label = label.concat("\"" + adw.getKey() + "\"");
+				data = data.concat(String.valueOf(adw.getValue()));
+			}
+		}
+		String ret = "{" + label+"],"
+				+ "datasets: [ {"
+				+ "label: \"PopEvents dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ data
+				+ "]}]}";
+		System.out.println("----Tag: " + ret);
+		return ret;
 	}
 	
 	/**
@@ -213,6 +240,8 @@ public class AnalyticsServlet extends HttpServlet {
 	 */
 	@SuppressWarnings("rawtypes")
 	public static String getPopularEventsAllEvents(UserInfoCerealWrapper sessionInfo) {
+		List<AnalyticsDataWrapper> eventCounts = new ArrayList<AnalyticsDataWrapper>();
+		
 		try {
 			// Set up the call to the analytics api servlet
 			Map<String, String> params = new HashMap<String, String>();
@@ -237,6 +266,7 @@ public class AnalyticsServlet extends HttpServlet {
 				JSONObject events = (JSONObject) parser.parse(response);
 				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
+				    eventCounts.add(new AnalyticsDataWrapper(key, ((int)(long)events.get(key))));
 				    System.out.println("-------" + key + ": "+ events.get(key));
 				}
 				
@@ -245,7 +275,32 @@ public class AnalyticsServlet extends HttpServlet {
 			e.printStackTrace();
 			return "";
 		}
-		return "";
+		
+		String label = "labels: [";
+		String data = "data: [";
+		for(int i=0; i < eventCounts.size(); i++) {
+			AnalyticsDataWrapper adw = eventCounts.get(i);
+			// If it's not the last element then add comma at the end otherwise don't
+			if (i < (eventCounts.size() - 1)) {
+				label = label.concat("\"" + adw.getKey() + "\",");
+				data = data.concat(String.valueOf(adw.getValue()) + ",");
+			} else {
+				label = label.concat("\"" + adw.getKey()+"\"");
+				data = data.concat(String.valueOf(adw.getValue()));
+			}
+		}
+		
+		String ret = "{" + label+"],"
+				+ "datasets: [ {"
+				+ "label: \"PopEvents dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ data
+				+ "]}]}";
+		System.out.println("----POP: " + ret);
+		return ret;
 	}
 
 	/**
@@ -302,7 +357,7 @@ public class AnalyticsServlet extends HttpServlet {
 			+ "data: [" + dayData.get("Monday")+", "+dayData.get("Tuesday")+", "+dayData.get("Wednesday")+", "+dayData.get("Thursday")+", "
 			+ dayData.get("Friday")+", "+dayData.get("Saturday")+", "+dayData.get("Sunday")
 			+ "]}]}";
-		System.out.println("----DAYS: " + ret);
+		
 		return ret;
 	}
 }

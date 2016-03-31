@@ -28,14 +28,18 @@
 	
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
-		var ctx1 = document.getElementById("event1").getContext("2d");
-		var ctx2 = document.getElementById("event2").getContext("2d");
+		var ctx1 = document.getElementById("gender").getContext("2d");
+		var ctx2 = document.getElementById("age").getContext("2d");
 		var ctx3 = document.getElementById("dayOfWeek").getContext("2d");
+		var ctx4 = document.getElementById("popularEvents").getContext("2d");
+		var ctx5 = document.getElementById("popularTags").getContext("2d");
 		//var ctx3 = document.getElementById("event3").getContext("2d");
 		// ${genderData} accesses gender data attribute set by the Analytics Servlet
 		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
 		var chart2 = new Chart(ctx2).Bar(${ageData}, options);
 		var chart3 = new Chart(ctx3).Bar(${popDays}, options);
+		var chart4 = new Chart(ctx4).Bar(${popEvents}, options);
+		var chart5 = new Chart(ctx5).Bar(${tagData}, options);
 		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
 	}
 	
@@ -113,11 +117,11 @@
 	
 			<div class="container">
 				<div class="column-left">
-					<canvas id="event1" width="150" height="150"></canvas>
+					<canvas id="gender" width="150" height="150"></canvas>
 					<div class="event-desc">Total Attendee Gender Breakdown</div>
 				</div>
 				<div class="column-center">
-					<canvas id="event2" width="150" height="150"></canvas>
+					<canvas id="age" width="150" height="150"></canvas>
 					<div class="event-desc">Total Attendee Age Breakdown</div>
 				</div>
 <!-- 				<div class="column-right"> -->
@@ -127,15 +131,33 @@
 			</div>
  		</div>
  		
- 		<div class="analyticsTab" id="popularDaysTab">popularDaysTab
+ 		<div class="analyticsTab" id="popularDaysTab">
  			<p><h3>Event Day-of-Week Data</h3></p>
  			<div class="container">
- 				<canvas id="dayOfWeek" width="400" height="400"></canvas>
-				<div class="event-desc">Total Attendee Day-of-Week Breakdown</div>
+ 				<div class="column-center">
+ 					<canvas id="dayOfWeek" width="150" height="150"></canvas>
+					<div class="event-desc">Total Attendee Day-of-Week Breakdown</div>
+				</div>
  			</div>
  		</div>
- 		<div class="analyticsTab" id="popularEventsTab">popularEventsTab</div>
- 		<div class="analyticsTab" id="tagsTab">tagsTab</div>
+ 		<div class="analyticsTab" id="popularEventsTab">
+ 			<p><h3>Popular Event Data</h3></p>
+ 			<div class="container">
+ 				<div class="column-center">
+ 					<canvas id="popularEvents" width="150" height="150"></canvas>
+					<div class="event-desc">Total Attendee Popular Event Breakdown</div>
+				</div>
+ 			</div>
+ 		</div>
+ 		<div class="analyticsTab" id="tagsTab">
+ 			<p><h3>Popular Tags Data</h3></p>
+ 			<div class="container">
+ 				<div class="column-center">
+	 				<canvas id="popularTags" width="150" height="150"></canvas>
+					<div class="event-desc">Popular Tags Data Breakdown</div>
+				</div>
+ 			</div>
+ 		</div>
 		
 	</jsp:body>
 </t:ZeppaBase>

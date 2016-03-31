@@ -229,7 +229,6 @@ public class AnalyticsServlet extends HttpServlet {
 	} 
 	
 	
-	
 	/** 
 	 * Take the results from getting all related Users and count the gender
 	 * demographic info for the users
@@ -341,16 +340,10 @@ public class AnalyticsServlet extends HttpServlet {
 			List<String> tagList = new ArrayList<>();
 			for(Long id : event.getTagIds()) {
 				// Get the tag text from each tag
-				EventTag tag = null;
-				PersistenceManager mgr = getPersistenceManager();
-				try {
-					tag = mgr.getObjectById(EventTag.class, id);
-					// If the tag hasn't been seen yet add it to the list
-					if(!tagList.contains(tag.getTagText())) {
-						tagList.add(tag.getTagText());
-					}
-				} finally {
-					mgr.close();
+				EventTag tag = EventTagServlet.getTag(id);
+				// If the tag hasn't been seen yet add it to the list
+				if (!tagList.contains(tag.getTagText())) {
+					tagList.add(tag.getTagText());
 				}
 			}
 			// This hash map contains all tag texts that are common 

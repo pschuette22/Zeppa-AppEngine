@@ -22,7 +22,7 @@
 	
 	// Override default Chart.js options here
 	var options = {
-		responsive: true,
+		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
 	
@@ -117,11 +117,11 @@
 	
 			<div class="container">
 				<div class="column-left">
-					<canvas id="gender" width="150" height="150"></canvas>
+					<canvas id="gender" width="300" height="300"></canvas>
 					<div class="event-desc">Total Attendee Gender Breakdown</div>
 				</div>
 				<div class="column-center">
-					<canvas id="age" width="150" height="150"></canvas>
+					<canvas id="age" width="300" height="300"></canvas>
 					<div class="event-desc">Total Attendee Age Breakdown</div>
 				</div>
 <!-- 				<div class="column-right"> -->
@@ -135,7 +135,7 @@
  			<p><h3>Event Day-of-Week Data</h3></p>
  			<div class="container">
  				<div class="column-center">
- 					<canvas id="dayOfWeek" width="150" height="150"></canvas>
+ 					<canvas id="dayOfWeek" width="300" height="300"></canvas>
 					<div class="event-desc">Total Attendee Day-of-Week Breakdown</div>
 				</div>
  			</div>
@@ -144,7 +144,7 @@
  			<p><h3>Popular Event Data</h3></p>
  			<div class="container">
  				<div class="column-center">
- 					<canvas id="popularEvents" width="150" height="150"></canvas>
+ 					<canvas id="popularEvents" width="300" height="300"></canvas>
 					<div class="event-desc">Total Attendee Popular Event Breakdown</div>
 				</div>
  			</div>
@@ -153,7 +153,7 @@
  			<p><h3>Popular Tags Data</h3></p>
  			<div class="container">
  				<div class="column-center">
-	 				<canvas id="popularTags" width="150" height="150"></canvas>
+	 				<canvas id="popularTags" width="300" height="300"></canvas>
 					<div class="event-desc">Popular Tags Data Breakdown</div>
 				</div>
  			</div>

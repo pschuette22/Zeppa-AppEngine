@@ -51,7 +51,7 @@ public class AnalyticsServlet extends HttpServlet {
 			
 			System.out.println("Demographics");
 			// Strings to hold the info for chart.js
-			String[] allEventDemo = getGenderCountAllEvents(sessionInfo);
+			String[] allEventDemo = getDemographicCountAllEvents(sessionInfo);
 			req.setAttribute("genderData", allEventDemo[0]);
 			req.setAttribute("ageData", allEventDemo[1]);
 
@@ -73,12 +73,6 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
-	}
-
 	/** 
 	 * Call the api analytics servlet to get all
 	 * gender information for the current vendor's
@@ -86,7 +80,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param resultsArray
 	 * @return
 	 */
-	public static String[] getGenderCountAllEvents(UserInfoCerealWrapper sessionInfo) {
+	public static String[] getDemographicCountAllEvents(UserInfoCerealWrapper sessionInfo) {
 		Long maleCount = 0L;
 		Long femaleCount = 0L;
 		Long unidentified = 0L;
@@ -120,7 +114,6 @@ public class AnalyticsServlet extends HttpServlet {
 				}
 				JSONParser parser = new JSONParser();
 				// Parse the JSON in the response, get the count of each gender
-				System.out.println("------RESPONSE: " + responseGender + "------");
 				JSONArray demoInfo = (JSONArray) parser.parse(responseGender);
 				if(demoInfo.size() == 2) {
 					// Get all of the demographic info from the json response
@@ -228,7 +221,6 @@ public class AnalyticsServlet extends HttpServlet {
 				+ "highlightStroke: \"rgba(220,220,220,1)\","
 				+ data
 				+ "]}]}";
-		System.out.println("----Tag: " + ret);
 		return ret;
 	}
 	
@@ -299,7 +291,6 @@ public class AnalyticsServlet extends HttpServlet {
 				+ "highlightStroke: \"rgba(220,220,220,1)\","
 				+ data
 				+ "]}]}";
-		System.out.println("----POP: " + ret);
 		return ret;
 	}
 

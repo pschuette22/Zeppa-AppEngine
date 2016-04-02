@@ -158,11 +158,23 @@ public class StartupServlet extends HttpServlet {
 		tag4.setTagText("Play Basketball");
 		tag4.setType(TagType.USER);
 		
+		EventTag tag5 = new EventTag();
+		tag5.setOwnerId(vendor.getKey().getId());
+		tag5.setTagText("Watch Football");
+		tag5.setType(TagType.VENDOR);
+		
+		EventTag tag6 = new EventTag();
+		tag6.setOwnerId(vendor.getKey().getId());
+		tag6.setTagText("Play Poker");
+		tag6.setType(TagType.USER);
+		
 		try {
 			EventTagServlet.insertTag(tag);
 			EventTagServlet.insertTag(tag2);
 			EventTagServlet.insertTag(tag3);
 			EventTagServlet.insertTag(tag4);
+			EventTagServlet.insertTag(tag5);
+			EventTagServlet.insertTag(tag6);
 		} catch (UnauthorizedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -174,15 +186,29 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag2.getId());
 		tagIds.add(tag3.getId());
 		tagIds.add(tag4.getId());
+		tagIds.add(tag5.getId());
+		tagIds.add(tag6.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
 				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
 		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, System.currentTimeMillis(), 
 				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
 		
 		try {
 			VendorEventServlet.insertEvent(event);
 			VendorEventServlet.insertEvent(event2);
+			VendorEventServlet.insertEvent(event3);
+			VendorEventServlet.insertEvent(event4);
+			VendorEventServlet.insertEvent(event5);
+			VendorEventServlet.insertEvent(event6);
 		} catch (UnauthorizedException | IOException e) {
 			e.printStackTrace();
 		}
@@ -253,6 +279,11 @@ public class StartupServlet extends HttpServlet {
 		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
 		
 		try {
 			VendorEventRelationshipServlet.insertEventRelationship(ver);
@@ -260,6 +291,11 @@ public class StartupServlet extends HttpServlet {
 			VendorEventRelationshipServlet.insertEventRelationship(ver3);
 			VendorEventRelationshipServlet.insertEventRelationship(ver4);
 			VendorEventRelationshipServlet.insertEventRelationship(ver5);
+			VendorEventRelationshipServlet.insertEventRelationship(ver6);
+			VendorEventRelationshipServlet.insertEventRelationship(ver7);
+			VendorEventRelationshipServlet.insertEventRelationship(ver8);
+			VendorEventRelationshipServlet.insertEventRelationship(ver9);
+			VendorEventRelationshipServlet.insertEventRelationship(ver10);
 		} catch (UnauthorizedException | IOException e1) {
 			e1.printStackTrace();
 		}
@@ -269,6 +305,8 @@ public class StartupServlet extends HttpServlet {
 		EventTagFollow etf3 = new EventTagFollow(tag, testUser2.getId());
 		EventTagFollow etf4 = new EventTagFollow(tag3, testUser2.getId());
 		EventTagFollow etf5 = new EventTagFollow(tag4, testUser2.getId());
+		EventTagFollow etf6 = new EventTagFollow(tag5, testUser3.getId());
+		EventTagFollow etf7 = new EventTagFollow(tag5, testUser3.getId());
 		
 		try {
 			EventTagFollowServlet.insertTagFollow(etf1);
@@ -276,6 +314,8 @@ public class StartupServlet extends HttpServlet {
 			EventTagFollowServlet.insertTagFollow(etf3);
 			EventTagFollowServlet.insertTagFollow(etf4);
 			EventTagFollowServlet.insertTagFollow(etf5);
+			EventTagFollowServlet.insertTagFollow(etf6);
+			EventTagFollowServlet.insertTagFollow(etf7);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

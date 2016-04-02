@@ -86,7 +86,6 @@ public class AnalyticsServlet extends HttpServlet {
 				json.put(adw.getKey(), adw.getValue());
 			}
 			resp.setStatus(HttpServletResponse.SC_OK);
-			System.out.println("-------"+json.toJSONString()+"-------");
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
 			// Get the most popular events and return their title and count in JSON
@@ -160,7 +159,6 @@ public class AnalyticsServlet extends HttpServlet {
 			DateTime dt = new DateTime(event.getStart());
 			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
 			dayCounts.put(dt.getDayOfWeek(), (dayCounts.get(dt.getDayOfWeek()) + relationships.size()));
-			//System.out.println("EVENT: "+event.getTitle()+", DAY: "+dt.getDayOfWeek()+", j: "+relationships.size()+", n: "+VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()).size());
 		}
 		
 		return dayCounts;

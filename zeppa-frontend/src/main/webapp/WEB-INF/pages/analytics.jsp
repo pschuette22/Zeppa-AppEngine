@@ -22,25 +22,23 @@
 	
 	// Override default Chart.js options here
 	var options = {
+		// Responsive is commented out because it prevents graphs from showing correctly when tab is changed
 		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
 	
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
-		var ctx1 = document.getElementById("gender").getContext("2d");
-		var ctx2 = document.getElementById("age").getContext("2d");
-		var ctx3 = document.getElementById("dayOfWeek").getContext("2d");
-		var ctx4 = document.getElementById("popularEvents").getContext("2d");
-		var ctx5 = document.getElementById("popularTags").getContext("2d");
-		//var ctx3 = document.getElementById("event3").getContext("2d");
-		// ${genderData} accesses gender data attribute set by the Analytics Servlet
-		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
-		var chart2 = new Chart(ctx2).Bar(${ageData}, options);
-		var chart3 = new Chart(ctx3).Bar(${popDays}, options);
-		var chart4 = new Chart(ctx4).Bar(${popEvents}, options);
-		var chart5 = new Chart(ctx5).Bar(${tagData}, options);
-		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
+		var genderContext = document.getElementById("gender").getContext("2d");
+		var ageContext = document.getElementById("age").getContext("2d");
+		var daysContext = document.getElementById("dayOfWeek").getContext("2d");
+		var eventsContext = document.getElementById("popularEvents").getContext("2d");
+		var tagsContext = document.getElementById("popularTags").getContext("2d");
+		var genderChart = new Chart(genderContext).Doughnut(${genderData}, options);
+		var ageChart = new Chart(ageContext).Bar(${ageData}, options);
+		var popDaysChart = new Chart(daysContext).Bar(${popDays}, options);
+		var popEventsChart = new Chart(eventsContext).Bar(${popEvents}, options);
+		var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
 	}
 	
 </script>
@@ -114,7 +112,6 @@
  		
  		<div class="analyticsTab active" id="demographicsTab">
  			<p><h3>Event Demographics Data</h3></p>
-	
 			<div class="container">
 				<div class="column-left">
 					<canvas id="gender" width="300" height="300"></canvas>
@@ -124,10 +121,6 @@
 					<canvas id="age" width="300" height="300"></canvas>
 					<div class="event-desc">Total Attendee Age Breakdown</div>
 				</div>
-<!-- 				<div class="column-right"> -->
-<!-- 					<canvas id="event3" width="150" height="150"></canvas> -->
-<!-- 					<div class="event-desc">Event Name 3</div> -->
-<!-- 				</div> -->
 			</div>
  		</div>
  		

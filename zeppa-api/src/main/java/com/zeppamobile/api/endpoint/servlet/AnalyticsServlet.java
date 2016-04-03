@@ -80,7 +80,16 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTags(null, Long.valueOf(vendorId));
+			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(null, Long.valueOf(vendorId), true);
+			JSONObject json = new JSONObject();
+			for(AnalyticsDataWrapper adw : tags) {
+				json.put(adw.getKey(), adw.getValue());
+			}
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.getWriter().write(json.toJSONString());
+		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS_WATCHED)) {
+			// Get all of the tags that brought users to events
+			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(null, Long.valueOf(vendorId), false);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -328,7 +337,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the id of the current vendor
 	 * @return 
 	 */
-	private List<AnalyticsDataWrapper> getAllEventTags(FilterCerealWrapper filter, long vendorId) {
+	private List<AnalyticsDataWrapper> getAllEventTagsJoined(FilterCerealWrapper filter, long vendorId, boolean joined) {
 		Map<String, Integer> tagsHash = new HashMap<String, Integer>();
 		// First get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
@@ -344,9 +353,17 @@ public class AnalyticsServlet extends HttpServlet {
 					tagList.add(tag.getTagText());
 				}
 			}
+			List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+			if(joined) {
+			// get all users with a joined relationship to the event
+			relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			} else {
+				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId());
+			}
+			
 			// This hash map contains all tag texts that are common 
 			// between one of the vendor's events and a user with a relationship to it
-			tagsHash.putAll(getRelatedUserTagInfo(tagList, event.getId()));
+			tagsHash.putAll(getRelatedUserTagInfo(tagList, relationships));
 		}
 		
 		List<AnalyticsDataWrapper> maxTags = new ArrayList<AnalyticsDataWrapper>();
@@ -383,9 +400,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @return - hash map with the key being tag text and the value 
 	 * being the number of attendees who follow the tag
 	 */
-	private static HashMap<String, Integer> getRelatedUserTagInfo(List<String> eventTags, Long eventId) {
-		// get all users with a relationship to an event
-		List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllRelationshipsForEvent(eventId);
+	private static HashMap<String, Integer> getRelatedUserTagInfo(List<String> eventTags, List<VendorEventRelationship> relationships) {
 		HashMap<String, Integer> tagHash = new HashMap<String, Integer>();
 		for(VendorEventRelationship rel : relationships) {
 			// Get the user and their initial tags

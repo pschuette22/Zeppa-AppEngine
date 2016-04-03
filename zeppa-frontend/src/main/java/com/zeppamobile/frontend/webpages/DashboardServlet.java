@@ -40,7 +40,7 @@ public class DashboardServlet extends HttpServlet {
 				// Get the chart js string for demographic info
 				String ageData = AnalyticsServlet.getDemographicCountAllEvents(userInfo)[1];
 				// Get the chart js string for the tags graph
-				String tagsData = AnalyticsServlet.getTagsAllEvents(userInfo);
+				String tagsData = AnalyticsServlet.getTagsAllEvents(userInfo, true);
 				
 				req.setAttribute("ageData", ageData);
 				req.setAttribute("tagData", tagsData);

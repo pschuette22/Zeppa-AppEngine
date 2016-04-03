@@ -56,8 +56,11 @@ public class AnalyticsServlet extends HttpServlet {
 			req.setAttribute("ageData", allEventDemo[1]);
 
 			System.out.println("Tags");
-			String allEventTags = getTagsAllEvents(sessionInfo);
+			String allEventTags = getTagsAllEvents(sessionInfo, true);
 			req.setAttribute("tagData", allEventTags);
+			
+			String allEventTagsWatched = getTagsAllEvents(sessionInfo, false);
+			req.setAttribute("watchedTagData", allEventTagsWatched);
 			
 			System.out.println("Popular Events");
 			String popularEvents = getPopularEventsAllEvents(sessionInfo);
@@ -138,12 +141,14 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 		
 		// Create the string for chart.js for the gender pie chart
-		String genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
+		String genderData = "none";
+		if(maleCount > 0 || femaleCount > 0 || unidentified > 0) {
+			genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
 				+ "    highlight: \"#FF5A5E\"," + "    label: \"Male\"" + "}," + "{" + "    value: "
 				+ String.valueOf(femaleCount) + "," + "    color: \"#46BFBD\"," + "    highlight: \"#5AD3D1\","
 				+ "    label: \"Female\"" + "}," + "{" + "    value: " + String.valueOf(unidentified) + ","
 				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
-		
+		}
 		String ageData = "{labels: [\"under18\", \"18to20\", \"21to24\", \"25to29\", \"30to39\", \"40to49\", \"50to59\", \"over60\"],"
 				+ "    datasets: [ {"
 				+ "label: \"Age dataset\","
@@ -160,17 +165,22 @@ public class AnalyticsServlet extends HttpServlet {
 	 * Call the api analytics servlet to get
 	 * all of the tag information
 	 * @param sessionInfo
+	 * @param joined - true if you want to get only joined relationships, false if you want watched relationships  
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String getTagsAllEvents(UserInfoCerealWrapper sessionInfo) {
+	public static String getTagsAllEvents(UserInfoCerealWrapper sessionInfo, boolean joined) {
 		List<AnalyticsDataWrapper> tagCounts = new ArrayList<AnalyticsDataWrapper>();
 		try {
 			// Set up the call to the analytics api servlet
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(UniversalConstants.PARAM_VENDOR_ID,
 					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
-			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS);
+			if(joined) {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS);
+			} else {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS_WATCHED);
+			}
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);

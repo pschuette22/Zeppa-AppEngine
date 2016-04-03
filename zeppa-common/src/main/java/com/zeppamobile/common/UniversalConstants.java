@@ -87,6 +87,7 @@ public class UniversalConstants {
 	public static final String INDIV_EVENT_TAGS = "indivTags";
 	public static final String OVERALL_EVENT_DEMOGRAPHICS = "overallDemographics";
 	public static final String OVERALL_EVENT_TAGS = "overallTags";
+	public static final String OVERALL_EVENT_TAGS_WATCHED = "overallTagsWatched";
 	public static final String OVERALL_EVENT_POPULAR_DAYS = "overallPopularDays";
 	public static final String OVERALL_EVENT_POPULAR_EVENTS = "overallPopularEvents";
 	

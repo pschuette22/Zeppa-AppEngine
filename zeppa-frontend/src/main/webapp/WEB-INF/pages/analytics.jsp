@@ -34,11 +34,43 @@
 		var daysContext = document.getElementById("dayOfWeek").getContext("2d");
 		var eventsContext = document.getElementById("popularEvents").getContext("2d");
 		var tagsContext = document.getElementById("popularTags").getContext("2d");
-		var genderChart = new Chart(genderContext).Doughnut(${genderData}, options);
-		var ageChart = new Chart(ageContext).Bar(${ageData}, options);
-		var popDaysChart = new Chart(daysContext).Bar(${popDays}, options);
-		var popEventsChart = new Chart(eventsContext).Bar(${popEvents}, options);
-		var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
+		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
+		if(${genderData} != "none") {
+			var genderChart = new Chart(genderContext).Doughnut(${genderData}, options);
+		} else {
+			genderContext.font = "12px Arial";
+			genderContext.fillText("There is no event data for this vendor", 10,50);
+		}
+		if(${ageData}.labels.length > 0) {
+			var ageChart = new Chart(ageContext).Bar(${ageData}, options);
+		} else {
+			ageContext.font = "12px Arial";
+			ageContext.fillText("There is no event data for this vendor", 10,50);
+		}
+		if(${popDays}.labels.length > 0) {
+			var popDaysChart = new Chart(daysContext).Bar(${popDays}, options);
+		} else {
+			daysContext.font = "12px Arial";
+			daysContext.fillText("There are no events for this vendor", 10,50);
+		}
+		if(${popEvents}.labels.length > 0) {
+			var popEventsChart = new Chart(eventsContext).Bar(${popEvents}, options);
+		} else {
+			eventsContext.font = "12px Arial";
+			eventsContext.fillText("There are no events for this vendor", 10,50);
+		}
+		if(${tagData}.labels.length > 0) {
+			var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
+		} else {
+			tagsContext.font = "12px Arial";
+			tagsContext.fillText("There are no common tags", 10,50);
+		}
+		if(${watchedTagData}.labels.length > 0) {
+			var watchedChart = new Chart(tagsWatchedContext).Bar(${watchedTagData}, options);
+		} else {
+			tagsWatchedContext.font = "12px Arial";
+			tagsWatchedContext.fillText("No users have watched an event for this vendor",10,50);
+		}
 	}
 	
 </script>
@@ -145,9 +177,13 @@
  		<div class="analyticsTab" id="tagsTab">
  			<p><h3>Popular Tags Data</h3></p>
  			<div class="container">
- 				<div class="column-center">
+ 				<div class="column-left">
 	 				<canvas id="popularTags" width="300" height="300"></canvas>
-					<div class="event-desc">Popular Tags Data Breakdown</div>
+					<div class="event-desc">Popular Tags Among People who Joined Events</div>
+				</div>
+				<div class="column-center">
+					<canvas id="watchedTags" width="300" height="300"></canvas>
+					<div class="event-desc">Popular Tags Among People who Watched Events</div>
 				</div>
  			</div>
  		</div>

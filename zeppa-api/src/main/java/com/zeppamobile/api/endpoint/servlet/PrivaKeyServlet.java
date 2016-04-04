@@ -36,7 +36,8 @@ public class PrivaKeyServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		try {
+		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		
 		String email = request.getParameter("email");
@@ -59,25 +60,14 @@ public class PrivaKeyServlet extends HttpServlet {
         connection.setDoOutput(false);
         connection.setRequestMethod("GET");
         
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(connection.getInputStream()));
-		
-		String line;
-		
-	    
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            // OK
-			// Read from the buffer line by line and write to the response
-			// item	
-        	String st = ""; 
-			while ((line = reader.readLine()) != null) {
-				st += line;
-			}
-			
-			response.getWriter().append(st);
-        }
+        connection.connect();
         
-        reader.close();
+        response.getWriter().append("Tesing after connect ");
+        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			response.getWriter().append("Error Message:" + e.getMessage());
+		}
 	}
 
 	/**

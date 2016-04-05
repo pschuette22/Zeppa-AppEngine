@@ -36,7 +36,9 @@ function createAccount() {
 }
 </script>
 <t:ZeppaBase>
-
+	<jsp:attribute name="title">
+	  <h2>Create Account</h2>
+	</jsp:attribute>
 <jsp:body>
 	<div>
 		<div id="successDiv" style="color: green;"></div>

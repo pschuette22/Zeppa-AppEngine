@@ -4,6 +4,7 @@ import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
+import com.zeppamobile.api.datamodel.EventTag;
 
 public class TaskUtility {
 
@@ -25,7 +26,6 @@ public class TaskUtility {
 		return queue;
 	}
 
-	
 	/**
 	 * Schedule a task to create the relationships of an event This also
 	 * schedules sending a notification as necessary
@@ -113,6 +113,20 @@ public class TaskUtility {
 				TaskOptions.Builder.withUrl(TASK_SERVLET_URL)
 						.method(Method.GET).param("action", "deletedUser")
 						.param("userId", String.valueOf(userId.longValue())));
+
+	}
+
+	/**
+	 * Schedule a task to index a tag
+	 * @param tag
+	 * @param isUserTag
+	 */
+	public static void scheduleIndexEventTag(EventTag tag, boolean isUserTag) {
+
+		getRelationshipQueue().add(
+				TaskOptions.Builder.withUrl(TASK_SERVLET_URL)
+						.method(Method.GET).param("action", "indexTag")
+						.param("tagId", String.valueOf(tag.getId())).param("isUserTag", String.valueOf(isUserTag)));
 
 	}
 

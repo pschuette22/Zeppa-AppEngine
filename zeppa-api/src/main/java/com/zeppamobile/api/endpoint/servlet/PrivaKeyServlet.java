@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
@@ -48,7 +49,7 @@ public class PrivaKeyServlet extends HttpServlet {
 		s += "response_type=id_token";
 		s += "&response_mode=form_post";
 		s += "&client_id=" + Constants.PRIVAKEY_CLIENT_ID;
-		s += "&scope=" + URLEncoder.encode("openid " + email, "UTF-8");
+		s += "&scope=openid";
 		s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-api-dot-zeppa-cloud-1821.appspot.com/privakey/", "UTF-8");
 		s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
 		//s += "&login_hint=openid";
@@ -77,13 +78,18 @@ public class PrivaKeyServlet extends HttpServlet {
 		
 		String token = request.getParameter("id_token");
 		
-		response.getWriter().append(token);
+		response.getWriter().append("PrivaKey ID Token: " + token);
 		try {
 			JSONObject json = (JSONObject)new JSONParser().parse(token);
 			
 			String sub = (String) json.get("sub");
+			String email = URLDecoder.decode((String) json.get("nonce"), "UTF-8");// This value should be checked to match the one sent in the request
+			String iss = (String) json.get("iss"); // Should be https://idp.privakeyapp.com/identityserver
+			String aud = (String) json.get("aud"); //Should contain our client id
+			String expTime = (String) json.get("exp");
+			response.getWriter().append("PrivaKey ID Sub Value:" + sub);
 			
-			response.getWriter().append(sub);
+			EmployeeServlet.updateEmployeePrivaKeyID(email, sub);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

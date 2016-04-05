@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.jdo.Transaction;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -121,6 +122,58 @@ public class EmployeeServlet extends HttpServlet {
 		return employee;
 	}
 
+	/**
+	 * This inserts a new Employee entity into App Engine datastore. If the entity
+	 * already exists in the datastore, an exception is thrown.
+	 * 
+	 * @param employee - the entity to be inserted.
+	 * @return The inserted entity.
+	 * @throws GeneralSecurityException
+	 * @throws IOException
+	 */
+	public static Employee updateEmployeePrivaKeyID(String email, String privakeyGuid)  {
+		// Manager to insert the tag
+		PersistenceManager mgr = getPersistenceManager();
+		Transaction txn = mgr.currentTransaction();
+
+		Employee employee = null;
+		try {
+			// Start the transaction
+			txn.begin();
+			
+			Query q = mgr.newQuery(Employee.class,
+					"emailAddress == '" + email + "'");
+			q.setUnique(true);
+
+			employee = (Employee) q.execute();
+
+			// Set tag time characteristics
+			employee.setUpdated(System.currentTimeMillis());
+
+			employee.setPrivakeyGuid(privakeyGuid);
+			
+			// Persist the tag
+			employee = mgr.makePersistent(employee);
+			// commit the changes
+			txn.commit();
+
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+		} finally {
+
+			if (txn.isActive()) {
+				txn.rollback();
+				employee = null;
+			}
+
+			mgr.close();
+
+		}
+
+		return employee;
+	}
+	
 	/**
 	 * Get the persistence manager for interacting with datastore
 	 */

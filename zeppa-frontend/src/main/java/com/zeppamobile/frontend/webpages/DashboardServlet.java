@@ -3,14 +3,10 @@ package com.zeppamobile.frontend.webpages;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -25,21 +21,17 @@ import org.json.simple.parser.JSONParser;
 
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
-import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 
 /**
  * 
- * @author Pete Schuette
+ * @author Kevin Moratelli
  * 
- *         Blank servlet for testing
+ *         Servlet for the dashboard page
  *
  */
 public class DashboardServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6074841711114263838L;
 
 	@Override
@@ -58,11 +50,13 @@ public class DashboardServlet extends HttpServlet {
 				// Get the chart js string for the tags graph
 				String tagsData = AnalyticsServlet.getTagsAllEvents(userInfo, true);
 				
-				JSONArray upcomingEvents = getUpcomingtEvents(userInfo.getVendorID());
+				JSONArray upcomingEvents = getUpcomingEvents(userInfo.getVendorID());
+				JSONArray pastEvents = getPastEvents(userInfo.getVendorID());
 				
 				req.setAttribute("ageData", ageData);
 				req.setAttribute("tagData", tagsData);
 				req.setAttribute("upcomingEvents", upcomingEvents.toJSONString());
+				req.setAttribute("pastEvents", pastEvents.toJSONString());
 				req.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(req, resp);
 			}
 			else {
@@ -74,7 +68,14 @@ public class DashboardServlet extends HttpServlet {
 		}
 	}
 
-	private JSONArray getUpcomingtEvents(Long vendorId) {
+	/**
+	 * Call the VendorEventServlet in the api module to get the next 5 upcoming
+	 * events and return them in a JSON array to be parsed in the jsp
+	 * 
+	 * @param vendorId - the id of the current vendor
+	 * @return - JSON array containing info on next 5 events
+	 */
+	private JSONArray getUpcomingEvents(Long vendorId) {
 		Map<String, String> params = new HashMap<String, String>();
 		//List<VendorEventWrapper> upcomingEvents = new ArrayList<VendorEventWrapper>();
 		JSONArray results = new JSONArray();
@@ -82,7 +83,7 @@ public class DashboardServlet extends HttpServlet {
 			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId.toString(), "UTF-8"));
 			params.put(UniversalConstants.PARAM_UPCOMING_EVENTS, URLEncoder.encode(UniversalConstants.PARAM_UPCOMING_EVENTS, "UTF-8"));
 			// Create the connection to the api module VendorEventServlet
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/vendor-event-servlet/", params);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/dashboard-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
@@ -91,13 +92,53 @@ public class DashboardServlet extends HttpServlet {
 			String line;
 
 			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				// Read from the buffer line by line and write to the response
-				// item
+				// Read from the buffer line by line and write to the response item
+				String responseString = "";
+				while ((line = reader.readLine()) != null) {
+					responseString += line;
+				}
+				// Abstract the upcoming event info from the json response
+				JSONParser parser = new JSONParser();
+				JSONObject obj = (JSONObject)parser.parse(responseString);
+				results = (JSONArray)obj.get("events");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+	
+	/**
+	 * Call the VendorEventServlet in the api module to get the 5 most recent past
+	 * events and return them in a JSON array to be parsed in the jsp
+	 * @param vendorId - the id of the current vendor
+	 * @return - JSON array containing info on next 5 events
+	 */
+	private JSONArray getPastEvents(Long vendorId) {
+		Map<String, String> params = new HashMap<String, String>();
+		JSONArray results = new JSONArray();
+		try {
+			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId.toString(), "UTF-8"));
+			params.put(UniversalConstants.PARAM_PAST_EVENTS, URLEncoder.encode(UniversalConstants.PARAM_PAST_EVENTS, "UTF-8"));
+			System.out.println("-------GET PAST EVENTS CALLED");
+			// Create the connection to the api module VendorEventServlet
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/dashboard-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response item
 				String responseString = "";
 				while ((line = reader.readLine()) != null) {
 					responseString += line;
 				}
 				System.out.println("------RESP: "+ responseString);
+				// Abstract the past event info from the json response
 				JSONParser parser = new JSONParser();
 				JSONObject obj = (JSONObject)parser.parse(responseString);
 				results = (JSONArray)obj.get("events");
@@ -119,5 +160,4 @@ public class DashboardServlet extends HttpServlet {
 		
 		return results;
 	}
-
 }

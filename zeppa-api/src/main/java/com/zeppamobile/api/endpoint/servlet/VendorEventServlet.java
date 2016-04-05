@@ -5,7 +5,6 @@ import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -34,9 +33,6 @@ import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
  */
 public class VendorEventServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -50,14 +46,16 @@ public class VendorEventServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String jsonString = "";
-		try{
+		try {
+			// Get the parameters from the request
 			String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 			String upcomingEvents = req.getParameter(UniversalConstants.PARAM_UPCOMING_EVENTS);
-			
+			String pastEvents = req.getParameter(UniversalConstants.PARAM_PAST_EVENTS);
+			System.out.println("-------param: "+pastEvents);
 			JSONArray results = new JSONArray();
 			
-			//Determine if calling for individual event or all user events.
+			// Determine if calling for individual event or all user events.
 			if (eventId != null && !eventId.isEmpty()){
 				eventId = URLDecoder.decode(eventId,"UTF-8");
 				VendorEvent result = getIndividualEvent(eventId);
@@ -72,15 +70,10 @@ public class VendorEventServlet extends HttpServlet {
 				vendorId = URLDecoder.decode(vendorId,"UTF-8");
 				results = getAllEventsJSON(Long.parseLong(vendorId));
 				jsonString = results.toJSONString();
-			} else if(upcomingEvents != null && vendorId != null && !vendorId.isEmpty()){
-				vendorId = URLDecoder.decode(vendorId,"UTF-8");
-				results = getUpcomingEventsJSON(getUpcomingEvents(Long.valueOf(vendorId)));
-				jsonString = "{\"events\":" + results.toJSONString() + "}";
 			}
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
-			
 			//send Json back
 			resp.getWriter().write(jsonString);
 		
@@ -110,7 +103,6 @@ public class VendorEventServlet extends HttpServlet {
 
 			resp.getWriter().write("Tags String" + tagsString+"\n\n");
 			
-			
 			JSONParser parser = new JSONParser();
 			JSONArray tags_json = (JSONArray) parser.parse(tagsString);
 			for (int i = 0; i < tags_json.size(); i++) {
@@ -130,7 +122,13 @@ public class VendorEventServlet extends HttpServlet {
 			e.printStackTrace(resp.getWriter());
 		}
 	}
-	
+
+	/**
+	 * Create a JSON array containing all of the events for 
+	 * the given vendor
+	 * @param vendorId - the if of the vendor to get events for
+	 * @return - JSON array with the event info
+	 */
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllEventsJSON(Long vendorId){
 		JSONArray results = new JSONArray();
@@ -171,66 +169,6 @@ public class VendorEventServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Get the next 5 events scheduled for the given vendor (if they exist)
-	 * This is used for the dashboard view
-	 * @param vendorId - the vendor to get events for
-	 * @return - list of the next 5 events for the given vendor
-	 */
-	public static List<VendorEventWrapper> getUpcomingEvents(Long vendorId) {
-		List<VendorEventWrapper> upcomingEvents = new ArrayList<VendorEventWrapper>();
-		List<VendorEvent> allEvents = getAllEvents(vendorId);
-		// Iterate over all events for the vendor
-		for(VendorEvent event : allEvents) {
-			// If the event hasn't happened add it to the current list
-			if(event.getStart() >= System.currentTimeMillis()) {
-				VendorEventWrapper wrap = new VendorEventWrapper(event.getId(), event.getCreated(), event.getUpdated(), 
-							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
-							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
-				// Set the joined count to be shown on the dashboard
-				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
-				upcomingEvents.add(wrap);
-				System.out.println("------Wrap :" + wrap.getTitle());
-			}
-		}
-		
-		// If there are 5 or fewer then return all
-		if(upcomingEvents.size() <= 5)
-			return upcomingEvents;
-		
-		List<VendorEventWrapper> returnList = new ArrayList<VendorEventWrapper>();
-		// If there are more than 5 return the next 5 most current
-		for(int i=0; i < 5; i++) {
-			VendorEventWrapper mostCurrent = null;
-			for(VendorEventWrapper event : upcomingEvents) {
-				if(mostCurrent == null || event.getStart() < mostCurrent.getStart()) {
-					mostCurrent = event;
-				}
-			}
-			// Add the most current to the return list
-			returnList.add(mostCurrent);
-			// Remove the most current so the next most current can be found
-			upcomingEvents.remove(mostCurrent);
-		}
-		
-		return returnList;
-	}
-	
-	/**
-	 * Add all the current events to a JSON array
-	 * @param events - the current events
-	 * @return - a json array with all of the current events
-	 */
-	@SuppressWarnings("unchecked")
-	private JSONArray getUpcomingEventsJSON(List<VendorEventWrapper> events) {
-		JSONArray array = new JSONArray();
-		for(VendorEventWrapper wrap : events) {
-			array.add(wrap.toJson());
-		}
-		
-		return array;
-	}
-
-	/**
 	 * Find an event with the given ID and return its JSON info
 	 * @param eventId - the id of the desired event
 	 * @return - the JSON with the event info
@@ -263,7 +201,6 @@ public class VendorEventServlet extends HttpServlet {
 	public static VendorEvent insertEvent(VendorEvent event) throws UnauthorizedException,
 			IOException {
 
-
 		// Manager to insert vendor and master employee
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
@@ -271,10 +208,8 @@ public class VendorEventServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-
 			// Persist event
 			event = mgr.makePersistent(event);
-			
 			// commit the changes
 			txn.commit();
 
@@ -287,21 +222,12 @@ public class VendorEventServlet extends HttpServlet {
 				txn.rollback();
 				event = null;
 			}
-
 			mgr.close();
-
 		}
 
 		return event;
 	}
 
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-	
-	
 	/**
 	 * Get the persistence manager for interacting with datastore
 	 */

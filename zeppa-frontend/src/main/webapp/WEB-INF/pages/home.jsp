@@ -6,8 +6,10 @@
 <script src="../js/Chart.js/Chart.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-		parseEvents('${upcomingEvents}');
+		parseEvents('${upcomingEvents}', '#upcomingEventTable tbody');
+		parseEvents('${pastEvents}', '#pastEventTable tbody');
 		createGraphs();
+		addEventButtons();
 	});
 	
 	// Override default Chart.js options here
@@ -24,7 +26,29 @@
 		var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
 	}
 	
-	function parseEvents(eventsString){
+	function getDateString(start) {
+		var date = start.getDate();
+		var month = start.getMonth() + 1; //Months are zero based
+	    var year = start.getFullYear();
+	    var hour = start.getHours();
+	    var minutes = start.getMinutes();
+	    if (minutes < 10){
+	    	minutes = "0"+minutes;
+	    }
+	    var ampm = "AM";
+	    if (hour>11){
+	    	hour = hour-12;
+	    	ampm = "PM";
+	    }
+	    if (hour == 0 ){
+	    	hour = 12;
+	    }
+	    var dateString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
+	    return dateString;
+	}
+	
+	// Parse the json array of upcoming events and generate the table rows for them
+	function parseEvents(eventsString, tableId) {
 		var events = jQuery.parseJSON(eventsString);
 		for (var i = 0; i < events.length; i++){
 			var id = events[i].id;
@@ -34,25 +58,24 @@
 			var count = events[i].joinedCount;
 			
 			var start = new Date(events[i].start);
-			var date = start.getDate();
-		    var month = start.getMonth() + 1; //Months are zero based
-		    var year = start.getFullYear();
-		    var hour = start.getHours();
-		    var minutes = start.getMinutes();
-		    if (minutes < 10){
-		    	minutes = "0"+minutes;
-		    }
-		    var ampm = "AM";
-		    if (hour>11){
-		    	hour = hour-12;
-		    	ampm = "PM";
-		    }
-		    if (hour == 0 ){
-		    	hour = 12;
-		    }
-		    var startTimeString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
-			$("#upcomingEventTable tbody").append("<tr class='tableRow' data-eventid='"+id+"'><td class=\"eventCell\">"+title+"</td><td class=\"eventCell\">"+startTimeString+"</td><td class='eventCell'>"+location+"</td><td class=\"eventCell\">"+count+"</td></tr>");
+			var startString = getDateString(start);
+		    
+			$(tableId).append("<tr class='tableRow' data-eventid='"+id+"'><td class=\"eventCell\">"+title+"</td><td class=\"eventCell\">"+startString+"</td><td class='eventCell'>"+location+"</td><td class=\"eventCell\">"+count+"</td></tr>");
 		}
+	}
+	
+	function addEventButtons() {
+		var upcomingCount = $('#upcomingEventTable tr').length;
+		var pastCount = $('#pastEventTable tr').length;
+		// Fill out the table to 5 rows so that the button is at the bottom
+		for(var i=0; i < (6 - upcomingCount); i++) {
+			$("#upcomingEventTable tbody").append("<tr class=\"tableRow\" style=\"height:50px\"></tr>");
+		}
+		for(var i=0; i < (6 - pastCount); i++) {
+			$("#pastEventTable tbody").append("<tr class=\"tableRow\" style=\"height:50px\"></tr>");
+		}
+		$("#upcomingEventTable tbody").append("<tr class=\"tableRow\"><td align=\"center\" colspan=\"4\"><form action=\"/events\"><input type=\"submit\" value=\"View All Events\"></form></td></tr>");
+		$("#pastEventTable tbody").append("<tr class=\"tableRow\"><td align=\"center\" colspan=\"4\"><form action=\"/events\"><input type=\"submit\" value=\"View All Events\"></form></td></tr>");
 	}
 </script>
 
@@ -79,10 +102,13 @@
 	text-decoration: underline;
 	padding-bottom: 10px;
 	padding-top: 3px;
+	border:1px solid #000000;
   }
   .eventCell{
     width:23%;
 	text-align:center;
+	border:1px solid #000000;
+	height:50px;
   }
   .tableRow{
     width:99%;
@@ -132,7 +158,7 @@
   
   <jsp:body>
     <div id="dashboardContent" style="overflow:auto">
-	    <div id="currentHeader" class="boxHeader"><h3 class="header-small">Current Events</h3></div>
+	    <div id="currentHeader" class="boxHeader"><h3 class="header-small">Upcoming Events</h3></div>
 		<div id="analyticsHeader" class="boxHeader"><h3 class="header-small">Analytics</h3></div>
 	    <div id="currentSquare" class="square">
 		  <table id="upcomingEventTable" style="width: 100%">
@@ -172,18 +198,13 @@
 		<div id="pastHeader" class="boxHeader"><h3 class="header-small">Past Events</h3></div>
 		<div id="billingHeader" class="boxHeader"><h3 class="header-small">Billing</h3></div>
 	    <div id="pastSquare" class="square">
-		  <table style="width: 100%">
+		  <table id="pastEventTable" style="width: 100%">
 		    <tr class="tableRow">
 			  <th class="eventHead">Title</th>
 			  <th class="eventHead">Date</th>
 			  <th class="eventHead">Location</th>
 			  <th class="eventHead">Attendees</th>
 			</tr>
-			<tr class="tableRow">
-			  <td class="eventCell">Event 1</td>
-			  <td class="eventCell">2/23/2016</td>
-			  <td class="eventCell">Location 1</td>
-			  <td class="eventCell">18</td>
 		  </table>
 		</div>
 		<div id="billingSquare" class="square">

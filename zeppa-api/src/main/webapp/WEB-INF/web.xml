@@ -85,6 +85,17 @@
 		<url-pattern>/endpoint/vendor-event-servlet/</url-pattern>
 	</servlet-mapping>
 	
+	<!-- Dashboard Servlet -->
+	<servlet>
+		<servlet-name>DashboardServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.DashboardServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DashboardServlet</servlet-name>
+		<url-pattern>/endpoint/dashboard-servlet/</url-pattern>
+	</servlet-mapping>
+	
 	<!-- Tags Servlet -->
 		<servlet>
 		<servlet-name>EventTagServlet</servlet-name>

@@ -32,8 +32,6 @@ public class VendorEventWrapper {
 	private Float latitude;
 
 	private Float longitude;
-
-	
 	
 	public VendorEventWrapper(Long eventId, Long created, Long updated, Long hostId, String title, String description,
 			Long start, Long end, List<Long> tagIds, String displayLocation, String mapsLocation) {

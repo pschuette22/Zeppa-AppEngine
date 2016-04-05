@@ -34,21 +34,18 @@ import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
  */
 public class VendorEventRelationshipServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		// Get the parameters from the request
 		String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 		String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 		JSONArray results = new JSONArray();
 		
+		// Determine if the call is for a specific event or all of a vendor's events
 		if (eventId != null && !eventId.isEmpty()) {
 			eventId = URLDecoder.decode(eventId,"UTF-8");
 			results = getAllRelationshipsForEventJSON(Long.valueOf(eventId));
@@ -59,7 +56,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_OK);
 		}
 		
-
 		resp.setContentType("application/json");
 		
 		//send Json back
@@ -67,6 +63,11 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		
 	}
 	
+	/**
+	 * Generate a JSONArray with all VendorEventRelationships for a specific event
+	 * @param eventId - the id to get all relationships for
+	 * @return - JSONArray containing info on all relationships to the given event
+	 */
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForEventJSON(Long eventId){
 		JSONArray results = new JSONArray();
@@ -133,27 +134,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Get the number of people who attended or plan on attending an event
-	 * This is for the dashboard page
-	 * @param vendorId - the id of the current vendor
-	 * @param isUpcoming - true if you want upcoming event counts, false if you past evetn counts
-	 * @return
-	 */
-	private int getAttendeeCount(Long vendorId, boolean isUpcoming) {
-		// TODO: DELETE
-		List<VendorEventWrapper> events = new ArrayList<VendorEventWrapper>();
-		if(isUpcoming) {
-			events = VendorEventServlet.getUpcomingEvents(vendorId);
-		}
-		List<VendorEventRelationship> rels = new ArrayList<VendorEventRelationship>();
-		for(VendorEventWrapper event : events) {
-			rels.addAll(getAllJoinedRelationshipsForEvent(event.getEventId()));
-		}
-		
-		return rels.size();
-	}
-	
-	/**
 	 * Get all of the watched VendorEventRelationships for a specific event
 	 * @param eventId - the id of the event to get relationships for
 	 * @return - the list of relationships
@@ -183,6 +163,11 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		return watchedList;
 	}
 	
+	/**
+	 * Generate JSONArray with all relationships to all events for the given vendor 
+	 * @param vendorId - the id of the vendor to get all relationships for
+	 * @return - JSON array with all relationships for all of the given vendor's events
+	 */
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
 		JSONArray results = new JSONArray();
@@ -203,7 +188,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * This inserts a new entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown. It uses HTTP
 	 * POST method.
-	 * 
 	 * @param event
 	 *            the entity to be inserted.
 	 * @return The inserted entity.
@@ -219,13 +203,10 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-
 			// Persist event
 			relationship = mgr.makePersistent(relationship);
-			
 			// commit the changes
 			txn.commit();
-
 		} catch (Exception e) {
 			// catch any errors that might occur
 			e.printStackTrace();
@@ -237,7 +218,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			}
 
 			mgr.close();
-
 		}
 
 		return relationship;

@@ -23,6 +23,7 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
 /**
  * 
@@ -132,7 +133,28 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Get all of the joined VendorEventRelationships for a specific event
+	 * Get the number of people who attended or plan on attending an event
+	 * This is for the dashboard page
+	 * @param vendorId - the id of the current vendor
+	 * @param isUpcoming - true if you want upcoming event counts, false if you past evetn counts
+	 * @return
+	 */
+	private int getAttendeeCount(Long vendorId, boolean isUpcoming) {
+		// TODO: DELETE
+		List<VendorEventWrapper> events = new ArrayList<VendorEventWrapper>();
+		if(isUpcoming) {
+			events = VendorEventServlet.getUpcomingEvents(vendorId);
+		}
+		List<VendorEventRelationship> rels = new ArrayList<VendorEventRelationship>();
+		for(VendorEventWrapper event : events) {
+			rels.addAll(getAllJoinedRelationshipsForEvent(event.getEventId()));
+		}
+		
+		return rels.size();
+	}
+	
+	/**
+	 * Get all of the watched VendorEventRelationships for a specific event
 	 * @param eventId - the id of the event to get relationships for
 	 * @return - the list of relationships
 	 */

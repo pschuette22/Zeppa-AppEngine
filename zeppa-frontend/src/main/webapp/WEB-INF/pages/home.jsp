@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>-->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script src="../js/Chart.js/Chart.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+		parseEvents('${upcomingEvents}');
 		createGraphs();
 	});
 	
@@ -21,6 +22,37 @@
 		var tagsContext = document.getElementById("popularTags").getContext("2d");
 		var ageChart = new Chart(ageContext).Bar(${ageData}, options);
 		var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
+	}
+	
+	function parseEvents(eventsString){
+		var events = jQuery.parseJSON(eventsString);
+		for (var i = 0; i < events.length; i++){
+			var id = events[i].id;
+			var title = events[i].title;
+			var description = events[i].description;
+			var location = events[i].displayLocation;
+			var count = events[i].joinedCount;
+			
+			var start = new Date(events[i].start);
+			var date = start.getDate();
+		    var month = start.getMonth() + 1; //Months are zero based
+		    var year = start.getFullYear();
+		    var hour = start.getHours();
+		    var minutes = start.getMinutes();
+		    if (minutes < 10){
+		    	minutes = "0"+minutes;
+		    }
+		    var ampm = "AM";
+		    if (hour>11){
+		    	hour = hour-12;
+		    	ampm = "PM";
+		    }
+		    if (hour == 0 ){
+		    	hour = 12;
+		    }
+		    var startTimeString = month+"/"+date+"/"+year+"\t"+hour+":"+minutes+" "+ampm;
+			$("#upcomingEventTable tbody").append("<tr class='tableRow' data-eventid='"+id+"'><td class=\"eventCell\">"+title+"</td><td class=\"eventCell\">"+startTimeString+"</td><td class='eventCell'>"+location+"</td><td class=\"eventCell\">"+count+"</td></tr>");
+		}
 	}
 </script>
 
@@ -103,18 +135,15 @@
 	    <div id="currentHeader" class="boxHeader"><h3 class="header-small">Current Events</h3></div>
 		<div id="analyticsHeader" class="boxHeader"><h3 class="header-small">Analytics</h3></div>
 	    <div id="currentSquare" class="square">
-		  <table style="width: 100%">
-		    <tr class="tableRow">
-			  <th class="eventHead">Title</th>
-			  <th class="eventHead">Date</th>
-			  <th class="eventHead">Location</th>
-			  <th class="eventHead">Attendees</th>
-			</tr>
-			<tr class="tableRow">
-			  <td class="eventCell">Happy Hour</td>
-			  <td class="eventCell">2/23/2016</td>
-			  <td class="eventCell">Center City</td>
-			  <td class="eventCell">38</td>
+		  <table id="upcomingEventTable" style="width: 100%">
+		   <tbody>
+			    <tr class="tableRow">
+				  <th class="eventHead">Title</th>
+				  <th class="eventHead">Date</th>
+				  <th class="eventHead">Location</th>
+				  <th class="eventHead">Attendees</th>
+				</tr>
+		  </tbody>
 		  </table>
 		</div>
 		<div id="analyticsSquare" class="square">

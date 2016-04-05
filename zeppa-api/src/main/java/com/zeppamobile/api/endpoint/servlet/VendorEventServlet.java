@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
@@ -23,6 +24,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
 /**
  * @author Pete Schuette
@@ -47,9 +49,12 @@ public class VendorEventServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		String jsonString = "";
 		try{
 			String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
+			String upcomingEvents = req.getParameter(UniversalConstants.PARAM_UPCOMING_EVENTS);
+			
 			JSONArray results = new JSONArray();
 			
 			//Determine if calling for individual event or all user events.
@@ -62,17 +67,22 @@ public class VendorEventServlet extends HttpServlet {
 					return;
 				}
 				results.add(result.toJson());
-			} else if(vendorId != null && !vendorId.isEmpty()){
+				jsonString = results.toJSONString();
+			} else if(vendorId != null && !vendorId.isEmpty() && upcomingEvents == null){
 				vendorId = URLDecoder.decode(vendorId,"UTF-8");
 				results = getAllEventsJSON(Long.parseLong(vendorId));
-				
+				jsonString = results.toJSONString();
+			} else if(upcomingEvents != null && vendorId != null && !vendorId.isEmpty()){
+				vendorId = URLDecoder.decode(vendorId,"UTF-8");
+				results = getUpcomingEventsJSON(getUpcomingEvents(Long.valueOf(vendorId)));
+				jsonString = "{\"events\":" + results.toJSONString() + "}";
 			}
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
 			
 			//send Json back
-			resp.getWriter().write(results.toJSONString());
+			resp.getWriter().write(jsonString);
 		
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -81,39 +91,6 @@ public class VendorEventServlet extends HttpServlet {
 		
 	}
 
-	@SuppressWarnings("unchecked")
-	public JSONArray getAllEventsJSON(Long vendorId){
-		JSONArray results = new JSONArray();
-		
-		List<VendorEvent> events = getAllEvents(vendorId);
-		
-		for(VendorEvent event : events) {
-			JSONObject json = event.toJson();
-			results.add(json);
-		}
-		return results;
-	}
-	
-	public static List<VendorEvent> getAllEvents(Long vendorId) {
-		List<VendorEvent> events = new ArrayList<VendorEvent>();
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			Query q = mgr.newQuery(VendorEvent.class,
-					"hostId == " + vendorId);
-
-			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
-			if(response.size()>0) {
-				// This was a success
-				events.addAll(response);
-			}
-			
-		} finally {
-			mgr.close();
-		}
-		
-		return events;
-	}
-	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -152,6 +129,105 @@ public class VendorEventServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			e.printStackTrace(resp.getWriter());
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONArray getAllEventsJSON(Long vendorId){
+		JSONArray results = new JSONArray();
+		
+		List<VendorEvent> events = getAllEvents(vendorId);
+		
+		for(VendorEvent event : events) {
+			JSONObject json = event.toJson();
+			results.add(json);
+		}
+		return results;
+	}
+	
+	/**
+	 * Gets all events for the vendor with the given id
+	 * @param vendorId - the id of the vendor
+	 * @return - list of all events for the given vendor
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<VendorEvent> getAllEvents(Long vendorId) {
+		List<VendorEvent> events = new ArrayList<VendorEvent>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEvent.class,
+					"hostId == " + vendorId);
+
+			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
+			if(response.size()>0) {
+				// This was a success
+				events.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		
+		return events;
+	}
+	
+	/**
+	 * Get the next 5 events scheduled for the given vendor (if they exist)
+	 * This is used for the dashboard view
+	 * @param vendorId - the vendor to get events for
+	 * @return - list of the next 5 events for the given vendor
+	 */
+	public static List<VendorEventWrapper> getUpcomingEvents(Long vendorId) {
+		List<VendorEventWrapper> upcomingEvents = new ArrayList<VendorEventWrapper>();
+		List<VendorEvent> allEvents = getAllEvents(vendorId);
+		// Iterate over all events for the vendor
+		for(VendorEvent event : allEvents) {
+			// If the event hasn't happened add it to the current list
+			if(event.getStart() >= System.currentTimeMillis()) {
+				VendorEventWrapper wrap = new VendorEventWrapper(event.getId(), event.getCreated(), event.getUpdated(), 
+							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
+							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
+				// Set the joined count to be shown on the dashboard
+				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
+				upcomingEvents.add(wrap);
+				System.out.println("------Wrap :" + wrap.getTitle());
+			}
+		}
+		
+		// If there are 5 or fewer then return all
+		if(upcomingEvents.size() <= 5)
+			return upcomingEvents;
+		
+		List<VendorEventWrapper> returnList = new ArrayList<VendorEventWrapper>();
+		// If there are more than 5 return the next 5 most current
+		for(int i=0; i < 5; i++) {
+			VendorEventWrapper mostCurrent = null;
+			for(VendorEventWrapper event : upcomingEvents) {
+				if(mostCurrent == null || event.getStart() < mostCurrent.getStart()) {
+					mostCurrent = event;
+				}
+			}
+			// Add the most current to the return list
+			returnList.add(mostCurrent);
+			// Remove the most current so the next most current can be found
+			upcomingEvents.remove(mostCurrent);
+		}
+		
+		return returnList;
+	}
+	
+	/**
+	 * Add all the current events to a JSON array
+	 * @param events - the current events
+	 * @return - a json array with all of the current events
+	 */
+	@SuppressWarnings("unchecked")
+	private JSONArray getUpcomingEventsJSON(List<VendorEventWrapper> events) {
+		JSONArray array = new JSONArray();
+		for(VendorEventWrapper wrap : events) {
+			array.add(wrap.toJson());
+		}
+		
+		return array;
 	}
 
 	/**

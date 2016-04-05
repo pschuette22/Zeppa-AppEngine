@@ -170,7 +170,7 @@
  			<div class="container">
  				<div class="column-center">
  					<canvas id="popularEvents" width="300" height="300"></canvas>
-					<div class="event-desc">Total Attendee Popular Event Breakdown</div>
+					<div class="event-desc">Most popular events</div>
 				</div>
  			</div>
  		</div>

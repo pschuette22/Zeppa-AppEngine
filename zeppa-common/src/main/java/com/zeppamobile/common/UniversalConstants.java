@@ -75,6 +75,7 @@ public class UniversalConstants {
 	public static final String PARAM_EMAIL_LIST = "email-list";
 	public static final String PARAM_TAG_LIST = "tag-list";
 	public static final String PARAM_VENDOR_ID = "vendorId";
+	public static final String PARAM_UPCOMING_EVENTS = "upcoming-events";
 	public static final String PARAM_TAG_TEXT = "tagText";
 	public static final String PARAM_EVENT_ID = "event-id";
 	public static final String PARAM_TAG_ID = "tag-id";

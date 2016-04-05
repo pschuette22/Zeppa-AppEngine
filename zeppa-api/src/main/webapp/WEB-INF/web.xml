@@ -160,4 +160,14 @@
 		<url-pattern>/endpoint/analytics-servlet/</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>PrivaKeyServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.PrivaKeyServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrivaKeyServlet</servlet-name>
+		<url-pattern>/privakey/</url-pattern>
+	</servlet-mapping>
+
 </web-app>

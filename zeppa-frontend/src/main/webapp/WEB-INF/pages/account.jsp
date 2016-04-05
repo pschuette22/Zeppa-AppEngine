@@ -17,6 +17,26 @@
 	   }
 </style>
 
+<script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+
+function enablePrivaKey() {
+    var email = document.getElementById("txtPrivaKeyEmail").value;
+        
+    var data = {'email': email, 'isEnablePrivaKey': "true"};
+    
+    $.post( "/account-settings", data, function( resp ) {
+    	 	console.log("success");
+    	 	console.log(resp);
+    	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";
+    	}).fail(function() {
+    	    console.log( "error" );
+    	    document.getElementById("errorDiv").innerHTML = "We were unable to enable PrivaKey";
+    	});
+}
+
+</script>
+
 <t:ZeppaBase>
 	<jsp:attribute name="title">
 	  <h2>Account Settings</h2>
@@ -70,6 +90,23 @@
 			Zip Code:<br>
 			<input type="text" name="zip"><br><br>
       	  </td>
+   		</tr>
+   		<tr>
+   			<td>
+   			PrivaKey Email Address
+   			</td>
+   		</tr>
+   		<tr>
+   			<td>
+   				<input type="text" id="txtPrivaKeyEmail">
+   			</td>
+   		</tr>
+		<tr>
+   			<td>
+   				<input type="button" value="Enable PrivaKey" onClick="javascript:enablePrivaKey()" ><br/>
+   				<div id="successDiv" style="color: green;"></div>
+				<div id="errorDiv" style="color: red;"></div>
+   			</td>
    		</tr>
 	  </table>
 	  <div id="buttonDiv" style="width:60%;text-align:center"><input type="button" value="Submit"></div>

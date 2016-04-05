@@ -153,18 +153,8 @@ public class EventTagFollowEndpoint {
 		}
 		return eventtagfollow;
 	}
-
-	/**
-	 * This inserts a new entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown. It uses HTTP
-	 * POST method.
-	 * 
-	 * @param eventtagfollow
-	 *            the entity to be inserted.
-	 * @return The inserted entity.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "insertEventTagFollow")
+	
+	@ApiMethod(name = "updateEventTagFollow")
 	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow,
 			@Named("idToken") String tokenString) throws UnauthorizedException {
 
@@ -199,17 +189,17 @@ public class EventTagFollowEndpoint {
 		Transaction txn = mgr.currentTransaction();
 		try {
 			txn.begin();
-
+			EventTagFollow current = mgr.getObjectById(EventTagFollow.class, eventtagfollow.getKey());
+			if(user.getId().longValue()!=current.getFollowerId().longValue()){
+				throw new UnauthorizedException("Cannot manipulate tag follows you do not own");
+			}
 			/*
-			 * Set the relationships
+			 * Update the interest in this tag follow and the 
 			 */
-			eventtagfollow.setFollower(user);
-			eventtagfollow.setCreated(System.currentTimeMillis());
-			eventtagfollow.setUpdated(System.currentTimeMillis());
-
+			current.setUpdated(System.currentTimeMillis());
+			current.setInterest(eventtagfollow.getInterest());
 			// Store and update
-			eventtagfollow = mgr.makePersistent(eventtagfollow);
-
+			eventtagfollow = mgr.makePersistent(current);
 
 			txn.commit();
 		} finally {
@@ -223,6 +213,76 @@ public class EventTagFollowEndpoint {
 		}
 		return eventtagfollow;
 	}
+
+//	/**
+//	 * This inserts a new entity into App Engine datastore. If the entity
+//	 * already exists in the datastore, an exception is thrown. It uses HTTP
+//	 * POST method.
+//	 * 
+//	 * @param eventtagfollow
+//	 *            the entity to be inserted.
+//	 * @return The inserted entity.
+//	 * @throws OAuthRequestException
+//	 */
+//	@ApiMethod(name = "insertEventTagFollow")
+//	public EventTagFollow insertEventTagFollow(EventTagFollow eventtagfollow,
+//			@Named("idToken") String tokenString) throws UnauthorizedException {
+//
+//		if (eventtagfollow.getTagId() == null) {
+//			throw new NullPointerException();
+//		}
+//
+//		// Fetch Authorized Zeppa User
+//		ZeppaUser user = ClientEndpointUtility
+//				.getAuthorizedZeppaUser(tokenString);
+//		if (user == null) {
+//			throw new UnauthorizedException(
+//					"No matching user found for this token");
+//		}
+//		if (eventtagfollow.getFollowerId().longValue() != user.getId()
+//				.longValue()) {
+//			throw new UnauthorizedException(
+//					"Can't create follow for someone else");
+//		}
+//
+//		ZeppaUserToUserRelationship relationship = ClientEndpointUtility
+//				.getUserRelationship(user.getId().longValue(), eventtagfollow
+//						.getTagOwnerId().longValue());
+//		if (relationship == null
+//				|| !relationship.getRelationshipType().equals(
+//						UserRelationshipType.MINGLING)) {
+//			throw new UnauthorizedException(
+//					"Can't follow tags of users you're not connected to");
+//		}
+//
+//		PersistenceManager mgr = getPersistenceManager();
+//		Transaction txn = mgr.currentTransaction();
+//		try {
+//			txn.begin();
+//
+//			/*
+//			 * Set the relationships
+//			 */
+//			eventtagfollow.setFollower(user);
+//			eventtagfollow.setCreated(System.currentTimeMillis());
+//			eventtagfollow.setUpdated(System.currentTimeMillis());
+//
+//			// Store and update
+//			eventtagfollow = mgr.makePersistent(eventtagfollow);
+//
+//
+//			txn.commit();
+//		} finally {
+//
+//			if (txn.isActive()) {
+//				txn.rollback();
+//				eventtagfollow = null;
+//			}
+//
+//			mgr.close();
+//		}
+//		return eventtagfollow;
+//	}
 
 	// @ApiMethod(name = "insertEventTagFollowArray")
 	// public CollectionResponse<EventTagFollow> insertEventTagFollowArray(
@@ -295,57 +355,57 @@ public class EventTagFollowEndpoint {
 	// }
 	// return eventtagfollow;
 	// }
-
-	/**
-	 * This method removes the entity with primary key id. It uses HTTP DELETE
-	 * method.
-	 * 
-	 * @param id
-	 *            the primary key of the entity to be deleted.
-	 * @throws OAuthRequestException
-	 */
-	@ApiMethod(name = "removeEventTagFollow")
-	public void removeEventTagFollow(@Named("id") Long id,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
-
-		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
-		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
-		}
-
-		PersistenceManager mgr = getPersistenceManager();
-		Transaction txn = mgr.currentTransaction();
-		try {
-			txn.begin();
-			// Retrieve tag by Id
-			EventTagFollow eventtagfollow = mgr.getObjectById(
-					EventTagFollow.class, id);
-
-			if (eventtagfollow.getFollowerId().longValue() != user.getId()
-					.longValue()) {
-				throw new UnauthorizedException(
-						"Can't update follows you don't own");
-			}
-
-			/*
-			 * Get tag and update relationships
-			 */
-
-			// remove the tag
-			mgr.deletePersistent(eventtagfollow);
-
-			txn.commit();
-
-		} finally {
-			if (txn.isActive()) {
-				txn.rollback();
-			}
-			mgr.close();
-		}
-	}
+//
+//	/**
+//	 * This method removes the entity with primary key id. It uses HTTP DELETE
+//	 * method.
+//	 * 
+//	 * @param id
+//	 *            the primary key of the entity to be deleted.
+//	 * @throws OAuthRequestException
+//	 */
+//	@ApiMethod(name = "removeEventTagFollow")
+//	public void removeEventTagFollow(@Named("id") Long id,
+//			@Named("idToken") String tokenString) throws UnauthorizedException {
+//
+//		// Fetch Authorized Zeppa User
+//		ZeppaUser user = ClientEndpointUtility
+//				.getAuthorizedZeppaUser(tokenString);
+//		if (user == null) {
+//			throw new UnauthorizedException(
+//					"No matching user found for this token");
+//		}
+//
+//		PersistenceManager mgr = getPersistenceManager();
+//		Transaction txn = mgr.currentTransaction();
+//		try {
+//			txn.begin();
+//			// Retrieve tag by Id
+//			EventTagFollow eventtagfollow = mgr.getObjectById(
+//					EventTagFollow.class, id);
+//
+//			if (eventtagfollow.getFollowerId().longValue() != user.getId()
+//					.longValue()) {
+//				throw new UnauthorizedException(
+//						"Can't update follows you don't own");
+//			}
+//
+//			/*
+//			 * Get tag and update relationships
+//			 */
+//
+//			// remove the tag
+//			mgr.deletePersistent(eventtagfollow);
+//
+//			txn.commit();
+//
+//		} finally {
+//			if (txn.isActive()) {
+//				txn.rollback();
+//			}
+//			mgr.close();
+//		}
+//	}
 
 //	/**
 //	 * Get a tag by its id and owner's id. This method does not check for

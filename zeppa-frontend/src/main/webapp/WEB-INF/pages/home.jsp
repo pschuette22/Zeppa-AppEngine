@@ -175,8 +175,8 @@
 		<div id="analyticsSquare" class="square">
 		  <table width="100%">
 		    <tr class="tableRow">
-			  <th class="analyticsHead"><h5 class="section-head">Popular Tags</h5></th>
 			  <th class="analyticsHead"><h5 class="section-head">Demographic Info</h5></th>
+			  <th class="analyticsHead"><h5 class="section-head">Popular Tags</h5></th>
 			</tr>
 			<tr class="tableRow">
 				<td align="center">

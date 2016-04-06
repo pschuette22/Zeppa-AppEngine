@@ -24,6 +24,7 @@ import com.zeppamobile.api.endpoint.InviteGroupEndpoint;
 import com.zeppamobile.api.endpoint.ZeppaUserEndpoint;
 import com.zeppamobile.common.utils.TestUtils;
 import com.zeppamobile.api.datamodel.EventTag.TagType;
+import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.InviteGroup;
 
 /**
@@ -37,7 +38,8 @@ public class StartupServlet extends HttpServlet {
 	 * Create any data objects you need for testing and and insert them in the data store
 	 * in this method.
 	 */
-    public void init() {
+    @SuppressWarnings("unused")
+	public void init() {
 
     	// If not running in Development environment then just return without running anything
     	if(SystemProperty.environment.value() != SystemProperty.Environment.Value.Development) {
@@ -92,10 +94,8 @@ public class StartupServlet extends HttpServlet {
     		employeeBrendan = EmployeeServlet.insertVendor(employeeBrendan);
     		employeeEric = EmployeeServlet.insertVendor(employeeEric);
 		} catch (UnauthorizedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
     	
@@ -109,15 +109,13 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
+		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
 		
 		try {
 			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -134,10 +132,8 @@ public class StartupServlet extends HttpServlet {
 		try {
 			vendor1 = VendorServlet.insertVendor(vendor1, employeeKieran);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -152,41 +148,75 @@ public class StartupServlet extends HttpServlet {
 		tag2.setTagText("Drink Special");
 		tag2.setType(TagType.VENDOR);
 		
+		EventTag tag3 = new EventTag();
+		tag3.setOwnerId(vendor.getKey().getId());
+		tag3.setTagText("Marathon");
+		tag3.setType(TagType.VENDOR);
+		
+		EventTag tag4 = new EventTag();
+		tag4.setOwnerId(vendor.getKey().getId());
+		tag4.setTagText("Play Basketball");
+		tag4.setType(TagType.USER);
+		
+		EventTag tag5 = new EventTag();
+		tag5.setOwnerId(vendor.getKey().getId());
+		tag5.setTagText("Watch Football");
+		tag5.setType(TagType.VENDOR);
+		
+		EventTag tag6 = new EventTag();
+		tag6.setOwnerId(vendor.getKey().getId());
+		tag6.setTagText("Play Poker");
+		tag6.setType(TagType.USER);
+		
 		try {
 			EventTagServlet.insertTag(tag);
 			EventTagServlet.insertTag(tag2);
+			EventTagServlet.insertTag(tag3);
+			EventTagServlet.insertTag(tag4);
+			EventTagServlet.insertTag(tag5);
+			EventTagServlet.insertTag(tag6);
 		} catch (UnauthorizedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		List<Long> tagIds = new ArrayList<Long>();
 		tagIds.add(tag.getId());
 		tagIds.add(tag2.getId());
-		VendorEvent event = new VendorEvent("Test Event", "test event description", System.currentTimeMillis(), 
+		tagIds.add(tag3.getId());
+		tagIds.add(tag4.getId());
+		tagIds.add(tag5.getId());
+		tagIds.add(tag6.getId());
+		VendorEvent event = new VendorEvent("Test Event", "test event description", (System.currentTimeMillis() + 80000000L), 
 				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
-		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, System.currentTimeMillis(), 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University, Chestnut Street, Philadelphia, PA, United States");
+		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, (System.currentTimeMillis() + 800000000L), 
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
+		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
+				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+
 		
 		try {
 			VendorEventServlet.insertEvent(event);
 			VendorEventServlet.insertEvent(event2);
+			VendorEventServlet.insertEvent(event3);
+			VendorEventServlet.insertEvent(event4);
+			VendorEventServlet.insertEvent(event5);
+			VendorEventServlet.insertEvent(event6);
 		} catch (UnauthorizedException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 
 		// Create Users
 		AppConfig.setTestConfig();
-//		LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
-//		.setDefaultHighRepJobPolicyRandomSeed(100)
-//		.setDefaultHighRepJobPolicyUnappliedJobPercentage(100));
-//		helper.setUp();
 		String u1AuthEmail = "testuser1@example.com";
 		String u2AuthEmail = "testuser2@example.com";
 		String u3AuthEmail = "testuser3@example.com";
@@ -194,19 +224,25 @@ public class StartupServlet extends HttpServlet {
 				"TestTag6");
 		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui = testUser.getUserInfo();
+		// 1993
 		ui.setGender(Gender.MALE);
+		ui.setDateOfBirth(746232615000L);
 		testUser.setUserInfo(ui);
 		String testToken = TestUtils.buildTestAuthToken(u1AuthEmail);
 		
 		ZeppaUser testUser2 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui2 = testUser2.getUserInfo();
 		ui2.setGender(Gender.FEMALE);
+		// 1983
+		ui2.setDateOfBirth(430613415000L);
 		testUser2.setUserInfo(ui2);
 		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
 		
-		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
+		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui3 = testUser3.getUserInfo();
-		ui2.setGender(Gender.FEMALE);
+		ui3.setGender(Gender.FEMALE);
+		// 2003
+		ui3.setDateOfBirth(1061765415000L);
 		testUser3.setUserInfo(ui3);
 		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
 		
@@ -229,7 +265,7 @@ public class StartupServlet extends HttpServlet {
 					testUser2, testToken2);
 			
 			testUser3 = (new ZeppaUserEndpoint()).insertZeppaUser(
-					testUser2, testToken2);
+					testUser3, testToken3);
 		} catch (UnauthorizedException e) {
 			// Auth exception (probably didn't set to test)
 			e.printStackTrace();
@@ -244,6 +280,11 @@ public class StartupServlet extends HttpServlet {
 		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
 		
 		try {
 			VendorEventRelationshipServlet.insertEventRelationship(ver);
@@ -251,12 +292,35 @@ public class StartupServlet extends HttpServlet {
 			VendorEventRelationshipServlet.insertEventRelationship(ver3);
 			VendorEventRelationshipServlet.insertEventRelationship(ver4);
 			VendorEventRelationshipServlet.insertEventRelationship(ver5);
+			VendorEventRelationshipServlet.insertEventRelationship(ver6);
+			VendorEventRelationshipServlet.insertEventRelationship(ver7);
+			VendorEventRelationshipServlet.insertEventRelationship(ver8);
+			VendorEventRelationshipServlet.insertEventRelationship(ver9);
+			VendorEventRelationshipServlet.insertEventRelationship(ver10);
 		} catch (UnauthorizedException | IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-//		helper.tearDown();
+		EventTagFollow etf1 = new EventTagFollow(tag, testUser.getId());
+		EventTagFollow etf2 = new EventTagFollow(tag2, testUser.getId());
+		EventTagFollow etf3 = new EventTagFollow(tag, testUser2.getId());
+		EventTagFollow etf4 = new EventTagFollow(tag3, testUser2.getId());
+		EventTagFollow etf5 = new EventTagFollow(tag4, testUser2.getId());
+		EventTagFollow etf6 = new EventTagFollow(tag5, testUser3.getId());
+		EventTagFollow etf7 = new EventTagFollow(tag5, testUser3.getId());
+		
+		try {
+			EventTagFollowServlet.insertTagFollow(etf1);
+			EventTagFollowServlet.insertTagFollow(etf2);
+			EventTagFollowServlet.insertTagFollow(etf3);
+			EventTagFollowServlet.insertTagFollow(etf4);
+			EventTagFollowServlet.insertTagFollow(etf5);
+			EventTagFollowServlet.insertTagFollow(etf6);
+			EventTagFollowServlet.insertTagFollow(etf7);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		AppConfig.doneTesting();
     }
 

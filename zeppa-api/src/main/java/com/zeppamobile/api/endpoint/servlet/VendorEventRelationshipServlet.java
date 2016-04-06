@@ -23,6 +23,7 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
 /**
  * 
@@ -33,21 +34,18 @@ import com.zeppamobile.common.UniversalConstants;
  */
 public class VendorEventRelationshipServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		// Get the parameters from the request
 		String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 		String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 		JSONArray results = new JSONArray();
 		
+		// Determine if the call is for a specific event or all of a vendor's events
 		if (eventId != null && !eventId.isEmpty()) {
 			eventId = URLDecoder.decode(eventId,"UTF-8");
 			results = getAllRelationshipsForEventJSON(Long.valueOf(eventId));
@@ -58,7 +56,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			resp.setStatus(HttpServletResponse.SC_OK);
 		}
 		
-
 		resp.setContentType("application/json");
 		
 		//send Json back
@@ -66,26 +63,15 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		
 	}
 	
+	/**
+	 * Generate a JSONArray with all VendorEventRelationships for a specific event
+	 * @param eventId - the id to get all relationships for
+	 * @return - JSONArray containing info on all relationships to the given event
+	 */
 	@SuppressWarnings("unchecked")
 	public JSONArray getAllRelationshipsForEventJSON(Long eventId){
 		JSONArray results = new JSONArray();
-		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			Query q = mgr.newQuery(VendorEventRelationship.class,
-					"eventId == " + eventId);
-
-			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
-			if(response.size()>0) {
-				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-				relationships.addAll(response);
-			}
-			
-		} finally {
-			mgr.close();
-		}
+		List<VendorEventRelationship> relationships = getAllRelationshipsForEvent(eventId);
 		for(VendorEventRelationship rel : relationships) {
 			JSONObject json = rel.toJson();
 			results.add(json);
@@ -93,27 +79,100 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		return results;
 	}
 	
+	/**
+	 * Get all of the VendorEventRelationships for a specific event
+	 * @param eventId - the id of the event to get relationships for
+	 * @return - the list of relationships
+	 */
 	@SuppressWarnings("unchecked")
-	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
-		JSONArray results = new JSONArray();
+	public static List<VendorEventRelationship> getAllRelationshipsForEvent(Long eventId){
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 		PersistenceManager mgr = getPersistenceManager();
-		List<VendorEvent> events = new ArrayList<VendorEvent>();
-		// Get all events for the given vendor ID
 		try {
-			Query q = mgr.newQuery(VendorEvent.class,
-					"hostId == " + vendorId);
-
-			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
+			Query q = mgr.newQuery(VendorEventRelationship.class,
+					"eventId == " + eventId);
+			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
 			if(response.size()>0) {
-				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-				events.addAll(response);
+				relationships.addAll(response);
 			}
 			
 		} finally {
 			mgr.close();
 		}
+		
+		return relationships;
+	}
+	
+	/**
+	 * Get all of the joined VendorEventRelationships for a specific event
+	 * @param eventId - the id of the event to get relationships for
+	 * @return - the list of relationships
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<VendorEventRelationship> getAllJoinedRelationshipsForEvent(Long eventId){
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEventRelationship.class,
+					"eventId == " + eventId);
+			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
+			if(response.size()>0) {
+				relationships.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		// Create list with only joined relationships
+		List<VendorEventRelationship> joinedList = new ArrayList<VendorEventRelationship>(); 
+		for(VendorEventRelationship rel : relationships) {
+			if(rel.isJoined()) 
+				joinedList.add(rel);
+		}
+		
+		return joinedList;
+	}
+	
+	/**
+	 * Get all of the watched VendorEventRelationships for a specific event
+	 * @param eventId - the id of the event to get relationships for
+	 * @return - the list of relationships
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<VendorEventRelationship> getAllWatchedRelationshipsForEvent(Long eventId){
+		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEventRelationship.class,
+					"eventId == " + eventId);
+			Collection<VendorEventRelationship> response = (Collection<VendorEventRelationship>) q.execute();
+			if(response.size()>0) {
+				relationships.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		// Create list with only joined relationships
+		List<VendorEventRelationship> watchedList = new ArrayList<VendorEventRelationship>(); 
+		for(VendorEventRelationship rel : relationships) {
+			if(rel.isWatched()) 
+				watchedList.add(rel);
+		}
+		
+		return watchedList;
+	}
+	
+	/**
+	 * Generate JSONArray with all relationships to all events for the given vendor 
+	 * @param vendorId - the id of the vendor to get all relationships for
+	 * @return - JSON array with all relationships for all of the given vendor's events
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONArray getAllRelationshipsForVendorJSON(Long vendorId) {
+		JSONArray results = new JSONArray();
+		// Get all events for the vendor
+		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		
 		// Go through each event for the vendor and find all relationships
 		for(VendorEvent event : events) {
@@ -129,7 +188,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * This inserts a new entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown. It uses HTTP
 	 * POST method.
-	 * 
 	 * @param event
 	 *            the entity to be inserted.
 	 * @return The inserted entity.
@@ -145,13 +203,10 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-
 			// Persist event
 			relationship = mgr.makePersistent(relationship);
-			
 			// commit the changes
 			txn.commit();
-
 		} catch (Exception e) {
 			// catch any errors that might occur
 			e.printStackTrace();
@@ -163,7 +218,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			}
 
 			mgr.close();
-
 		}
 
 		return relationship;

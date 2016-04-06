@@ -6,7 +6,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -18,14 +21,11 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 /**
  * 
@@ -43,112 +43,322 @@ public class AnalyticsServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
+		resp.setContentType("text/html");
 		HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");
-		if(obj != null)
-		{
-			UserInfoCerealWrapper sessionInfo = (UserInfoCerealWrapper)obj;
+		if (obj != null) {
+			UserInfoCerealWrapper sessionInfo = (UserInfoCerealWrapper) obj;
 			
-		// Variables to hold the gender demographic counts
-		int maleCount = 0;
-		int femaleCount = 0;
-		int unidentified = 0;
-		resp.setContentType("text/html");
+			System.out.println("Demographics");
+			// Strings to hold the info for chart.js
+			String[] allEventDemo = getDemographicCountAllEvents(sessionInfo);
+			req.setAttribute("genderData", allEventDemo[0]);
+			req.setAttribute("ageData", allEventDemo[1]);
 
-		Map<String, String> params = new HashMap<String, String>();
-		// TODO: REPLACE HARD CODED VENDOR ID
-		params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
-
-		URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/event-relationship-servlet/", params);
-
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setDoOutput(false);
-		connection.setRequestMethod("GET");
-
-		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		String line;
-		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-			// Read from the buffer line by line and write to the response
-			String responseString = "";
-			while ((line = reader.readLine()) != null) {
-				responseString += line;
-			}
-			JSONParser parser = new JSONParser();
-			JSONArray resultsArray;
-			try {
-				resultsArray = (JSONArray) parser.parse(responseString);
-				// For each user found, get their gender info
-				for (int i = 0; i < resultsArray.size(); i++) {
-					JSONObject user = (JSONObject) resultsArray.get(i);
-					String id = (String) String.valueOf(user.get("userId"));
-					params.put(UniversalConstants.PARAM_USER_ID, id);
-					System.out.println("Userr id:"+id);
-					// Call the zeppa user servlet" with the userId param
-					URL urlUser = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/user-servlet/", params);
-
-					HttpURLConnection connectionUser = (HttpURLConnection) urlUser.openConnection();
-					connectionUser.setDoOutput(false);
-					connectionUser.setRequestMethod("GET");
-
-					reader = new BufferedReader(new InputStreamReader(connectionUser.getInputStream()));
-					if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-						// Read from the buffer line by line and write to the
-						// response
-						String responseUser = "";
-						while ((line = reader.readLine()) != null) {
-							responseUser += line;
-						}
-						System.out.println("--------USER RESPONSE " + responseUser);
-						// Parse the JSON, get the gender and increment the count
-						JSONObject userInfo = (JSONObject) parser.parse(responseUser);
-						String gender = (String) userInfo.get("gender");
-						if (gender != null && gender.equalsIgnoreCase(("MALE"))) {
-							maleCount++;
-						} else if (gender != null && gender.equalsIgnoreCase("FEMALE")) {
-							femaleCount++;
-						}
-					}
-
-				}
-
-				System.out.println("-------MALE:" + maleCount);
-				System.out.println("-------FEMALE:" + femaleCount);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			req.setAttribute("allEventsData", responseString);
-		} else {
-			// Server returned HTTP error code.
-			resp.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
-
-			// Read from the buffer line by line and write to the response
-			// item
-			while ((line = reader.readLine()) != null) {
-				resp.getWriter().println(line);
-			}
-		}
-
-		String data = "[" + "{" + "    value: " +String.valueOf(maleCount)+ "," + "    color:\"#F7464A\"," + "    highlight: \"#FF5A5E\","
-				+ "    label: \"Male\"" + "}," + "{" + "    value: " +String.valueOf(femaleCount)+ "," + "    color: \"#46BFBD\","
-				+ "    highlight: \"#5AD3D1\"," + "    label: \"Female\"" + "}," + "{" + "    value: " +String.valueOf(unidentified)+ ","
-				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
-
-		System.out.println(data);
-		req.setAttribute("genderData", data);
-
-		req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
-		
+			System.out.println("Tags");
+			String allEventTags = getTagsAllEvents(sessionInfo, true);
+			req.setAttribute("tagData", allEventTags);
+			
+			String allEventTagsWatched = getTagsAllEvents(sessionInfo, false);
+			req.setAttribute("watchedTagData", allEventTagsWatched);
+			
+			System.out.println("Popular Events");
+			String popularEvents = getPopularEventsAllEvents(sessionInfo);
+			req.setAttribute("popEvents", popularEvents);
+			
+			System.out.println("Popular Days");
+			String popularDays = getPopularDaysAllEvents(sessionInfo);
+			req.setAttribute("popDays", popularDays);
+			
+			req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		} else {
 			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
 		}
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	/** 
+	 * Call the api analytics servlet to get all
+	 * gender information for the current vendor's
+	 * events
+	 * @param resultsArray
+	 * @return
+	 */
+	public static String[] getDemographicCountAllEvents(UserInfoCerealWrapper sessionInfo) {
+		Long maleCount = 0L;
+		Long femaleCount = 0L;
+		Long unidentified = 0L;
+		Long under18 = 0L;
+		Long age18to20 = 0L;
+		Long age21to24 = 0L;
+		Long age25to29 = 0L;
+		Long age30to39 = 0L;
+		Long age40to49 = 0L;
+		Long age50to59 = 0L;
+		Long over60 = 0L;
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_DEMOGRAPHICS);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
 
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String responseGender = "";
+				while ((line = reader.readLine()) != null) {
+					responseGender += line;
+				}
+				JSONParser parser = new JSONParser();
+				// Parse the JSON in the response, get the count of each gender
+				JSONArray demoInfo = (JSONArray) parser.parse(responseGender);
+				if(demoInfo.size() == 2) {
+					// Get all of the demographic info from the json response
+					JSONObject genderInfo = (JSONObject) demoInfo.get(0);
+					maleCount = (Long) genderInfo.get("maleCount");
+					femaleCount = (Long) genderInfo.get("femaleCount");
+					unidentified = (Long) genderInfo.get("unidentified");
+					JSONObject ageInfo = (JSONObject) demoInfo.get(1);
+					under18 = (Long) ageInfo.get("under18");
+					age18to20 = (Long) ageInfo.get("18to20");
+					age21to24 = (Long) ageInfo.get("21to24");
+					age25to29 = (Long) ageInfo.get("25to29");
+					age30to39 = (Long) ageInfo.get("30to39");
+					age40to49 = (Long) ageInfo.get("40to49");
+					age50to59 = (Long) ageInfo.get("50to59");
+					over60 = (Long) ageInfo.get("over60");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new String[] {"", ""};
+		}
+		
+		// Create the string for chart.js for the gender pie chart
+		String genderData = "none";
+		if(maleCount > 0 || femaleCount > 0 || unidentified > 0) {
+			genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
+				+ "    highlight: \"#FF5A5E\"," + "    label: \"Male\"" + "}," + "{" + "    value: "
+				+ String.valueOf(femaleCount) + "," + "    color: \"#46BFBD\"," + "    highlight: \"#5AD3D1\","
+				+ "    label: \"Female\"" + "}," + "{" + "    value: " + String.valueOf(unidentified) + ","
+				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
+		}
+		String ageData = "{labels: [\"under18\", \"18to20\", \"21to24\", \"25to29\", \"30to39\", \"40to49\", \"50to59\", \"over60\"],"
+				+ "    datasets: [ {"
+				+ "label: \"Age dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ "data: ["+under18+", "+age18to20+", "+age21to24+", "+age25to29+", "+age30to39+", "+age40to49+", "+age50to59+", "+over60+"]}]}";
+		
+		return new String[] {genderData, ageData};
+	}
+
+	/**
+	 * Call the api analytics servlet to get
+	 * all of the tag information
+	 * @param sessionInfo
+	 * @param joined - true if you want to get only joined relationships, false if you want watched relationships  
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getTagsAllEvents(UserInfoCerealWrapper sessionInfo, boolean joined) {
+		List<AnalyticsDataWrapper> tagCounts = new ArrayList<AnalyticsDataWrapper>();
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			if(joined) {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS);
+			} else {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS_WATCHED);
+			}
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String responseTags = "";
+				while ((line = reader.readLine()) != null) {
+					responseTags += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject tags = (JSONObject) parser.parse(responseTags);
+				for(Iterator iterator = tags.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    tagCounts.add(new AnalyticsDataWrapper(key, ((int)(long)tags.get(key))));
+				    System.out.println("-------" + key + ": "+ tags.get(key));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+		String label = "labels: [";
+		String data = "data: [";
+		for(int i=0; i < tagCounts.size(); i++) {
+			AnalyticsDataWrapper adw = tagCounts.get(i);
+			// If it's not the last element then add comma at the end otherwise don't
+			if (i < (tagCounts.size() - 1)) {
+				label = label.concat("\"" + adw.getKey() + "\",");
+				data = data.concat(String.valueOf(adw.getValue()) + ",");
+			} else {
+				label = label.concat("\"" + adw.getKey() + "\"");
+				data = data.concat(String.valueOf(adw.getValue()));
+			}
+		}
+		String ret = "{" + label+"],"
+				+ "datasets: [ {"
+				+ "label: \"PopEvents dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ data
+				+ "]}]}";
+		return ret;
+	}
+	
+	/**
+	 * Call the api analytics servlet to get
+	 * the 5 most popular events for the given 
+	 * @param sessionInfo
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getPopularEventsAllEvents(UserInfoCerealWrapper sessionInfo) {
+		List<AnalyticsDataWrapper> eventCounts = new ArrayList<AnalyticsDataWrapper>();
+		
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String response = "";
+				while ((line = reader.readLine()) != null) {
+					response += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject events = (JSONObject) parser.parse(response);
+				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    eventCounts.add(new AnalyticsDataWrapper(key, ((int)(long)events.get(key))));
+				    System.out.println("-------" + key + ": "+ events.get(key));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+		String label = "labels: [";
+		String data = "data: [";
+		for(int i=0; i < eventCounts.size(); i++) {
+			AnalyticsDataWrapper adw = eventCounts.get(i);
+			// If it's not the last element then add comma at the end otherwise don't
+			if (i < (eventCounts.size() - 1)) {
+				label = label.concat("\"" + adw.getKey() + "\",");
+				data = data.concat(String.valueOf(adw.getValue()) + ",");
+			} else {
+				label = label.concat("\"" + adw.getKey()+"\"");
+				data = data.concat(String.valueOf(adw.getValue()));
+			}
+		}
+		
+		String ret = "{" + label+"],"
+				+ "datasets: [ {"
+				+ "label: \"PopEvents dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ data
+				+ "]}]}";
+		return ret;
+	}
+
+	/**
+	 * Call the api analytics servlet to get
+	 * the 5 most popular events for the given 
+	 * @param sessionInfo
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getPopularDaysAllEvents(UserInfoCerealWrapper sessionInfo) {
+		Map<String, Integer> dayData = new HashMap<String, Integer>();
+		
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_VENDOR_ID,
+					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
+			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_DAYS);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String response = "";
+				while ((line = reader.readLine()) != null) {
+					response += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject events = (JSONObject) parser.parse(response);
+				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    dayData.put(key, ((int) (long) events.get(key)));
+				    System.out.println("-------DAYS" + key + ": "+ events.get(key));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+		String ret = "{labels: [\"Monday\", \"Tuesday\", \"Wednesday\", \"Thursday\", \"Friday\", \"Saturday\", \"Sunday\" ], "
+			+ "datasets: [ {"
+			+ "label: \"Day-of-Week dataset\","
+			+ "fillColor: \"rgba(220,220,220,0.5)\","
+			+ "strokeColor: \"rgba(220,220,220,0.8)\","
+			+ "highlightFill: \"rgba(220,220,220,0.75)\","
+			+ "highlightStroke: \"rgba(220,220,220,1)\","
+			+ "data: [" + dayData.get("Monday")+", "+dayData.get("Tuesday")+", "+dayData.get("Wednesday")+", "+dayData.get("Thursday")+", "
+			+ dayData.get("Friday")+", "+dayData.get("Saturday")+", "+dayData.get("Sunday")
+			+ "]}]}";
+		
+		return ret;
 	}
 }

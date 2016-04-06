@@ -22,7 +22,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
-import com.zeppamobile.api.datamodel.Vendor;
+import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.common.UniversalConstants;
 
 /**
@@ -57,7 +57,7 @@ public class EventTagServlet extends HttpServlet {
 				responseString = getTags(Long.parseLong(ownerId));
 			}else if(tagId!=null && !tagId.isEmpty()){
 				tagId = URLDecoder.decode(tagId,"UTF-8");
-				responseString = getTag(Long.parseLong(tagId));
+				responseString = getTagJson(Long.parseLong(tagId));
 			}
 			
 
@@ -139,23 +139,31 @@ public class EventTagServlet extends HttpServlet {
 	 * This method gets the tag based on id.
 	 * 
 	 * @param id
-	 *            the id of the owner of the tag
+	 *            the id of the tag
 	 * @return The JSON of the tags
 	 * @throws OAuthRequestException
 	 */
-	private String getTag(Long tagId) {
+	public static String getTagJson(Long tagId) {
+		return getTag(tagId).toJson().toJSONString();
+	}
+	
+	/**
+	 * Gets the EventTag with the given ID
+	 * @param tagId - the id of the tag to get
+	 * @return - the tag with the given ID
+	 */
+	public static EventTag getTag(Long tagId) {
 		PersistenceManager mgr = getPersistenceManager();
-		String responseString ="";
-		EventTag tag = null;
+		EventTag tag = new EventTag();
 		try {
 			tag = mgr.getObjectById(EventTag.class, tagId);
-			responseString = tag.toJson().toJSONString();
-			
 		} finally {
 			mgr.close();
 		}
-		return responseString;
+		
+		return tag;
 	}
+	
 	/**
 	 * This inserts a new Employee entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown. 
@@ -202,6 +210,35 @@ public class EventTagServlet extends HttpServlet {
 		return tag;
 	}
 
+	/**
+	 * Gets all tags that the given user follows
+	 * @param userId - the user who's tags will be returned
+	 * @return - all tags followed by the user
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<EventTag> getAllUserTags(Long userId) {
+		List<EventTagFollow> follows = new ArrayList<EventTagFollow>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			// Get all of the follow relationships for the given user
+			Query q = mgr.newQuery(EventTagFollow.class,
+					"followerId == " + userId);
+			Collection<EventTagFollow> response = (Collection<EventTagFollow>) q.execute();
+			if(response.size()>0) {
+				follows.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		List<EventTag> tags = new ArrayList<EventTag>();
+		for(EventTagFollow follow : follows) {
+			tags.add(getTag(follow.getTagId()));
+		}
+		
+		return tags;
+	}
+	
 	/**
 	 * Get the persistence manager for interacting with datastore
 	 */

@@ -23,6 +23,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
 /**
  * @author Pete Schuette
@@ -32,9 +33,6 @@ import com.zeppamobile.common.UniversalConstants;
  */
 public class VendorEventServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -43,37 +41,105 @@ public class VendorEventServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		try {
+			//Set vendor info
+			String title = URLDecoder.decode(req.getParameter("title"), "UTF-8");
+			String description = URLDecoder.decode(req.getParameter("description"), "UTF-8");
+			Long start = Long.parseLong(URLDecoder.decode(req.getParameter("start"), "UTF-8"));
+			Long end = Long.parseLong(URLDecoder.decode(req.getParameter("end"), "UTF-8"));
+			String address = URLDecoder.decode(req.getParameter("address"), "UTF-8");
+			String eventID = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_EVENT_ID), "UTF-8");
+			
+			//Get all of the tags and then add them to the event
+			List<Long> tagIds = new ArrayList<Long>();
+			String tagsString = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_TAG_LIST), "UTF-8");
+			
+
+			resp.getWriter().write("Tags String" + tagsString+"\n\n");
+			
+			JSONParser parser = new JSONParser();
+			JSONArray tags_json = (JSONArray) parser.parse(tagsString);
+			for (int i = 0; i < tags_json.size(); i++) {
+				JSONObject obj = (JSONObject) tags_json.get(i);
+				Long id = (Long) obj.get("id");
+				tagIds.add(id);
+			}
+			
+			VendorEvent event = updateEvent(eventID, title,description,start,end,tagIds,address);
+			 
+			// Convert the object to json and return in the writer
+			JSONObject json = event.toJson();
+			resp.getWriter().write(json.toJSONString());
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			e.printStackTrace(resp.getWriter());
+		}
+		
+	}
+
+	public static VendorEvent updateEvent(String eventId, String title,
+			String description, Long start, Long end,
+			List<Long> tagIds, String address) {
+		
+		PersistenceManager mgr = getPersistenceManager();
+		VendorEvent event = null;
+		try {
+			event = mgr.getObjectById(VendorEvent.class, Long.valueOf(eventId));
+			event.setTitle(title);
+			event.setDescription(description);
+			event.setStart(start);	
+			event.setEnd(end);
+			event.setTagIds(tagIds);
+			event.setDisplayLocation(address);
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+		} finally {
+			mgr.close();
+		}
+
+		return event;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		try{
-			// TODO Auto-generated method stub
+		String jsonString = "";
+		try {
+			// Get the parameters from the request
 			String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
+			String upcomingEvents = req.getParameter(UniversalConstants.PARAM_UPCOMING_EVENTS);
+			String pastEvents = req.getParameter(UniversalConstants.PARAM_PAST_EVENTS);
+			System.out.println("-------param: "+pastEvents);
 			JSONArray results = new JSONArray();
 			
-			//Determine if calling for individual event or all user events.
+			// Determine if calling for individual event or all user events.
 			if (eventId != null && !eventId.isEmpty()){
 				eventId = URLDecoder.decode(eventId,"UTF-8");
-				VendorEvent result = getIndividualEventJSON(eventId);
+				VendorEvent result = getIndividualEvent(eventId);
 				// If nothing is found with that EventID then return a not found code
 				if(result == null) {
 					resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 					return;
 				}
 				results.add(result.toJson());
-			} else if(vendorId != null && !vendorId.isEmpty()){
+				jsonString = results.toJSONString();
+			} else if(vendorId != null && !vendorId.isEmpty() && upcomingEvents == null){
 				vendorId = URLDecoder.decode(vendorId,"UTF-8");
 				results = getAllEventsJSON(Long.parseLong(vendorId));
-				
+				jsonString = results.toJSONString();
 			}
 			
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");
-			
 			//send Json back
-			resp.getWriter().write(results.toJSONString());
+			resp.getWriter().write(jsonString);
 		
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -82,35 +148,6 @@ public class VendorEventServlet extends HttpServlet {
 		
 	}
 
-	public JSONArray getAllEventsJSON(Long vendorId){
-		JSONArray results = new JSONArray();
-		
-		List<VendorEvent> events = new ArrayList<VendorEvent>();
-		PersistenceManager mgr = getPersistenceManager();
-		try {
-			Query q = mgr.newQuery(VendorEvent.class,
-					"hostId == " + vendorId);
-
-			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
-			if(response.size()>0) {
-				// This was a success
-				// TODO: implement any extra initialization if desired
-				// Sometimes, jdo objects want to be touched when fetch strategy is not defined
-				events.addAll(response);
-			}
-			
-		} finally {
-			mgr.close();
-		}
-		for(VendorEvent event : events) {
-			JSONObject json = event.toJson();
-			results.add(json);
-		}
-		return results;
-	}
-	
-	
-	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -129,7 +166,6 @@ public class VendorEventServlet extends HttpServlet {
 			
 
 			resp.getWriter().write("Tags String" + tagsString+"\n\n");
-			
 			
 			JSONParser parser = new JSONParser();
 			JSONArray tags_json = (JSONArray) parser.parse(tagsString);
@@ -152,11 +188,56 @@ public class VendorEventServlet extends HttpServlet {
 	}
 
 	/**
+	 * Create a JSON array containing all of the events for 
+	 * the given vendor
+	 * @param vendorId - the if of the vendor to get events for
+	 * @return - JSON array with the event info
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONArray getAllEventsJSON(Long vendorId){
+		JSONArray results = new JSONArray();
+		
+		List<VendorEvent> events = getAllEvents(vendorId);
+		
+		for(VendorEvent event : events) {
+			JSONObject json = event.toJson();
+			results.add(json);
+		}
+		return results;
+	}
+	
+	/**
+	 * Gets all events for the vendor with the given id
+	 * @param vendorId - the id of the vendor
+	 * @return - list of all events for the given vendor
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<VendorEvent> getAllEvents(Long vendorId) {
+		List<VendorEvent> events = new ArrayList<VendorEvent>();
+		PersistenceManager mgr = getPersistenceManager();
+		try {
+			Query q = mgr.newQuery(VendorEvent.class,
+					"hostId == " + vendorId);
+
+			Collection<VendorEvent> response = (Collection<VendorEvent>) q.execute();
+			if(response.size()>0) {
+				// This was a success
+				events.addAll(response);
+			}
+			
+		} finally {
+			mgr.close();
+		}
+		
+		return events;
+	}
+	
+	/**
 	 * Find an event with the given ID and return its JSON info
 	 * @param eventId - the id of the desired event
 	 * @return - the JSON with the event info
 	 */
-	private VendorEvent getIndividualEventJSON(String eventId) {
+	public static VendorEvent getIndividualEvent(String eventId) {
 		
 		PersistenceManager mgr = getPersistenceManager();
 		VendorEvent event = null;
@@ -184,7 +265,6 @@ public class VendorEventServlet extends HttpServlet {
 	public static VendorEvent insertEvent(VendorEvent event) throws UnauthorizedException,
 			IOException {
 
-
 		// Manager to insert vendor and master employee
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
@@ -192,10 +272,8 @@ public class VendorEventServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-
 			// Persist event
 			event = mgr.makePersistent(event);
-			
 			// commit the changes
 			txn.commit();
 
@@ -208,29 +286,18 @@ public class VendorEventServlet extends HttpServlet {
 				txn.rollback();
 				event = null;
 			}
-
 			mgr.close();
-
 		}
 
 		return event;
 	}
+	
 
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-	
-	
 	/**
 	 * Get the persistence manager for interacting with datastore
 	 */
 	private static PersistenceManager getPersistenceManager() {
 		return PMF.get().getPersistenceManager();
 	}
-	
-	
-	
 
 }

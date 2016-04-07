@@ -56,7 +56,7 @@ public class AccountSettingsServlet extends HttpServlet {
 				s += "&response_mode=form_post";
 				s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
 				s += "&scope=openid";
-				s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings/", "UTF-8");
+				s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings", "UTF-8");
 				s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
 				s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
 				URI url = new URI(s);
@@ -114,7 +114,7 @@ public class AccountSettingsServlet extends HttpServlet {
 					    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
 	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
-	            	resp.sendRedirect("/account-settings/");
+	            	resp.sendRedirect("/account-settings");
 										
 	            }
 	            

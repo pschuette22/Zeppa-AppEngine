@@ -27,7 +27,7 @@ function enablePrivaKey() {
         
     var data = {'email': email, 'isEnablePrivaKey': "true"};
 	
-    $.get( "/account-settings/", data, function( resp ) {
+    $.get( "/account-settings", data, function( resp ) {
 	 	console.log("success");
 	 	console.log(resp);
 	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";

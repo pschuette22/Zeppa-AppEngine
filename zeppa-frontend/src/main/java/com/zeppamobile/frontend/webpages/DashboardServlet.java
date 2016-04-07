@@ -137,21 +137,10 @@ public class DashboardServlet extends HttpServlet {
 				while ((line = reader.readLine()) != null) {
 					responseString += line;
 				}
-				System.out.println("------RESP: "+ responseString);
 				// Abstract the past event info from the json response
 				JSONParser parser = new JSONParser();
 				JSONObject obj = (JSONObject)parser.parse(responseString);
 				results = (JSONArray)obj.get("events");
-//				System.out.println("------OBJ CURRENT: "+ obj.toJSONString());
-//				System.out.println("------CURRENT: "+ results.toJSONString());
-//				for(int i=0; i < results.size(); i++) {
-//					JSONObject temp = (JSONObject) results.get(i);
-//					VendorEventWrapper eventWrapper = new VendorEventWrapper((Long) temp.get("id"), null, null,
-//							(Long) temp.get("hostId"), (String) temp.get("title"), (String) temp.get("description"),
-//							(Long) temp.get("start"), (Long) temp.get("end"), null, (String)temp.get("displayLocation"), null);
-//					upcomingEvents.add(eventWrapper);
-//				}
-				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

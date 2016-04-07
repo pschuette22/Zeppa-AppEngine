@@ -3,9 +3,21 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>-->
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="lib/js/moment.js"></script>
+<script type="text/javascript" src="lib/js/transition.js"></script>
+<script type="text/javascript" src="lib/js/collapse.js"></script>
+<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="lib/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
 <script src="../js/Chart.js/Chart.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('#startTimePicker').datetimepicker();
+		$('#endTimePicker').datetimepicker();
+		
 		$(".tabNav").click(function(){
 			//Styling stuff (changing colors and hiding/showing)
 			$(".analyticsTab").removeClass("active");
@@ -125,6 +137,12 @@
 		text-align: center;
 		padding: 10px;
 	}
+	.filterDiv {
+/*     	width: 99%; */
+		height: 50px;
+    	padding-bottom : 1%; /* = width for a 1:1 aspect ratio */
+    	margin: 2% 0% 1% 0%;
+  	}
 </style>
 
 <t:ZeppaBase>
@@ -143,6 +161,33 @@
  		</div>
  		
  		<div class="analyticsTab active" id="demographicsTab">
+			<div class="filterDiv">
+				<form method="GET" id="filterForm">
+				<table style="width:99%">
+				  <tr style="width:99%">
+				    <th style="width:20%; text-align:center">Start Date</th>
+				    <th style="width:20%; text-align:center">End Date</th>
+				    <th style="width:10%; text-align:center">Max Age</th>
+				    <th style="width:10%; text-align:center">Min Age</th>
+				    <th style="width:10%; text-align:center">Gender</th>
+				  </tr>
+				  <tr style="width:99%">
+				    <td style="width:20%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate" form="filterForm"/></td>
+	    			<td style="width:20%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate" form="filterForm"/></td>
+	    			<td style="width:10%; text-align:center">
+	    				<select id="minAgeFilter" name="minAge" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Female</option></select>
+	    			</td>
+	    			<td style="width:10%; text-align:center">
+	    				<select id="maxAgeFilter" name="maxAge" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Female</option></select>
+	    			</td>
+	    			<td style="width:10%; text-align:center">
+	    				<select id="genderFilter" name="gender" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Undefined</option></select>
+	    			</td>
+	    			<td style="width:10%; text-align:center"><input type="submit" value="Filter" form="filterForm"/></td>
+				  </tr>
+				</table>
+				</form>
+			</div>
  			<p><h3>Event Demographics Data</h3></p>
 			<div class="container">
 				<div class="column-left">

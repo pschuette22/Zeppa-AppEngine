@@ -37,17 +37,13 @@ public class DashboardServlet extends HttpServlet {
 
 		JSONArray results = new JSONArray();
 		if(upcomingEvents != null && vendorId != null && !vendorId.isEmpty()){ // for dashboard
-			System.out.println("-------IN PAST UP");
 			vendorId = URLDecoder.decode(vendorId,"UTF-8");
 			results = getUpcomingEventsJSON(getUpcomingEvents(Long.valueOf(vendorId)));
 			jsonString = "{\"events\":" + results.toJSONString() + "}";
-			System.out.println("-------UP_RETURN: " +jsonString);
 		} else if(pastEvents != null && vendorId != null && !vendorId.isEmpty()){ // for dashboard
-			System.out.println("-------IN PAST IF");
 			vendorId = URLDecoder.decode(vendorId,"UTF-8");
 			results = getPastEventsJSON(getPastEvents(Long.valueOf(vendorId)));
 			jsonString = "{\"events\":" + results.toJSONString() + "}";
-			System.out.println("-------RETURN: " +jsonString);
 		}
 		
 		response.setStatus(HttpServletResponse.SC_OK);

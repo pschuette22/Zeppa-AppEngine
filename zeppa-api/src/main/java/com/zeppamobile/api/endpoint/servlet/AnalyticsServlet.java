@@ -1,9 +1,12 @@
 package com.zeppamobile.api.endpoint.servlet;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +34,7 @@ import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper.Gender;
 
 /**
  * 
@@ -53,16 +57,17 @@ public class AnalyticsServlet extends HttpServlet {
 		String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 		String type = req.getParameter(UniversalConstants.ANALYTICS_TYPE);
 		
+		FilterCerealWrapper filter = getFilterInfo(req.getParameterMap());
 		if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_DEMOGRAPHICS)) {
 			// Get map with the gender counts
-			Map<String, Integer> genderCounts = getAllEventInfoDemographic(null, Long.valueOf(vendorId));
+			Map<String, Integer> genderCounts = getAllEventInfoDemographic(filter, Long.valueOf(vendorId));
 			JSONObject json = new JSONObject();
 			// put the counts in the JSON object so they can be returned to the frontend in the response
 			json.put("maleCount", genderCounts.get("MALE"));
 			json.put("femaleCount", genderCounts.get("FEMALE"));
 			json.put("unidentified", genderCounts.get("UNIDENTIFIED"));
 			
-			Map<String, Integer> ageCounts = getAgeCountAllEvents(null, Long.valueOf(vendorId));
+			Map<String, Integer> ageCounts = getAgeCountAllEvents(filter, Long.valueOf(vendorId));
 			JSONObject ageJson = new JSONObject();
 			ageJson.put("under18", ageCounts.get("under18"));
 			ageJson.put("18to20", ageCounts.get("18to20"));
@@ -146,7 +151,19 @@ public class AnalyticsServlet extends HttpServlet {
 		
 		// Get the gender count across all events for the vendor
 		allEventGender = getGenderCountAllEvents(rels);
-		return allEventGender;
+		
+		// Filter out unwanted gender data
+		Map<String, Integer> retMap = new HashMap<String, Integer>();
+		if(filter.getGender().equals(Gender.MALE)) {
+			retMap.put("MALE", allEventGender.get("MALE"));
+		} else if(filter.getGender().equals(Gender.FEMALE)) {
+			retMap.put("FEMALE", allEventGender.get("FEMALE"));
+		} if(filter.getGender().equals(Gender.UNDEFINED)) {
+			retMap.put("UNIDENTIFIED", allEventGender.get("UNIDENTIFIED"));
+		} else {
+			retMap = allEventGender;
+		}
+		return retMap;
 	}
 	
 	/**
@@ -208,7 +225,6 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 		
 		return maxCounts;
-		
 	}
 	
 	
@@ -433,6 +449,57 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 		
 		return tagHash;
+	}
+	
+	/** 
+	 * Generate the filter object from the parameters given in the request
+	 * @param params
+	 * @return
+	 * @throws ParseException
+	 */
+	private FilterCerealWrapper getFilterInfo(Map<String, String> params) {
+		String startDateParam = params.get(UniversalConstants.START_DATE_FILTER);
+		String endDateParam = params.get(UniversalConstants.END_DATE_FILTER);
+		long start = 0L;
+		long end = 0L;
+		
+		// If the date filters aren't null then get them as a long
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+		try {
+			if (startDateParam != null) {
+				Date startDate = formatter.parse(startDateParam);
+				start = startDate.getTime();
+			}
+			if (endDateParam != null) {
+				Date endDate = formatter.parse(endDateParam);
+				end = endDate.getTime();
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// get the gender filter as an enum
+		String gender = params.get(UniversalConstants.GENDER_FILTER);
+		Gender g = Gender.ALL;
+		if(gender.equalsIgnoreCase("male")) {
+			g = Gender.MALE;
+		} else if(gender.equalsIgnoreCase("female")) {
+			g = Gender.FEMALE;
+		} else if(gender.equalsIgnoreCase("undefined")) {
+			g = Gender.UNDEFINED;
+		}
+		// Set age filters to default values if they are null
+		int min = 0;
+		int max = 0;
+		if(params.get(UniversalConstants.MIN_AGE_FILTER) != null) {
+			min = Integer.valueOf(params.get(UniversalConstants.MIN_AGE_FILTER));
+		}
+		if(params.get(UniversalConstants.MAX_AGE_FILTER) != null) {
+			max = Integer.valueOf(params.get(UniversalConstants.MAX_AGE_FILTER));
+		}
+		
+		return new FilterCerealWrapper(max, min, g, start, end);
 	}
 	
 	/**

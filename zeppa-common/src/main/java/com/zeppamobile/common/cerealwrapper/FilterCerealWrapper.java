@@ -22,7 +22,8 @@ public class FilterCerealWrapper extends CerealWrapper {
 	 * defined gender types
 	 *
 	 */
-	enum Gender {
+	public enum Gender {
+		ALL,
 		MALE,
 		FEMALE,
 		UNDEFINED
@@ -34,13 +35,21 @@ public class FilterCerealWrapper extends CerealWrapper {
 	
 	private Gender gender;
 	
+	private long startDate;
+	
+	private long endDate;
+	
 
-	public FilterCerealWrapper(int maxAge, int minAge, Gender gender) {
+	public FilterCerealWrapper(int maxAge, int minAge, Gender gender, long startDate, long endDate) {
 		super();
 		this.maxAge = maxAge;
 		this.minAge = minAge;
 		this.gender = gender;
+		this.startDate = startDate;
+		this.endDate = endDate;
 	}
+	
+	public FilterCerealWrapper() {}
 
 	public int getMaxAge() {
 		return maxAge;
@@ -64,6 +73,22 @@ public class FilterCerealWrapper extends CerealWrapper {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+
+	public long getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(long startDate) {
+		this.startDate = startDate;
+	}
+
+	public long getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(long endDate) {
+		this.endDate = endDate;
 	}
 
 }

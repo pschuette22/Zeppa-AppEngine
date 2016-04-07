@@ -3,6 +3,7 @@ package com.zeppamobile.frontend.webpages;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -41,32 +42,45 @@ public class AnalyticsServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -6074841711114263838L;
 
+	private static String startDateFilter = "";
+	private static String endDateFilter = "";
+	private static String minAgeFilter = "";
+	private static String maxAgeFilter = "";
+	private static String genderFilter = "";
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setContentType("text/html");
+		startDateFilter = req.getParameter("startDate");
+		endDateFilter = req.getParameter("endDate");
+		minAgeFilter = req.getParameter("minAge");
+		maxAgeFilter = req.getParameter("maxAge");
+		genderFilter = req.getParameter("gender");
+		System.out.println("----start: "+startDateFilter);
+		System.out.println("----end: "+endDateFilter);
+		System.out.println("----min: "+minAgeFilter);
+		System.out.println("----max: "+maxAgeFilter);
+		System.out.println("----gender: "+genderFilter);
+		
 		HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");
 		if (obj != null) {
 			UserInfoCerealWrapper sessionInfo = (UserInfoCerealWrapper) obj;
 			
-			System.out.println("Demographics");
 			// Strings to hold the info for chart.js
 			String[] allEventDemo = getDemographicCountAllEvents(sessionInfo);
 			req.setAttribute("genderData", allEventDemo[0]);
 			req.setAttribute("ageData", allEventDemo[1]);
 
-			System.out.println("Tags");
 			String allEventTags = getTagsAllEvents(sessionInfo, true);
 			req.setAttribute("tagData", allEventTags);
 			
 			String allEventTagsWatched = getTagsAllEvents(sessionInfo, false);
 			req.setAttribute("watchedTagData", allEventTagsWatched);
 			
-			System.out.println("Popular Events");
 			String popularEvents = getPopularEventsAllEvents(sessionInfo);
 			req.setAttribute("popEvents", popularEvents);
 			
-			System.out.println("Popular Days");
 			String popularDays = getPopularDaysAllEvents(sessionInfo);
 			req.setAttribute("popDays", popularDays);
 			
@@ -181,6 +195,8 @@ public class AnalyticsServlet extends HttpServlet {
 			} else {
 				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_TAGS_WATCHED);
 			}
+			params = createFilterParams(params);
+			
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
@@ -200,7 +216,6 @@ public class AnalyticsServlet extends HttpServlet {
 				for(Iterator iterator = tags.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
 				    tagCounts.add(new AnalyticsDataWrapper(key, ((int)(long)tags.get(key))));
-				    System.out.println("-------" + key + ": "+ tags.get(key));
 				}
 				
 			}
@@ -269,7 +284,6 @@ public class AnalyticsServlet extends HttpServlet {
 				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
 				    eventCounts.add(new AnalyticsDataWrapper(key, ((int)(long)events.get(key))));
-				    System.out.println("-------" + key + ": "+ events.get(key));
 				}
 				
 			}
@@ -339,7 +353,6 @@ public class AnalyticsServlet extends HttpServlet {
 				for(Iterator iterator = events.keySet().iterator(); iterator.hasNext();) {
 				    String key = (String) iterator.next();
 				    dayData.put(key, ((int) (long) events.get(key)));
-				    System.out.println("-------DAYS" + key + ": "+ events.get(key));
 				}
 				
 			}
@@ -360,5 +373,16 @@ public class AnalyticsServlet extends HttpServlet {
 			+ "]}]}";
 		
 		return ret;
+	}
+	
+	private static Map<String, String> createFilterParams(Map<String, String> map) throws UnsupportedEncodingException {
+		Map<String, String> params = map;
+		params.put(UniversalConstants.START_DATE_FILTER, URLEncoder.encode(startDateFilter, "UTF-8"));
+		params.put(UniversalConstants.END_DATE_FILTER, URLEncoder.encode(endDateFilter, "UTF-8"));
+		params.put(UniversalConstants.MIN_AGE_FILTER, URLEncoder.encode(minAgeFilter, "UTF-8"));
+		params.put(UniversalConstants.MAX_AGE_FILTER, URLEncoder.encode(maxAgeFilter, "UTF-8"));
+		params.put(UniversalConstants.GENDER_FILTER, URLEncoder.encode(genderFilter, "UTF-8"));
+		
+		return params;
 	}
 }

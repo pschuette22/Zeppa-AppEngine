@@ -36,15 +36,15 @@ function enablePrivaKey() {
    	url += "&nonce=" + "<%= URLEncoder.encode("bken123@gmail.com", "UTF-8") %>";
    	url += "&login_hint=" + "<%= URLEncoder.encode("bken123@gmail.com", "UTF-8") %>";
 	
-   	window.open(url);
-    /*$.get( url, function( resp ) {
+   	//window.open(url);
+    $.get( "/account-settings", data, function( resp ) {
 	 	console.log("success");
 	 	console.log(resp);
 	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";
 	}).fail(function() {
 	    console.log( "error" );
 	    document.getElementById("errorDiv").innerHTML = "We were unable to enable PrivaKey";
-	});*/
+	});
     
     /*$.post( "/account-settings", data, function( resp ) {
     	 	console.log("success");

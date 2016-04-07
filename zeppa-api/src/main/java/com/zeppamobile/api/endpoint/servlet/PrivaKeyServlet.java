@@ -24,6 +24,7 @@ import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.appengine.repackaged.org.apache.commons.codec.binary.StringUtils;
 import com.google.gson.JsonElement;
 import com.zeppamobile.api.Constants;
+import com.zeppamobile.api.datamodel.Employee;
 
 /**
  * Servlet implementation class PrivaKey
@@ -98,9 +99,19 @@ public class PrivaKeyServlet extends HttpServlet {
 			Long expTime = (Long) claims.get("exp");
 			response.getWriter().append("PrivaKey ID Sub Value:" + sub);
 			
-			EmployeeServlet.updateEmployeePrivaKeyID(email, sub);
+			Employee employee = EmployeeServlet.updateEmployeePrivaKeyID(email, sub);
+			
+			if(employee != null)
+			{
+				response.setStatus(HttpServletResponse.SC_CREATED);
+			}
+			else
+			{
+				response.setStatus(HttpServletResponse.SC_CONFLICT);
+			}
 		} catch (Exception e) {
 			response.getWriter().append("PrivaKey Servlet Error: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		}
 	}
 

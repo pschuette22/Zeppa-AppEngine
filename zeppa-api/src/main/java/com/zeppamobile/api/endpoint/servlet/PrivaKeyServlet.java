@@ -77,14 +77,13 @@ public class PrivaKeyServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		String token = request.getParameter("id_token");
-		
-		response.getWriter().append("PrivaKey ID Token: " + token);
-		
-		String[] base64EncodedSegments = token.split("\\.");
-		 
-
 		try {
+			String token = request.getParameter("id_token");
+			
+			response.getWriter().append("PrivaKey ID Token: " + token);
+			
+			String[] base64EncodedSegments = token.split("\\.");		 
+
 			String base64EncodedHeader = base64EncodedSegments[0];
 			String base64EncodedClaims = base64EncodedSegments[1];
 			JSONParser parser = new JSONParser();
@@ -101,9 +100,8 @@ public class PrivaKeyServlet extends HttpServlet {
 			response.getWriter().append("PrivaKey ID Sub Value:" + sub);
 			
 			EmployeeServlet.updateEmployeePrivaKeyID(email, sub);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			response.getWriter().append("PrivaKey Servlet Error: " + e.getMessage());
 		}
 	}
 

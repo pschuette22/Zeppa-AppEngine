@@ -58,6 +58,16 @@ public class ZeppaEventToUserRelationship {
 	private Double interest;
 	
 	
+	/*
+	 * ======= Identical to Zeppa Event it points to ========
+	 */
+	@Persistent
+	protected Float latitude;
+
+	@Persistent
+	protected Float longitude;
+	
+	
 
 	// Not persistent so this value may be set as the event is listed.
 	@NotPersistent
@@ -108,8 +118,10 @@ public class ZeppaEventToUserRelationship {
 		this.isWatching = Boolean.FALSE;
 		this.isAttending = Boolean.FALSE;
 		this.wasInvited = wasInvited;
-//		this.isRecommended = isRecommended;
+		this.isRecommended = isRecommended;
 		this.invitedByUserId = invitedByUserId;
+		this.latitude = event.getLatitude();
+		this.longitude = event.getLongitude();
 	}
 
 	public Long getCreated() {
@@ -233,6 +245,20 @@ public class ZeppaEventToUserRelationship {
 		this.interest = interest;
 	}
 
-	
-	
+	public Float getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Float latitude) {
+		this.latitude = latitude;
+	}
+
+	public Float getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Float longitude) {
+		this.longitude = longitude;
+	}
+
 }

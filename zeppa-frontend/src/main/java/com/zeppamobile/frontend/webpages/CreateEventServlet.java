@@ -101,8 +101,6 @@ public class CreateEventServlet extends HttpServlet {
 		{
 			request.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(request, response);
 		}
-		
-
 	}
 	
 	@Override
@@ -128,8 +126,6 @@ public class CreateEventServlet extends HttpServlet {
 			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 			vendorId = userInfo.getVendorID().toString();
 		}
-	   	
-	    //TO DO tags still
 		
 		if (Utils.isWebSafe(title)) {
 

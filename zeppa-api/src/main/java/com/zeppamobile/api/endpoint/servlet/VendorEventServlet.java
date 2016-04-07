@@ -41,6 +41,70 @@ public class VendorEventServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		try {
+			//Set vendor info
+			String title = URLDecoder.decode(req.getParameter("title"), "UTF-8");
+			String description = URLDecoder.decode(req.getParameter("description"), "UTF-8");
+			Long start = Long.parseLong(URLDecoder.decode(req.getParameter("start"), "UTF-8"));
+			Long end = Long.parseLong(URLDecoder.decode(req.getParameter("end"), "UTF-8"));
+			String address = URLDecoder.decode(req.getParameter("address"), "UTF-8");
+			String eventID = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_EVENT_ID), "UTF-8");
+			
+			//Get all of the tags and then add them to the event
+			List<Long> tagIds = new ArrayList<Long>();
+			String tagsString = URLDecoder.decode(req.getParameter(UniversalConstants.PARAM_TAG_LIST), "UTF-8");
+			
+
+			resp.getWriter().write("Tags String" + tagsString+"\n\n");
+			
+			JSONParser parser = new JSONParser();
+			JSONArray tags_json = (JSONArray) parser.parse(tagsString);
+			for (int i = 0; i < tags_json.size(); i++) {
+				JSONObject obj = (JSONObject) tags_json.get(i);
+				Long id = (Long) obj.get("id");
+				tagIds.add(id);
+			}
+			
+			VendorEvent event = updateEvent(eventID, title,description,start,end,tagIds,address);
+			 
+			// Convert the object to json and return in the writer
+			JSONObject json = event.toJson();
+			resp.getWriter().write(json.toJSONString());
+
+		} catch (Exception e) {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			e.printStackTrace(resp.getWriter());
+		}
+		
+	}
+
+	public static VendorEvent updateEvent(String eventId, String title,
+			String description, Long start, Long end,
+			List<Long> tagIds, String address) {
+		
+		PersistenceManager mgr = getPersistenceManager();
+		VendorEvent event = null;
+		try {
+			event = mgr.getObjectById(VendorEvent.class, Long.valueOf(eventId));
+			event.setTitle(title);
+			event.setDescription(description);
+			event.setStart(start);	
+			event.setEnd(end);
+			event.setTagIds(tagIds);
+			event.setDisplayLocation(address);
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+		} finally {
+			mgr.close();
+		}
+
+		return event;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -227,6 +291,7 @@ public class VendorEventServlet extends HttpServlet {
 
 		return event;
 	}
+	
 
 	/**
 	 * Get the persistence manager for interacting with datastore

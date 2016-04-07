@@ -87,8 +87,7 @@ public class PrivaKeyServlet extends HttpServlet {
 			String base64EncodedHeader = base64EncodedSegments[0];
 			String base64EncodedClaims = base64EncodedSegments[1];
 			JSONParser parser = new JSONParser();
-			JsonElement payload = (JsonElement) parser.parse(StringUtils.newStringUtf8(Base64.decodeBase64(base64EncodedClaims)));
-			JSONObject claims = (JSONObject)new JSONParser().parse(payload.toString());
+			JSONObject claims = (JSONObject)parser.parse(StringUtils.newStringUtf8(Base64.decodeBase64(base64EncodedClaims)));
 			
 			response.getWriter().append("PrivaKey Claims:" + claims);
 			

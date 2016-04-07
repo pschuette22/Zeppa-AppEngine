@@ -95,7 +95,7 @@ public class PrivaKeyServlet extends HttpServlet {
 			String email = (String) claims.get("nonce");// This value should be checked to match the one sent in the request
 			String iss = (String) claims.get("iss"); // Should be https://idp.privakeyapp.com/identityserver
 			String aud = (String) claims.get("aud"); //Should contain our client id
-			String expTime = (String) claims.get("exp");
+			Long expTime = (Long) claims.get("exp");
 			response.getWriter().append("PrivaKey ID Sub Value:" + sub);
 			
 			EmployeeServlet.updateEmployeePrivaKeyID(email, sub);

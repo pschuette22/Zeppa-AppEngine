@@ -49,7 +49,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>accountsettings</servlet-name>
-    <url-pattern>/account-settings</url-pattern>
+    <url-pattern>/account-settings/</url-pattern>
   </servlet-mapping>
 
 

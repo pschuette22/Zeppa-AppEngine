@@ -26,18 +26,8 @@ function enablePrivaKey() {
     var email = document.getElementById("txtPrivaKeyEmail").value;
         
     var data = {'email': email, 'isEnablePrivaKey': "true"};
-    
-    var url = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
-    url += "response_type=id_token";
-    url += "&response_mode=form_post";
-    url += "&client_id=" + "<%= UniversalConstants.PRIVAKEY_CLIENT_ID %>";
-    url += "&scope=openid";
-    url += "&redirect_uri=" + "<%= URLEncoder.encode("https://1-dot-zeppa-api-dot-zeppa-cloud-1821.appspot.com/privakey/", "UTF-8") %>";
-   	url += "&nonce=" + "<%= URLEncoder.encode("bken123@gmail.com", "UTF-8") %>";
-   	url += "&login_hint=" + "<%= URLEncoder.encode("bken123@gmail.com", "UTF-8") %>";
 	
-   	//window.open(url);
-    $.get( "/account-settings", data, function( resp ) {
+    $.get( "/account-settings/", data, function( resp ) {
 	 	console.log("success");
 	 	console.log(resp);
 	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";

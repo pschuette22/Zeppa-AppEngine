@@ -46,7 +46,7 @@ public class AccountSettingsServlet extends HttpServlet {
 		String email = req.getParameter("email");
 	    String isEnablePrivaKey = req.getParameter("isEnablePrivaKey");
 	    
-	    if(isEnablePrivaKey.equals("true") && email != null)
+	    if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
 	    {
 			try {							
 				resp.getWriter().append("PrivaKey Email: " + email);
@@ -105,7 +105,7 @@ public class AccountSettingsServlet extends HttpServlet {
 
 				resp.getWriter().println("Account Settings URL: " + url);
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-	            connection.setDoOutput(true);
+	            connection.setDoOutput(false);
 	            connection.setRequestMethod("POST");
 
 				BufferedReader reader = new BufferedReader(
@@ -113,8 +113,8 @@ public class AccountSettingsServlet extends HttpServlet {
 				String line;
 					    
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
-	                
-	            	resp.sendRedirect("/account-settings");
+	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
+	            	resp.sendRedirect("/account-settings/");
 										
 	            }
 	            

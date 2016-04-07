@@ -69,7 +69,11 @@ public class UniversalConstants {
 	public static final String kREQ_TAG_TEXT = "tag-text";	
 
 	
-	
+	/*
+	 * JSON object argument keys
+	 */
+	public static final String kJSON_INDEX_WORD_LIST = "index-word-list";
+	public static final String kJSON_INDEX_WORD_SYNS_MAP = "index-word-syns-map";
 	
 	/*
 	 * Param keys are for parameters that are to be passed into calls

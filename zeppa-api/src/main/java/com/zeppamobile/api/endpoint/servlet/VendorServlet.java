@@ -174,8 +174,11 @@ public class VendorServlet extends HttpServlet {
 			employee.setCreated(System.currentTimeMillis());
 			employee.setUpdated(System.currentTimeMillis());
 			employee.setVendorId(vendor.getKey().getId());
+			employee = mgr.makePersistent(employee);
+			
 			EmployeeUserInfo userinfo = employee.getUserInfo();
 			userinfo.setVendorID(vendor.getKey().getId());
+			userinfo.setEmployeeID(employee.getKey().getId());
 			employee.setUserInfo(userinfo);
 			employee = mgr.makePersistent(employee);
 			

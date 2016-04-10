@@ -92,8 +92,11 @@ public class PrivaKeyServlet extends HttpServlet {
 				UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 				employeeID = userInfo.getEmployeeID();
 			}
+			response.getWriter().append("PrivaKey Servlet Nonce: " + nonce);
 			String sub = validateToken(token, nonce);
 			
+			response.getWriter().append("PrivaKey Servlet Sub: " + sub);
+			response.getWriter().append("PrivaKey Servlet Employee ID: " + employeeID);
 			if(sub != null && employeeID != null)
 			{
 			

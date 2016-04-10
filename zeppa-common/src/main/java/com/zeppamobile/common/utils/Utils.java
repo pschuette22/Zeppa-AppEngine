@@ -1,5 +1,7 @@
 package com.zeppamobile.common.utils;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 public class Utils {
 
+	private static SecureRandom random = new SecureRandom();
+	
 	/**
 	 * @constructor private constructor as this is a utils class
 	 */
@@ -21,8 +25,16 @@ public class Utils {
 
 	}
 
+		  
 
-
+	/**
+	 * Creates a random 32 character string that can be used as a session key
+	 * @return 32 character string
+	 */
+	public static String nextSessionId() {
+	    return new BigInteger(130, random).toString(32);
+	}
+  
 	/**
 	 * Convenience method to determine if List of Long objects holds long with value l
 	 * @param list of Long Objects

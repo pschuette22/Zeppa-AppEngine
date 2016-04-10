@@ -49,7 +49,11 @@ public class AccountSettingsServlet extends HttpServlet {
 	    if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
 	    {
 			try {							
-				resp.getWriter().append("PrivaKey Email: " + email);
+				//resp.getWriter().append("PrivaKey Email: " + email);
+				
+				String nonce = Utils.nextSessionId();
+				HttpSession session = req.getSession(true);
+				session.setAttribute("PrivaKeyNonce", nonce);
 				
 				String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
 				s += "response_type=id_token";
@@ -57,13 +61,14 @@ public class AccountSettingsServlet extends HttpServlet {
 				s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
 				s += "&scope=openid";
 				s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings", "UTF-8");
-				s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
+				s += "&nonce=" + URLEncoder.encode(nonce, "UTF-8");
 				s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
-				URI url = new URI(s);
+				//URI url = new URI(s);
 				
-				resp.getWriter().append("PrivaKey URL: " + s);
+				resp.getWriter().append(s);
 				
-				Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
+				//req.setAttribute("redirectURL", s);
+				//Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
 				
 	        
 			} catch (Exception e) {

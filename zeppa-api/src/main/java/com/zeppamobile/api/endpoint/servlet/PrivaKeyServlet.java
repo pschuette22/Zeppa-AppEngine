@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,6 +26,8 @@ import com.google.appengine.repackaged.org.apache.commons.codec.binary.StringUti
 import com.google.gson.JsonElement;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 
 /**
  * Servlet implementation class PrivaKey
@@ -81,38 +84,71 @@ public class PrivaKeyServlet extends HttpServlet {
 		try {
 			String token = request.getParameter("id_token");
 			
-			response.getWriter().append("PrivaKey ID Token: " + token);
+			HttpSession session = request.getSession(true);
+			String nonce = (String) session.getAttribute("PrivaKeyNonce");
+			Long employeeID = null;
+			Object obj = session.getAttribute("UserInfo");
+			if(obj != null) {
+				UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
+				employeeID = userInfo.getEmployeeID();
+			}
+			String sub = validateToken(token, nonce);
 			
-			String[] base64EncodedSegments = token.split("\\.");		 
-
-			String base64EncodedHeader = base64EncodedSegments[0];
-			String base64EncodedClaims = base64EncodedSegments[1];
-			JSONParser parser = new JSONParser();
-			JSONObject claims = (JSONObject)parser.parse(StringUtils.newStringUtf8(Base64.decodeBase64(base64EncodedClaims)));
-			
-			response.getWriter().append("PrivaKey Claims:" + claims);
-			
-			String sub = (String) claims.get("sub");
-			String email = (String) claims.get("nonce");// This value should be checked to match the one sent in the request
-			String iss = (String) claims.get("iss"); // Should be https://idp.privakeyapp.com/identityserver
-			String aud = (String) claims.get("aud"); //Should contain our client id
-			Long expTime = (Long) claims.get("exp");
-			response.getWriter().append("PrivaKey ID Sub Value:" + sub);
-			
-			Employee employee = EmployeeServlet.updateEmployeePrivaKeyID(email, sub);
-			
-			if(employee != null)
+			if(sub != null && employeeID != null)
 			{
-				response.setStatus(HttpServletResponse.SC_CREATED);
+			
+				Employee employee = EmployeeServlet.updateEmployeePrivaKeyID(employeeID, sub);
+				
+				if(employee != null)
+				{
+					response.setStatus(HttpServletResponse.SC_CREATED);
+				}
+				else
+				{
+					response.setStatus(HttpServletResponse.SC_CONFLICT);
+				}
 			}
 			else
 			{
-				response.setStatus(HttpServletResponse.SC_CONFLICT);
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			response.getWriter().append("PrivaKey Servlet Error: " + e.getMessage());
 			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		}
+	}
+	
+	private String validateToken(String token, String nonce)
+	{
+		
+		try 
+		{
+			String[] base64EncodedSegments = token.split("\\.");		 
+	
+			String base64EncodedHeader = base64EncodedSegments[0];
+			String base64EncodedClaims = base64EncodedSegments[1];
+			JSONParser parser = new JSONParser();
+			JSONObject claims = (JSONObject)parser.parse(StringUtils.newStringUtf8(Base64.decodeBase64(base64EncodedClaims)));
+			
+			
+			String sub = (String) claims.get("sub");
+			String tokenNonce = (String) claims.get("nonce");// This value should be checked to match the one sent in the request
+			String iss = (String) claims.get("iss"); // Should be https://idp.privakeyapp.com/identityserver
+			String aud = (String) claims.get("aud"); //Should contain our client id
+			Long expTime = (Long) claims.get("exp");
+			
+			if(tokenNonce.equals(nonce) && aud.equals(UniversalConstants.PRIVAKEY_CLIENT_ID))
+			{
+				return sub;
+			}
+			else
+			{
+				return null;
+			}
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 
 }

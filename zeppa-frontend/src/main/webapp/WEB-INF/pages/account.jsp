@@ -30,7 +30,12 @@ function enablePrivaKey() {
     $.get( "/account-settings", data, function( resp ) {
 	 	console.log("success");
 	 	console.log(resp);
-	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";
+	 	//var url = '${redirectURL}';
+	 	//console.log("Redirect URL: " + url);
+	 	if(resp != null){
+	 		window.open(resp);
+	 	}
+	 	
 	}).fail(function() {
 	    console.log( "error" );
 	    document.getElementById("errorDiv").innerHTML = "We were unable to enable PrivaKey";

@@ -116,8 +116,17 @@ public class AccountSettingsServlet extends HttpServlet {
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(connection.getInputStream()));
 				String line;
-					    
-	            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+				
+				resp.getWriter().println("Connection Response Message: " + connection.getResponseMessage());
+	            
+				String s = ""; 
+				while ((line = reader.readLine()) != null) {
+					s += line;
+				}
+				
+				resp.getWriter().println("Response: " + s);
+				
+				if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
 	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
 	            	resp.sendRedirect("/account-settings");
 										

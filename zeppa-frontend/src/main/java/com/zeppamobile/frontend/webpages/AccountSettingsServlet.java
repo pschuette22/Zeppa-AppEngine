@@ -89,10 +89,19 @@ public class AccountSettingsServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-	    String id_token = req.getParameter("id_token");
-		
+	    String id_token = req.getParameter("id_token");		
 	    resp.getWriter().println("Account Settings id_token: " + id_token);
 	    
+		HttpSession session = req.getSession(false);
+		String nonce = (String) session.getAttribute("PrivaKeyNonce");
+		Long employeeID = null;
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null) {
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
+			employeeID = userInfo.getEmployeeID();
+		}
+		resp.getWriter().append("Account Settings Nonce: " + nonce);
+		
 		if (Utils.isWebSafe(id_token)) {
 
 			/*
@@ -100,6 +109,8 @@ public class AccountSettingsServlet extends HttpServlet {
 			 */
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("id_token", id_token);
+			params.put("nonce", nonce);
+			params.put("employeeID", employeeID.toString());
 			
 			/*
 			 * Read from the request

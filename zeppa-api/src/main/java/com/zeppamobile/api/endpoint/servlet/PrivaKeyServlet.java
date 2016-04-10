@@ -83,16 +83,9 @@ public class PrivaKeyServlet extends HttpServlet {
 		
 		try {
 			String token = request.getParameter("id_token");
-			
-			HttpSession session = request.getSession(true);
-			String nonce = (String) session.getAttribute("PrivaKeyNonce");
-			Long employeeID = null;
-			Object obj = session.getAttribute("UserInfo");
-			if(obj != null) {
-				UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
-				employeeID = userInfo.getEmployeeID();
-			}
-			response.getWriter().append("PrivaKey Servlet Nonce: " + nonce);
+			Long employeeID = Long.parseLong(request.getParameter("employeeID"));
+			String nonce = request.getParameter("nonce");
+
 			String sub = validateToken(token, nonce);
 			
 			response.getWriter().append("PrivaKey Servlet Sub: " + sub);

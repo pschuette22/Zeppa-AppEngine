@@ -107,12 +107,10 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			return relationships;
 		}
 		List<VendorEventRelationship> returnList = relationships;
-//		System.out.println("ORIG: "+relationships.size());
 		// Fitler results on gender if filter info specified 
 		if(!filter.getGender().equals(Gender.ALL)) {
 			returnList = AnalyticsFilter.filterRelationshipsOnGender(relationships, filter.getGender());
 		}
-//		System.out.println("AFTER GEN: "+returnList.size());
 		// Filter results on age if filter info specified 
 		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
 			if(returnList.size() > 0)
@@ -120,7 +118,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			else
 				returnList = AnalyticsFilter.filterRelationshipsOnAge(relationships, filter.getMinAge(), filter.getMaxAge());
 		} 
-//		System.out.println("AFTER Age: "+returnList.size());
 		// Filter results on date if filter info specified 
 		if (!(filter.getStartDate() == -1) && !(filter.getStartDate() == -1)) {
 			if(returnList.size() > 0)
@@ -128,7 +125,6 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			else 
 				returnList = AnalyticsFilter.filterRelationshipsOnDate(relationships, filter.getStartDate(), filter.getEndDate());
 		}
-//		System.out.println("AFTER Date: "+returnList.size());
 		
 		return returnList;
 	}

@@ -58,9 +58,6 @@ public class AnalyticsServlet extends HttpServlet {
 		genderFilter = req.getParameter("gender");
 		System.out.println("----start: "+startDateFilter);
 		System.out.println("----end: "+endDateFilter);
-		System.out.println("----min: "+minAgeFilter);
-		System.out.println("----max: "+maxAgeFilter);
-		System.out.println("----gender: "+genderFilter);
 		
 		HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");

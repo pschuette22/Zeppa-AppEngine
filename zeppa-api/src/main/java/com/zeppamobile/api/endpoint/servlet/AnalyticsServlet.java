@@ -494,14 +494,17 @@ public class AnalyticsServlet extends HttpServlet {
 		// Set age filters to default values if they are null
 		int min = -1;
 		int max = -1;
-		if(req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null && !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")) {
+		if (req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).isEmpty()
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")) {
 			min = Integer.valueOf(req.getParameter(UniversalConstants.MIN_AGE_FILTER));
 		}
-		if(req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null && !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
+		if (req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).isEmpty()
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
 		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, start, end);
-		System.out.println("filt: "+ filter.getGender() + " " + filter.getMinAge() + " " + filter.getMaxAge() + " " +filter.getStartDate()+ " " +filter.getEndDate());
 		return filter;
 	}
 	

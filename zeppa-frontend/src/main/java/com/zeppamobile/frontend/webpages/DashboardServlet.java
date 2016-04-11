@@ -122,7 +122,6 @@ public class DashboardServlet extends HttpServlet {
 		try {
 			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId.toString(), "UTF-8"));
 			params.put(UniversalConstants.PARAM_PAST_EVENTS, URLEncoder.encode(UniversalConstants.PARAM_PAST_EVENTS, "UTF-8"));
-			System.out.println("-------GET PAST EVENTS CALLED");
 			// Create the connection to the api module VendorEventServlet
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/dashboard-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

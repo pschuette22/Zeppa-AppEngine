@@ -93,11 +93,11 @@ public class UniversalConstants {
 	public static final String OVERALL_EVENT_POPULAR_DAYS = "overallPopularDays";
 	public static final String OVERALL_EVENT_POPULAR_EVENTS = "overallPopularEvents";
 	
-	public static final String START_DATE_FILTER = "overallPopularEvents";
-	public static final String END_DATE_FILTER = "overallPopularEvents";
-	public static final String MIN_AGE_FILTER = "overallPopularEvents";
-	public static final String MAX_AGE_FILTER = "overallPopularEvents";
-	public static final String GENDER_FILTER = "overallPopularEvents";
+	public static final String START_DATE_FILTER = "startDateFilter";
+	public static final String END_DATE_FILTER = "endDateFilter";
+	public static final String MIN_AGE_FILTER = "minAgeFilter";
+	public static final String MAX_AGE_FILTER = "maxAgeFilter";
+	public static final String GENDER_FILTER = "genderFilter";
 	
 	/*
 	 * Return argument keys

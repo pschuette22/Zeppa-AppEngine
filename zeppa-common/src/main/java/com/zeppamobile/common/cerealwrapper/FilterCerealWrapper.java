@@ -1,5 +1,6 @@
 package com.zeppamobile.common.cerealwrapper;
 
+import java.util.List;
 
 /**
  * 
@@ -90,5 +91,5 @@ public class FilterCerealWrapper extends CerealWrapper {
 	public void setEndDate(long endDate) {
 		this.endDate = endDate;
 	}
-
+	
 }

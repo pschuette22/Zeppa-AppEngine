@@ -30,6 +30,27 @@
 	
 	$(document).ready(function(){
 		createGraphs();
+		populateAgeDropdowns();
+// 		$("#minAgeFilter").val("<?php echo $_GET['minAge'];?>");
+// 		$("#maxAgeFilter").val("<?php echo $_GET['maxAge'];?>");
+// 		$("#genderFilter").val("<?php echo $_GET['gender'];?>");
+// 		if (localStorage.getItem("defaultMinAge")) {
+// 			   $('#minAgeFilter').val(localStorage.getItem("defaultMinAge")); 
+// 		}
+// 		if (localStorage.getItem("defaultMaxAge")) {
+// 			   $('#maxAgeFilter').val(localStorage.getItem("defaultMaxAge")); 
+// 		}
+// 		if (localStorage.getItem("defaultGender")) {
+// 			   $('#genderFilter').val(localStorage.getItem("defaultGender")); 
+// 		}
+	});
+	
+	$("#filterButton").click(function() {
+		alert("test");
+		localStorage.setItem("defaultMinAge", $("#minAgeFilter").val);
+		localStorage.setItem("defaultMaxAge", $("#maxAgeFilter").val);
+		localStorage.setItem("defaultGender", $("#genderFilter").val);
+		alert(localStorage.getItem("defaultMaxAge"));
 	});
 	
 	// Override default Chart.js options here
@@ -38,6 +59,51 @@
 		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
+	
+	function populateAgeDropdowns() {
+		var min = document.getElementById("minAgeFilter");
+		var max = document.getElementById("maxAgeFilter");
+		var none = document.createElement("option");
+		none.value = "None";
+		none.textContent = "None";
+		none.selected = "selected"
+		var none2 = document.createElement("option");
+		none2.value = "None";
+		none2.textContent = "None";
+		none2.selected = "selected"
+		min.appendChild(none);
+		max.appendChild(none2);
+		var under18 = document.createElement("option");
+		under18.value = "under18";
+		under18.textContent = "under18";
+		var under18two = document.createElement("option");
+		under18two.value = "under18";
+		under18two.textContent = "under18";
+		min.appendChild(under18);
+		max.appendChild(under18two);
+		for(var i=18; i < 61; i++) {
+			var opt = document.createElement("option");
+			opt.value = i;
+			opt.textContent = i;
+			var opt2 = document.createElement("option");
+			opt2.value = i;
+			opt2.textContent = i;
+			min.appendChild(opt);
+			max.appendChild(opt2);
+		}
+		var over60 = document.createElement("option");
+		over60.value = "over60";
+		over60.textContent = "over60";
+		min.appendChild(over60);
+		var over60two = document.createElement("option");
+		over60two.value = "over60";
+		over60two.textContent = "over60";
+		max.appendChild(over60two);
+		
+		// Set the default values to none
+// 		min.selectedIndex = none;
+// 		max.selectedIndex = none2;
+	}
 	
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
@@ -116,7 +182,8 @@
  	}
  	
 	.container {
-		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}	
 	.column-left { 
 		float: left; 
@@ -139,9 +206,15 @@
 	}
 	.filterDiv {
 /*     	width: 99%; */
-		height: 50px;
+/* 		height: 50px; */
     	padding-bottom : 1%; /* = width for a 1:1 aspect ratio */
     	margin: 2% 0% 1% 0%;
+  	}
+  	
+  	form input[type="text"],
+  	form select {
+  		border-radius: 8px;
+		border: solid 1px #eee;
   	}
 </style>
 
@@ -152,6 +225,33 @@
 	
 	<jsp:body>
 		<!-- <div id="filters">Filters</div> -->
+		<div class="filterDiv">
+		  <form method="GET" id="filterForm">
+			<table style="width:99%">
+			  <tr style="width:99%">
+			    <th style="width:20%; text-align:center">Start Date</th>
+			    <th style="width:20%; text-align:center">End Date</th>
+			    <th style="width:10%; text-align:center">Min Age</th>
+			    <th style="width:10%; text-align:center">Max Age</th>
+			    <th style="width:10%; text-align:center">Gender</th>
+			  </tr>
+			  <tr style="width:99%">
+			    <td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate" form="filterForm"/></td>
+	    		<td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate" form="filterForm"/></td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="minAgeFilter" name="minAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="genderFilter" name="gender" form="filterForm"><option value="all">All</option><option value="male">Male</option><option value="female">Female</option><option value="undefined">Undefined</option></select>
+	    		</td>
+	    		<td style="width:10%; text-align:center"><input id="filterButton" type="submit" value="Filter" form="filterForm"/></td>
+			  </tr>
+			</table>
+		  </form>
+		</div>
  		<div id="tabNavBar">
  			<!-- These comments are required to fix html bug which moves tab down to next line -->
  			<span class="tabNav active" data-tab="demographicsTab">Demographics</span><!--
@@ -161,33 +261,6 @@
  		</div>
  		
  		<div class="analyticsTab active" id="demographicsTab">
-			<div class="filterDiv">
-				<form method="GET" id="filterForm">
-				<table style="width:99%">
-				  <tr style="width:99%">
-				    <th style="width:20%; text-align:center">Start Date</th>
-				    <th style="width:20%; text-align:center">End Date</th>
-				    <th style="width:10%; text-align:center">Max Age</th>
-				    <th style="width:10%; text-align:center">Min Age</th>
-				    <th style="width:10%; text-align:center">Gender</th>
-				  </tr>
-				  <tr style="width:99%">
-				    <td style="width:20%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate" form="filterForm"/></td>
-	    			<td style="width:20%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate" form="filterForm"/></td>
-	    			<td style="width:10%; text-align:center">
-	    				<select id="minAgeFilter" name="minAge" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Female</option></select>
-	    			</td>
-	    			<td style="width:10%; text-align:center">
-	    				<select id="maxAgeFilter" name="maxAge" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Female</option></select>
-	    			</td>
-	    			<td style="width:10%; text-align:center">
-	    				<select id="genderFilter" name="gender" form="filterForm"><option value="male">All</option><option value="male">Male</option><option value="female">Undefined</option></select>
-	    			</td>
-	    			<td style="width:10%; text-align:center"><input type="submit" value="Filter" form="filterForm"/></td>
-				  </tr>
-				</table>
-				</form>
-			</div>
  			<p><h3>Event Demographics Data</h3></p>
 			<div class="container">
 				<div class="column-left">

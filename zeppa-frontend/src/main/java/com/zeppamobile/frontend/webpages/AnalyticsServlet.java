@@ -115,6 +115,7 @@ public class AnalyticsServlet extends HttpServlet {
 			params.put(UniversalConstants.PARAM_VENDOR_ID,
 					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
 			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_DEMOGRAPHICS);
+			params = createFilterParams(params);
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
@@ -155,7 +156,7 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 		
 		// Create the string for chart.js for the gender pie chart
-		String genderData = "none";
+		String genderData = "\"none\"";
 		if(maleCount > 0 || femaleCount > 0 || unidentified > 0) {
 			genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
 				+ "    highlight: \"#FF5A5E\"," + "    label: \"Male\"" + "}," + "{" + "    value: "
@@ -265,6 +266,7 @@ public class AnalyticsServlet extends HttpServlet {
 			params.put(UniversalConstants.PARAM_VENDOR_ID,
 					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
 			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
+			params = createFilterParams(params);
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
@@ -334,6 +336,7 @@ public class AnalyticsServlet extends HttpServlet {
 			params.put(UniversalConstants.PARAM_VENDOR_ID,
 					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
 			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_DAYS);
+			params = createFilterParams(params);
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
@@ -377,11 +380,16 @@ public class AnalyticsServlet extends HttpServlet {
 	
 	private static Map<String, String> createFilterParams(Map<String, String> map) throws UnsupportedEncodingException {
 		Map<String, String> params = map;
-		params.put(UniversalConstants.START_DATE_FILTER, URLEncoder.encode(startDateFilter, "UTF-8"));
-		params.put(UniversalConstants.END_DATE_FILTER, URLEncoder.encode(endDateFilter, "UTF-8"));
-		params.put(UniversalConstants.MIN_AGE_FILTER, URLEncoder.encode(minAgeFilter, "UTF-8"));
-		params.put(UniversalConstants.MAX_AGE_FILTER, URLEncoder.encode(maxAgeFilter, "UTF-8"));
-		params.put(UniversalConstants.GENDER_FILTER, URLEncoder.encode(genderFilter, "UTF-8"));
+		if(startDateFilter != null)
+			params.put(UniversalConstants.START_DATE_FILTER, URLEncoder.encode(startDateFilter, "UTF-8"));
+		if(endDateFilter != null)
+			params.put(UniversalConstants.END_DATE_FILTER, URLEncoder.encode(endDateFilter, "UTF-8"));
+		if(minAgeFilter != null)
+			params.put(UniversalConstants.MIN_AGE_FILTER, URLEncoder.encode(minAgeFilter, "UTF-8"));
+		if(maxAgeFilter != null)
+			params.put(UniversalConstants.MAX_AGE_FILTER, URLEncoder.encode(maxAgeFilter, "UTF-8"));
+		if(genderFilter != null)
+			params.put(UniversalConstants.GENDER_FILTER, URLEncoder.encode(genderFilter, "UTF-8"));
 		
 		return params;
 	}

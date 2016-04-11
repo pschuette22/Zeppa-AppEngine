@@ -75,7 +75,7 @@ public class DashboardServlet extends HttpServlet {
 							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
 							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
 				// Set the joined count to be shown on the dashboard
-				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
+				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), null).size());
 				upcomingEvents.add(wrap);
 			}
 		}
@@ -134,7 +134,7 @@ public class DashboardServlet extends HttpServlet {
 							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
 							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
 				// Set the joined count to be shown on the dashboard
-				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
+				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), null).size());
 				pastEvents.add(wrap);
 				System.out.println("------Wrap :" + event.getTitle() +" START: "+event.getStart()+" CURRENT: "+System.currentTimeMillis());
 			}

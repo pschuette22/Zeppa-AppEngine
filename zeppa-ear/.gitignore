@@ -1,4 +1,6 @@
 .project
 .settings
+.gitignore
 /target
 */target
+run.cmd

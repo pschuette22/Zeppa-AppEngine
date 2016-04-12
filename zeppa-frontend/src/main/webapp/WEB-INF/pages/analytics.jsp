@@ -31,27 +31,23 @@
 	$(document).ready(function(){
 		createGraphs();
 		populateAgeDropdowns();
-// 		$("#minAgeFilter").val("<?php echo $_GET['minAge'];?>");
-// 		$("#maxAgeFilter").val("<?php echo $_GET['maxAge'];?>");
-// 		$("#genderFilter").val("<?php echo $_GET['gender'];?>");
-// 		if (localStorage.getItem("defaultMinAge")) {
-// 			   $('#minAgeFilter').val(localStorage.getItem("defaultMinAge")); 
-// 		}
-// 		if (localStorage.getItem("defaultMaxAge")) {
-// 			   $('#maxAgeFilter').val(localStorage.getItem("defaultMaxAge")); 
-// 		}
-// 		if (localStorage.getItem("defaultGender")) {
-// 			   $('#genderFilter').val(localStorage.getItem("defaultGender")); 
-// 		}
+		// When the filter is submitted, retain the values when the page is reloaded
+		$("#filterForm").submit(function() {
+			sessionStorage.setItem("defaultMinAge", document.getElementById("minAgeFilter").value);
+			sessionStorage.setItem("defaultMaxAge", document.getElementById("maxAgeFilter").value);
+			sessionStorage.setItem("defaultGender", document.getElementById("genderFilter").value);
+		});
+		if (sessionStorage.getItem("defaultMinAge")) {
+			   $('#minAgeFilter').val(sessionStorage.getItem("defaultMinAge")); 
+		}
+		if (sessionStorage.getItem("defaultMaxAge")) {
+			   $('#maxAgeFilter').val(sessionStorage.getItem("defaultMaxAge")); 
+		}
+		if (sessionStorage.getItem("defaultGender")) {
+			   $('#genderFilter').val(sessionStorage.getItem("defaultGender")); 
+		}
 	});
 	
-	$("#filterButton").click(function() {
-		alert("test");
-		localStorage.setItem("defaultMinAge", $("#minAgeFilter").val);
-		localStorage.setItem("defaultMaxAge", $("#maxAgeFilter").val);
-		localStorage.setItem("defaultGender", $("#genderFilter").val);
-		alert(localStorage.getItem("defaultMaxAge"));
-	});
 	
 	// Override default Chart.js options here
 	var options = {
@@ -245,7 +241,12 @@
 	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
 	    		</td>
 	    		<td style="width:10%; text-align:center">
-	    			<select id="genderFilter" name="gender" form="filterForm"><option value="all">All</option><option value="male">Male</option><option value="female">Female</option><option value="undefined">Undefined</option></select>
+	    			<select id="genderFilter" name="gender" form="filterForm">
+	    				<option value="all">All</option>
+	    				<option value="male">Male</option>
+	    				<option value="female">Female</option>
+	    				<option value="undefined">Undefined</option>
+	    			</select>
 	    		</td>
 	    		<td style="width:10%; text-align:center"><input id="filterButton" type="submit" value="Filter" form="filterForm"/></td>
 			  </tr>

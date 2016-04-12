@@ -3,10 +3,10 @@
 .settings
 /target/
 /bin/
-<<<<<<< HEAD
-=======
 
 # UMLs and corresponding images
->>>>>>> master
 *.ucls
 *.jpg
+
+# Downloaded signature files
+/resources/

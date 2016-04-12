@@ -58,6 +58,8 @@ function enablePrivaKey() {
 	  <h2>Account Settings</h2>
 	</jsp:attribute>
 	<jsp:body>
+ 		<div id="successDiv" style="color: green;">${successDivText}</div>
+		<div id="errorDiv" style="color: red;">${errorDivText}</div>
 	  <table>
    		<tr>
       	  <td width="50%">
@@ -120,8 +122,6 @@ function enablePrivaKey() {
 		<tr>
    			<td>
    				<input type="button" value="Enable PrivaKey" onClick="javascript:enablePrivaKey()" ><br/>
-   				<div id="successDiv" style="color: green;"></div>
-				<div id="errorDiv" style="color: red;"></div>
    			</td>
    		</tr>
 	  </table>

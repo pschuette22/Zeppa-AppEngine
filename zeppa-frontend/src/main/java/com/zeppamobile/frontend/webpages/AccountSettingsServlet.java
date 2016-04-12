@@ -77,9 +77,19 @@ public class AccountSettingsServlet extends HttpServlet {
 			}
 	    }
 	    else
-	    {		
+	    {	
+	    	
+	    	String privakeySuccess = req.getParameter("privakeySuccess");
 			resp.setContentType("text/html");
-			req.setAttribute("attribute1", "This is attribute 1");
+			
+			if(privakeySuccess != null && Boolean.parseBoolean(privakeySuccess))
+			{
+				req.setAttribute("successDivText", "You have successfully enabled PrivaKey");
+			}
+			else if(privakeySuccess != null)
+			{
+				req.setAttribute("errorDivText", "There was a problem when enabling PrivaKey, please try again.");
+			}
 			
 			req.getRequestDispatcher("WEB-INF/pages/account.jsp").forward(req, resp);
 	    }
@@ -139,9 +149,10 @@ public class AccountSettingsServlet extends HttpServlet {
 				
 				if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
 	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
-	            	resp.sendRedirect("/account-settings");
+	            	resp.sendRedirect("/account-settings?privakeySuccess=true");
 										
 	            }
+				
 	            
 	            reader.close();
 	        } catch (MalformedURLException e) {
@@ -159,6 +170,8 @@ public class AccountSettingsServlet extends HttpServlet {
 			 */
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
+		resp.sendRedirect("/account-settings?privakeySuccess=false");
 	}
 
 	

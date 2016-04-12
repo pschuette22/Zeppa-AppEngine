@@ -83,6 +83,7 @@ public class LoginServlet extends HttpServlet {
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("GET");
+	            connection.setReadTimeout(10000); //10 Sec
 
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(connection.getInputStream()));

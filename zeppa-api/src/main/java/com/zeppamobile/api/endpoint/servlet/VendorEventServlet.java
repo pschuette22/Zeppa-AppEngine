@@ -116,7 +116,6 @@ public class VendorEventServlet extends HttpServlet {
 			String eventId = req.getParameter(UniversalConstants.PARAM_EVENT_ID); 
 			String upcomingEvents = req.getParameter(UniversalConstants.PARAM_UPCOMING_EVENTS);
 			String pastEvents = req.getParameter(UniversalConstants.PARAM_PAST_EVENTS);
-			System.out.println("-------param: "+pastEvents);
 			JSONArray results = new JSONArray();
 			
 			// Determine if calling for individual event or all user events.

@@ -3,9 +3,21 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>-->
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="lib/js/moment.js"></script>
+<script type="text/javascript" src="lib/js/transition.js"></script>
+<script type="text/javascript" src="lib/js/collapse.js"></script>
+<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="lib/js/bootstrap-datetimepicker.min.js"></script>
+<link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap.min.css" />
+<link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
 <script src="../js/Chart.js/Chart.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('#startTimePicker').datetimepicker();
+		$('#endTimePicker').datetimepicker();
+		
 		$(".tabNav").click(function(){
 			//Styling stuff (changing colors and hiding/showing)
 			$(".analyticsTab").removeClass("active");
@@ -18,7 +30,24 @@
 	
 	$(document).ready(function(){
 		createGraphs();
+		populateAgeDropdowns();
+		// When the filter is submitted, retain the values when the page is reloaded
+		$("#filterForm").submit(function() {
+			sessionStorage.setItem("defaultMinAge", document.getElementById("minAgeFilter").value);
+			sessionStorage.setItem("defaultMaxAge", document.getElementById("maxAgeFilter").value);
+			sessionStorage.setItem("defaultGender", document.getElementById("genderFilter").value);
+		});
+		if (sessionStorage.getItem("defaultMinAge")) {
+			   $('#minAgeFilter').val(sessionStorage.getItem("defaultMinAge")); 
+		}
+		if (sessionStorage.getItem("defaultMaxAge")) {
+			   $('#maxAgeFilter').val(sessionStorage.getItem("defaultMaxAge")); 
+		}
+		if (sessionStorage.getItem("defaultGender")) {
+			   $('#genderFilter').val(sessionStorage.getItem("defaultGender")); 
+		}
 	});
+	
 	
 	// Override default Chart.js options here
 	var options = {
@@ -26,6 +55,47 @@
 		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
+	
+	function populateAgeDropdowns() {
+		var min = document.getElementById("minAgeFilter");
+		var max = document.getElementById("maxAgeFilter");
+		var none = document.createElement("option");
+		none.value = "None";
+		none.textContent = "None";
+		none.selected = "selected"
+		var none2 = document.createElement("option");
+		none2.value = "None";
+		none2.textContent = "None";
+		none2.selected = "selected"
+		min.appendChild(none);
+		max.appendChild(none2);
+		var under18 = document.createElement("option");
+		under18.value = "under18";
+		under18.textContent = "under18";
+		var under18two = document.createElement("option");
+		under18two.value = "under18";
+		under18two.textContent = "under18";
+		min.appendChild(under18);
+		max.appendChild(under18two);
+		for(var i=18; i < 61; i++) {
+			var opt = document.createElement("option");
+			opt.value = i;
+			opt.textContent = i;
+			var opt2 = document.createElement("option");
+			opt2.value = i;
+			opt2.textContent = i;
+			min.appendChild(opt);
+			max.appendChild(opt2);
+		}
+		var over60 = document.createElement("option");
+		over60.value = "over60";
+		over60.textContent = "over60";
+		min.appendChild(over60);
+		var over60two = document.createElement("option");
+		over60two.value = "over60";
+		over60two.textContent = "over60";
+		max.appendChild(over60two);
+	}
 	
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
@@ -104,7 +174,8 @@
  	}
  	
 	.container {
-		overflow: auto;
+		overflow-y: auto;
+		overflow-x: hidden;
 	}	
 	.column-left { 
 		float: left; 
@@ -125,6 +196,18 @@
 		text-align: center;
 		padding: 10px;
 	}
+	.filterDiv {
+/*     	width: 99%; */
+/* 		height: 50px; */
+    	padding-bottom : 1%; /* = width for a 1:1 aspect ratio */
+    	margin: 2% 0% 1% 0%;
+  	}
+  	
+  	form input[type="text"],
+  	form select {
+  		border-radius: 8px;
+		border: solid 1px #eee;
+  	}
 </style>
 
 <t:ZeppaBase>
@@ -134,6 +217,38 @@
 	
 	<jsp:body>
 		<!-- <div id="filters">Filters</div> -->
+		<div class="filterDiv">
+		  <form method="GET" id="filterForm">
+			<table style="width:99%">
+			  <tr style="width:99%">
+			    <th style="width:20%; text-align:center">Start Date</th>
+			    <th style="width:20%; text-align:center">End Date</th>
+			    <th style="width:10%; text-align:center">Min Age</th>
+			    <th style="width:10%; text-align:center">Max Age</th>
+			    <th style="width:10%; text-align:center">Gender</th>
+			  </tr>
+			  <tr style="width:99%">
+			    <td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate" form="filterForm"/></td>
+	    		<td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate" form="filterForm"/></td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="minAgeFilter" name="minAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width:10%; text-align:center">
+	    			<select id="genderFilter" name="gender" form="filterForm">
+	    				<option value="all">All</option>
+	    				<option value="male">Male</option>
+	    				<option value="female">Female</option>
+	    				<option value="undefined">Undefined</option>
+	    			</select>
+	    		</td>
+	    		<td style="width:10%; text-align:center"><input id="filterButton" type="submit" value="Filter" form="filterForm"/></td>
+			  </tr>
+			</table>
+		  </form>
+		</div>
  		<div id="tabNavBar">
  			<!-- These comments are required to fix html bug which moves tab down to next line -->
  			<span class="tabNav active" data-tab="demographicsTab">Demographics</span><!--

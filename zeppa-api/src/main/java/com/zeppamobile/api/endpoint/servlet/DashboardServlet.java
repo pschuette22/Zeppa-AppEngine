@@ -3,6 +3,7 @@ package com.zeppamobile.api.endpoint.servlet;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -37,17 +38,13 @@ public class DashboardServlet extends HttpServlet {
 
 		JSONArray results = new JSONArray();
 		if(upcomingEvents != null && vendorId != null && !vendorId.isEmpty()){ // for dashboard
-			System.out.println("-------IN PAST UP");
 			vendorId = URLDecoder.decode(vendorId,"UTF-8");
 			results = getUpcomingEventsJSON(getUpcomingEvents(Long.valueOf(vendorId)));
 			jsonString = "{\"events\":" + results.toJSONString() + "}";
-			System.out.println("-------UP_RETURN: " +jsonString);
 		} else if(pastEvents != null && vendorId != null && !vendorId.isEmpty()){ // for dashboard
-			System.out.println("-------IN PAST IF");
 			vendorId = URLDecoder.decode(vendorId,"UTF-8");
 			results = getPastEventsJSON(getPastEvents(Long.valueOf(vendorId)));
 			jsonString = "{\"events\":" + results.toJSONString() + "}";
-			System.out.println("-------RETURN: " +jsonString);
 		}
 		
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -79,31 +76,20 @@ public class DashboardServlet extends HttpServlet {
 							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
 							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
 				// Set the joined count to be shown on the dashboard
-				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
+				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), null).size());
 				upcomingEvents.add(wrap);
 			}
 		}
+		
+		// Sort the list so it will be shown in correct order
+		Collections.sort(upcomingEvents);
 		
 		// If there are 5 or fewer then return all
 		if(upcomingEvents.size() <= 5)
 			return upcomingEvents;
 		
-		List<VendorEventWrapper> returnList = new ArrayList<VendorEventWrapper>();
-		// If there are more than 5 return the next 5 most current
-		for(int i=0; i < 5; i++) {
-			VendorEventWrapper mostCurrent = null;
-			for(VendorEventWrapper event : upcomingEvents) {
-				if(mostCurrent == null || event.getStart() < mostCurrent.getStart()) {
-					mostCurrent = event;
-				}
-			}
-			// Add the most current to the return list
-			returnList.add(mostCurrent);
-			// Remove the most current so the next most current can be found
-			upcomingEvents.remove(mostCurrent);
-		}
-		
-		return returnList;
+		// else return the first five since list is sorted on start date
+		return upcomingEvents.subList(0, 5);
 	}
 
 	/**
@@ -138,32 +124,20 @@ public class DashboardServlet extends HttpServlet {
 							event.getHostId(), event.getTitle(), event.getDescription(), event.getStart(), event.getEnd(), 
 							event.getTagIds(), event.getDisplayLocation(), event.getMapsLocation());
 				// Set the joined count to be shown on the dashboard
-				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId()).size());
+				wrap.setJoinedCount(VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), null).size());
 				pastEvents.add(wrap);
-				System.out.println("------Wrap :" + event.getTitle() +" START: "+event.getStart()+" CURRENT: "+System.currentTimeMillis());
 			}
 		}
+		
+		// Sort the list so it will be shown in correct order
+		Collections.sort(pastEvents);
 		
 		// If there are 5 or fewer then return all
 		if(pastEvents.size() <= 5)
 			return pastEvents;
 		
-		List<VendorEventWrapper> returnList = new ArrayList<VendorEventWrapper>();
-		// If there are more than 5 return the next 5 most current
-		for(int i=0; i < 5; i++) {
-			VendorEventWrapper mostCurrent = null;
-			for(VendorEventWrapper event : pastEvents) {
-				if(mostCurrent == null || event.getStart() > mostCurrent.getStart()) {
-					mostCurrent = event;
-				}
-			}
-			// Add the most current to the return list
-			returnList.add(mostCurrent);
-			// Remove the most current so the next most current can be found
-			pastEvents.remove(mostCurrent);
-		}
-		
-		return returnList;
+		// else return the first five since list is sorted on start date
+		return pastEvents.subList(0, 5);
 	}
 	
 	/**

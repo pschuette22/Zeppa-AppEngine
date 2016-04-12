@@ -122,7 +122,6 @@ public class DashboardServlet extends HttpServlet {
 		try {
 			params.put(UniversalConstants.PARAM_VENDOR_ID, URLEncoder.encode(vendorId.toString(), "UTF-8"));
 			params.put(UniversalConstants.PARAM_PAST_EVENTS, URLEncoder.encode(UniversalConstants.PARAM_PAST_EVENTS, "UTF-8"));
-			System.out.println("-------GET PAST EVENTS CALLED");
 			// Create the connection to the api module VendorEventServlet
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/dashboard-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -137,21 +136,10 @@ public class DashboardServlet extends HttpServlet {
 				while ((line = reader.readLine()) != null) {
 					responseString += line;
 				}
-				System.out.println("------RESP: "+ responseString);
 				// Abstract the past event info from the json response
 				JSONParser parser = new JSONParser();
 				JSONObject obj = (JSONObject)parser.parse(responseString);
 				results = (JSONArray)obj.get("events");
-//				System.out.println("------OBJ CURRENT: "+ obj.toJSONString());
-//				System.out.println("------CURRENT: "+ results.toJSONString());
-//				for(int i=0; i < results.size(); i++) {
-//					JSONObject temp = (JSONObject) results.get(i);
-//					VendorEventWrapper eventWrapper = new VendorEventWrapper((Long) temp.get("id"), null, null,
-//							(Long) temp.get("hostId"), (String) temp.get("title"), (String) temp.get("description"),
-//							(Long) temp.get("start"), (Long) temp.get("end"), null, (String)temp.get("displayLocation"), null);
-//					upcomingEvents.add(eventWrapper);
-//				}
-				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

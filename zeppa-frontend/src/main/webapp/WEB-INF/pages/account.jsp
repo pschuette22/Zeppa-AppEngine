@@ -96,22 +96,6 @@ function enablePrivaKey() {
    			<td><input type="text" id="DOBinput"/></td>
    			<td><input type="text" id="genderField"/></td>
    		</tr>
-   		<tr>   		
-      	  <td width="50%">
-            <h3><u>User Settings</u></h3>
-  			Username:<br>
-			<input type="text" name="firstname"><br><br>
-			Email Address:<br>
-			<input type="text" name="lastname"><br><br>
-			<u>Change Password</u><br><br>
-			Enter Current Password:<br>
-			<input type="text" name="current_password"><br>
-			Enter New Password:<br>
-			<input type="text" name="new_password"><br>
-			Re-Enter Current Password:<br>
-			<input type="text" name="retype_password">
-      	  </td>
-   		</tr>
    		<tr>
    			<td>
    			PrivaKey Email Address
@@ -122,12 +106,12 @@ function enablePrivaKey() {
    				<input type="text" id="txtPrivaKeyEmail">
    			</td>
    		</tr>
+   		<tr></tr>
 		<tr>
    			<td>
    				<input type="button" value="Enable PrivaKey" onClick="javascript:enablePrivaKey()" ><br/>
    			</td>
    		</tr>
 	  </table>
-	  <div id="buttonDiv" style="width:60%;text-align:center"><input type="button" value="Submit"></div>
 	</jsp:body>
 </t:ZeppaBase>

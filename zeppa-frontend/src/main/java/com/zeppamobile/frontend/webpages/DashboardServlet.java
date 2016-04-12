@@ -45,7 +45,7 @@ public class DashboardServlet extends HttpServlet {
 		
 		HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");
-		if(obj != null && error != null) {
+		if(obj != null && error == null) {
 			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 			// Make sure the user is logged in
 			if(userInfo.getEmployeeID() > 0) {

@@ -77,6 +77,27 @@ public class EmployeeServlet extends HttpServlet {
 		
 	}
 	
+	public static Employee getEmployeeByID(long id)
+	{
+		PersistenceManager mgr = getPersistenceManager();
+
+		Employee employee = null;
+		try {
+			
+			employee = mgr.getObjectById(Employee.class, id);
+
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+			employee = null;
+		} finally {
+			mgr.close();
+
+		}
+
+		return employee;
+	}
+	
 	/**
 	 * This inserts a new Employee entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown.
@@ -123,15 +144,14 @@ public class EmployeeServlet extends HttpServlet {
 	}
 
 	/**
-	 * This inserts a new Employee entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown.
+	 * This updates the employees privaKey identifier in the data store
 	 * 
-	 * @param employee - the entity to be inserted.
-	 * @return The inserted entity.
+	 * @param employeeID - the employee ID to be updated.
+	 * @return The updated entity.
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static Employee updateEmployeePrivaKeyID(String email, String privakeyGuid)  {
+	public static Employee updateEmployeePrivaKeyID(Long employeeID, String privakeyGuid)  {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
@@ -141,11 +161,7 @@ public class EmployeeServlet extends HttpServlet {
 			// Start the transaction
 			txn.begin();
 			
-			Query q = mgr.newQuery(Employee.class,
-					"emailAddress == '" + email + "'");
-			q.setUnique(true);
-
-			employee = (Employee) q.execute();
+			employee = mgr.getObjectById(Employee.class, employeeID);
 
 			// Set tag time characteristics
 			employee.setUpdated(System.currentTimeMillis());

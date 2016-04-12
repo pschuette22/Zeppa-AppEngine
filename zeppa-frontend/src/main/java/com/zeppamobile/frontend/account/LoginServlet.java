@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.CerealWrapperFactory;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
@@ -42,6 +43,17 @@ public class LoginServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
+		
+    	String privakeySuccess = request.getParameter("privakeySuccess");
+		
+		if(privakeySuccess != null && Boolean.parseBoolean(privakeySuccess))
+		{
+			request.setAttribute("successDivText", "You have successfully authenticated with PrivaKey");
+		}
+		else if(privakeySuccess != null)
+		{
+			request.setAttribute("errorDivText", "There was a problem when authenticating with PrivaKey, please try again.");
+		}
 		
 		request.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(request, response);
 	}
@@ -71,6 +83,7 @@ public class LoginServlet extends HttpServlet {
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("GET");
+	            connection.setReadTimeout(10000); //10 Sec
 
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(connection.getInputStream()));
@@ -97,13 +110,21 @@ public class LoginServlet extends HttpServlet {
 					HttpSession session = req.getSession(true);
 					session.setAttribute("UserInfo", userInfo);
 					
-					//resp.getWriter().println("User Info Object: " + userInfo.toString());
-					//resp.getWriter().println("User Info Name: " + userInfo.getGivenName() + " " + userInfo.getFamilyName());
 					resp.setStatus(HttpURLConnection.HTTP_OK);
 					
-					//resp.addHeader("isAuthorized", "true");
-					//resp.sendRedirect("/dashboard");
+					//TODO - Check if the vendor has privakey authentication enabled
+					String nonce = Utils.nextSessionId();
+					session.setAttribute("PrivaKeyNonce", nonce);
 					
+					String privakeyURL = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
+					privakeyURL += "response_type=id_token";
+					privakeyURL += "&response_mode=form_post";
+					privakeyURL += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
+					privakeyURL += "&scope=openid";
+					privakeyURL += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/dashboard", "UTF-8");
+					privakeyURL += "&nonce=" + URLEncoder.encode(nonce, "UTF-8");
+					
+					resp.getWriter().append(privakeyURL);
 	            }
 	            else if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
 	            {

@@ -16,6 +16,7 @@ public class EmployeeUserInfo extends ZeppaUserInfo {
 	
 	@Persistent
 	private Long vendorID;
+	private Long employeeID;
 	
 	public Long getVendorID() {
 		return vendorID;
@@ -23,5 +24,13 @@ public class EmployeeUserInfo extends ZeppaUserInfo {
 
 	public void setVendorID(Long vendorID) {
 		this.vendorID = vendorID;
+	}
+	
+	public Long getEmployeeID() {
+		return employeeID;
+	}
+
+	public void setEmployeeID(Long employeeID) {
+		this.employeeID = employeeID;
 	}
 }

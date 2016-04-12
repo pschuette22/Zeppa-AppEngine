@@ -52,7 +52,6 @@ public class AccountSettingsServlet extends HttpServlet {
 			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 			resp.setContentType("text/html");
 			req.setAttribute("userInfo", userInfo.toJSON());
-			
 			if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
 		    {
 				try {							
@@ -95,17 +94,28 @@ public class AccountSettingsServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-	    String id_token = req.getParameter("id_token");
-		
+	    String id_token = req.getParameter("id_token");		
 	    resp.getWriter().println("Account Settings id_token: " + id_token);
 	    
-		if (Utils.isWebSafe(id_token)) {
+		HttpSession session = req.getSession(false);
+		String nonce = (String) session.getAttribute("PrivaKeyNonce");
+		Long employeeID = null;
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null) {
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
+			employeeID = userInfo.getEmployeeID();
+		}
+		resp.getWriter().append("Account Settings Nonce: " + nonce);
+		
+		if (Utils.isWebSafe(id_token) && employeeID > 0) {
 
 			/*
 			 * Parameters accepted, making call to api servlet
 			 */
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("id_token", id_token);
+			params.put("nonce", nonce);
+			params.put("employeeID", employeeID.toString());
 			
 			/*
 			 * Read from the request
@@ -118,16 +128,26 @@ public class AccountSettingsServlet extends HttpServlet {
 	            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	            connection.setDoOutput(false);
 	            connection.setRequestMethod("POST");
-
+	            connection.setReadTimeout(10000); //10 Sec
 				BufferedReader reader = new BufferedReader(
 						new InputStreamReader(connection.getInputStream()));
 				String line;
-					    
-	            if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+				
+				resp.getWriter().println("Connection Response Message: " + connection.getResponseMessage());
+	            
+				String s = ""; 
+				while ((line = reader.readLine()) != null) {
+					s += line;
+				}
+				
+				resp.getWriter().println("Response: " + s);
+				
+				if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
 	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
-	            	resp.sendRedirect("/account-settings");
+	            	resp.sendRedirect("/account-settings?privakeySuccess=true");
 										
 	            }
+				
 	            
 	            reader.close();
 	        } catch (MalformedURLException e) {
@@ -145,6 +165,8 @@ public class AccountSettingsServlet extends HttpServlet {
 			 */
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		}
+		
+		resp.sendRedirect("/account-settings?privakeySuccess=false");
 	}
 
 	

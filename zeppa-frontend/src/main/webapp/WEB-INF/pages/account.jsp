@@ -49,7 +49,12 @@ function enablePrivaKey() {
     $.get( "/account-settings", data, function( resp ) {
 	 	console.log("success");
 	 	console.log(resp);
-	 	document.getElementById("successDiv").innerHTML = "You have successfully enable PrivaKey";
+	 	//var url = '${redirectURL}';
+	 	//console.log("Redirect URL: " + url);
+	 	if(resp != null){
+	 		window.open(resp);
+	 	}
+	 	
 	}).fail(function() {
 	    console.log( "error" );
 	    document.getElementById("errorDiv").innerHTML = "We were unable to enable PrivaKey";
@@ -72,6 +77,8 @@ function enablePrivaKey() {
 	  <h2>Account Settings</h2>
 	</jsp:attribute>
 	<jsp:body>
+ 		<div id="successDiv" style="color: green;">${successDivText}</div>
+		<div id="errorDiv" style="color: red;">${errorDivText}</div>
 	  <table>
    		<tr>
    			<td>First Name</td>
@@ -118,8 +125,6 @@ function enablePrivaKey() {
 		<tr>
    			<td>
    				<input type="button" value="Enable PrivaKey" onClick="javascript:enablePrivaKey()" ><br/>
-   				<div id="successDiv" style="color: green;"></div>
-				<div id="errorDiv" style="color: red;"></div>
    			</td>
    		</tr>
 	  </table>

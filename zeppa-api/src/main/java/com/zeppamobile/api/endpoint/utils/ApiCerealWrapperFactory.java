@@ -31,7 +31,7 @@ public class ApiCerealWrapperFactory extends CerealWrapperFactory {
 		CerealWrapper result = null;
 		if (obj instanceof EmployeeUserInfo) {
 			EmployeeUserInfo info = (EmployeeUserInfo) obj;
-			result = new UserInfoCerealWrapper(info.getVendorID(), info.getId(), info.getCreated(),
+			result = new UserInfoCerealWrapper(info.getVendorID(), info.getEmployeeID(), info.getCreated(),
 					info.getUpdated(), info.getGivenName(),
 					info.getFamilyName(), info.getImageUrl(), info.getGender().toString(), info.getDateOfBirth());
 		} else if (obj instanceof Employee) {

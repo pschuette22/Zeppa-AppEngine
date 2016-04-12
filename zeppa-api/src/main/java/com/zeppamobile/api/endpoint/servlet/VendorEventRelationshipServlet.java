@@ -22,7 +22,10 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
+import com.zeppamobile.api.endpoint.utils.AnalyticsFilter;
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper.Gender;
 import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
 /**
@@ -48,7 +51,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		// Determine if the call is for a specific event or all of a vendor's events
 		if (eventId != null && !eventId.isEmpty()) {
 			eventId = URLDecoder.decode(eventId,"UTF-8");
-			results = getAllRelationshipsForEventJSON(Long.valueOf(eventId));
+			results = getAllRelationshipsForEventJSON(Long.valueOf(eventId), null);
 			resp.setStatus(HttpServletResponse.SC_OK);
 		} else if(vendorId != null && !vendorId.isEmpty()){
 			vendorId = URLDecoder.decode(vendorId,"UTF-8");
@@ -69,9 +72,9 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * @return - JSONArray containing info on all relationships to the given event
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONArray getAllRelationshipsForEventJSON(Long eventId){
+	public JSONArray getAllRelationshipsForEventJSON(Long eventId, FilterCerealWrapper filter){
 		JSONArray results = new JSONArray();
-		List<VendorEventRelationship> relationships = getAllRelationshipsForEvent(eventId);
+		List<VendorEventRelationship> relationships = getAllRelationshipsForEvent(eventId, filter);
 		for(VendorEventRelationship rel : relationships) {
 			JSONObject json = rel.toJson();
 			results.add(json);
@@ -85,7 +88,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * @return - the list of relationships
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<VendorEventRelationship> getAllRelationshipsForEvent(Long eventId){
+	public static List<VendorEventRelationship> getAllRelationshipsForEvent(Long eventId, FilterCerealWrapper filter) {
 		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -100,7 +103,30 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			mgr.close();
 		}
 		
-		return relationships;
+		if(filter == null) {
+			return relationships;
+		}
+		List<VendorEventRelationship> returnList = relationships;
+		// Fitler results on gender if filter info specified 
+		if(!filter.getGender().equals(Gender.ALL)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnGender(relationships, filter.getGender());
+		}
+		// Filter results on age if filter info specified 
+		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+			if(returnList.size() > 0)
+				returnList = AnalyticsFilter.filterRelationshipsOnAge(returnList, filter.getMinAge(), filter.getMaxAge());
+			else
+				returnList = AnalyticsFilter.filterRelationshipsOnAge(relationships, filter.getMinAge(), filter.getMaxAge());
+		} 
+		// Filter results on date if filter info specified 
+		if (!(filter.getStartDate() == -1) && !(filter.getStartDate() == -1)) {
+			if(returnList.size() > 0)
+				returnList = AnalyticsFilter.filterRelationshipsOnDate(returnList, filter.getStartDate(), filter.getEndDate());
+			else 
+				returnList = AnalyticsFilter.filterRelationshipsOnDate(relationships, filter.getStartDate(), filter.getEndDate());
+		}
+		
+		return returnList;
 	}
 	
 	/**
@@ -109,8 +135,9 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * @return - the list of relationships
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<VendorEventRelationship> getAllJoinedRelationshipsForEvent(Long eventId){
+	public static List<VendorEventRelationship> getAllJoinedRelationshipsForEvent(Long eventId, FilterCerealWrapper filter){
 		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+		 
 		PersistenceManager mgr = getPersistenceManager();
 		try {
 			Query q = mgr.newQuery(VendorEventRelationship.class,
@@ -123,6 +150,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		} finally {
 			mgr.close();
 		}
+
 		// Create list with only joined relationships
 		List<VendorEventRelationship> joinedList = new ArrayList<VendorEventRelationship>(); 
 		for(VendorEventRelationship rel : relationships) {
@@ -130,7 +158,25 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 				joinedList.add(rel);
 		}
 		
-		return joinedList;
+		if(filter == null) {
+			return joinedList;
+		}
+
+		List<VendorEventRelationship> returnList = joinedList;
+		// Fitler results on gender if filter info specified 
+		if(!filter.getGender().equals(Gender.ALL)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
+		} 
+		// Filter results on age if filter info specified 
+		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
+		}
+		// Filter results on date if filter info specified 
+		if (!(filter.getStartDate() == -1) || !(filter.getStartDate() == -1)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnDate(joinedList, filter.getStartDate(), filter.getEndDate());
+		}
+		
+		return returnList;
 	}
 	
 	/**
@@ -139,7 +185,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 	 * @return - the list of relationships
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<VendorEventRelationship> getAllWatchedRelationshipsForEvent(Long eventId){
+	public static List<VendorEventRelationship> getAllWatchedRelationshipsForEvent(Long eventId, FilterCerealWrapper filter){
 		List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 		PersistenceManager mgr = getPersistenceManager();
 		try {
@@ -153,14 +199,32 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		} finally {
 			mgr.close();
 		}
-		// Create list with only joined relationships
+		// Create list with only watched relationships
 		List<VendorEventRelationship> watchedList = new ArrayList<VendorEventRelationship>(); 
 		for(VendorEventRelationship rel : relationships) {
 			if(rel.isWatched()) 
 				watchedList.add(rel);
 		}
 		
-		return watchedList;
+		List<VendorEventRelationship> returnList = watchedList;
+		if(filter == null) {
+			return watchedList;
+		}
+
+		// Fitler results on gender if filter info specified 
+		if(!filter.getGender().equals(Gender.ALL)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnGender(watchedList, filter.getGender());
+		}
+		// Filter results on age if filter info specified 
+		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnAge(watchedList, filter.getMinAge(), filter.getMaxAge());
+		}
+		// Filter results on date if filter info specified 
+		if (!(filter.getStartDate() == -1) || !(filter.getStartDate() == -1)) {
+			returnList = AnalyticsFilter.filterRelationshipsOnDate(watchedList, filter.getStartDate(), filter.getEndDate());
+		}
+		
+		return returnList;
 	}
 	
 	/**
@@ -176,7 +240,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		
 		// Go through each event for the vendor and find all relationships
 		for(VendorEvent event : events) {
-			JSONArray temp = getAllRelationshipsForEventJSON(event.getId());
+			JSONArray temp = getAllRelationshipsForEventJSON(event.getId(), null);
 			for(int i=0; i < temp.size(); i++) {
 				results.add(temp.get(i));
 			}

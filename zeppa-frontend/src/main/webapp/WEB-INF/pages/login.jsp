@@ -14,7 +14,7 @@
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 
-function login() {
+/*function login() {
     var email = document.getElementById("txtEmail").value,
     password = document.getElementById("txtPassword").value;
         
@@ -23,12 +23,14 @@ function login() {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
-    	 	document.getElementById("successDiv").innerHTML = "Your logged in successfully";
+    	 	if(resp.indexOf("https://") > -1) {
+    	 		window.open(resp);	
+    	 	}
+    	 	
     	}).fail(function() {
     	    console.log( "error" );
-    	    document.getElementById("errorDiv").innerHTML = "We were unable to create your account";
     	});
-}
+}*/
 
 function onSuccess(googleUser) {
 	var profile = googleUser.getBasicProfile();
@@ -39,6 +41,9 @@ function onSuccess(googleUser) {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
+    	 	if(resp.indexOf("https://") > -1) {
+    	 		window.open(resp);	
+    	 	}
     	}).fail(function() {
     	    console.log( "error" );
     	});
@@ -47,6 +52,7 @@ function onSuccess(googleUser) {
   function onFailure(error) {
     console.log(error);
   }
+  
   function renderButton() {
     gapi.signin2.render('my-signin2', {
       'scope': 'https://www.googleapis.com/auth/userinfo.email',
@@ -59,7 +65,9 @@ function onSuccess(googleUser) {
 <t:ZeppaBase>
 
 <jsp:body>
-	<h1>Login</h1>		
+	<h1>Login</h1>	
+	<div id="successDiv" style="color: green;">${successDivText}</div>
+	<div id="errorDiv" style="color: red;">${errorDivText}</div>	
 	<div id="my-signin2" class="g-signin2"></div>
 	
 	<!--  <div>	

@@ -70,7 +70,7 @@ public class PrivaKeyServlet extends HttpServlet {
 				}
 				else
 				{
-					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 				}
 			}
 			else

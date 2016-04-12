@@ -130,6 +130,18 @@ public class DashboardServlet extends HttpServlet {
 	            	resp.sendRedirect("/dashboard");
 										
 	            }
+				else if(connection.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST)
+				{
+					resp.sendRedirect("/login?privakeySuccess=false&error=BadRequest");
+				}
+				else if(connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN)
+				{
+					resp.sendRedirect("/login?privakeySuccess=false&error=Forbidden");
+				}
+				else if(connection.getResponseCode() == HttpURLConnection.HTTP_CONFLICT)
+				{
+					resp.sendRedirect("/login?privakeySuccess=false&error=Conflict");
+				}
 				
 	            
 	            reader.close();

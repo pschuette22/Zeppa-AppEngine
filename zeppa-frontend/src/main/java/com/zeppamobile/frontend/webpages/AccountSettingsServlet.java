@@ -80,13 +80,14 @@ public class AccountSettingsServlet extends HttpServlet {
 	    {	
 	    	
 	    	String privakeySuccess = req.getParameter("privakeySuccess");
+	    	String error = req.getParameter("error");
 			resp.setContentType("text/html");
 			
 			if(privakeySuccess != null && Boolean.parseBoolean(privakeySuccess))
 			{
 				req.setAttribute("successDivText", "You have successfully enabled PrivaKey");
 			}
-			else if(privakeySuccess != null)
+			else if(privakeySuccess != null || error != null)
 			{
 				req.setAttribute("errorDivText", "There was a problem when enabling PrivaKey, please try again.");
 			}
@@ -112,7 +113,7 @@ public class AccountSettingsServlet extends HttpServlet {
 		}
 		resp.getWriter().append("Account Settings Nonce: " + nonce);
 		
-		if (Utils.isWebSafe(id_token)) {
+		if (Utils.isWebSafe(id_token) && employeeID > 0) {
 
 			/*
 			 * Parameters accepted, making call to api servlet

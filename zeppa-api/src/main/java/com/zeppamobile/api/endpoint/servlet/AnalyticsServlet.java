@@ -227,31 +227,6 @@ public class AnalyticsServlet extends HttpServlet {
 		return maxCounts;
 	}
 	
-	
-	/**
-	 * Sorts a map by value
-	 * @param map - the map to be sorted
-	 * @return - the sorted map
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Map<String, Integer> sortMapByValue(Map<String, Integer> map) {
-	     List<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>(map.entrySet());
-	     Collections.sort(list, new Comparator() {
-	          public int compare(Object o1, Object o2) {
-	               return ((Comparable) ((Map.Entry) (o1)).getValue())
-	              .compareTo(((Map.Entry) (o2)).getValue());
-	          }
-	     });
-
-	    Map<String, Integer> result = new HashMap<String, Integer>();
-	    for (Iterator it = list.iterator(); it.hasNext();) {
-	        Map.Entry entry = (Map.Entry)it.next();
-	        result.put((String)entry.getKey(), (Integer)entry.getValue());
-	    }
-	    return result;
-	} 
-	
-	
 	/** 
 	 * Take the results from getting all related Users and count the gender
 	 * demographic info for the users
@@ -464,7 +439,7 @@ public class AnalyticsServlet extends HttpServlet {
 		long end = -1L;
 		
 		// If the date filters aren't null then get them as a long
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm a");
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 		try {
 			if (startDateParam != null && !startDateParam.isEmpty()) {
 				Date startDate = formatter.parse(startDateParam);
@@ -508,11 +483,4 @@ public class AnalyticsServlet extends HttpServlet {
 		return filter;
 	}
 	
-	/**
-	 * Get the persistence manager for interacting with datastore
-	 */
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
-	}
-
 }

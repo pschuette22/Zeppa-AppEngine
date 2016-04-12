@@ -125,7 +125,7 @@ public class DashboardServlet extends HttpServlet {
 				
 				resp.getWriter().println("Response: " + s);
 				
-				if (connection.getResponseCode() == HttpURLConnection.HTTP_CREATED) {
+				if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
 	            	resp.getWriter().println("Connection Response Created: " + connection.getResponseMessage());
 	            	resp.sendRedirect("/dashboard");
 										

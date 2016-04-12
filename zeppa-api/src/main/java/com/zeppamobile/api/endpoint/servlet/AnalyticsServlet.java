@@ -1,9 +1,12 @@
 package com.zeppamobile.api.endpoint.servlet;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +34,7 @@ import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
+import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper.Gender;
 
 /**
  * 
@@ -53,16 +57,17 @@ public class AnalyticsServlet extends HttpServlet {
 		String vendorId = req.getParameter(UniversalConstants.PARAM_VENDOR_ID);
 		String type = req.getParameter(UniversalConstants.ANALYTICS_TYPE);
 		
+		FilterCerealWrapper filter = getFilterInfo(req);
 		if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_DEMOGRAPHICS)) {
 			// Get map with the gender counts
-			Map<String, Integer> genderCounts = getAllEventInfoDemographic(null, Long.valueOf(vendorId));
+			Map<String, Integer> genderCounts = getAllEventInfoDemographic(filter, Long.valueOf(vendorId));
 			JSONObject json = new JSONObject();
 			// put the counts in the JSON object so they can be returned to the frontend in the response
 			json.put("maleCount", genderCounts.get("MALE"));
 			json.put("femaleCount", genderCounts.get("FEMALE"));
 			json.put("unidentified", genderCounts.get("UNIDENTIFIED"));
 			
-			Map<String, Integer> ageCounts = getAgeCountAllEvents(null, Long.valueOf(vendorId));
+			Map<String, Integer> ageCounts = getAgeCountAllEvents(filter, Long.valueOf(vendorId));
 			JSONObject ageJson = new JSONObject();
 			ageJson.put("under18", ageCounts.get("under18"));
 			ageJson.put("18to20", ageCounts.get("18to20"));
@@ -80,7 +85,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(null, Long.valueOf(vendorId), true);
+			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), true);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -89,7 +94,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS_WATCHED)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(null, Long.valueOf(vendorId), false);
+			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), false);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -98,14 +103,14 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
 			// Get the most popular events and return their title and count in JSON
-			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(null, Long.valueOf(vendorId));
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId));
 			JSONObject jsonPopEvents = new JSONObject();
 			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
 				jsonPopEvents.put(entry.getKey().getTitle(), entry.getValue());
 			}
 			resp.getWriter().write(jsonPopEvents.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_DAYS)) {
-			Map<Integer, Integer> dayCounts = getAllEventPopularDay(null, Long.valueOf(vendorId));
+			Map<Integer, Integer> dayCounts = getAllEventPopularDay(filter, Long.valueOf(vendorId));
 			JSONObject days = new JSONObject();
 			days.put("Monday", dayCounts.get(1));
 			days.put("Tuesday", dayCounts.get(2));
@@ -141,12 +146,24 @@ public class AnalyticsServlet extends HttpServlet {
 		
 		// Go through each event for the vendor and find all relationships
 		for(VendorEvent event : events) {
-			rels.addAll(VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()));
+			rels.addAll(VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId(), filter));
 		}
 		
 		// Get the gender count across all events for the vendor
 		allEventGender = getGenderCountAllEvents(rels);
 		return allEventGender;
+		// Filter out unwanted gender data
+//		Map<String, Integer> retMap = new HashMap<String, Integer>();
+//		if(filter.getGender().equals(Gender.MALE)) {
+//			retMap.put("MALE", allEventGender.get("MALE"));
+//		} else if(filter.getGender().equals(Gender.FEMALE)) {
+//			retMap.put("FEMALE", allEventGender.get("FEMALE"));
+//		} if(filter.getGender().equals(Gender.UNDEFINED)) {
+//			retMap.put("UNIDENTIFIED", allEventGender.get("UNIDENTIFIED"));
+//		} else {
+//			retMap = allEventGender;
+//		}
+//		return retMap;
 	}
 	
 	/**
@@ -166,7 +183,7 @@ public class AnalyticsServlet extends HttpServlet {
 		// Populate the map with the counts for each day
 		for(VendorEvent event : events) {
 			DateTime dt = new DateTime(event.getStart());
-			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
 			dayCounts.put(dt.getDayOfWeek(), (dayCounts.get(dt.getDayOfWeek()) + relationships.size()));
 		}
 		
@@ -184,7 +201,7 @@ public class AnalyticsServlet extends HttpServlet {
 		Map<VendorEvent, Integer> eventCounts = new HashMap<VendorEvent, Integer>();
 		// Populate the map with the counts for each event
 		for(VendorEvent event : events) {
-			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
 			eventCounts.put(event, relationships.size());
 		}
 		
@@ -208,33 +225,7 @@ public class AnalyticsServlet extends HttpServlet {
 		}
 		
 		return maxCounts;
-		
 	}
-	
-	
-	/**
-	 * Sorts a map by value
-	 * @param map - the map to be sorted
-	 * @return - the sorted map
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Map<String, Integer> sortMapByValue(Map<String, Integer> map) {
-	     List<Entry<String, Integer>> list = new ArrayList<Entry<String, Integer>>(map.entrySet());
-	     Collections.sort(list, new Comparator() {
-	          public int compare(Object o1, Object o2) {
-	               return ((Comparable) ((Map.Entry) (o1)).getValue())
-	              .compareTo(((Map.Entry) (o2)).getValue());
-	          }
-	     });
-
-	    Map<String, Integer> result = new HashMap<String, Integer>();
-	    for (Iterator it = list.iterator(); it.hasNext();) {
-	        Map.Entry entry = (Map.Entry)it.next();
-	        result.put((String)entry.getKey(), (Integer)entry.getValue());
-	    }
-	    return result;
-	} 
-	
 	
 	/** 
 	 * Take the results from getting all related Users and count the gender
@@ -289,7 +280,7 @@ public class AnalyticsServlet extends HttpServlet {
 
 		// Go through each event for the vendor and find all relationships
 		for (VendorEvent event : events) {
-			relationships.addAll(VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId()));
+			relationships.addAll(VendorEventRelationshipServlet.getAllRelationshipsForEvent(event.getId(), filter));
 		}
 		
 		// Loop through all relationships
@@ -356,9 +347,9 @@ public class AnalyticsServlet extends HttpServlet {
 			List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 			if(joined) {
 			// get all users with a joined relationship to the event
-			relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId());
+			relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
 			} else {
-				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId());
+				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId(), filter);
 			}
 			
 			// This hash map contains all tag texts that are common 
@@ -435,11 +426,61 @@ public class AnalyticsServlet extends HttpServlet {
 		return tagHash;
 	}
 	
-	/**
-	 * Get the persistence manager for interacting with datastore
+	/** 
+	 * Generate the filter object from the parameters given in the request
+	 * @param params
+	 * @return
+	 * @throws ParseException
 	 */
-	private static PersistenceManager getPersistenceManager() {
-		return PMF.get().getPersistenceManager();
+	private FilterCerealWrapper getFilterInfo(HttpServletRequest req) {
+		String startDateParam = req.getParameter(UniversalConstants.START_DATE_FILTER);
+		String endDateParam = req.getParameter(UniversalConstants.END_DATE_FILTER);
+		long start = -1L;
+		long end = -1L;
+		
+		// If the date filters aren't null then get them as a long
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+		try {
+			if (startDateParam != null && !startDateParam.isEmpty()) {
+				Date startDate = formatter.parse(startDateParam);
+				start = startDate.getTime();
+			}
+			if (endDateParam != null && !endDateParam.isEmpty()) {
+				Date endDate = formatter.parse(endDateParam);
+				end = endDate.getTime();
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// get the gender filter as an enum
+		String gender = req.getParameter(UniversalConstants.GENDER_FILTER);
+		Gender g = Gender.ALL;
+		if (gender != null) {
+			if (gender.equalsIgnoreCase("male")) {
+				g = Gender.MALE;
+			} else if (gender.equalsIgnoreCase("female")) {
+				g = Gender.FEMALE;
+			} else if (gender.equalsIgnoreCase("undefined")) {
+				g = Gender.UNDEFINED;
+			}
+		}
+		// Set age filters to default values if they are null
+		int min = -1;
+		int max = -1;
+		if (req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).isEmpty()
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")) {
+			min = Integer.valueOf(req.getParameter(UniversalConstants.MIN_AGE_FILTER));
+		}
+		if (req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).isEmpty()
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
+			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
+		}
+		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, start, end);
+		return filter;
 	}
-
+	
 }

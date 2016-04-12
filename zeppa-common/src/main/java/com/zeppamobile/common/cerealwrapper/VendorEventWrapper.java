@@ -3,11 +3,9 @@ package com.zeppamobile.common.cerealwrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Persistent;
-
 import org.json.simple.JSONObject;
 
-public class VendorEventWrapper {
+public class VendorEventWrapper implements Comparable<VendorEventWrapper>{
 
 	private Long eventId;
 	private Long created;
@@ -214,4 +212,9 @@ public class VendorEventWrapper {
 	public void setJoinedCount(int joinedCount) {
 		this.joinedCount = joinedCount;
 	}
+	
+	@Override
+    public int compareTo(VendorEventWrapper another) {
+        return this.getStart().compareTo(another.getStart());
+    }
 }

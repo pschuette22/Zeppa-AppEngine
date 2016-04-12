@@ -1265,10 +1265,10 @@
 		font-size: 0.8em;
 	}
 
-	form input[type="text"],
+/* 	form input[type="text"], */
 	form input[type="email"],
 	form input[type="password"],
-	form select,
+/* 	form select, */
 	form textarea {
 		-webkit-appearance: none;
 		display: block;

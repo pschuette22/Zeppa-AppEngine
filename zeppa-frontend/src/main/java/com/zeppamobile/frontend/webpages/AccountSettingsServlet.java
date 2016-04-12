@@ -45,39 +45,50 @@ public class AccountSettingsServlet extends HttpServlet {
 		
 		String email = req.getParameter("email");
 	    String isEnablePrivaKey = req.getParameter("isEnablePrivaKey");
-	    
-	    if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
-	    {
-			try {							
-				resp.getWriter().append("PrivaKey Email: " + email);
-				
-				String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
-				s += "response_type=id_token";
-				s += "&response_mode=form_post";
-				s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
-				s += "&scope=openid";
-				s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings", "UTF-8");
-				s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
-				s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
-				URI url = new URI(s);
-				
-				resp.getWriter().append("PrivaKey URL: " + s);
-				
-				Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
-				
-	        
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				resp.getWriter().append("Error Message:" + e.getMessage());
-			}
-	    }
-	    else
-	    {		
+	    HttpSession session = req.getSession(true);
+		Object obj = session.getAttribute("UserInfo");
+		if(obj != null)
+		{
+			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
 			resp.setContentType("text/html");
-			req.setAttribute("attribute1", "This is attribute 1");
+			req.setAttribute("userInfo", userInfo.toJSON());
 			
-			req.getRequestDispatcher("WEB-INF/pages/account.jsp").forward(req, resp);
-	    }
+			if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
+		    {
+				try {							
+					resp.getWriter().append("PrivaKey Email: " + email);
+					
+					String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
+					s += "response_type=id_token";
+					s += "&response_mode=form_post";
+					s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
+					s += "&scope=openid";
+					s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings", "UTF-8");
+					s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
+					s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
+					URI url = new URI(s);
+					
+					resp.getWriter().append("PrivaKey URL: " + s);
+					
+					Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
+					
+		        
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					resp.getWriter().append("Error Message:" + e.getMessage());
+				}
+		    }
+		    else
+		    {		
+				resp.setContentType("text/html");
+				req.setAttribute("attribute1", "This is attribute 1");
+				
+				req.getRequestDispatcher("WEB-INF/pages/account.jsp").forward(req, resp);
+		    }
+		}
+		else{
+			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
+		}
 	}
 
 	@Override

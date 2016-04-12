@@ -23,10 +23,12 @@ function login() {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
-    	 	document.getElementById("successDiv").innerHTML = "Your logged in successfully";
+    	 	if(resp.indexOf("https://") > -1) {
+    	 		window.open(resp);	
+    	 	}
+    	 	
     	}).fail(function() {
     	    console.log( "error" );
-    	    document.getElementById("errorDiv").innerHTML = "We were unable to create your account";
     	});
 }
 
@@ -59,7 +61,9 @@ function onSuccess(googleUser) {
 <t:ZeppaBase>
 
 <jsp:body>
-	<h1>Login</h1>		
+	<h1>Login</h1>	
+	<div id="successDiv" style="color: green;">${successDivText}</div>
+	<div id="errorDiv" style="color: red;">${errorDivText}</div>	
 	<div id="my-signin2" class="g-signin2"></div>
 	
 	<!--  <div>	

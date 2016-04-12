@@ -77,6 +77,27 @@ public class EmployeeServlet extends HttpServlet {
 		
 	}
 	
+	public static Employee getEmployeeByID(long id)
+	{
+		PersistenceManager mgr = getPersistenceManager();
+
+		Employee employee = null;
+		try {
+			
+			employee = mgr.getObjectById(Employee.class, id);
+
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+			employee = null;
+		} finally {
+			mgr.close();
+
+		}
+
+		return employee;
+	}
+	
 	/**
 	 * This inserts a new Employee entity into App Engine datastore. If the entity
 	 * already exists in the datastore, an exception is thrown.

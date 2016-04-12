@@ -95,10 +95,6 @@
 		over60two.value = "over60";
 		over60two.textContent = "over60";
 		max.appendChild(over60two);
-		
-		// Set the default values to none
-// 		min.selectedIndex = none;
-// 		max.selectedIndex = none2;
 	}
 	
 	function createGraphs() {

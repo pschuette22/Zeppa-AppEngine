@@ -14,7 +14,7 @@
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 
-function login() {
+/*function login() {
     var email = document.getElementById("txtEmail").value,
     password = document.getElementById("txtPassword").value;
         
@@ -30,7 +30,7 @@ function login() {
     	}).fail(function() {
     	    console.log( "error" );
     	});
-}
+}*/
 
 function onSuccess(googleUser) {
 	var profile = googleUser.getBasicProfile();
@@ -41,6 +41,9 @@ function onSuccess(googleUser) {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
+    	 	if(resp.indexOf("https://") > -1) {
+    	 		window.open(resp);	
+    	 	}
     	}).fail(function() {
     	    console.log( "error" );
     	});

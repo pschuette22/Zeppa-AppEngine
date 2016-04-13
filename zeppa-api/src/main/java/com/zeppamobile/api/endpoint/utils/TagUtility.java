@@ -24,6 +24,7 @@ import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.MetaTag;
 import com.zeppamobile.api.datamodel.MetaTagEntity;
+import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.utils.ModuleUtils;
@@ -54,7 +55,18 @@ public class TagUtility {
 
 			EventTag tag = mgr.getObjectById(EventTag.class, tagId);
 
-			// TODO: Get the indexed words from smartfollow
+			ZeppaUser userOwner = null;
+			Vendor vendorOwner = null;
+			
+			if(isUserTag) {
+				userOwner = mgr.getObjectById(ZeppaUser.class, tag.getOwnerId());
+			} else {
+				vendorOwner = mgr.getObjectById(Vendor.class, tag.getOwnerId());
+			}
+			
+			
+			
+			// Get the indexed words from smartfollow
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(UniversalConstants.kREQ_TAG_TEXT, tag.getTagText());
 
@@ -86,11 +98,17 @@ public class TagUtility {
 							.get(UniversalConstants.kJSON_INDEX_WORD_SYNS_MAP);
 
 					// TODO: Determine the weight based on word POS
-
+					double totalWeight = 0.0;
+					
+					for(String indexWord: indexWords) {
+						totalWeight+=getIndexWordWeight(indexWord);
+					}
+					
+					
 					// TODO: Add metatag objects pointing to this tag/ user into
 					// the datastore
-					ZeppaUser tagOwner = mgr.getObjectById(ZeppaUser.class, tag.getOwnerId());
-
+					
+					
 					for (String indexWord : indexWords) {
 
 						Query query = mgr.newQuery(MetaTag.class, "indexWord=='" + indexWord + "'");
@@ -116,8 +134,9 @@ public class TagUtility {
 						// Create the entity
 						// NOTE: set to .5 weight for all right now. Needs to be
 						// changed ASAP
-						MetaTagEntity entity = new MetaTagEntity(tag.getKey(), tagOwner.getKey(), metatag.getKey(),
-								isUserTag, .5);
+						
+						MetaTagEntity entity = new MetaTagEntity(tag.getKey(), (isUserTag?userOwner.getKey():vendorOwner.getKey()), metatag.getKey(),
+								isUserTag, (getIndexWordWeight(indexWord)/totalWeight));
 						entity = mgr.makePersistent(entity);
 						txn.commit();
 						metatag.getEntities().add(entity.getKey());
@@ -130,6 +149,7 @@ public class TagUtility {
 				}
 			} else {
 				// TODO: reschedule task if recoverable exception
+				// TODO: notify admins there was an issue
 			}
 
 			reader.close();
@@ -161,6 +181,30 @@ public class TagUtility {
 
 	}
 
+	/**
+	 * Get the tag word weight based on the part of speech
+	 * 
+	 * @param indexWord
+	 * @return associated weight or 0;
+	 */
+	private static double getIndexWordWeight(String indexWord) {
+		if(indexWord.contains("-n-")){
+			// noun
+			return UniversalConstants.WEIGHT_NOUN;
+		} else if (indexWord.contains("-v-")){
+			// verb
+			return UniversalConstants.WEIGHT_VERB;
+		} else if (indexWord.contains("-r-")){
+			// adverb
+			return UniversalConstants.WEIGHT_ADVERB;
+		} else if (indexWord.contains("-a-")) {
+			// adjective
+			return UniversalConstants.WEIGHT_ADJECTIVE;
+		} else {
+			return 0;
+		}
+	}
+	
 	/**
 	 * Get the persistence manager
 	 * 

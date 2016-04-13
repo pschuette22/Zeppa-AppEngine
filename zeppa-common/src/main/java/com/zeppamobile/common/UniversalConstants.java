@@ -98,5 +98,10 @@ public class UniversalConstants {
 
 	public static final String KEY_CURSOR = "cursor";
 	public static final String KEY_OBJECTS = "objects";
+	
+	public static final double WEIGHT_NOUN = .3;
+	public static final double WEIGHT_VERB = .5;
+	public static final double WEIGHT_ADVERB = .1;
+	public static final double WEIGHT_ADJECTIVE = .1;
 
 }

@@ -23,6 +23,7 @@ import com.google.appengine.api.oauth.OAuthRequestException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.Vendor;
+import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.UniversalConstants;
 
 /**
@@ -185,6 +186,8 @@ public class EventTagServlet extends HttpServlet {
 			// commit the changes
 			txn.commit();
 
+			TaskUtility.scheduleIndexEventTag(tag, false);
+			
 		} catch (Exception e) {
 			// catch any errors that might occur
 			e.printStackTrace();

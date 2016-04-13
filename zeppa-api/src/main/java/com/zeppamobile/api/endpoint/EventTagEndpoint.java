@@ -24,6 +24,7 @@ import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
+import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.utils.Utils;
 
 @Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
@@ -197,7 +198,8 @@ public class EventTagEndpoint {
 			tagFollowObjects = (List<EventTagFollow>) mgr.makePersistentAll(tagFollowObjects);
 			txn.commit();
 			
-			
+			// Schedule this tag to be indexed 
+			TaskUtility.scheduleIndexEventTag(eventtag, true);
 			
 		} finally {
 			// If transaction was not committed, roll it back

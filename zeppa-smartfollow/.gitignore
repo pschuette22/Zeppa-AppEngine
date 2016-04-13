@@ -7,3 +7,6 @@
 # UMLs and corresponding images
 *.ucls
 *.jpg
+
+# Downloaded signature files
+/resources/

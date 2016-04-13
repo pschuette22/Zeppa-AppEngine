@@ -1,7 +1,21 @@
 package com.zeppamobile.smartfollow;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.storage.Storage;
+import com.google.api.services.storage.StorageScopes;
+import com.google.appengine.tools.cloudstorage.GcsService;
+
+import net.sf.extjwnl.data.POS;
+import net.sf.extjwnl.data.PointerType;
 
 public class Utils {
 
@@ -23,11 +37,11 @@ public class Utils {
 	public static List<String> slangConverter(String slang) {
 
 		List<String> result = new ArrayList<String>();
-		
+
 		// TODO: convert slang if needed
-		
+
 		result.add(slang);
-		
+
 		return result;
 	}
 
@@ -149,8 +163,8 @@ public class Utils {
 				} // else, no need to do anything
 
 			}
-			
-			if(builder.length() > 0){
+
+			if (builder.length() > 0) {
 				result.add(0, builder.toString());
 			}
 		}
@@ -192,8 +206,6 @@ public class Utils {
 
 		return true;
 	}
-
-
 
 	/**
 	 * Calculate the relativity of two words based on degrees of separation
@@ -258,4 +270,134 @@ public class Utils {
 		return builder.toString();
 	}
 
+	/**
+	 * Get the pointer count index of a given pointer type
+	 * 
+	 * @param t
+	 *            - pointer type
+	 * @return index in pointer count array or -1
+	 */
+	public static int getPointerTypeIndex(PointerType t) {
+		switch (t) {
+		case ANTONYM:
+			return 0;
+		case HYPERNYM:
+			return 1;
+		case HYPONYM:
+			return 2;
+		case ENTAILMENT:
+			return 3;
+		case SIMILAR_TO:
+			return 4;
+		case MEMBER_HOLONYM:
+			return 5;
+		case SUBSTANCE_HOLONYM:
+			return 6;
+		case PART_HOLONYM:
+			return 7;
+		case MEMBER_MERONYM:
+			return 8;
+		case SUBSTANCE_MERONYM:
+			return 9;
+		case PART_MERONYM:
+			return 10;
+		case CAUSE:
+			return 11;
+		case PARTICIPLE_OF:
+			return 12;
+		case SEE_ALSO:
+			return 13;
+		case PERTAINYM:
+			return 14;
+		case ATTRIBUTE:
+			return 15;
+		case VERB_GROUP:
+			return 16;
+		case DERIVATION:
+			return 17;
+		case DOMAIN_ALL:
+			return 18;
+		case MEMBER_ALL:
+			return 19;
+		case CATEGORY:
+			return 20;
+		case USAGE:
+			return 21;
+		case REGION:
+			return 22;
+		case CATEGORY_MEMBER:
+			return 23;
+		case USAGE_MEMBER:
+			return 24;
+		case REGION_MEMBER:
+			return 25;
+		case INSTANCE_HYPERNYM:
+			return 26;
+		case INSTANCES_HYPONYM:
+			return 27;
+		default:
+			// Just to make compiler happy.. shouldn't happen
+			return -1;
+		}
+	}
+
+	/**
+	 * Get the pointer count index of a given part of speech
+	 * 
+	 * @param pos
+	 *            - part of speech in question
+	 * @return index (0-3) or -1 if invalid
+	 */
+	public static int getPOSIndex(POS pos) {
+		switch (pos) {
+		case NOUN:
+			return 0;
+		case VERB:
+			return 1;
+		case ADJECTIVE:
+			return 2;
+		case ADVERB:
+			return 3;
+		default:
+			return -1;
+		}
+	}
+
+	/**
+	 * Calculates the weight of this pointer type from Constants.POINTER_COUNTS
+	 * 
+	 * @param type
+	 *            pointer type
+	 * @return weight
+	 */
+	public static double getWeight(PointerType type) {
+		return (Constants.POINTER_COUNTS[getPointerTypeIndex(type)] / Constants.TOTAL_POINTER_COUNT);
+	}
+
+	/**
+	 * This method sorts an array of PointerTypes using insertion sort and
+	 * arranges them in descending order by the weights assigned to them in
+	 * Constants.POINTER_COUNTS.
+	 * 
+	 * @param pointerTypes
+	 *            list of pointertypes
+	 */
+	public static void sortDescending(PointerType[] pointerTypes) {
+		// Insertion sort
+		for (int i = 1; i < pointerTypes.length; i++) {
+			int j = i;
+			while (j > 0
+					&& Utils.getWeight(pointerTypes[j - 1]) < Utils
+							.getWeight(pointerTypes[j])) {
+				// Swap
+				PointerType temp = pointerTypes[j - 1];
+				pointerTypes[j - 1] = pointerTypes[j];
+				pointerTypes[j] = temp;
+
+				j--;
+			}
+		}
+
+		return;
+	}
 }

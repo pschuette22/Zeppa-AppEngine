@@ -106,6 +106,7 @@ public class LoginServlet extends HttpServlet {
 					CerealWrapperFactory fact = new CerealWrapperFactory();
 					UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)fact.getFromCereal(s);
 					
+					//resp.getWriter().println(userInfo);
 					
 					HttpSession session = req.getSession(true);
 					session.setAttribute("UserInfo", userInfo);
@@ -113,18 +114,26 @@ public class LoginServlet extends HttpServlet {
 					resp.setStatus(HttpURLConnection.HTTP_OK);
 					
 					//TODO - Check if the vendor has privakey authentication enabled
-					String nonce = Utils.nextSessionId();
-					session.setAttribute("PrivaKeyNonce", nonce);
-					
-					String privakeyURL = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
-					privakeyURL += "response_type=id_token";
-					privakeyURL += "&response_mode=form_post";
-					privakeyURL += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
-					privakeyURL += "&scope=openid";
-					privakeyURL += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/dashboard", "UTF-8");
-					privakeyURL += "&nonce=" + URLEncoder.encode(nonce, "UTF-8");
-					
-					resp.getWriter().append(privakeyURL);
+					if(userInfo.isPrivaKeyRequired())
+					{
+						String nonce = Utils.nextSessionId();
+						session.setAttribute("PrivaKeyNonce", nonce);
+						
+						String privakeyURL = "https://idp.privakey.com/identityserver/connect/authorize?";
+						privakeyURL += "response_type=id_token";
+						privakeyURL += "&response_mode=form_post";
+						privakeyURL += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
+						privakeyURL += "&scope=openid";
+						privakeyURL += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/dashboard", "UTF-8");
+						privakeyURL += "&nonce=" + URLEncoder.encode(nonce, "UTF-8");
+						
+						resp.getWriter().append(privakeyURL);
+					}
+					else
+					{
+						resp.getWriter().append("/dashboard");
+						//resp.sendRedirect("/dashboard");
+					}
 	            }
 	            else if(connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED)
 	            {

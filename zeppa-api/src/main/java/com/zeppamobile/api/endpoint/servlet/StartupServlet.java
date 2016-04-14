@@ -137,6 +137,24 @@ public class StartupServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
+		
+		Vendor vendor2 = new Vendor();
+		Address add3 = new Address();
+		add3.setAddressLine1("2 street");
+		add3.setCity("Philadelphia");
+		add3.setState("PA");
+		add3.setZipCode(19104);
+		vendor2.setAddress(add3);
+		vendor2.setCompanyName("Test Company 3");
+		vendor2.setMasterUserId(Long.valueOf(employeeBrendan.getKey().getId()));
+		
+		try {
+			vendor2 = VendorServlet.insertVendor(vendor2, employeeBrendan);
+		} catch (UnauthorizedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// Add EventTags to the datastore
 		EventTag tag = new EventTag();
 		tag.setOwnerId(vendor.getKey().getId());

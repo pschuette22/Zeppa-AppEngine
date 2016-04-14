@@ -55,7 +55,7 @@ public class AccountSettingsServlet extends HttpServlet {
 				HttpSession session = req.getSession(true);
 				session.setAttribute("PrivaKeyNonce", nonce);
 				
-				String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
+				String s = "https://idp.privakey.com/identityserver/connect/authorize?";
 				s += "response_type=id_token";
 				s += "&response_mode=form_post";
 				s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
@@ -113,7 +113,7 @@ public class AccountSettingsServlet extends HttpServlet {
 		}
 		resp.getWriter().append("Account Settings Nonce: " + nonce);
 		
-		if (Utils.isWebSafe(id_token) && employeeID > 0) {
+		if (Utils.isWebSafe(id_token) && employeeID != null && employeeID > 0) {
 
 			/*
 			 * Parameters accepted, making call to api servlet

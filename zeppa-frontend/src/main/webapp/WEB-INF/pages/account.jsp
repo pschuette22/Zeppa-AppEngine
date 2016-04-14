@@ -33,7 +33,7 @@ function enablePrivaKey() {
 	 	//var url = '${redirectURL}';
 	 	//console.log("Redirect URL: " + url);
 	 	if(resp != null){
-	 		window.open(resp);
+	 		window.location = resp;
 	 	}
 	 	
 	}).fail(function() {

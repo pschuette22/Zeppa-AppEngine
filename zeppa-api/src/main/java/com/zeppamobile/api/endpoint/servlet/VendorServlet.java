@@ -77,7 +77,6 @@ public class VendorServlet extends HttpServlet {
 			System.out.println("In the Vendor Servlet");
 			Vendor vendor = new Vendor();
 			vendor.setCompanyName(URLDecoder.decode(req.getParameter("companyName"), "UTF-8"));
-			vendor.setIsPrivakeyEnabled(false);
 			vendor.setMasterUserId(Long.valueOf(-1));
 			
 			Address address = new Address();
@@ -94,8 +93,7 @@ public class VendorServlet extends HttpServlet {
 			employee.setEmailAddress(URLDecoder.decode(req.getParameter("emailAddress"), "UTF-8"));
 			employee.setIsEmailVerified(false);
 			employee.setPassword(URLDecoder.decode(req.getParameter("password"), "UTF-8"));
-			employee.setPrivakeyGuid("");
-			
+			employee.setPrivakeyGuid("");			
 			
 			//Set employees user info
 			EmployeeUserInfo userInfo = new EmployeeUserInfo();
@@ -179,6 +177,7 @@ public class VendorServlet extends HttpServlet {
 			EmployeeUserInfo userinfo = employee.getUserInfo();
 			userinfo.setVendorID(vendor.getKey().getId());
 			userinfo.setEmployeeID(employee.getKey().getId());
+			userinfo.setIsPrivaKeyRequired(false);
 			employee.setUserInfo(userinfo);
 			employee = mgr.makePersistent(employee);
 			

@@ -5,6 +5,7 @@
 
 # Package Files #
 *.jar
+!**/lib/jlt-2.0.0.jar
 *.war
 *.ear
 

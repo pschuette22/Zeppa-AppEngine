@@ -43,33 +43,37 @@ public class AccountSettingsServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		String email = req.getParameter("email");
-	    String isEnablePrivaKey = req.getParameter("isEnablePrivaKey");
 	    HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");
 		if(obj != null)
 		{
 			UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)obj;
-			resp.setContentType("text/html");
-			req.setAttribute("userInfo", userInfo.toJSON());
-			if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
+
+			String email = req.getParameter("email");
+		    String isEnablePrivaKey = req.getParameter("isEnablePrivaKey");
+		    
+		    if(isEnablePrivaKey != null && isEnablePrivaKey.equals("true") && email != null)
 		    {
 				try {							
-					resp.getWriter().append("PrivaKey Email: " + email);
+					//resp.getWriter().append("PrivaKey Email: " + email);
 					
-					String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
+					String nonce = Utils.nextSessionId();
+					session.setAttribute("PrivaKeyNonce", nonce);
+					
+					String s = "https://idp.privakey.com/identityserver/connect/authorize?";
 					s += "response_type=id_token";
 					s += "&response_mode=form_post";
 					s += "&client_id=" + UniversalConstants.PRIVAKEY_CLIENT_ID;
 					s += "&scope=openid";
 					s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-frontend-dot-zeppa-cloud-1821.appspot.com/account-settings", "UTF-8");
-					s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
+					s += "&nonce=" + URLEncoder.encode(nonce, "UTF-8");
 					s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
-					URI url = new URI(s);
+					//URI url = new URI(s);
 					
-					resp.getWriter().append("PrivaKey URL: " + s);
+					resp.getWriter().append(s);
 					
-					Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
+					//req.setAttribute("redirectURL", s);
+					//Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
 					
 		        
 				} catch (Exception e) {
@@ -78,11 +82,24 @@ public class AccountSettingsServlet extends HttpServlet {
 				}
 		    }
 		    else
-		    {		
+		    {	
+		    	
+		    	String privakeySuccess = req.getParameter("privakeySuccess");
+		    	String error = req.getParameter("error");
+	
 				resp.setContentType("text/html");
-				req.setAttribute("attribute1", "This is attribute 1");
+				req.setAttribute("userInfo", userInfo.toJSON());
+				if(privakeySuccess != null && Boolean.parseBoolean(privakeySuccess))
+				{
+					req.setAttribute("successDivText", "You have successfully authenticated with PrivaKey");
+				}
+				else if(privakeySuccess != null || error != null)
+				{
+					req.setAttribute("errorDivText", "There was a problem when authenticating with PrivaKey, please try again.");
+				}
 				
 				req.getRequestDispatcher("WEB-INF/pages/account.jsp").forward(req, resp);
+
 		    }
 		}
 		else{
@@ -107,7 +124,7 @@ public class AccountSettingsServlet extends HttpServlet {
 		}
 		resp.getWriter().append("Account Settings Nonce: " + nonce);
 		
-		if (Utils.isWebSafe(id_token) && employeeID > 0) {
+		if (Utils.isWebSafe(id_token) && employeeID != null && employeeID > 0) {
 
 			/*
 			 * Parameters accepted, making call to api servlet

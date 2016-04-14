@@ -4,16 +4,12 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +21,6 @@ import org.json.simple.JSONObject;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.google.appengine.repackaged.org.joda.time.Years;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
@@ -85,7 +80,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), true);
+			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(vendorId), true);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -94,7 +89,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS_WATCHED)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), false);
+			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(vendorId), false);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -152,18 +147,6 @@ public class AnalyticsServlet extends HttpServlet {
 		// Get the gender count across all events for the vendor
 		allEventGender = getGenderCountAllEvents(rels);
 		return allEventGender;
-		// Filter out unwanted gender data
-//		Map<String, Integer> retMap = new HashMap<String, Integer>();
-//		if(filter.getGender().equals(Gender.MALE)) {
-//			retMap.put("MALE", allEventGender.get("MALE"));
-//		} else if(filter.getGender().equals(Gender.FEMALE)) {
-//			retMap.put("FEMALE", allEventGender.get("FEMALE"));
-//		} if(filter.getGender().equals(Gender.UNDEFINED)) {
-//			retMap.put("UNIDENTIFIED", allEventGender.get("UNIDENTIFIED"));
-//		} else {
-//			retMap = allEventGender;
-//		}
-//		return retMap;
 	}
 	
 	/**
@@ -233,7 +216,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param relationships - all event relationships for the vendor's events
 	 * @return - a map with gender and corresponding counts as the entries
 	 */
-	private Map<String, Integer> getGenderCountAllEvents(List<VendorEventRelationship> relationships) {
+	public static Map<String, Integer> getGenderCountAllEvents(List<VendorEventRelationship> relationships) {
 		Map<String, Integer> ret = new HashMap<String, Integer>();
 		int maleCount = 0;
 		int femaleCount = 0;
@@ -328,7 +311,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the id of the current vendor
 	 * @return 
 	 */
-	private List<AnalyticsDataWrapper> getAllEventTagsJoined(FilterCerealWrapper filter, long vendorId, boolean joined) {
+	private List<AnalyticsDataWrapper> getAllEventTags(FilterCerealWrapper filter, long vendorId, boolean joined) {
 		Map<String, Integer> tagsHash = new HashMap<String, Integer>();
 		// First get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);

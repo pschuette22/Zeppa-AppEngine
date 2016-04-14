@@ -161,6 +161,16 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<servlet-name>IndividualEventAnalyticsServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.IndividualEventAnalyticsServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>IndividualEventAnalyticsServlet</servlet-name>
+		<url-pattern>/endpoint/individual-analytics-servlet/</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
 		<servlet-name>PrivaKeyServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.PrivaKeyServlet
 		</servlet-class>

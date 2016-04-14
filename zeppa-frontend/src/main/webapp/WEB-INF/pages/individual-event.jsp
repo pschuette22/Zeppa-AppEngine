@@ -14,15 +14,43 @@
 <link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
+
 <script>
 var tagQueue = [];
 var eventID = -1;
 $( document ).ready(function() {
 	$('#startTime').datetimepicker();
 	$('#endTime').datetimepicker();
+	
+	$(".tabNav").click(function(){
+		//Styling stuff (changing colors and hiding/showing)
+		$(".analyticsTab").removeClass("active");
+		var tabID = $(this).data("tab");
+		$("#"+tabID).addClass("active");
+		$(".tabNav").removeClass("active");
+		$(this).addClass("active");
+	});
+	
 	parseEventInfo('${eventInfo}');
 	parseTags('${tags}');
 	createGraphs();
+	populateAgeDropdowns();
+	// When the filter is submitted, retain the values when the page is reloaded
+	$("#filterForm").submit(function() {
+		sessionStorage.setItem("defaultMinAgeIndv", document.getElementById("minAgeFilter").value);
+		sessionStorage.setItem("defaultMaxAgeIndv", document.getElementById("maxAgeFilter").value);
+		sessionStorage.setItem("defaultGenderIndv", document.getElementById("genderFilter").value);
+	});
+	if (sessionStorage.getItem("defaultMinAgeIndv")) {
+		   $('#minAgeFilter').val(sessionStorage.getItem("defaultMinAgeIndv")); 
+	}
+	if (sessionStorage.getItem("defaultMaxAgeIndv")) {
+		   $('#maxAgeFilter').val(sessionStorage.getItem("defaultMaxAgeIndv")); 
+	}
+	if (sessionStorage.getItem("defaultGenderIndv")) {
+		   $('#genderFilter').val(sessionStorage.getItem("defaultGenderIndv")); 
+	}
+	
 	$("input, textarea").each(function(){
 		$(this).attr("readonly",true);
 	});
@@ -158,13 +186,51 @@ var options = {
 	
 	function createGraphs() {
 		// Get the context of the canvas element we want to select
-		var ctx1 = document.getElementById("event1").getContext("2d");
-		//var ctx2 = document.getElementById("event2").getContext("2d");
-		//var ctx3 = document.getElementById("event3").getContext("2d");
+		var genderCtx = document.getElementById("gender").getContext("2d");
+		var ageCtx = document.getElementById("age").getContext("2d");
 		// ${genderData} accesses gender data attribute set by the Analytics Servlet
-		var chart1 = new Chart(ctx1).Doughnut(${genderData}, options);
-		//var chart2 = new Chart(ctx2).Doughnut(${genderData}, options);
-		//var chart3 = new Chart(ctx3).Doughnut(${genderData}, options);
+		var chart1 = new Chart(genderCtx).Doughnut(${genderData}, options);
+		var chart2 = new Chart(ageCtx).Bar(${ageData}, options);
+	}
+	function populateAgeDropdowns() {
+		var min = document.getElementById("minAgeFilter");
+		var max = document.getElementById("maxAgeFilter");
+		var none = document.createElement("option");
+		none.value = "None";
+		none.textContent = "None";
+		none.selected = "selected"
+		var none2 = document.createElement("option");
+		none2.value = "None";
+		none2.textContent = "None";
+		none2.selected = "selected"
+		min.appendChild(none);
+		max.appendChild(none2);
+		var under18 = document.createElement("option");
+		under18.value = "under18";
+		under18.textContent = "under18";
+		var under18two = document.createElement("option");
+		under18two.value = "under18";
+		under18two.textContent = "under18";
+		min.appendChild(under18);
+		max.appendChild(under18two);
+		for(var i=18; i < 61; i++) {
+			var opt = document.createElement("option");
+			opt.value = i;
+			opt.textContent = i;
+			var opt2 = document.createElement("option");
+			opt2.value = i;
+			opt2.textContent = i;
+			min.appendChild(opt);
+			max.appendChild(opt2);
+		}
+		var over60 = document.createElement("option");
+		over60.value = "over60";
+		over60.textContent = "over60";
+		min.appendChild(over60);
+		var over60two = document.createElement("option");
+		over60two.value = "over60";
+		over60two.textContent = "over60";
+		max.appendChild(over60two);
 	}
 </script>
 
@@ -227,10 +293,37 @@ var options = {
           infowindow.open(map, marker);
         });
       }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdzV3Wi4EVmmF34N-cwEEgic4lhj8AvCY&libraries=places&callback=initMap" async defer></script>
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdzV3Wi4EVmmF34N-cwEEgic4lhj8AvCY&libraries=places&callback=initMap" async defer></script>
     
 <style>
+	#tabNavBar{
+ 		width:100%;
+ 	}
+ 	.tabNav{
+ 		color: rgb(31,169,255);
+ 		width: 45%;
+ 		display:inline-block;
+     	border-top-right-radius: 1em;
+     	border-top-left-radius: 1em;
+     	text-align:center;
+ 	}
+ 	.tabNav.active{
+ 		background-color: rgb(31,169,255);
+ 		color:#FFF
+ 	}
+ 	.tabNav:hover{
+ 		background-color: rgb(31,169,255);
+ 		color:#FFF;
+ 		cursor:pointer;
+ 	}
+ 	.analyticsTab{
+ 		display:none;
+ 	}
+ 	.analyticsTab.active{
+ 		display:block;
+ 	}
+ 	
 	.tag{
     	float:left!important;
     	border: 1px solid rgb(31,169,255)!important;
@@ -255,8 +348,9 @@ var options = {
 	}
 	.column-right{
 		float:right;
-		overflow: auto;
-		width:30%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		width:35%;
 		height:auto;
 	}
 	.event-desc {
@@ -318,8 +412,61 @@ var options = {
 	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
 	<jsp:body>
 		<div class="column-right">
-			<canvas id="event1" width="150" height="150"></canvas>
-			<div class="event-desc">Total Attendee Gender</div>
+			<div class="filterDiv">
+		  <form method="GET" id="filterForm">
+		  	<input type="hidden" name="event-id" value="${eventId}" />
+			<table style="width: 99%; margin-bottom: 1em">
+			  <tr style="width: 99%">
+			    <th style="width: 10%; text-align: center">Min Age</th>
+			    <th style="width: 10%; text-align: center">Max Age</th>
+			    <th style="width: 10%; text-align: center">Gender</th>
+			  </tr>
+			  <tr style="width: 99%">
+	    		<td style="width: 10%; text-align: center">
+	    			<select id="minAgeFilter" name="minAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width: 10%; text-align: center">
+	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
+	    		</td>
+	    		<td style="width: 10%; text-align: center">
+	    			<select id="genderFilter" name="gender" form="filterForm">
+	    				<option value="all">All</option>
+	    				<option value="male">Male</option>
+	    				<option value="female">Female</option>
+	    				<option value="undefined">Undefined</option>
+	    			</select>
+	    		</td>
+			  </tr>
+			  <tr>
+	    		<td align="center" colspan="3" style="width: 10%; text-align: center">
+	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="submit" value="Filter" form="filterForm" />
+	    		</td>
+	    	  </tr>
+			</table>
+		  </form>
+		</div>
+			<div id="tabNavBar">
+	 			<!-- These comments are required to fix html bug which moves tab down to next line -->
+	 			<span class="tabNav active" data-tab="demographicsTab">Demographics</span><!--
+	 			--><span class="tabNav" data-tab="tagsTab">Tags</span>
+ 			</div>
+ 			<div class="analyticsTab active" id="demographicsTab">
+ 				<p><h3>Event Demographic Data</h3></p>
+ 				<div style="width:65%; text-align:center">
+					<canvas style="display:block; margin: 0 auto;" id="gender" width="150" height="150"></canvas>
+					<div class="event-desc">Attendee Gender Statistics</div>
+ 				</div>
+				<p><h3>Age Demographic Data</h3></p>
+				<div style="width:65%; text-align:center">
+					<canvas style="display:block; margin: 0 auto;" id="age" width="150" height="150"></canvas>
+					<div class="event-desc">Attendee Age Statistics</div>
+				</div>
+			</div>
+			<div class="analyticsTab" id="tagsTab">
+ 				<p><h3>Event Tag Data</h3></p>
+				<canvas id="event1" width="150" height="150"></canvas>
+				<div class="event-desc">Joined Attendees Statistics</div>
+			</div>
 		</div>
 		<div style="width:50%">
 			<table>

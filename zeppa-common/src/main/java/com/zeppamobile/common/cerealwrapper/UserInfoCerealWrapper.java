@@ -135,4 +135,15 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 		this.isPrivaKeyRequired = isPrivaKeyRequired;
 	}
 	
+	public String toJSON(){		
+		String JSONString = "{\"vendorId\" : \""+this.vendorID+"\",";
+		JSONString += "\"givenName\" : \""+ this.givenName +"\",";
+		JSONString += "\"familyName\" : \""+ this.familyName +"\",";
+		JSONString += "\"imageUrl\" : \""+ this.imageUrl +"\",";
+		JSONString += "\"gender\" : \""+ this.gender +"\",";
+		JSONString += "\"dateOfBirth\" : \""+ this.dateOfBirth +"\"}";
+			
+		return JSONString;
+	}
+
 }

@@ -21,18 +21,14 @@ public class MetaTag {
 	private String indexedWord;
 	
 	@Persistent
-	private Long wordSenseId;
-	
-	@Persistent
 	private List<String> synonymIndexWords;
 	
 	@Persistent
 	private List<Key> entities;
 	
 	
-	public MetaTag(String indexWord, Long wordSenseId, List<String> synonymIndexWords) {
+	public MetaTag(String indexWord, List<String> synonymIndexWords) {
 		this.indexedWord = indexWord;
-		this.wordSenseId = wordSenseId;
 		this.synonymIndexWords = synonymIndexWords;
 		this.entities = new ArrayList<Key>();
 	}
@@ -50,13 +46,6 @@ public class MetaTag {
 		this.indexedWord = indexedWord;
 	}
 
-	public Long getWordSenseId() {
-		return wordSenseId;
-	}
-
-	public void setWordSenseId(Long wordSenseId) {
-		this.wordSenseId = wordSenseId;
-	}
 
 	public List<String> getSynonymIndexWords() {
 		return synonymIndexWords;

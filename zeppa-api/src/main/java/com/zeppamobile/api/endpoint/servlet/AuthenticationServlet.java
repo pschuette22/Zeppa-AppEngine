@@ -16,7 +16,6 @@ import com.zeppamobile.api.AppConfig;
 import com.zeppamobile.api.Constants;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Employee;
-import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ApiCerealWrapperFactory;
 import com.zeppamobile.api.endpoint.utils.AuthChecker;
 import com.zeppamobile.common.UniversalConstants;

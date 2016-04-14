@@ -19,12 +19,14 @@ hs_err_pid*
 target/
 build/
 datanucleus.log
-datanucleus.log
 .DS_STORE
 out
 
+<<<<<<< HEAD
 run.cmd
 
 datanucleus.log
+=======
+>>>>>>> smartfollow
 **/*.jpg
 **/*.ucls

@@ -19,30 +19,27 @@ public class MetaTagEntity {
 
 	@Persistent
 	private Key ownerKey;
-	
-	@Persistent 
-	private Key metaTagKey;
+
+	// @Persistent // For bi-directional mapping
+	// private String indexedWordId;
 
 	/*
 	 * True if tag is owned by a user, false if owned by a vendor
 	 */
 	@Persistent
 	private Boolean isUserTag;
-	
+
 	/*
 	 * Hold the weight of this indexed word in the tag
 	 */
 	@Persistent
 	private Double weightInTag;
-	
-	
 
-	public MetaTagEntity(Key tagKey, Key ownerKey, Key metaTagKey,
-			Boolean isUserTag, Double weightInTag) {
+	public MetaTagEntity(Key tagKey, Key ownerKey, Boolean isUserTag, Double weightInTag) {
 		super();
 		this.tagKey = tagKey;
 		this.ownerKey = ownerKey;
-		this.metaTagKey = metaTagKey;
+		// this.indexedWordId = indexedWordId;
 		this.isUserTag = isUserTag;
 		this.weightInTag = weightInTag;
 	}
@@ -61,14 +58,6 @@ public class MetaTagEntity {
 
 	public void setOwnerKey(Key ownerKey) {
 		this.ownerKey = ownerKey;
-	}
-
-	public Key getMetaTagKey() {
-		return metaTagKey;
-	}
-
-	public void setMetaTagKey(Key metaTagKey) {
-		this.metaTagKey = metaTagKey;
 	}
 
 	public Boolean getIsUserTag() {
@@ -90,5 +79,5 @@ public class MetaTagEntity {
 	public Key getKey() {
 		return key;
 	}
-	
+
 }

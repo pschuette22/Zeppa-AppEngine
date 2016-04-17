@@ -4,16 +4,12 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +21,6 @@ import org.json.simple.JSONObject;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.google.appengine.repackaged.org.joda.time.Years;
-import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
@@ -479,7 +474,9 @@ public class AnalyticsServlet extends HttpServlet {
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
-		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, start, end);
+		// TODO: add in vendor id and max distance (in km) you want to extend user search to
+		// Max distance is set to 20 by default right now
+		FilterCerealWrapper filter = new FilterCerealWrapper(-1,20, max, min, g, start, end);
 		return filter;
 	}
 	

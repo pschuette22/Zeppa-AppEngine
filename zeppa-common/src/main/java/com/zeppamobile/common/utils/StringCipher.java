@@ -29,10 +29,20 @@ public class StringCipher {
 	private final static String ALGORITHM = "AES";
 	private final static String MODE = "CBC";
 	private final static String PADDING = "PKCS5Padding";
+	
+	// This is very bad practice -- the initialization vector should be randomly generated each time.
+	// If multiple pieces of information are encoded with the same key and IV attackers can gain at least
+	// partial information about the contents. Check the Wikipedia page on IVs for more info.
+	// Unfortunately, we need a way to search encrypted data so we need a 1:1 mapping (if the IV is random we won't
+	// know what to search for unless we decode each piece of info in the DB to check it. Easier to search for
+	// an encoded piece of information.
+	private final static byte[] ivBytes = {-77, -110, 7, -36, 7, 7, 38, 80, 10, 88, 111, 127, -28, -28, -122, -48};
 
+	// simple main for testing/demo
 	public static void main(String[] args) {
 		String text = "the quick brown fox jumped over the lazy dog";
 
+		// generate random key
 		SecureRandom random = new SecureRandom();
 		byte[] keyBytes = new byte[16];
 		random.nextBytes(keyBytes);
@@ -46,22 +56,22 @@ public class StringCipher {
 
 	public static byte[] encrypt(String data, final byte[] PRIVATE_KEY) {
 		byte[] encrypted = null;
-		byte[] ivBytes = null;
+		// uncomment for random init vector
+//		byte[] ivBytes = null;
 
-		// wrap key data in Key/IV specs to pass to cipher
+		// create the key to pass to cipher
 		SecretKeySpec key = new SecretKeySpec(PRIVATE_KEY, ALGORITHM);
-
-		
 
 		String params = ALGORITHM + "/" + MODE + "/" + PADDING;
 
 		try {
 			Cipher cipher = Cipher.getInstance(params);
 			
-			SecureRandom random = new SecureRandom();
-			ivBytes = new byte[cipher.getBlockSize()];
-			random.nextBytes(ivBytes);
-			
+			// This is how the initialization vector should be generated
+//			SecureRandom random = new SecureRandom();
+//			ivBytes = new byte[cipher.getBlockSize()];
+//			random.nextBytes(ivBytes);
+						
 			IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 			cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
 			
@@ -86,21 +96,28 @@ public class StringCipher {
 			e.printStackTrace();
 		}
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			out.write(ivBytes);
-			out.write(encrypted);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// In order to recover the first block of the encrypted text we need the IV used to encode it.
+		// so attach the IV to the front of the encrypted message and read it during decryption.
+		// Uncomment to use with random init vector
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		try {
+//			out.write(ivBytes);
+//			out.write(encrypted);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return out.toByteArray();
 		
-		return out.toByteArray();
+		return encrypted;
 	}
 
 	public static String decrypt(byte[] encrypted, final byte[] PRIVATE_KEY) {
-		int enc_len = encrypted.length;
+		// In best practice, the IV would be extracted from the first block
+		// of encrypted text and then be used as the IV to decrypt the first real block
+		
 		byte[] decrypted = null;
-
+		
 		// wrap key data in Key/IV specs to pass to cipher
 		SecretKeySpec key = new SecretKeySpec(PRIVATE_KEY, ALGORITHM);
 
@@ -108,11 +125,14 @@ public class StringCipher {
 
 		try {
 			Cipher cipher = Cipher.getInstance(params);
-			//SecureRandom random = new SecureRandom();
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] ivBytes = new byte[cipher.getBlockSize()];
 			
-			//random.nextBytes(ivBytes);
+//			// recover the init vector used to encrypt the data
+//			byte[] ivBytes = Arrays.copyOf(encrypted, cipher.getBlockSize());
+////			System.out.println(Arrays.toString(ivBytes));
+//			encrypted = Arrays.copyOfRange(encrypted, cipher.getBlockSize(), encrypted.length);
+			
+			int enc_len = encrypted.length;
+			
 			IvParameterSpec ivSpec = new IvParameterSpec(ivBytes);
 
 			cipher.init(Cipher.DECRYPT_MODE, key, ivSpec);
@@ -138,6 +158,7 @@ public class StringCipher {
 
 		if (decrypted != null) {
 			try {
+				// very important to use this specific character set (stackoverflow)
 				return new String(decrypted, "ISO-8859-1");
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();

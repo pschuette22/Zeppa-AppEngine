@@ -67,6 +67,6 @@ public class Constants {
 	/*
 	 * GAE DataStore encryption/decryption private key
 	 */
-	public static final byte[] PRIVATE_KEY = "test".getBytes();
+	public static final byte[] PRIVATE_KEY = {-2, -92, 121, 74, -65, 6, -58, 97, -110, -64, 93, -108, -46, -43, 33, -6};
 	
 }

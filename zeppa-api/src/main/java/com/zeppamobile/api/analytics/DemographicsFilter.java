@@ -6,7 +6,6 @@ import java.util.List;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.google.appengine.api.datastore.Key;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
@@ -45,7 +44,7 @@ public class DemographicsFilter {
 	 */
 
 	/** Keys that match this filters params */
-	private List<Key> userKeys;
+	private List<Long> userIds;
 
 	/** Millis since epoch userKeys were last updated */
 	private long updateTimeInMillis;
@@ -72,13 +71,21 @@ public class DemographicsFilter {
 		this.minAge = minAge;
 		this.maxAge = maxAge;
 	}
+	
+	/**
+	 * Construct a demographics filter with existing user ids
+	 * @param userIds
+	 */
+	public DemographicsFilter(List<Long> userIds){
+		this.userIds = userIds;
+	}
 
 	/**
 	 * Update the held user keys
 	 * 
 	 * @return
 	 */
-	public List<Key> updateUserKeys() {
+	public List<Long> updateUserKeys() {
 
 		// Query for users and update keys
 		PersistenceManager mgr = PMF.get().getPersistenceManager();
@@ -139,16 +146,16 @@ public class DemographicsFilter {
 			// keys
 			// If join queries are not acceptable, execute add logic here
 			// Perhaps we should move gender/birthday to zeppa user object..?
-			userKeys = new ArrayList<Key>();
+			userIds = new ArrayList<Long>();
 			for (ZeppaUser u : matchingUsers) {
-				userKeys.add(u.getKey());
+				userIds.add(u.getKey().getId());
 			}
 			updateTimeInMillis = System.currentTimeMillis();
 		} finally {
 			mgr.close();
 		}
 
-		return userKeys;
+		return userIds;
 	}
 
 	/**
@@ -156,8 +163,15 @@ public class DemographicsFilter {
 	 * 
 	 * @return
 	 */
-	public List<Key> getUserKeys() {
-		return (userKeys == null ? updateUserKeys() : userKeys);
+	public List<Long> getUserIds() {
+		return (userIds == null ? updateUserKeys() : userIds);
+	}
+	
+	/**
+	 * Optional - set the user keys explicitly
+	 */
+	public void setUserIds(List<Long> userIds){
+		this.userIds = userIds;
 	}
 
 	public double getLatitude() {

@@ -15,7 +15,6 @@ import com.zeppamobile.api.datamodel.EventTagFollow;
 import com.zeppamobile.api.datamodel.MetaTag;
 import com.zeppamobile.api.datamodel.MetaTagEntity;
 import com.zeppamobile.api.endpoint.utils.TagUtility;
-import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
 
 /**
  * Make a request to review analytics regarding a given event tag
@@ -35,11 +34,11 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	private List<EventTagFollow> follows;
 
 	// Associate calculated interest with a
-	private Map<Key, Double> mappedUserInterest;
+	private Map<Long, Double> mappedUserInterest;
 
 	// weight of all the tag parts added together
 	private double totalTagWeight;
-
+	
 	/**
 	 * Initialize a request to receive analytics for a given event tag
 	 * 
@@ -52,8 +51,9 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 		super(filter);
 		this.tag = tag;
 		// Do basic initialization
-		mappedUserInterest = new HashMap<Key, Double>();
+		mappedUserInterest = new HashMap<Long, Double>();
 		// quickly calculate the total tag weight
+		this.totalTagWeight = 0;
 		for (String wordId : tag.getIndexedWords()) {
 			totalTagWeight += TagUtility.getIndexWordWeight(wordId);
 		}
@@ -63,30 +63,29 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	public void execute() {
 
 		// Create list that can be 
-		List<Key> userKeys = new ArrayList<Key>();
-		userKeys.addAll(filter.getUserKeys());
+		List<Long> userIds = new ArrayList<Long>();
+		userIds.addAll(filter.getUserIds());
 		// First, fetch all explicit follows for this tag
-		fetchEventTagFollows(userKeys);
+		fetchEventTagFollows(userIds);
 
 		// Map explicit interest and remove from user keys to avoid multiple
 		// queries
 		for (EventTagFollow follow : follows) {
-			Key userKey = getMatchingUserKeyFromId(follow.getFollowerId().longValue());
-			if (userKey != null) {
+			
+			if (userIds.contains(follow.getTagOwnerId())) {
 				// Add the predefined interest
-				mappedUserInterest.put(userKey, follow.getInterest());
-				// remove key from working set to avoid extra computation
-				userKeys.remove(userKey);
+				mappedUserInterest.put(follow.getTagOwnerId(), follow.getInterest());
+				userIds.remove(follow.getTagOwnerId());
 			}
 		}
 
 		// If there are users with unidentified interest, calculate interest
 		// dynamically
-		if (!userKeys.isEmpty()) {
+		if (!userIds.isEmpty()) {
 
 			// Initialize mapping for users who do not have explicit follow
-			for (Key k : userKeys) {
-				mappedUserInterest.put(k, new Double(0));
+			for (Long userId: userIds) {
+				mappedUserInterest.put(userId, new Double(0));
 			}
 
 			PersistenceManager mgr = getPersistenceManager();
@@ -118,29 +117,29 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 						// Build the query
 						Query q = mgr.newQuery(MetaTagEntity.class);
 						q.declareImports("import java.util.List;");
-						q.declareParameters("List entityKeys, List userKeys");
-						q.setFilter("isUserTag && entityKeys.contains(key) && ownerKeys.contains(ownerKey)");
+						q.declareParameters("List entityKeys, List userIds");
+						q.setFilter("isUserTag && entityKeys.contains(key) && userIds.contains(ownerId)");
 						double relativeWeight = TagUtility.getIndexWordWeight(metaTag.getIndexedWordId())
 								/ totalTagWeight;
 						q.setOrdering("Math.abs(" + relativeWeight + "- weightInTag) ASC");
 						// execute the query
 						@SuppressWarnings("unchecked")
-						List<MetaTagEntity> tagEntities = (List<MetaTagEntity>) q.execute(entityKeys, userKeys);
+						List<MetaTagEntity> tagEntities = (List<MetaTagEntity>) q.execute(entityKeys, userIds);
 						if (tagEntities!=null && !tagEntities.isEmpty()) {
-							List<Key> unmappedUserKeys = new ArrayList<Key>();
-							unmappedUserKeys.addAll(userKeys);
+							List<Long> unmappedUserIds = new ArrayList<Long>();
+							unmappedUserIds.addAll(userIds);
 							// Iterate through tag entities in order of highest
 							// to lowest
 							for (MetaTagEntity tagEntity : tagEntities) {
 								// If the tag entity's owner isn't mapped, do mapping
-								if (unmappedUserKeys.contains(tagEntity.getOwnerKey())) {
+								if (unmappedUserIds.contains(tagEntity.getOwnerId())) {
 									// Calculate interest adjustment and add to mapping
 									double interestAdjustment = (relativeWeight-Math.abs(relativeWeight-tagEntity.getWeightInTag()))/relativeWeight;
-									Key ownerKey = tagEntity.getOwnerKey();
-									mappedUserInterest.put(ownerKey, mappedUserInterest.get(ownerKey)+interestAdjustment);
-									unmappedUserKeys.remove(ownerKey);
+									Long ownerId = tagEntity.getOwnerId();
+									mappedUserInterest.put(ownerId, mappedUserInterest.get(ownerId)+interestAdjustment);
+									unmappedUserIds.remove(ownerId);
 									// If there are no more unmapped user keys, break out
-									if(unmappedUserKeys.isEmpty()){
+									if(unmappedUserIds.isEmpty()){
 										break;
 									}
 								}
@@ -170,37 +169,50 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	 * @return EventTagFollow objects mapping relevant users to this tag
 	 */
 	@SuppressWarnings("unchecked")
-	private List<EventTagFollow> fetchEventTagFollows(List<Key> userKeys) {
+	private List<EventTagFollow> fetchEventTagFollows(List<Long> followerIds) {
 		PersistenceManager mgr = getPersistenceManager();
-
+		
 		try {
 			Query q = mgr.newQuery(EventTagFollow.class);
-			q.setFilter("tagId==" + tag.getId().longValue() + " && keys.contains(key)");
+			q.setFilter("tagId==" + tag.getId().longValue() + " && followerIds.contains(followerId)");
 			q.declareImports("import java.util.List;");
-			q.declareParameters("List keys");
-			follows = (List<EventTagFollow>) q.execute(userKeys);
+			q.declareParameters("List followerIds");
+			follows = (List<EventTagFollow>) q.execute(followerIds);
 		} finally {
 			mgr.close();
 		}
 
 		return follows;
 	}
-
+	
+	
 	/**
-	 * Get the key object for a given id from the list of users relevant to this
-	 * search
-	 * 
-	 * @param id
-	 *            - user db identifier
-	 * @return matching key or null
+	 * Get the average calculated interest
+	 * @return
 	 */
-	private Key getMatchingUserKeyFromId(long id) {
-		for (Key k : filter.getUserKeys()) {
-			if (k.getId() == id) {
-				return k;
-			}
+	public double getAverageInterest(){
+		double interestSum = 0;
+		for(Double interest: mappedUserInterest.values()){
+			interestSum+=interest;
 		}
-		return null;
+		return interestSum/Double.valueOf(mappedUserInterest.size());
 	}
+
+//	/**
+//	 * Get the key object for a given id from the list of users relevant to this
+//	 * search
+//	 * 
+//	 * @param id
+//	 *            - user db identifier
+//	 * @return matching key or null
+//	 */
+//	private Key getMatchingUserKeyFromId(long id) {
+//		for (Key k : filter.getUserKeys()) {
+//			if (k.getId() == id) {
+//				return k;
+//			}
+//		}
+//		return null;
+//	}
 
 }

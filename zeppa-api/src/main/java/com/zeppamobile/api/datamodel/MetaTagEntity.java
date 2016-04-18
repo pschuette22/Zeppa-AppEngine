@@ -15,10 +15,10 @@ public class MetaTagEntity {
 	private Key key;
 
 	@Persistent
-	private Key tagKey;
+	private Long tagId;
 
 	@Persistent
-	private Key ownerKey;
+	private Long ownerId;
 
 	// @Persistent // For bi-directional mapping
 	// private String indexedWordId;
@@ -35,29 +35,29 @@ public class MetaTagEntity {
 	@Persistent
 	private Double weightInTag;
 
-	public MetaTagEntity(Key tagKey, Key ownerKey, Boolean isUserTag, Double weightInTag) {
+	public MetaTagEntity(Long tagId, Long ownerId, Boolean isUserTag, Double weightInTag) {
 		super();
-		this.tagKey = tagKey;
-		this.ownerKey = ownerKey;
+		this.tagId = tagId;
+		this.ownerId = ownerId;
 		// this.indexedWordId = indexedWordId;
 		this.isUserTag = isUserTag;
 		this.weightInTag = weightInTag;
 	}
 
-	public Key getTagKey() {
-		return tagKey;
+	public Long getTagId() {
+		return tagId;
 	}
 
-	public void setTagKey(Key tagKey) {
-		this.tagKey = tagKey;
+	public void setTagId(Long tagId) {
+		this.tagId = tagId;
 	}
 
-	public Key getOwnerKey() {
-		return ownerKey;
+	public Long getOwnerId() {
+		return ownerId;
 	}
 
-	public void setOwnerKey(Key ownerKey) {
-		this.ownerKey = ownerKey;
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
 	}
 
 	public Boolean getIsUserTag() {

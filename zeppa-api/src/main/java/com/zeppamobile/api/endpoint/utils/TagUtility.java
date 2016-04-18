@@ -107,12 +107,11 @@ public class TagUtility {
 
 					for (String indexWord : indexWords) {
 
-						Query query = mgr.newQuery(MetaTag.class, "indexWord=='" + indexWord + "'");
-						query.setUnique(true);
+						
 						MetaTag metatag = null;
 						try {
 							// try to fetch the appropriate metatag
-							metatag = (MetaTag) query.execute();
+							metatag = mgr.getObjectById(MetaTag.class, indexWord);
 
 						} catch (JDOObjectNotFoundException e) {
 							// Catch it not being found quickly
@@ -131,8 +130,8 @@ public class TagUtility {
 						// NOTE: set to .5 weight for all right now. Needs to be
 						// changed ASAP
 
-						MetaTagEntity entity = new MetaTagEntity(tag.getKey(),
-								(isUserTag ? userOwner.getKey() : vendorOwner.getKey()), isUserTag,
+						MetaTagEntity entity = new MetaTagEntity(tag.getId(),
+								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()), isUserTag,
 								(getIndexWordWeight(indexWord) / totalWeight));
 						entity = mgr.makePersistent(entity);
 						txn.commit();

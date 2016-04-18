@@ -67,9 +67,9 @@ public class CalendarAnalyticsRequest extends AnalyticsRequest {
 			Query q = mgr.newQuery(ZeppaUser.class);
 			q.declareImports("import java.util.List;");
 			q.declareParameters("List userKeys");
-			q.setFilter("userKeys.contains(key)");
+			q.setFilter("userKeys.contains(key.geId())");
 			@SuppressWarnings("unchecked")
-			List<ZeppaUser> users = (List<ZeppaUser>) q.execute(this.filter.getUserKeys());
+			List<ZeppaUser> users = (List<ZeppaUser>) q.execute(this.filter.getUserIds());
 
 			for (ZeppaUser user : users) {
 				// TODO: decrypt email for calculations

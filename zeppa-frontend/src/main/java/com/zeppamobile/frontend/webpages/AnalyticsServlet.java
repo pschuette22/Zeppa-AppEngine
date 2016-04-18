@@ -84,6 +84,15 @@ public class AnalyticsServlet extends HttpServlet {
 			String popularDays = getPopularDaysAllEvents(sessionInfo);
 			req.setAttribute("popDays", popularDays);
 			
+			// Response headers used when filtering
+			resp.addHeader("genderGraph", allEventDemo[0]);
+			resp.addHeader("ageGraph", allEventDemo[1]);
+			resp.addHeader("tagGraph", allEventTags);
+			resp.addHeader("tagWatchGraph", allEventTagsWatched);
+			resp.addHeader("popEventsGraph", popularEvents);
+			resp.addHeader("popEventsWatchedGraph", popularEventsWatched);
+			resp.addHeader("popDaysGraph", popularDays);
+			
 			req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		} else {
 			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);

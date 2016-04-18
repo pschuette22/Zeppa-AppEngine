@@ -426,7 +426,6 @@ public class AnalyticsServlet extends HttpServlet {
 	 * Generate the filter object from the parameters given in the request
 	 * @param params
 	 * @return
-	 * @throws ParseException
 	 */
 	private FilterCerealWrapper getFilterInfo(HttpServletRequest req) {
 		String startDateParam = req.getParameter(UniversalConstants.START_DATE_FILTER);
@@ -467,12 +466,14 @@ public class AnalyticsServlet extends HttpServlet {
 		int max = -1;
 		if (req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")) {
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("under18")) {
 			min = Integer.valueOf(req.getParameter(UniversalConstants.MIN_AGE_FILTER));
 		}
 		if (req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("over60")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
 		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, start, end);

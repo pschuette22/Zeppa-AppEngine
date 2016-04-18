@@ -93,9 +93,10 @@ public class AnalyticsFilter {
 			// Find the user
 			Long id = rel.getEventId();
 			VendorEvent event = VendorEventServlet.getIndividualEvent(String.valueOf(id));
-			System.out.println("--DATE: "+event.getStart()+" MIN: "+startRange+" MAX: "+endRange);
+//			System.out.println("--DATE: "+event.getStart()+" MIN: "+startRange+" MAX: "+endRange);
 			// if the event is in the date range add it to the list
 			if(startRange <= event.getStart() && endRange >= event.getStart()) {
+				System.out.println("DATE USER: "+ZeppaUserServlet.getUser(rel.getUserId()).getUserInfo().getGivenName());
 				returnList.add(rel);
 			}
 		}

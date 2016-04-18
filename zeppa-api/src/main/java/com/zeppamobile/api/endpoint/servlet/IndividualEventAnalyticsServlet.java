@@ -202,7 +202,8 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("over60")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
-		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, -1L, -1L);
+		// TODO: update this asap
+		FilterCerealWrapper filter = new FilterCerealWrapper(-1L, -1d, max, min, g, -1L, -1L);
 		return filter;
 	}
 	

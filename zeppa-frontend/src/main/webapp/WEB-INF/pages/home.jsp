@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script src="../js/Chart.js/Chart.js"></script>
 <script type="text/javascript">
@@ -14,7 +13,7 @@
 	
 	// Override default Chart.js options here
 	var options = {
-		responsive: true,
+		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
 	
@@ -100,6 +99,9 @@
 	border: 1px solid black;
 	box-shadow: 5px 5px 10px 2px #aaaaaa;
   }
+  .long{
+  	width: 93.32%;
+  }
   .eventHead{
     width:23%;
 	text-align:center;
@@ -163,7 +165,7 @@
   <jsp:body>
     <div id="dashboardContent" style="overflow:auto">
 	    <div id="currentHeader" class="boxHeader"><h3 class="header-small">Upcoming Events</h3></div>
-		<div id="analyticsHeader" class="boxHeader"><h3 class="header-small">Analytics</h3></div>
+		<div id="pastHeader" class="boxHeader"><h3 class="header-small">Past Events</h3></div>
 	    <div id="currentSquare" class="square">
 		  <table id="upcomingEventTable" style="width: 100%; border-collapse: collapse;">
 		   <tbody>
@@ -176,8 +178,20 @@
 		  </tbody>
 		  </table>
 		</div>
-		<div id="analyticsSquare" class="square">
-		  <table width="100%">
+	    <div id="pastSquare" class="square">
+		  <table id="pastEventTable" style="width: 100%">
+		    <tr class="tableRow">
+			  <th class="eventHead">Title</th>
+			  <th class="eventHead">Date</th>
+			  <th class="eventHead">Location</th>
+			  <th class="eventHead">Attendees</th>
+			</tr>
+		  </table>
+		</div>
+		
+		<div id="analyticsHeader" class="boxHeader long"><h3 class="header-small">Analytics</h3></div>
+		<div id="analyticsSquare" class="square long">
+		  <table style="width: 100%">
 		    <tr class="tableRow">
 			  <th class="analyticsHead"><h5 class="section-head">Demographic Info</h5></th>
 			  <th class="analyticsHead"><h5 class="section-head">Popular Tags</h5></th>
@@ -197,35 +211,6 @@
 					</form>
 				</td>
 			</tr>
-		  </table>
-		</div>
-		<div id="pastHeader" class="boxHeader"><h3 class="header-small">Past Events</h3></div>
-		<div id="billingHeader" class="boxHeader"><h3 class="header-small">Billing</h3></div>
-	    <div id="pastSquare" class="square">
-		  <table id="pastEventTable" style="width: 100%">
-		    <tr class="tableRow">
-			  <th class="eventHead">Title</th>
-			  <th class="eventHead">Date</th>
-			  <th class="eventHead">Location</th>
-			  <th class="eventHead">Attendees</th>
-			</tr>
-		  </table>
-		</div>
-		<div id="billingSquare" class="square">
-		  <table style="width: 100%">
-		    <tr class="tableRow">
-			  <th class="billingHead">Event Title</th>
-			  <th class="billingHead">Date</th>
-			  <th class="billingHead">Shares</th>
-			  <th class="billingHead">Attendees</th>
-			  <th class="billingHead">Cost</th>
-			</tr>
-			<tr class="tableRow">
-			  <td class="billingCell">Oktoberfest</td>
-			  <td class="billingCell">2/23/2016</td>
-			  <td class="billingCell">20</td>
-			  <td class="billingCell">100</td>
-			  <td class="billingCell">$25</td>
 		  </table>
 		</div>
 	</div>

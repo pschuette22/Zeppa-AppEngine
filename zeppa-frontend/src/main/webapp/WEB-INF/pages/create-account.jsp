@@ -2,8 +2,6 @@
     pageEncoding="ISO-8859-1"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
-
-
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 
@@ -35,7 +33,7 @@ function createAccount() {
     	});
 }
 </script>
-<t:ZeppaBase>
+<t:ZeppaLoggedOut>
 	<jsp:attribute name="title">
 	  <h2>Create Account</h2>
 	</jsp:attribute>
@@ -86,4 +84,4 @@ function createAccount() {
 	    </table>
     </div>
 </jsp:body>
-</t:ZeppaBase>
+</t:ZeppaLoggedOut>

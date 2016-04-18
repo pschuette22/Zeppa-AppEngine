@@ -26,6 +26,8 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 	
 	protected Long employeeID;
 	
+	protected Boolean isPrivaKeyRequired;
+	
 	
 	/**
 	 * Construct a user info cereal wrapper
@@ -39,7 +41,7 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 	 * @param dateOfBirth
 	 */
 	public UserInfoCerealWrapper(Long vendorID, Long employeeID, Long created, Long updated, String givenName,
-			String familyName, String imageUrl, String gender, Long dateOfBirth) {
+			String familyName, String imageUrl, String gender, Long dateOfBirth, Boolean isPrivaKeyRequired) {
 		super();
 		this.vendorID = vendorID;
 		this.employeeID = employeeID;
@@ -50,6 +52,7 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 		this.imageUrl = imageUrl;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
+		this.isPrivaKeyRequired = isPrivaKeyRequired;
 	}
 
 	public Long getVendorID() {
@@ -124,6 +127,14 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 		this.dateOfBirth = dateOfBirth;
 	}
 	
+	public Boolean isPrivaKeyRequired() {
+		return isPrivaKeyRequired;
+	}
+
+	public void setIsPrivaKeyRequired(Boolean isPrivaKeyRequired) {
+		this.isPrivaKeyRequired = isPrivaKeyRequired;
+	}
+	
 	public String toJSON(){		
 		String JSONString = "{\"vendorId\" : \""+this.vendorID+"\",";
 		JSONString += "\"givenName\" : \""+ this.givenName +"\",";
@@ -134,4 +145,5 @@ public class UserInfoCerealWrapper extends CerealWrapper {
 			
 		return JSONString;
 	}
+
 }

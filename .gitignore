@@ -5,6 +5,7 @@
 
 # Package Files #
 *.jar
+!**/lib/jlt-2.0.0.jar
 *.war
 *.ear
 
@@ -22,11 +23,7 @@ datanucleus.log
 .DS_STORE
 out
 
-<<<<<<< HEAD
 run.cmd
 
-datanucleus.log
-=======
->>>>>>> smartfollow
 **/*.jpg
 **/*.ucls

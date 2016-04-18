@@ -41,8 +41,9 @@ function onSuccess(googleUser) {
     $.post( "/login", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
-    	 	if(resp.indexOf("https://") > -1) {
-    	 		window.open(resp);	
+    	 	if(resp.indexOf("https://") > -1 || resp.indexOf("/") == 0) {
+    	 		//window.open(resp);
+    	 		window.location = resp;
     	 	}
     	}).fail(function() {
     	    console.log( "error" );

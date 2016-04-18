@@ -46,7 +46,6 @@ public class Employee {
 	private String privakeyGuid;
 
 	
-	
 	// TODO: permissions
 	
 	
@@ -134,7 +133,7 @@ public class Employee {
 	public void setPrivakeyGuid(String privakeyGuid) {
 		this.privakeyGuid = privakeyGuid;
 	}
-
+	
 	public Key getKey() {
 		return key;
 	}

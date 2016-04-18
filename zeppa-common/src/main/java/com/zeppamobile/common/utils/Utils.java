@@ -167,7 +167,7 @@ public class Utils {
 		int result = -1;
 		if (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) {
 			// Should I throw an exception..?
-			l = Long.valueOf(7 * 24 * 60 * 60);
+			l = Long.valueOf(-1);
 		}
 
 		result = (int) l.longValue();

@@ -146,4 +146,13 @@ public class EventTag {
 		this.type = type;
 	}
 
+	public List<String> getIndexedWords() {
+		return indexedWords;
+	}
+
+	public void setIndexedWords(List<String> indexedWords) {
+		this.indexedWords = indexedWords;
+	}
+	
+
 }

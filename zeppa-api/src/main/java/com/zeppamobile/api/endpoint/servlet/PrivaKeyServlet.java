@@ -47,32 +47,39 @@ public class PrivaKeyServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try {
-		
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		
-		String email = request.getParameter("email");
-		
-		response.getWriter().append("PrivaKey Email: " + email);
-		
-		String s = "https://idp.privakeyapp.com/identityserver/connect/authorize?";
-		s += "response_type=id_token";
-		s += "&response_mode=form_post";
-		s += "&client_id=" + Constants.PRIVAKEY_CLIENT_ID;
-		s += "&scope=openid";
-		s += "&redirect_uri=" + URLEncoder.encode("https://1-dot-zeppa-api-dot-zeppa-cloud-1821.appspot.com/privakey/", "UTF-8");
-		s += "&nonce=" + URLEncoder.encode(email, "UTF-8");
-		s += "&login_hint=" + URLEncoder.encode(email, "UTF-8");
-		URI url = new URI(s);
-		
-		response.getWriter().append("PrivaKey URL: " + s);
-		
-		Desktop.getDesktop().browse(url); //PrivaKey requires the URL to be open in a new browser
-		
-        
+	
+		try
+		{
+			String token = request.getParameter("id_token");
+			Long employeeID = Long.parseLong(request.getParameter("employeeID"));
+			String nonce = request.getParameter("nonce");
+	
+			String sub = validateToken(token, nonce);
+			
+			response.getWriter().append("PrivaKey Servlet Sub: " + sub);
+			response.getWriter().append("PrivaKey Servlet Employee ID: " + employeeID);
+			if(sub != null && employeeID != null)
+			{
+			
+				Employee employee = EmployeeServlet.getEmployeeByID(employeeID);
+				
+				//Check that the PrivaKey GUID we have in the datastore matches the subject identifier given by PrivaKey
+				if(employee != null && employee.getPrivakeyGuid().equals(sub))
+				{
+					response.setStatus(HttpServletResponse.SC_OK);
+				}
+				else
+				{
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				}
+			}
+			else
+			{
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			response.getWriter().append("Error Message:" + e.getMessage());
+			response.getWriter().append("PrivaKey Servlet Error: " + e.getMessage());
+			response.setStatus(HttpServletResponse.SC_CONFLICT);
 		}
 	}
 

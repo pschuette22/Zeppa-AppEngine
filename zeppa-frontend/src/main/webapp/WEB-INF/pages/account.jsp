@@ -22,6 +22,25 @@
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 
+$(document).ready(function() {
+	parseUserInfo('${userInfo}');
+});
+
+function parseUserInfo(userInfo){
+	var info = jQuery.parseJSON(userInfo);
+	var givenName = info.givenName;
+	var familyName = info.familyName;
+	var imageURL = info.imageUrl;
+	var gender = info.gender;
+	var DOB = info.dateOfBirth;
+	
+	$("#firstNameText").val(givenName);
+	$("#lastNameText").val(familyName);
+	$("#DOBinput").val(DOB);
+	$("#genderField").val(gender);
+	
+}
+
 function enablePrivaKey() {
     var email = document.getElementById("txtPrivaKeyEmail").value;
         
@@ -33,7 +52,7 @@ function enablePrivaKey() {
 	 	//var url = '${redirectURL}';
 	 	//console.log("Redirect URL: " + url);
 	 	if(resp != null){
-	 		window.open(resp);
+	 		window.location = resp;
 	 	}
 	 	
 	}).fail(function() {
@@ -58,54 +77,24 @@ function enablePrivaKey() {
 	  <h2>Account Settings</h2>
 	</jsp:attribute>
 	<jsp:body>
+ 		<div id="successDiv" style="color: green;">${successDivText}</div>
+		<div id="errorDiv" style="color: red;">${errorDivText}</div>
 	  <table>
    		<tr>
-      	  <td width="50%">
-            <h3><u>User Settings</u></h3>
-  			Username:<br>
-			<input type="text" name="firstname"><br><br>
-			Email Address:<br>
-			<input type="text" name="lastname"><br><br>
-			<u>Change Password</u><br><br>
-			Enter Current Password:<br>
-			<input type="text" name="current_password"><br>
-			Enter New Password:<br>
-			<input type="text" name="new_password"><br>
-			Re-Enter Current Password:<br>
-			<input type="text" name="retype_password">
-      	  </td>
-      	  <td width="50%">
-            <h3><u>Billing Settings</u></h3>
-		  	Card Number:<br>
-			<input type="text" name="number"><br><br>
-			Name on Card:<br>
-			<input type="text" name="nameoncard"><br><br>
-			Expiration Month:  <select>
-			  <option value="one">01</option>
-			  <option value="two">02</option>
-			  <option value="three">03</option>
-			  <option value="four">04</option>
-			  <option value="five">05</option>
-			  <option value="six">06</option>
-			  <option value="seven">07</option>
-			  <option value="eight">08</option>
-			  <option value="nine">09</option>
-			  <option value="ten">10</option>
-			  <option value="eleven">11</option>
-			  <option value="twelve">12</option>
-			</select><br><br>
-			Expiration Year:  <select>
-			  <option value="sixteen">2016</option>
-			  <option value="seventeen">2017</option>
-			  <option value="eighteen">2018</option>
-			  <option value="nineteen">2019</option>
-			  <option value="twenty">2020</option>
-			</select><br><br>
-			Billing Address:<br>
-			<input type="text" name="current_password"><br><br>
-			Zip Code:<br>
-			<input type="text" name="zip"><br><br>
-      	  </td>
+   			<td>First Name</td>
+   			<td>Last Name</td>
+   		</tr>
+   		<tr>
+   			<td><input type="text" id="firstNameText"/></td>
+   			<td><input type="text" id="lastNameText"/></td>
+   		</tr>
+   		<tr>
+   			<td>Date of Birth</td>
+   			<td>Gender</td>
+   		</tr>
+   		<tr>
+   			<td><input type="text" id="DOBinput"/></td>
+   			<td><input type="text" id="genderField"/></td>
    		</tr>
    		<tr>
    			<td>
@@ -117,14 +106,12 @@ function enablePrivaKey() {
    				<input type="text" id="txtPrivaKeyEmail">
    			</td>
    		</tr>
+   		<tr></tr>
 		<tr>
    			<td>
    				<input type="button" value="Enable PrivaKey" onClick="javascript:enablePrivaKey()" ><br/>
-   				<div id="successDiv" style="color: green;"></div>
-				<div id="errorDiv" style="color: red;"></div>
    			</td>
    		</tr>
 	  </table>
-	  <div id="buttonDiv" style="width:60%;text-align:center"><input type="button" value="Submit"></div>
 	</jsp:body>
 </t:ZeppaBase>

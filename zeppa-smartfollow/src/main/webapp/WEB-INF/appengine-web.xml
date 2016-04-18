@@ -5,13 +5,8 @@
 	<threadsafe>true</threadsafe>
 	<module>zeppa-smartfollow</module>
 
-
-	<!-- Awesome Aus wants some "fuckin comments" -->
 	<system-properties>
 		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
 	</system-properties>
-
-
-
-
+	
 </appengine-web-app>

@@ -17,6 +17,7 @@ public class EmployeeUserInfo extends ZeppaUserInfo {
 	@Persistent
 	private Long vendorID;
 	private Long employeeID;
+	private Boolean isPrivaKeyRequired; 
 	
 	public Long getVendorID() {
 		return vendorID;
@@ -32,5 +33,16 @@ public class EmployeeUserInfo extends ZeppaUserInfo {
 
 	public void setEmployeeID(Long employeeID) {
 		this.employeeID = employeeID;
+	}
+	
+	public Boolean isPrivaKeyRequired() {
+		if(isPrivaKeyRequired == null)
+			return false;
+		
+		return isPrivaKeyRequired;
+	}
+
+	public void setIsPrivaKeyRequired(Boolean isPrivaKeyRequired) {
+		this.isPrivaKeyRequired = isPrivaKeyRequired;
 	}
 }

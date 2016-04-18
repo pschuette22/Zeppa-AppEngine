@@ -336,7 +336,7 @@ function getDateString(date) {
           infowindow.open(map, marker);
         });
       }
-</script>
+    </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdzV3Wi4EVmmF34N-cwEEgic4lhj8AvCY&libraries=places&callback=initMap" async defer></script>
     
 <style>

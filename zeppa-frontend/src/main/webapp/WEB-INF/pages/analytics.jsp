@@ -103,6 +103,7 @@
 		var ageContext = document.getElementById("age").getContext("2d");
 		var daysContext = document.getElementById("dayOfWeek").getContext("2d");
 		var eventsContext = document.getElementById("popularEvents").getContext("2d");
+		var eventsWatchedContext = document.getElementById("popularEventsWatched").getContext("2d");
 		var tagsContext = document.getElementById("popularTags").getContext("2d");
 		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
 		if(${genderData} != "none") {
@@ -129,6 +130,12 @@
 			eventsContext.font = "12px Arial";
 			eventsContext.fillText("There are no events for this vendor", 10,50);
 		}
+		if(${popEventsWatched}.labels.length > 0) {
+			var popEventsWatchedChart = new Chart(eventsWatchedContext).Bar(${popEventsWatched}, options);
+		} else {
+			eventsWatchedContext.font = "12px Arial";
+			eventsWatchedContext.fillText("There are no events for this vendor", 10,50);
+		}
 		if(${tagData}.labels.length > 0) {
 			var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
 		} else {
@@ -136,7 +143,7 @@
 			tagsContext.fillText("There are no common tags", 10,50);
 		}
 		if(${watchedTagData}.labels.length > 0) {
-			var watchedChart = new Chart(tagsWatchedContext).Bar(${watchedTagData}, options);
+			var watchedChart = new Bar(tagsWatchedContext).Bar(${watchedTagData}, options);
 		} else {
 			tagsWatchedContext.font = "12px Arial";
 			tagsWatchedContext.fillText("No users have watched an event for this vendor",10,50);
@@ -285,7 +292,11 @@
  			<div class="container">
  				<div class="column-center">
  					<canvas id="popularEvents" width="300" height="300"></canvas>
-					<div class="event-desc">Most popular events</div>
+					<div class="event-desc">Most Joined Events</div>
+				</div>
+				<div class="column-center">
+ 					<canvas id="popularEventsWatched" width="300" height="300"></canvas>
+					<div class="event-desc">Most Watched Events</div>
 				</div>
  			</div>
  		</div>

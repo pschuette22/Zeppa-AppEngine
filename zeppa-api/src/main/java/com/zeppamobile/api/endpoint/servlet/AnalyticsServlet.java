@@ -98,12 +98,20 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
 			// Get the most popular events and return their title and count in JSON
-			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId));
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId), UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
 			JSONObject jsonPopEvents = new JSONObject();
 			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
 				jsonPopEvents.put(entry.getKey().getTitle(), entry.getValue());
 			}
 			resp.getWriter().write(jsonPopEvents.toJSONString());
+		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED)) {
+			// Get the most popular events and return their title and count in JSON
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId), UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED);
+			JSONObject jsonPopWatchedEvents = new JSONObject();
+			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
+				jsonPopWatchedEvents.put(entry.getKey().getTitle(), entry.getValue());
+			}
+			resp.getWriter().write(jsonPopWatchedEvents.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_DAYS)) {
 			Map<Integer, Integer> dayCounts = getAllEventPopularDay(filter, Long.valueOf(vendorId));
 			JSONObject days = new JSONObject();
@@ -179,12 +187,17 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the vendor id
 	 * @return - a map with the counts for the popular events
 	 */
-	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
+	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId, String type) {
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		Map<VendorEvent, Integer> eventCounts = new HashMap<VendorEvent, Integer>();
 		// Populate the map with the counts for each event
 		for(VendorEvent event : events) {
-			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
+			List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+			if(type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
+				relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
+			} else if(type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED)) {
+				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId(), filter);
+			}
 			eventCounts.put(event, relationships.size());
 		}
 		

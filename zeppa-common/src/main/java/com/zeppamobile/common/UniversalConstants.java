@@ -87,11 +87,13 @@ public class UniversalConstants {
 	// Parameter values to differentiate calls to the Analytics API server
 	public static final String INDIV_EVENT_DEMOGRAPHICS = "indivDemographics";
 	public static final String INDIV_EVENT_TAGS = "indivTags";
+	public static final String INDIV_EVENT_TAGS_WATCHED = "indivTagsWatched";
 	public static final String OVERALL_EVENT_DEMOGRAPHICS = "overallDemographics";
 	public static final String OVERALL_EVENT_TAGS = "overallTags";
 	public static final String OVERALL_EVENT_TAGS_WATCHED = "overallTagsWatched";
 	public static final String OVERALL_EVENT_POPULAR_DAYS = "overallPopularDays";
 	public static final String OVERALL_EVENT_POPULAR_EVENTS = "overallPopularEvents";
+	public static final String OVERALL_EVENT_POPULAR_EVENTS_WATCHED = "overallPopularEventsWatched";
 	
 	public static final String START_DATE_FILTER = "startDateFilter";
 	public static final String END_DATE_FILTER = "endDateFilter";

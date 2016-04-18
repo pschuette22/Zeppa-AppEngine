@@ -3,13 +3,17 @@ package com.zeppamobile.frontend.webpages;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -24,6 +28,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
@@ -149,14 +154,29 @@ public class IndividualEventServlet extends HttpServlet {
 				maxAgeFilter = req.getParameter("maxAge");
 				genderFilter = req.getParameter("gender");
 				if (eventId != null) {
+					System.out.println("HERE----");
+					resp.setContentType("text/html");
 					String eventInformation = getEventInformation(eventId);
 					req.setAttribute("eventInfo", eventInformation);
 					req.setAttribute("eventId", eventId);
 					String tagResults = getAllEventTags(eventInformation);
 					req.setAttribute("tags", tagResults);
+					
 					String[] demoData = getDemographicCountForEvent(Long.valueOf(eventId));
 					req.setAttribute("genderData", demoData[0]);
 					req.setAttribute("ageData", demoData[1]);
+					
+					String allEventTags = getTagsAllEvents(Long.valueOf(eventId), true);
+					req.setAttribute("tagData", allEventTags);
+					
+					String allEventTagsWatched = getTagsAllEvents(Long.valueOf(eventId), false);
+					req.setAttribute("watchedTagData", allEventTagsWatched);
+
+					// Response headers used when filtering
+					resp.addHeader("genderGraph", demoData[0]);
+					resp.addHeader("ageGraph", demoData[1]);
+					resp.addHeader("tagGraph", allEventTags);
+					resp.addHeader("tagWatchGraph", allEventTagsWatched);
 				}
 			}
 			req.getRequestDispatcher("WEB-INF/pages/individual-event.jsp").forward(req, resp);
@@ -285,7 +305,9 @@ public class IndividualEventServlet extends HttpServlet {
 					// Get all of the demographic info from the json response
 					JSONObject genderInfo = (JSONObject) demoInfo.get(0);
 					maleCount = (Long) genderInfo.get("maleCount");
+					System.out.println("MALE: "+maleCount);
 					femaleCount = (Long) genderInfo.get("femaleCount");
+					System.out.println("FEMALE: "+femaleCount);
 					unidentified = (Long) genderInfo.get("unidentified");
 					JSONObject ageInfo = (JSONObject) demoInfo.get(1);
 					under18 = (Long) ageInfo.get("under18");
@@ -306,11 +328,11 @@ public class IndividualEventServlet extends HttpServlet {
 		// Create the string for chart.js for the gender pie chart
 		String genderData = "\"none\"";
 		if(maleCount > 0 || femaleCount > 0 || unidentified > 0) {
-			genderData = "[" + "{" + "    value: " + String.valueOf(maleCount) + "," + "    color:\"#F7464A\","
-				+ "    highlight: \"#FF5A5E\"," + "    label: \"Male\"" + "}," + "{" + "    value: "
-				+ String.valueOf(femaleCount) + "," + "    color: \"#46BFBD\"," + "    highlight: \"#5AD3D1\","
-				+ "    label: \"Female\"" + "}," + "{" + "    value: " + String.valueOf(unidentified) + ","
-				+ "    color: \"#FDB45C\"," + "    highlight: \"#FFC870\"," + "   label: \"Unidentified\"" + "}" + "]";
+			genderData = "[" + "{" + "value: " + String.valueOf(maleCount) + "," + "color:\"#F7464A\","
+				+ "highlight: \"#FF5A5E\"," + "label: \"Male\"" + "}," + "{" + "value: "
+				+ String.valueOf(femaleCount) + "," + "color: \"#46BFBD\"," + "highlight: \"#5AD3D1\","
+				+ "label: \"Female\"" + "}," + "{" + "value: " + String.valueOf(unidentified) + ","
+				+ "color: \"#FDB45C\"," + "highlight: \"#FFC870\"," + "label: \"Unidentified\"" + "}" + "]";
 		}
 		String ageData = "{labels: [\"under18\", \"18to20\", \"21to24\", \"25to29\", \"30to39\", \"40to49\", \"50to59\", \"over60\"],"
 				+ "    datasets: [ {"
@@ -364,6 +386,80 @@ public class IndividualEventServlet extends HttpServlet {
 		} catch (Exception e) {
 			return e.getMessage();
 		}
+	}
+	
+	/**
+	 * Call the api analytics servlet to get
+	 * all of the tag information
+	 * @param sessionInfo
+	 * @param joined - true if you want to get only joined relationships, false if you want watched relationships  
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static String getTagsAllEvents(long eventId, boolean joined) {
+		List<AnalyticsDataWrapper> tagCounts = new ArrayList<AnalyticsDataWrapper>();
+		try {
+			// Set up the call to the analytics api servlet
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(UniversalConstants.PARAM_EVENT_ID,
+					URLEncoder.encode(String.valueOf(eventId), "UTF-8"));
+			if(joined) {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.INDIV_EVENT_TAGS);
+			} else {
+				params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.INDIV_EVENT_TAGS_WATCHED);
+			}
+			params = createFilterParams(params);
+			
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/individual-analytics-servlet/", params);
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(false);
+			connection.setRequestMethod("GET");
+
+			// Read the response from the call to the api servlet
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Read from the buffer line by line and write to the response string
+				String responseTags = "";
+				while ((line = reader.readLine()) != null) {
+					responseTags += line;
+				}
+				JSONParser parser = new JSONParser();
+				JSONObject tags = (JSONObject) parser.parse(responseTags);
+				for(Iterator iterator = tags.keySet().iterator(); iterator.hasNext();) {
+				    String key = (String) iterator.next();
+				    tagCounts.add(new AnalyticsDataWrapper(key, ((int)(long)tags.get(key))));
+				}
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+		
+		String label = "labels: [";
+		String data = "data: [";
+		for(int i=0; i < tagCounts.size(); i++) {
+			AnalyticsDataWrapper adw = tagCounts.get(i);
+			// If it's not the last element then add comma at the end otherwise don't
+			if (i < (tagCounts.size() - 1)) {
+				label = label.concat("\"" + adw.getKey() + "\",");
+				data = data.concat(String.valueOf(adw.getValue()) + ",");
+			} else {
+				label = label.concat("\"" + adw.getKey() + "\"");
+				data = data.concat(String.valueOf(adw.getValue()));
+			}
+		}
+		String ret = "{" + label+"],"
+				+ "datasets: [ {"
+				+ "label: \"PopEvents dataset\","
+				+ "fillColor: \"rgba(220,220,220,0.5)\","
+				+ "strokeColor: \"rgba(220,220,220,0.8)\","
+				+ "highlightFill: \"rgba(220,220,220,0.75)\","
+				+ "highlightStroke: \"rgba(220,220,220,1)\","
+				+ data
+				+ "]}]}";
+		return ret;
 	}
 	
 	private static Map<String, String> createFilterParams(Map<String, String> map) throws UnsupportedEncodingException {

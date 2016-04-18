@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>-->
 
@@ -18,6 +17,10 @@
 <script>
 var tagQueue = [];
 var eventID = -1;
+var genderChart = -1;
+var ageChart = -1;
+var tagChart = -1;
+var watchedChart = -1;
 $( document ).ready(function() {
 	$('#startTime').datetimepicker();
 	$('#endTime').datetimepicker();
@@ -35,21 +38,37 @@ $( document ).ready(function() {
 	parseTags('${tags}');
 	createGraphs();
 	populateAgeDropdowns();
-	// When the filter is submitted, retain the values when the page is reloaded
-	$("#filterForm").submit(function() {
-		sessionStorage.setItem("defaultMinAgeIndv", document.getElementById("minAgeFilter").value);
-		sessionStorage.setItem("defaultMaxAgeIndv", document.getElementById("maxAgeFilter").value);
-		sessionStorage.setItem("defaultGenderIndv", document.getElementById("genderFilter").value);
-	});
-	if (sessionStorage.getItem("defaultMinAgeIndv")) {
-		   $('#minAgeFilter').val(sessionStorage.getItem("defaultMinAgeIndv")); 
-	}
-	if (sessionStorage.getItem("defaultMaxAgeIndv")) {
-		   $('#maxAgeFilter').val(sessionStorage.getItem("defaultMaxAgeIndv")); 
-	}
-	if (sessionStorage.getItem("defaultGenderIndv")) {
-		   $('#genderFilter').val(sessionStorage.getItem("defaultGenderIndv")); 
-	}
+
+ 	$("#filterButton").click(function() {
+ 		var min = $('#minAgeFilter').val();
+ 		var max = $('#maxAgeFilter').val();
+ 		var gen = $('#genderFilter').val();
+ 		var id = $('#eventIdInput').val();
+ 		console.log("min: "+min+" max: "+" gen: "+gen+" id: "+id);
+ 		var dataObj = {'event-id':eventID, 'minAge':min, 'maxAge':max, 'gender':gen };
+ 	    
+ 		$.ajax({
+            url : '/individual-event',
+            tpye: "GET",
+            data : dataObj,
+            success : function(data, status, xhr) {
+            	console.log("success AJAX");
+//             	console.log("GENDER FIRST: "+JSON.stringify(${genderData}));
+				var newGen =eval("("+xhr.getResponseHeader('genderGraph')+")");
+				var newAge = eval("("+xhr.getResponseHeader('ageGraph')+")");
+				var newTag = eval("("+xhr.getResponseHeader('tagGraph')+")");
+				var newWatch = eval("("+xhr.getResponseHeader('tagWatchGraph')+")");
+            	recreateGraphs(newGen, newAge, newTag, newWatch);
+            }
+        });
+//  	    $.get( "/individual-event", data, function( resp ) {
+//  	    	 	console.log("success");
+//  	    	 	recreateGraphs();
+//  	    	 	//location.reload();
+//  	    	}).fail(function() {
+//  	    	    console.log( "error" );
+//  	    	});
+ 	});
 	
 	$("input, textarea").each(function(){
 		$(this).attr("readonly",true);
@@ -62,6 +81,49 @@ $( document ).ready(function() {
 	});
 });
 
+var options = {
+		//responsive: true,
+		animationEasing: "easeOutQuart"
+	};
+	
+	function createGraphs() {
+		// Get the context of the canvas element we want to select
+		var genderCtx = document.getElementById("gender").getContext("2d");
+		var ageCtx = document.getElementById("age").getContext("2d");
+		var tagsContext = document.getElementById("popularTags").getContext("2d");
+		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
+		// ${genderData} accesses gender data attribute set by the Analytics Servlet
+		genderChart = new Chart(genderCtx).Doughnut(${genderData}, options);
+		ageChart = new Chart(ageCtx).Bar(${ageData}, options);
+		tagChart = new Chart(tagsContext).Bar(${tagData}, options);
+		watchedChart = new Chart(tagsWatchedContext).Bar(${watchedTagData}, options);
+	}
+	
+	function recreateGraphs(gen, age, tag, tagWatch) {
+		console.log("GENDER: "+gen);
+		// Get the context of the canvas element we want to select
+		var genderCtx = document.getElementById("gender").getContext("2d");
+		var ageCtx = document.getElementById("age").getContext("2d");
+		var tagsContext = document.getElementById("popularTags").getContext("2d");
+		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
+		if(genderChart !== -1) {
+			genderChart.destroy();
+		}
+		if(ageChart !== -1) {
+			ageChart.destroy();
+		}
+		if(tagChart !== -1) {
+			tagChart.destroy();
+		}
+		if(watchedChart !== -1) {
+			watchedChart.destroy();
+		}
+		genderChart = new Chart(genderCtx).Doughnut(gen, options);
+		ageChart = new Chart(ageCtx).Bar(age, options);
+		tagChart = new Chart(tagsContext).Bar(tag, options);
+		watchedChart = new Chart(tagsWatchedContext).Bar(tagWatch, options);
+	}
+	
 function makeEditable(){
 	$("input,textarea").each(function(){
 		$(this).attr("readonly",false);
@@ -89,10 +151,7 @@ function postTag(){
 	var tagText = $("#tagText").val();
 	var data = {'tagText': tagText};
 	
-	console.log("Posting tag: "+tagText);
 	 $.post( "/create-tag", data, function( resp ) {
- 	 	console.log("success");
- 	 	console.log(resp);
  	 	var tagInfo = jQuery.parseJSON(resp);
  	 	var id = tagInfo.id;
  	 	var text = tagInfo.tagText;
@@ -120,7 +179,6 @@ function editEvent() {
     var data = {'title': title, 'start': start, 'end': end,
     		'address': address, 'description':description, 'tag-list':tags, 'event-id':eventID };
     
-    console.log("event Info: ", data);
     $.post( "/individual-event", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
@@ -177,21 +235,6 @@ function getDateString(date) {
     return dateString;
 }
 
-
-
-var options = {
-		responsive: true,
-		animationEasing: "easeOutQuart"
-	};
-	
-	function createGraphs() {
-		// Get the context of the canvas element we want to select
-		var genderCtx = document.getElementById("gender").getContext("2d");
-		var ageCtx = document.getElementById("age").getContext("2d");
-		// ${genderData} accesses gender data attribute set by the Analytics Servlet
-		var chart1 = new Chart(genderCtx).Doughnut(${genderData}, options);
-		var chart2 = new Chart(ageCtx).Bar(${ageData}, options);
-	}
 	function populateAgeDropdowns() {
 		var min = document.getElementById("minAgeFilter");
 		var max = document.getElementById("maxAgeFilter");
@@ -413,8 +456,8 @@ var options = {
 	<jsp:body>
 		<div class="column-right">
 			<div class="filterDiv">
-		  <form method="GET" id="filterForm">
-		  	<input type="hidden" name="event-id" value="${eventId}" />
+			<form>
+		  	<input type="hidden" id="eventIdInput" name="event-id" value="${eventId}" />
 			<table style="width: 99%; margin-bottom: 1em">
 			  <tr style="width: 99%">
 			    <th style="width: 10%; text-align: center">Min Age</th>
@@ -439,11 +482,11 @@ var options = {
 			  </tr>
 			  <tr>
 	    		<td align="center" colspan="3" style="width: 10%; text-align: center">
-	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="submit" value="Filter" form="filterForm" />
+	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="button" value="Filter" form="filterForm" />
 	    		</td>
 	    	  </tr>
 			</table>
-		  </form>
+			</form>
 		</div>
 			<div id="tabNavBar">
 	 			<!-- These comments are required to fix html bug which moves tab down to next line -->
@@ -453,19 +496,25 @@ var options = {
  			<div class="analyticsTab active" id="demographicsTab">
  				<p><h3>Event Demographic Data</h3></p>
  				<div style="width:65%; text-align:center">
-					<canvas style="display:block; margin: 0 auto;" id="gender" width="150" height="150"></canvas>
+					<canvas id="gender" width="250" height="250"></canvas>
 					<div class="event-desc">Attendee Gender Statistics</div>
  				</div>
 				<p><h3>Age Demographic Data</h3></p>
 				<div style="width:65%; text-align:center">
-					<canvas style="display:block; margin: 0 auto;" id="age" width="150" height="150"></canvas>
+					<canvas id="age" width="250" height="250"></canvas>
 					<div class="event-desc">Attendee Age Statistics</div>
 				</div>
 			</div>
 			<div class="analyticsTab" id="tagsTab">
  				<p><h3>Event Tag Data</h3></p>
-				<canvas id="event1" width="150" height="150"></canvas>
-				<div class="event-desc">Joined Attendees Statistics</div>
+				<div style="width:65%; text-align:center">
+	 				<canvas id="popularTags" width="250" height="250"></canvas>
+					<div class="event-desc">Popular Tags Among People who Joined Events</div>
+				</div>
+				<div style="width:65%; text-align:center">
+					<canvas id="watchedTags" width="250" height="250"></canvas>
+					<div class="event-desc">Popular Tags Among People who Watched Events</div>
+				</div>
 			</div>
 		</div>
 		<div style="width:50%">

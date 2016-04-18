@@ -165,18 +165,18 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		List<VendorEventRelationship> returnList = joinedList;
 		// Fitler results on gender if filter info specified 
 		if(!filter.getGender().equals(Gender.ALL)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
+			joinedList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
 		} 
 		// Filter results on age if filter info specified 
 		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
+			joinedList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
 		}
 		// Filter results on date if filter info specified 
 		if (!(filter.getStartDate() == -1) || !(filter.getStartDate() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnDate(joinedList, filter.getStartDate(), filter.getEndDate());
+			joinedList = AnalyticsFilter.filterRelationshipsOnDate(joinedList, filter.getStartDate(), filter.getEndDate());
 		}
 		
-		return returnList;
+		return joinedList;
 	}
 	
 	/**

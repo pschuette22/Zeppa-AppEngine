@@ -13,6 +13,8 @@ import it.uniroma1.lcl.adw.comparison.SignatureComparison;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
 import it.uniroma1.lcl.jlt.Configuration;
 
+import com.zeppamobile.smartfollow.AppConfig;
+import com.zeppamobile.smartfollow.StorageUtils;
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 
 /**
@@ -26,9 +28,9 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  */
 public class CompareTagsTask extends SmartFollowTask {
 	// APPENGINE
-//	private static String configDir = "zeppa-smartfollow-1.war/WEB-INF/config/";
+	private static String configDir = "zeppa-smartfollow-1.war/WEB-INF/config/";
 	// LOCAL
-	private static String configDir = "src/main/webapp/WEB-INF/config/";
+//	private static String configDir = "src/main/webapp/WEB-INF/config/";
 	//JLT
 	File jltConfig = new File(configDir, "jlt.properties");
 
@@ -59,13 +61,18 @@ public class CompareTagsTask extends SmartFollowTask {
 	 */
 	public void execute() {
 		try {
-			if (!Configuration.CONFIG_FILE.equals(jltConfig)) {
-				Configuration.getInstance().setConfigurationFile(jltConfig);
+			if (!AppConfig.isTesting()) {
+				if (!Configuration.CONFIG_FILE.equals(jltConfig)) {
+					Configuration.getInstance().setConfigurationFile(jltConfig);
+				}
+				if (!ADWConfiguration.getConfigDir().equalsIgnoreCase(configDir)) {
+					ADWConfiguration.setConfigDir(configDir);
+				}
+				if (!StorageUtils.getInstance().getCredentialsPath().equals(configDir + "serviceAccountCredentials.json")) {
+					StorageUtils.setCredentialsPath(configDir + "serviceAccountCredentials.json");
+				}
 			}
-			if (!ADWConfiguration.getConfigDir().equalsIgnoreCase(configDir)) {
-				ADWConfiguration.setConfigDir(configDir);
-			}
-
+						
 			ADW pipeline = new ADW();
 
 			// The two lexical items

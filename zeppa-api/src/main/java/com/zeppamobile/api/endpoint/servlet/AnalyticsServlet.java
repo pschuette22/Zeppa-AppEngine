@@ -80,7 +80,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), true);
+			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(vendorId), true);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -89,7 +89,7 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_TAGS_WATCHED)) {
 			// Get all of the tags that brought users to events
-			List<AnalyticsDataWrapper> tags = getAllEventTagsJoined(filter, Long.valueOf(vendorId), false);
+			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(vendorId), false);
 			JSONObject json = new JSONObject();
 			for(AnalyticsDataWrapper adw : tags) {
 				json.put(adw.getKey(), adw.getValue());
@@ -98,12 +98,20 @@ public class AnalyticsServlet extends HttpServlet {
 			resp.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
 			// Get the most popular events and return their title and count in JSON
-			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId));
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId), UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
 			JSONObject jsonPopEvents = new JSONObject();
 			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
 				jsonPopEvents.put(entry.getKey().getTitle(), entry.getValue());
 			}
 			resp.getWriter().write(jsonPopEvents.toJSONString());
+		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED)) {
+			// Get the most popular events and return their title and count in JSON
+			Map<VendorEvent, Integer> eventCounts = getAllEventPopularEvents(filter, Long.valueOf(vendorId), UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED);
+			JSONObject jsonPopWatchedEvents = new JSONObject();
+			for(Entry<VendorEvent, Integer> entry : eventCounts.entrySet()) {
+				jsonPopWatchedEvents.put(entry.getKey().getTitle(), entry.getValue());
+			}
+			resp.getWriter().write(jsonPopWatchedEvents.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_DAYS)) {
 			Map<Integer, Integer> dayCounts = getAllEventPopularDay(filter, Long.valueOf(vendorId));
 			JSONObject days = new JSONObject();
@@ -147,18 +155,6 @@ public class AnalyticsServlet extends HttpServlet {
 		// Get the gender count across all events for the vendor
 		allEventGender = getGenderCountAllEvents(rels);
 		return allEventGender;
-		// Filter out unwanted gender data
-//		Map<String, Integer> retMap = new HashMap<String, Integer>();
-//		if(filter.getGender().equals(Gender.MALE)) {
-//			retMap.put("MALE", allEventGender.get("MALE"));
-//		} else if(filter.getGender().equals(Gender.FEMALE)) {
-//			retMap.put("FEMALE", allEventGender.get("FEMALE"));
-//		} if(filter.getGender().equals(Gender.UNDEFINED)) {
-//			retMap.put("UNIDENTIFIED", allEventGender.get("UNIDENTIFIED"));
-//		} else {
-//			retMap = allEventGender;
-//		}
-//		return retMap;
 	}
 	
 	/**
@@ -191,12 +187,17 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the vendor id
 	 * @return - a map with the counts for the popular events
 	 */
-	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId) {
+	private Map<VendorEvent, Integer> getAllEventPopularEvents(FilterCerealWrapper filter, long vendorId, String type) {
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
 		Map<VendorEvent, Integer> eventCounts = new HashMap<VendorEvent, Integer>();
 		// Populate the map with the counts for each event
 		for(VendorEvent event : events) {
-			List<VendorEventRelationship> relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
+			List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
+			if(type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS)) {
+				relationships = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
+			} else if(type.equals(UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED)) {
+				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId(), filter);
+			}
 			eventCounts.put(event, relationships.size());
 		}
 		
@@ -228,7 +229,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param relationships - all event relationships for the vendor's events
 	 * @return - a map with gender and corresponding counts as the entries
 	 */
-	private Map<String, Integer> getGenderCountAllEvents(List<VendorEventRelationship> relationships) {
+	public static Map<String, Integer> getGenderCountAllEvents(List<VendorEventRelationship> relationships) {
 		Map<String, Integer> ret = new HashMap<String, Integer>();
 		int maleCount = 0;
 		int femaleCount = 0;
@@ -323,7 +324,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @param vendorId - the id of the current vendor
 	 * @return 
 	 */
-	private List<AnalyticsDataWrapper> getAllEventTagsJoined(FilterCerealWrapper filter, long vendorId, boolean joined) {
+	private List<AnalyticsDataWrapper> getAllEventTags(FilterCerealWrapper filter, long vendorId, boolean joined) {
 		Map<String, Integer> tagsHash = new HashMap<String, Integer>();
 		// First get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
@@ -425,7 +426,6 @@ public class AnalyticsServlet extends HttpServlet {
 	 * Generate the filter object from the parameters given in the request
 	 * @param params
 	 * @return
-	 * @throws ParseException
 	 */
 	private FilterCerealWrapper getFilterInfo(HttpServletRequest req) {
 		String startDateParam = req.getParameter(UniversalConstants.START_DATE_FILTER);
@@ -466,12 +466,14 @@ public class AnalyticsServlet extends HttpServlet {
 		int max = -1;
 		if (req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")) {
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("under18")) {
 			min = Integer.valueOf(req.getParameter(UniversalConstants.MIN_AGE_FILTER));
 		}
 		if (req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")) {
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("over60")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
 		// TODO: add in vendor id and max distance (in km) you want to extend user search to

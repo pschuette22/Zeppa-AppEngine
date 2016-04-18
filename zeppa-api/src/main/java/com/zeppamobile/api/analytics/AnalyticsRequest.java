@@ -24,11 +24,11 @@ import com.zeppamobile.common.utils.DistanceUtils;
  */
 public abstract class AnalyticsRequest {
 
-	protected FilterCerealWrapper filter;
+	protected DemographicsFilter filter;
 
 	protected Set<AnalyticsResponseListener> responseListeners;
 
-	protected AnalyticsRequest(FilterCerealWrapper filter) {
+	protected AnalyticsRequest(DemographicsFilter filter) {
 		this.filter = filter;
 		responseListeners = new HashSet<AnalyticsResponseListener>();
 	}

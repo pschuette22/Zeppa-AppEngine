@@ -28,10 +28,8 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	// Event tag the user would like analytics on
 	private EventTag tag;
 
+	// Maintain a list of metatags used in this request
 	private List<MetaTag> metaTags;
-
-	// List of keys pertaining to users who match the filter
-	private List<Key> matchingUserKeys;
 
 	// List of explicit follow entities
 	private List<EventTagFollow> follows;
@@ -50,7 +48,7 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	 * @param filter
 	 *            - user filter for this request
 	 */
-	public TagAnalyticsRequest(EventTag tag, FilterCerealWrapper filter) {
+	public TagAnalyticsRequest(EventTag tag, DemographicsFilter filter) {
 		super(filter);
 		this.tag = tag;
 		// Do basic initialization
@@ -63,22 +61,10 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		this.matchingUserKeys = fetchUserKeys();
-		executeWithUserKeys(this.matchingUserKeys);
-	}
 
-	/**
-	 * Execute the request with a list of user keys
-	 * 
-	 * @param userKeys
-	 *            - list of keys pointing to users
-	 */
-	public void executeWithUserKeys(List<Key> userKeys_) {
-
-		// Create list for
+		// Create list that can be 
 		List<Key> userKeys = new ArrayList<Key>();
-		userKeys.addAll(userKeys_);
+		userKeys.addAll(filter.getUserKeys());
 		// First, fetch all explicit follows for this tag
 		fetchEventTagFollows(userKeys);
 
@@ -209,7 +195,7 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	 * @return matching key or null
 	 */
 	private Key getMatchingUserKeyFromId(long id) {
-		for (Key k : matchingUserKeys) {
+		for (Key k : filter.getUserKeys()) {
 			if (k.getId() == id) {
 				return k;
 			}

@@ -49,16 +49,18 @@ public class DemographicsFilter {
 
 	/** Millis since epoch userKeys were last updated */
 	private long updateTimeInMillis;
+	
+	private static final long LIMIT = 1000; // up to 1000 users fetched in analytics
 
 	/**
 	 * Instantiate a DemographicsFilter for
 	 * 
-	 * @param latitude
-	 * @param longitude
-	 * @param distance
-	 * @param gender
-	 * @param minAge
-	 * @param maxAge
+	 * @param latitude - center point latitude
+	 * @param longitude - center point longitude
+	 * @param distance - maximum distance from center point
+	 * @param gender - specific gender to include or null for no preference
+	 * @param minAge - minimum age of users to be included
+	 * @param maxAge - maximum age of users to be included
 	 */
 	public DemographicsFilter(double latitude, double longitude, double distance, Gender gender, int minAge,
 			int maxAge) {
@@ -127,6 +129,10 @@ public class DemographicsFilter {
 			// After all user filters have been applied, fetch the keys relevant
 			// users
 			query.setFilter(filterBuilder.toString());
+			// Set a limit on number of users to consider in analytics request
+			query.setRange(0, LIMIT);
+			// Retrieve users who have updated location most recently
+			query.setOrdering("updated DESC"); 
 			@SuppressWarnings("unchecked")
 			List<ZeppaUser> matchingUsers = (List<ZeppaUser>) query.execute();
 			// quickly iterate through response object of matching users adding
@@ -137,7 +143,7 @@ public class DemographicsFilter {
 			for (ZeppaUser u : matchingUsers) {
 				userKeys.add(u.getKey());
 			}
-
+			updateTimeInMillis = System.currentTimeMillis();
 		} finally {
 			mgr.close();
 		}
@@ -153,5 +159,35 @@ public class DemographicsFilter {
 	public List<Key> getUserKeys() {
 		return (userKeys == null ? updateUserKeys() : userKeys);
 	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public int getMinAge() {
+		return minAge;
+	}
+
+	public int getMaxAge() {
+		return maxAge;
+	}
+
+	public long getUpdateTimeInMillis() {
+		return updateTimeInMillis;
+	}
+	
+	
 
 }

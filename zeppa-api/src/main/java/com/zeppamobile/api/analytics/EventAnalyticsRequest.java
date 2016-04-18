@@ -20,7 +20,7 @@ import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
  * @author PSchuette
  *
  */
-public class PastEventAnalyticsRequest extends AnalyticsRequest {
+public class EventAnalyticsRequest extends AnalyticsRequest {
 
 	// Event that is being queried on
 	private VendorEvent event;
@@ -28,12 +28,9 @@ public class PastEventAnalyticsRequest extends AnalyticsRequest {
 	// Explicit relationships created for this event
 	private List<VendorEventRelationship> relationships;
 
-	// Users that match the given filter
-	private List<Key> matchingUserKeys;
-	
 	private Map<EventTag, TagAnalyticsRequest> tagAnalytics;
 
-	public PastEventAnalyticsRequest(VendorEvent event, FilterCerealWrapper filter) {
+	public EventAnalyticsRequest(VendorEvent event, DemographicsFilter filter) {
 		super(filter);
 		this.event = event;
 		// TODO Auto-generated constructor stub
@@ -41,7 +38,6 @@ public class PastEventAnalyticsRequest extends AnalyticsRequest {
 
 	@Override
 	public void execute() {
-		matchingUserKeys = fetchUserKeys();
 
 		// Fetch the relationships made for this event
 		fetchVendorEventRelationships();
@@ -52,8 +48,13 @@ public class PastEventAnalyticsRequest extends AnalyticsRequest {
 		try {
 			for (Long tagId : event.getTagIds()) {
 				try {
-					
-				} catch (JDOObjectNotFoundException e){
+					EventTag tag = mgr.getObjectById(EventTag.class, tagId);
+					TagAnalyticsRequest req = new TagAnalyticsRequest(tag, this.filter);
+
+					tagAnalytics.put(tag, req);
+					req.execute();
+
+				} catch (JDOObjectNotFoundException e) {
 					// Slight chance tag was deleted and event data is stale
 				}
 			}
@@ -74,6 +75,9 @@ public class PastEventAnalyticsRequest extends AnalyticsRequest {
 			Query q = mgr.newQuery(VendorEventRelationship.class);
 			q.setFilter("eventId==" + event.getId().longValue());
 			relationships = (List<VendorEventRelationship>) q.execute();
+		} catch (NullPointerException e) {
+			// Occurs if the event has not been inserted into db yet (upcoming
+			// events)
 		} finally {
 			mgr.close();
 		}

@@ -1,7 +1,5 @@
 package com.zeppamobile.common.cerealwrapper;
 
-import java.util.List;
-
 /**
  * 
  * @author Pete Schuette

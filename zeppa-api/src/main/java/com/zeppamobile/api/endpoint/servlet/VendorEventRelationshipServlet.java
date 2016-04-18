@@ -106,27 +106,21 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 		if(filter == null) {
 			return relationships;
 		}
-		List<VendorEventRelationship> returnList = relationships;
+
 		// Fitler results on gender if filter info specified 
 		if(!filter.getGender().equals(Gender.ALL)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnGender(relationships, filter.getGender());
+			relationships = AnalyticsFilter.filterRelationshipsOnGender(relationships, filter.getGender());
 		}
 		// Filter results on age if filter info specified 
 		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
-			if(returnList.size() > 0)
-				returnList = AnalyticsFilter.filterRelationshipsOnAge(returnList, filter.getMinAge(), filter.getMaxAge());
-			else
-				returnList = AnalyticsFilter.filterRelationshipsOnAge(relationships, filter.getMinAge(), filter.getMaxAge());
+			relationships = AnalyticsFilter.filterRelationshipsOnAge(relationships, filter.getMinAge(), filter.getMaxAge());
 		} 
 		// Filter results on date if filter info specified 
 		if (!(filter.getStartDate() == -1) && !(filter.getStartDate() == -1)) {
-			if(returnList.size() > 0)
-				returnList = AnalyticsFilter.filterRelationshipsOnDate(returnList, filter.getStartDate(), filter.getEndDate());
-			else 
-				returnList = AnalyticsFilter.filterRelationshipsOnDate(relationships, filter.getStartDate(), filter.getEndDate());
+			relationships = AnalyticsFilter.filterRelationshipsOnDate(relationships, filter.getStartDate(), filter.getEndDate());
 		}
 		
-		return returnList;
+		return relationships;
 	}
 	
 	/**
@@ -162,21 +156,20 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			return joinedList;
 		}
 
-		List<VendorEventRelationship> returnList = joinedList;
 		// Fitler results on gender if filter info specified 
 		if(!filter.getGender().equals(Gender.ALL)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
+			joinedList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
 		} 
 		// Filter results on age if filter info specified 
 		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
+			joinedList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
 		}
 		// Filter results on date if filter info specified 
 		if (!(filter.getStartDate() == -1) || !(filter.getStartDate() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnDate(joinedList, filter.getStartDate(), filter.getEndDate());
+			joinedList = AnalyticsFilter.filterRelationshipsOnDate(joinedList, filter.getStartDate(), filter.getEndDate());
 		}
 		
-		return returnList;
+		return joinedList;
 	}
 	
 	/**
@@ -206,25 +199,24 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 				watchedList.add(rel);
 		}
 		
-		List<VendorEventRelationship> returnList = watchedList;
 		if(filter == null) {
 			return watchedList;
 		}
 
 		// Fitler results on gender if filter info specified 
 		if(!filter.getGender().equals(Gender.ALL)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnGender(watchedList, filter.getGender());
+			watchedList = AnalyticsFilter.filterRelationshipsOnGender(watchedList, filter.getGender());
 		}
 		// Filter results on age if filter info specified 
 		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnAge(watchedList, filter.getMinAge(), filter.getMaxAge());
+			watchedList = AnalyticsFilter.filterRelationshipsOnAge(watchedList, filter.getMinAge(), filter.getMaxAge());
 		}
 		// Filter results on date if filter info specified 
 		if (!(filter.getStartDate() == -1) || !(filter.getStartDate() == -1)) {
-			returnList = AnalyticsFilter.filterRelationshipsOnDate(watchedList, filter.getStartDate(), filter.getEndDate());
+			watchedList = AnalyticsFilter.filterRelationshipsOnDate(watchedList, filter.getStartDate(), filter.getEndDate());
 		}
 		
-		return returnList;
+		return watchedList;
 	}
 	
 	/**

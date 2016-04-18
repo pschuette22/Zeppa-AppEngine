@@ -238,7 +238,7 @@ public class StartupServlet extends HttpServlet {
 		testUser2.setUserInfo(ui2);
 		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
 		
-		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
+		ZeppaUser testUser3 = new ZeppaUser(u3AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui3 = testUser3.getUserInfo();
 		ui3.setGender(Gender.FEMALE);
 		// 2003

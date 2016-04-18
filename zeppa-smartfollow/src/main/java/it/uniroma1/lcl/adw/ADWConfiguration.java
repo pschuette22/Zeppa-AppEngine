@@ -10,6 +10,8 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.zeppamobile.smartfollow.AppConfig;
+
 public class ADWConfiguration
 {
 	private org.apache.commons.configuration.PropertiesConfiguration config = null;
@@ -17,7 +19,7 @@ public class ADWConfiguration
 
 	private static ADWConfiguration instance = null;
 	//Local
-	//private static String CONFIG_DIR = "src/main/webapp/WEB-INF/config";
+//	private static String CONFIG_DIR = "src/main/webapp/WEB-INF/config";
 	//AppEngine
 	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config";
 	private static final String CONFIG_FILE = "adw.properties";
@@ -184,6 +186,9 @@ public class ADWConfiguration
 	
 	public String getWordNetData()
 	{
+		if (AppConfig.isTesting()) {
+			return "src/main/webapp/WEB-INF/resources/WordNet-3.0/dict";
+		}
 		return config.getString("wordnet.wordnetData3.0");
 	}
 	

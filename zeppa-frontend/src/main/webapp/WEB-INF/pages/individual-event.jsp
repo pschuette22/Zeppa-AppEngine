@@ -39,12 +39,12 @@ $( document ).ready(function() {
 	createGraphs();
 	populateAgeDropdowns();
 
+	// When the filter button is clicked, get updated info without refreshing
  	$("#filterButton").click(function() {
  		var min = $('#minAgeFilter').val();
  		var max = $('#maxAgeFilter').val();
  		var gen = $('#genderFilter').val();
  		var id = $('#eventIdInput').val();
- 		console.log("min: "+min+" max: "+" gen: "+gen+" id: "+id);
  		var dataObj = {'event-id':eventID, 'minAge':min, 'maxAge':max, 'gender':gen };
  	    
  		$.ajax({
@@ -52,8 +52,6 @@ $( document ).ready(function() {
             tpye: "GET",
             data : dataObj,
             success : function(data, status, xhr) {
-            	console.log("success AJAX");
-//             	console.log("GENDER FIRST: "+JSON.stringify(${genderData}));
 				var newGen =eval("("+xhr.getResponseHeader('genderGraph')+")");
 				var newAge = eval("("+xhr.getResponseHeader('ageGraph')+")");
 				var newTag = eval("("+xhr.getResponseHeader('tagGraph')+")");
@@ -61,13 +59,6 @@ $( document ).ready(function() {
             	recreateGraphs(newGen, newAge, newTag, newWatch);
             }
         });
-//  	    $.get( "/individual-event", data, function( resp ) {
-//  	    	 	console.log("success");
-//  	    	 	recreateGraphs();
-//  	    	 	//location.reload();
-//  	    	}).fail(function() {
-//  	    	    console.log( "error" );
-//  	    	});
  	});
 	
 	$("input, textarea").each(function(){
@@ -92,7 +83,6 @@ var options = {
 		var ageCtx = document.getElementById("age").getContext("2d");
 		var tagsContext = document.getElementById("popularTags").getContext("2d");
 		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
-		// ${genderData} accesses gender data attribute set by the Analytics Servlet
 		genderChart = new Chart(genderCtx).Doughnut(${genderData}, options);
 		ageChart = new Chart(ageCtx).Bar(${ageData}, options);
 		tagChart = new Chart(tagsContext).Bar(${tagData}, options);
@@ -100,22 +90,22 @@ var options = {
 	}
 	
 	function recreateGraphs(gen, age, tag, tagWatch) {
-		console.log("GENDER: "+gen);
 		// Get the context of the canvas element we want to select
 		var genderCtx = document.getElementById("gender").getContext("2d");
 		var ageCtx = document.getElementById("age").getContext("2d");
 		var tagsContext = document.getElementById("popularTags").getContext("2d");
 		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
-		if(genderChart !== -1) {
+		// Destroy previous charts
+		if(genderChart != -1) {
 			genderChart.destroy();
 		}
-		if(ageChart !== -1) {
+		if(ageChart != -1) {
 			ageChart.destroy();
 		}
-		if(tagChart !== -1) {
+		if(tagChart != -1) {
 			tagChart.destroy();
 		}
-		if(watchedChart !== -1) {
+		if(watchedChart != -1) {
 			watchedChart.destroy();
 		}
 		genderChart = new Chart(genderCtx).Doughnut(gen, options);
@@ -456,7 +446,6 @@ function getDateString(date) {
 	<jsp:body>
 		<div class="column-right">
 			<div class="filterDiv">
-			<form>
 		  	<input type="hidden" id="eventIdInput" name="event-id" value="${eventId}" />
 			<table style="width: 99%; margin-bottom: 1em">
 			  <tr style="width: 99%">
@@ -466,13 +455,13 @@ function getDateString(date) {
 			  </tr>
 			  <tr style="width: 99%">
 	    		<td style="width: 10%; text-align: center">
-	    			<select id="minAgeFilter" name="minAge" form="filterForm"></select>
+	    			<select id="minAgeFilter" name="minAge"></select>
 	    		</td>
 	    		<td style="width: 10%; text-align: center">
-	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
+	    			<select id="maxAgeFilter" name="maxAge"></select>
 	    		</td>
 	    		<td style="width: 10%; text-align: center">
-	    			<select id="genderFilter" name="gender" form="filterForm">
+	    			<select id="genderFilter" name="gender">
 	    				<option value="all">All</option>
 	    				<option value="male">Male</option>
 	    				<option value="female">Female</option>
@@ -482,11 +471,10 @@ function getDateString(date) {
 			  </tr>
 			  <tr>
 	    		<td align="center" colspan="3" style="width: 10%; text-align: center">
-	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="button" value="Filter" form="filterForm" />
+	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="button" value="Filter"/>
 	    		</td>
 	    	  </tr>
 			</table>
-			</form>
 		</div>
 			<div id="tabNavBar">
 	 			<!-- These comments are required to fix html bug which moves tab down to next line -->

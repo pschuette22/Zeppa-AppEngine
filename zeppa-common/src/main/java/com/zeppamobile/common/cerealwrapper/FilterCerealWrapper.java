@@ -28,6 +28,10 @@ public class FilterCerealWrapper extends CerealWrapper {
 		UNDEFINED
 	}
 	
+	private long vendorId;
+	
+	private double maxDistance;
+	
 	private int maxAge;
 	
 	private int minAge;
@@ -39,8 +43,10 @@ public class FilterCerealWrapper extends CerealWrapper {
 	private long endDate;
 	
 
-	public FilterCerealWrapper(int maxAge, int minAge, Gender gender, long startDate, long endDate) {
+	public FilterCerealWrapper(long vendorId, double maxDistance, int maxAge, int minAge, Gender gender, long startDate, long endDate) {
 		super();
+		this.vendorId = vendorId;
+		this.maxDistance = maxDistance;
 		this.maxAge = maxAge;
 		this.minAge = minAge;
 		this.gender = gender;
@@ -49,6 +55,22 @@ public class FilterCerealWrapper extends CerealWrapper {
 	}
 	
 	public FilterCerealWrapper() {}
+
+	public long getVendorId() {
+		return vendorId;
+	}
+
+	public void setVendorId(long vendorId) {
+		this.vendorId = vendorId;
+	}
+
+	public double getMaxDistance() {
+		return maxDistance;
+	}
+
+	public void setMaxDistance(double maxDistance) {
+		this.maxDistance = maxDistance;
+	}
 
 	public int getMaxAge() {
 		return maxAge;

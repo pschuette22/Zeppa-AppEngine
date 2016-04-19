@@ -476,7 +476,9 @@ public class AnalyticsServlet extends HttpServlet {
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("over60")) {
 			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
 		}
-		FilterCerealWrapper filter = new FilterCerealWrapper(max, min, g, start, end);
+		// TODO: add in vendor id and max distance (in km) you want to extend user search to
+		// Max distance is set to 20 by default right now
+		FilterCerealWrapper filter = new FilterCerealWrapper(-1,20, max, min, g, start, end);
 		return filter;
 	}
 	

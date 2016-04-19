@@ -15,45 +15,27 @@ public class MetaTag {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
+	private String indexedWordId;
 	
 	@Persistent
-	private String indexedWord;
-	
-	@Persistent
-	private List<String> synonymIndexWords;
+	private List<String> synonymIndexWordIds;
 	
 	@Persistent
 	private List<Key> entities;
 	
 	
-	public MetaTag(String indexWord, List<String> synonymIndexWords) {
-		this.indexedWord = indexWord;
-		this.synonymIndexWords = synonymIndexWords;
+	public MetaTag(String indexedWordId, List<String> synonymIndexWordIds) {
+		this.indexedWordId = indexedWordId;
+		this.synonymIndexWordIds = synonymIndexWordIds;
 		this.entities = new ArrayList<Key>();
 	}
 
-	
-	public Key getKey() {
-		return key;
-	}
-	
-	public String getIndexedWord() {
-		return indexedWord;
+	public String getIndexedWordId() {
+		return indexedWordId;
 	}
 
-	public void setIndexedWord(String indexedWord) {
-		this.indexedWord = indexedWord;
-	}
-
-
-	public List<String> getSynonymIndexWords() {
-		return synonymIndexWords;
-	}
-
-
-	public void setSynonymIndexWords(List<String> synonymIndexWords) {
-		this.synonymIndexWords = synonymIndexWords;
+	public List<String> getSynonymIndexWordIds() {
+		return synonymIndexWordIds;
 	}
 
 	public List<Key> getEntities() {

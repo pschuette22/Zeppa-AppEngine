@@ -55,7 +55,6 @@ var watchedChart = -1;
 	            tpye: "GET",
 	            data : dataObj,
 	            success : function(data, status, xhr) {
-	            	console.log("success AJAX");
 					var newGen =eval("("+xhr.getResponseHeader('genderGraph')+")");
 					var newAge = eval("("+xhr.getResponseHeader('ageGraph')+")");
 					var newTag = eval("("+xhr.getResponseHeader('tagGraph')+")");

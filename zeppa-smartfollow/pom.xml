@@ -1,16 +1,20 @@
-<?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+	<packaging>war</packaging>
+	<artifactId>zeppa-smartfollow</artifactId>
+
 	<parent>
 		<groupId>com.zeppamobile.appengine</groupId>
 		<artifactId>zeppa</artifactId>
 		<version>1</version>
 	</parent>
-	<artifactId>zeppa-smartfollow</artifactId>
-	<packaging>war</packaging>
 
+	<!-- Declare local repository for proprietary libraries -->
+	<!-- <repositories> <repository> <id>libs</id> <name>libs</name> <url>file:${project.basedir}/libs</url> 
+		</repository> </repositories> -->
 
 	<dependencies>
 
@@ -26,6 +30,19 @@
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-1.0-sdk</artifactId>
 			<version>${appengine.target.version}</version>
+		</dependency>
+
+		<!-- Google Cloud Storage client library -->
+		<dependency>
+			<groupId>com.google.appengine.tools</groupId>
+			<artifactId>appengine-gcs-client</artifactId>
+			<version>RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-storage</artifactId>
+			<version>v1-rev62-1.21.0</version>
 		</dependency>
 
 		<dependency>
@@ -44,7 +61,7 @@
 		<dependency>
 			<groupId>com.google.appengine</groupId>
 			<artifactId>appengine-api-labs</artifactId>
-			<version>1.9.28</version>
+			<version>${appengine.target.version}</version>
 		</dependency>
 
 		<dependency>
@@ -56,6 +73,13 @@
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
 			<version>1.20.0</version>
+			<exclusions>
+				<!-- creates conflicts with another guava version in appengine-gcs-client -->
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava-jdk5</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -79,12 +103,109 @@
 		<dependency>
 			<groupId>net.sf.extjwnl</groupId>
 			<artifactId>extjwnl</artifactId>
-			<version>1.9</version>
+			<version>1.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.extjwnl</groupId>
 			<artifactId>extjwnl-data-wn31</artifactId>
 			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.extjwnl</groupId>
+			<artifactId>extjwnl-utilities</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.collections</groupId>
+			<artifactId>google-collections</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kie.modules</groupId>
+			<artifactId>org-junit</artifactId>
+			<version>6.1.0.CR1</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.trove4j</groupId>
+			<artifactId>trove4j</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.4.1</version>
+			<classifier>models</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>edu.mit</groupId>
+			<artifactId>jwi</artifactId>
+			<version>2.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.collections</groupId>
+			<artifactId>collections-generic</artifactId>
+			<version>4.01</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+		</dependency>
+
+		<!-- jlt library (ADW dependency) -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>it.uniroma1.lcl</groupId> -->
+<!-- 			<artifactId>jlt</artifactId> -->
+<!-- 			<version>2.0.0</version> -->
+<!-- 		</dependency> -->
+
+		<dependency> 
+			<groupId>in-project</groupId> 
+			<artifactId>jlt</artifactId> 
+			<scope>system</scope> 
+			<version>2.0.0</version> 
+			<systemPath>${basedir}/libs/jlt-2.0.0.jar</systemPath> 
+		</dependency>
+
+		<!-- Necessary for jwktl -->
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+
+		<!-- https://www.ukp.tu-darmstadt.de/software/jwktl/ used to identify dictionary 
+			definitions of words -->
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.jwktl</groupId>
+			<artifactId>jwktl</artifactId>
+			<version>1.0.1</version>
 		</dependency>
 
 		<!-- Testing Dependencies -->
@@ -107,15 +228,25 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 				</plugin>
 				<plugin>
 					<groupId>com.google.appengine</groupId>
 					<artifactId>appengine-maven-plugin</artifactId>
+					<version>${appengine.target.version}</version>
+					<configuration>
+						<enableJarClasses>false</enableJarClasses>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
+					<version>2.3</version>
 					<configuration>
 						<archiveClasses>true</archiveClasses>
 						<webResources>
@@ -130,5 +261,11 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.google.appengine</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 </project>

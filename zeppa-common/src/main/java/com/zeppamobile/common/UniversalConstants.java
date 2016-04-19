@@ -61,7 +61,20 @@ public class UniversalConstants {
 	 * Authorization Scopes
 	 */
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
+	
+	
+	/*
+	 * Request keys used when making calls between modules
+	 */
+	public static final String kREQ_TAG_TEXT = "tag-text";	
 
+	
+	/*
+	 * JSON object argument keys
+	 */
+	public static final String kJSON_INDEX_WORD_LIST = "index-word-list";
+	public static final String kJSON_INDEX_WORD_SYNS_MAP = "index-word-syns-map";
+	
 	/*
 	 * Param keys are for parameters that are to be passed into calls
 	 */
@@ -111,5 +124,9 @@ public class UniversalConstants {
 	 */
 	public static final String PRIVAKEY_CLIENT_ID = "047b5731c6fe4fc79d1eda8dae46e4d2";
 	public static final String PRIVAKEY_CLIENT_SECRET = "clglJQEdtMw2794KI53e0q9SYHJ5_pCCy1sZOF-P0";
+	public static final double WEIGHT_NOUN = .3;
+	public static final double WEIGHT_VERB = .5;
+	public static final double WEIGHT_ADVERB = .1;
+	public static final double WEIGHT_ADJECTIVE = .1;
 
 }

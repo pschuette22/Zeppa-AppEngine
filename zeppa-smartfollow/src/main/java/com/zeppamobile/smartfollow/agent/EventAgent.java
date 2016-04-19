@@ -11,7 +11,7 @@ import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
  * @author Pete Schuette
  *
  */
-public class EventAgent {
+public class EventAgent extends BaseAgent {
 
 	private EventCerealWrapper event;
 

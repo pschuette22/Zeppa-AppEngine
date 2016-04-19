@@ -5,6 +5,7 @@
 
 # Package Files #
 *.jar
+!**/lib/jlt-2.0.0.jar
 *.war
 *.ear
 
@@ -20,12 +21,10 @@ hs_err_pid*
 target/
 build/
 datanucleus.log
-datanucleus.log
 .DS_STORE
 out
 
 run.cmd
 
-datanucleus.log
 **/*.jpg
 **/*.ucls

@@ -18,42 +18,47 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import net.sf.extjwnl.JWNLException;
-import net.sf.extjwnl.data.IndexWord;
-import net.sf.extjwnl.data.IndexWordSet;
 import net.sf.extjwnl.data.POS;
-import net.sf.extjwnl.data.PointerType;
-import net.sf.extjwnl.data.Synset;
-import net.sf.extjwnl.data.list.PointerTargetNode;
-import net.sf.extjwnl.data.list.PointerTargetNodeList;
-import net.sf.extjwnl.data.relationship.Relationship;
-import net.sf.extjwnl.data.relationship.RelationshipFinder;
-import net.sf.extjwnl.data.relationship.RelationshipList;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 
 import com.zeppamobile.common.cerealwrapper.EventTagCerealWrapper;
 import com.zeppamobile.common.report.SmartfollowReport;
-import com.zeppamobile.smartfollow.Constants;
 import com.zeppamobile.smartfollow.Utils;
+import com.zeppamobile.smartfollow.comparewords.WordInfo;
 import com.zeppamobile.smartfollow.nlp.POSFactory;
+import com.zeppamobile.smartfollow.task.CompareTagsTask;
+import com.zeppamobile.smartfollow.task.CompareWordsTask;
 
+/**
+ * 
+ * @author Pete Schuette
+ * 
+ *         This agent is used to calculate the similarity between Tags It
+ *         employs Java's Word Net Library (Princeton), OpenNLP (Source
+ *         Forge), and the ADW Library (Pilehvar)
+ * 
+ */
 public class TagAgent extends BaseAgent {
 
 	private EventTagCerealWrapper tag;
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
+	private ServletContext context;
 
 	// Parse the tag
-	private List<TagPart> parsedTagParts = new ArrayList<TagPart>();
+	private List<WordInfo> parsedTagParts = new ArrayList<WordInfo>();
 
-	public TagAgent(ServletContext context,
-			EventTagCerealWrapper tag, SmartfollowReport report) {
+	public TagAgent(ServletContext context, EventTagCerealWrapper tag,
+			SmartfollowReport report) {
+		this.context = context;
+
 		this.tag = tag;
 		this.report = report;
-		
+
 		// Log progress
 		log("Initializing Agent for " + tag.getTagText());
-		
+
 		/*
 		 * Try to turn the tag into a machine-readable sentence This also
 		 * initializes convertedTagWords and posTags If an exception is throw...
@@ -187,10 +192,11 @@ public class TagAgent extends BaseAgent {
 	 * 
 	 * @throws JWNLException
 	 */
-	private void dissectText(ServletContext context, String text) throws JWNLException {
+	private void dissectText(ServletContext context, String text)
+			throws JWNLException {
 		// First, compound text to list of words, numbers and character strings
 		List<String> stringList = Utils.convertTextToStringList(text);
-		
+
 		// Convert to dictionary words and add to list of words
 		for (String s : stringList) {
 
@@ -210,33 +216,31 @@ public class TagAgent extends BaseAgent {
 			}
 
 		}
-		
+
 		/*
 		 * Quickly log progress
 		 */
 		StringBuilder builder = new StringBuilder();
 		builder.append("Converted tag to readable words: ");
 		Iterator<String> iterator = convertedTagWords.iterator();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			builder.append(iterator.next());
-			if(iterator.hasNext()){
+			if (iterator.hasNext()) {
 				builder.append(", ");
 			}
 		}
 		log(builder.toString());
-		
-
 
 		/*
 		 * Try to get the model
 		 */
 		POSFactory factory = new POSFactory(context);
 		POSModel model = factory.buildPOSModel();
-		
-		if(model == null){
+
+		if (model == null) {
 			System.out.println("Model is null");
 		}
-		
+
 		POSTaggerME tagger = new POSTaggerME(model);
 		// gets tag parts of speech
 		String[] tagWordArray = new String[convertedTagWords.size()];
@@ -250,8 +254,7 @@ public class TagAgent extends BaseAgent {
 			for (int i = 0; i < convertedTagWords.size(); i++) {
 				String word = convertedTagWords.get(i);
 				String posT = posTags[i];
-				log("Word: " + word + " - Part Of Speech: "
-						+ posT);
+				log("Word: " + word + " - Part Of Speech: " + posT);
 				POS pos = null;
 
 				// Assign part of speech or keep it null
@@ -265,7 +268,7 @@ public class TagAgent extends BaseAgent {
 				} else if (posT.startsWith("VB")) {
 					pos = POS.VERB;
 				}
-				parsedTagParts.add(new TagPart(word, pos));
+				parsedTagParts.add(new WordInfo(word, pos));
 
 			}
 
@@ -285,67 +288,19 @@ public class TagAgent extends BaseAgent {
 	 * @return calculatedSimilarity as a decimal percent
 	 */
 	public double calculateSimilarity(TagAgent tag) {
-		double similarity = 0;
 		log("Calculating similarity");
-		if (getTagText().equalsIgnoreCase(tag.getTagText())) {
+		if (this.getTagText().equalsIgnoreCase(tag.getTagText())) {
 			// Tags are the same, ignoring case. Very likely talking about the
 			// same thing therefore completely similar
-			System.out.print(getTagText() + " is the same as "
+			System.out.println(getTagText() + " is the same as "
 					+ tag.getTagText());
-			similarity = 1;
+			return 1;
 		} else {
-			// Take the average of each part of the dissected tags match count
-			try {
-				// iterate through each part of a tag
-
-				double similarityWeight = 0;
-				log("Tag1 Parts: " + parsedTagParts.toString());
-				log("Tag2 Parts: "
-						+ tag.parsedTagParts.toString());
-
-				for (TagPart p : parsedTagParts) {
-					// compare it to each part of another tag
-					for (TagPart p2 : tag.parsedTagParts) {
-
-						log("Comparing " + p.word + " to "
-								+ p2.word);
-
-						double sim = p.calculatedMatch(p2);
-						// If we can calculate their similarity with some degree
-						// of certainty,
-						// add and average
-						log("Calculated similarity: " + sim);
-						if (sim >= 0) {
-							// Tags have made a valid comparison of content
-
-							// Quickly average adding this calculation
-							double matchWeight = p.getCalculatedMatchWeight(p2);
-							similarity += sim * matchWeight;
-							similarityWeight += matchWeight;
-
-							log("Total similarity " + similarity);
-							log("Total similarity weight "
-									+ similarityWeight);
-
-						}
-
-					}
-				}
-
-				if (similarityWeight > 0) {
-					similarity /= similarityWeight;
-				}
-			} catch (Exception e) {
-				/*
-				 * Something went wrong. return calculations make so far
-				 */
-				if (similarity == 0) {
-					similarity = -1;
-				}
-			}
-
+			// Fire up a new task
+			CompareTagsTask task = new CompareTagsTask(this.context, this.parsedTagParts, tag.parsedTagParts);
+			task.execute();
+			return task.getSimilarity();
 		}
-		return similarity;
 	}
 
 	/**
@@ -357,480 +312,6 @@ public class TagAgent extends BaseAgent {
 		return tag.getTagText();
 	}
 
-	/**
-	 * 
-	 * @author Pete Schuette
-	 * 
-	 *         This class represents a word in a tag
-	 *
-	 */
-	private class TagPart {
-
-		private String word;
-		private POS pos;
-		// Relatively high probability this value is null
-		private IndexWord indexWord = null;
-		private IndexWordSet indexWordSet = null;
-
-		public TagPart(String word, POS pos) {
-
-			// Make non-noun words lowercase for library readability
-			if (Character.isLetter(word.charAt(0))
-					&& (pos == null || pos != POS.NOUN)) {
-				word = Utils.toLowercase(word);
-			}
-
-			this.word = word;
-			this.pos = pos;
-			try {
-				// If there is a defined part of speech, try to get the synset
-				if (pos != null) {
-					// Synset synset = null;
-					// if (pos == POS.ADJECTIVE) {
-					// synset = new AdjectiveSynset(Constants.getDictionary());
-					// } else if (pos == POS.VERB) {
-					// synset = new VerbSynset(Constants.getDictionary());
-					// } else {
-					//
-					// synset = new Synset(Constants.getDictionary(), pos);
-					// }
-
-					indexWord = Constants.getDictionary().lookupIndexWord(pos,
-							word);
-
-				}
-
-			} catch (JWNLException e) {
-				e.printStackTrace();
-				// all good, synset is null;
-				// TODO: Log word and reason
-
-			}
-
-		}
-
-		/**
-		 * Get the weight of calculated matches
-		 * 
-		 * @param part
-		 *            - @TagPart used to calculate the match
-		 * @return double between 0 and 1;
-		 */
-		public double getCalculatedMatchWeight(TagPart part) {
-			if (pos == null || part.pos == null || indexWord == null
-					|| part.indexWord == null) {
-				return .2;
-			} else if (pos.equals(part.pos)) {
-				// Same part of speech
-				return getPOSWeight(pos);
-			} else {
-				return (getPOSWeight(pos) * getPOSWeight(part.pos) *.5);
-			}
-
-		}
-
-		/**
-		 * My determined weights of different parts of speech when determining
-		 * this
-		 * 
-		 * @param pos
-		 * @return
-		 */
-		private double getPOSWeight(POS pos) {
-			if (pos.equals(POS.NOUN)) {
-				return .9;
-			} else if (pos.equals(POS.VERB)) {
-				return .6;
-			} else if (pos.equals(POS.ADVERB)) {
-				return .3;
-			} else if (pos.equals(POS.ADJECTIVE)) {
-				return .5;
-			} else
-				return .2;
-		}
-		
-
-		/**
-		 * Calculates this part of a tag with another
-		 * 
-		 * @param part
-		 *            - TagPart to compare to this one
-		 * @return percent similarity as decimal (-1 for incomparable)
-		 */
-		public double calculatedMatch(TagPart part) {
-			// negative number indicates it couldn't be calculated
-
-			// This is default and error value
-			double calc = -1;
-
-			// first check to see if they're the same part of speech
-			try {
-				if (pos == null && part.pos == null) {
-					// Both null
-					// If they're similar enough, we'll compare
-					// Get the first char to make comparison easier
-					char ch1 = word.charAt(0);
-					char ch2 = part.word.charAt(0);
-					if (!Character.isLetterOrDigit(ch1)
-							&& !Character.isLetterOrDigit(ch2)) {
-						// This might be absolutely worthless
-
-						// identify symbols
-						// Only compare if they're multiple characters
-						if (word.length() > 1 || part.word.length() > 1) {
-							calc = Utils.stringSimilarityCalculation(word,
-									part.word);
-						}
-
-					} else if (Character.isDigit(ch1) && Character.isDigit(ch2)) {
-						// Two numbers. Try to cast them
-						int i1 = Integer.valueOf(word);
-						int i2 = Integer.valueOf(part.word);
-						// Average them. If it was a year, could be relatively
-						// similar
-						// The smaller the difference, the higher the similarity
-						// 2015 and 2016 have 4030/4031 similarity
-						// 1 and 100 have 2/101
-						// 2 and 3 have 4/5
-						calc = 1 - (Math.abs(i1 - i2) / (i1 + i2));
-					} else if (Character.isLetter(ch1)
-							&& Character.isLetter(ch2)) {
-						// Two undefined words
-						if (word.length() > 4 && part.word.length() > 4) {
-							// Don't compare words that aren't at least 5
-							// letters
-							// this eliminates words like 'the' and 'that'
-							calc = Utils.stringSimilarityCalculation(word,
-									part.word);
-						}
-
-					} // else, they're not similar at all
-
-				} else if (pos == null || part.pos == null) {
-					// One has defined part of speech and the other does not
-					// Ignore this case
-				} else if (pos.equals(part.pos)) {
-					// Same part of speech
-					if (word.equalsIgnoreCase(part.word)) {
-						// Same part of speech and word. completely the same
-						calc = 1;
-
-					} else if (indexWord != null && part.indexWord != null) {
-
-						// Check for immediate relationship
-						if (RelationshipFinder.getImmediateRelationship(
-								indexWord, part.indexWord) > 0
-								|| RelationshipFinder.getImmediateRelationship(
-										part.indexWord, indexWord) > 0) {
-							log(indexWord.getLemma() + " and "
-									+ part.indexWord.getLemma()
-									+ " are synonyms");
-							return 1;
-						}
-
-						/*
-						 * Find usage relationships
-						 */
-
-						List<PointerType> allTypes = PointerType
-								.getAllPointerTypesForPOS(pos);
-
-						calc = compareIndexWordsForPointerTypes(indexWord,
-								part.indexWord, allTypes);
-
-//					} else if (pos == POS.NOUN) {
-//						// Couple of Nouns without index check for similarity
-//
-//						/*
-//						 * 
-//						 * Only Calculate similarity by degrees of separation
-//						 * for longer nouns. If it is 3 letters or less, it's
-//						 * likely an acronym or something like "me" and leaves
-//						 * too much margin for error.
-//						 */
-//						if (word.length() > 3 && part.word.length() > 3) {
-//							calc = 0;
-//							if (word.contains(part.word)
-//									|| part.word.contains(word)) {
-//								// One word contains the other. They're probably
-//								// relatively similar
-//								calc += .4;
-//							}
-//
-//							
-//							double stringSimilarity = Utils.stringSimilarityCalculation(word,
-//									part.word);
-//							if(stringSimilarity > .2){
-//							calc += (1 - calc)
-//									* stringSimilarity;
-//							}
-//
-//							if(calc < .2){
-//								calc = -1;
-//							}
-//							
-//						}
-
-					}
-
-				} else if (indexWord != null && part.indexWord != null) {
-
-					/*
-					 * Words are indexed but different parts of speech. Try to
-					 * find relationships, throw out if none found
-					 */
-
-					List<PointerType> relevantTypes = new ArrayList<PointerType>();
-					for (PointerType p1Type : PointerType
-							.getAllPointerTypesForPOS(pos)) {
-						if (p1Type.appliesTo(part.pos)) {
-							relevantTypes.add(p1Type);
-						}
-					}
-
-					/*
-					 * Compare indexed words to calculate similarity
-					 */
-					calc = compareIndexWordsForPointerTypes(indexWord,
-							part.indexWord, relevantTypes);
-
-					if (calc <= 0) {
-						// If there is no similarity here, try comparing the
-						// words with other relevant parts of speech
-						/*
-						 * If the index word sets for each word lemma are null,
-						 * look them up
-						 */
-						if (indexWordSet == null) {
-							indexWordSet = Constants.getDictionary()
-									.lookupAllIndexWords(indexWord.getLemma());
-						}
-
-						if (part.indexWordSet == null) {
-							part.indexWordSet = Constants.getDictionary()
-									.lookupAllIndexWords(
-											part.indexWord.getLemma());
-						}
-
-						// Return the comparison
-						return compareIndexWordSets(indexWordSet,
-								part.indexWordSet);
-
-					}
-
-				}
-
-			} catch (Exception e) {
-
-				// A multitude of issues could have happened.
-				e.printStackTrace();
-				log("Exception");
-			}
-
-			return calc;
-		}
-
-		/**
-		 * Compare two indexed words based on a relationships of given pointer
-		 * types
-		 * 
-		 * @param word1
-		 * @param word2
-		 * @param pointerTypes
-		 * @return calculated similarity as a decimal between 0 and 1
-		 * @throws JWNLException
-		 * @throws CloneNotSupportedException
-		 */
-		private double compareIndexWordsForPointerTypes(IndexWord word1,
-				IndexWord word2, List<PointerType> pointerTypes)
-				throws CloneNotSupportedException, JWNLException {
-			double similarity = 0;
-
-			List<Synset> set1 = word1.getSenses();
-			List<Synset> set2 = word2.getSenses();
-
-			if (set1.isEmpty() || set2.isEmpty() || pointerTypes.isEmpty()) {
-				similarity = -1;
-			} else {
-				/*
-				 * Otherwise, perform calculations
-				 */
-
-				// Iterate through both lists and figure out the highest
-				// similarity
-				for (int i = 0; i < set1.size() && i < 5; i++) {
-					Synset s1 = set1.get(i);
-					for (int j = 0; j < set2.size() && j < 5; j++) {
-						Synset s2 = set2.get(j);
-
-						// Assign weight based on how common this form of word
-						// is
-						// double weight = Math.pow(.95, (i+j))*.9;
-
-						double tempSimilarity = 0;
-						
-						/*
-						 * Iterate through all pointer types and try to find
-						 * relationships Calculate strength of these
-						 * relationships
-						 */
-						for (PointerType type : pointerTypes) {
-							RelationshipList relationships = RelationshipFinder
-									.findRelationships(s1, s2, type);
-
-							if (relationships.isEmpty()) {
-								continue;
-							}
-
-							// double relationshipWeight = getPOSWeight(s1
-							// .getPOS()) * getPOSWeight(s2.getPOS());
-							double similarityCalc = calculatedRelationshipsListStrength(
-									relationships, .9);
-
-							if (similarityCalc > .1) {
-								tempSimilarity+=(similarityCalc*(1-tempSimilarity));
-							}
-
-							if (tempSimilarity >= .95) {
-								return .95;
-							}
-
-						}
-						
-						// Only take the highest similarity calculation
-						if(similarity < tempSimilarity) {
-							similarity = tempSimilarity;
-						}
-
-					}
-				}
-			}
-
-			return similarity;
-		}
-
-		/**
-		 * Given a list of relationships between synsets, determine their
-		 * relational strength
-		 * 
-		 * @return percent strength between 0 and 1 where 0 is no strength and 1
-		 *         is completely the same
-		 */
-		private double calculatedRelationshipsListStrength(
-				RelationshipList relationships, double relationshipWeight) {
-			double strength = 0;
-
-			/*
-			 * Create a map of all pointers references with their minimum depth
-			 * of reference
-			 */
-
-			// log("Calculating relationship list strength");
-			try {
-				Iterator<Relationship> iterator = relationships.iterator();
-				
-				/*
-				 * Quick loop to find the lowest depth of a relationship
-				 */
-				double depth = -1;
-				while (iterator.hasNext()) {
-
-					double temp = iterator.next().getDepth();
-
-					if(depth < 0 || depth > temp) {
-						depth = temp;
-					}
-					
-					if(depth == 1){
-						break;
-					}
-					
-				}
-				
-				strength = Math.pow(relationshipWeight, depth);
-
-			} catch (NullPointerException e) {
-				// Bad list was passed in, no strength
-			}
-
-			return strength;
-		}
-
-		/**
-		 * Calculate other forms of this words similarity;
-		 * 
-		 * @param wordSet1
-		 * @param wordSet2
-		 * @return
-		 */
-		private double compareIndexWordSets(IndexWordSet wordSet1,
-				IndexWordSet wordSet2) {
-			double similarity = 0;
-
-			if (wordSet1 != null && wordSet2 != null) {
-
-				/*
-				 * Double loop through both wordsets to find ones with a
-				 * matching part of speech
-				 */
-				for (IndexWord indexWord1 : wordSet1.getIndexWordCollection()) {
-					for (IndexWord indexWord2 : wordSet2
-							.getIndexWordCollection()) {
-						if (indexWord1.getPOS().equals(indexWord2.getPOS())) {
-							/*
-							 * When a matching part of speech is found,
-							 * Calculate similarity
-							 */
-							try {
-								
-								
-								double calculatedSimilarity = compareIndexWordsForPointerTypes(
-										indexWord1,
-										indexWord2,
-										PointerType
-												.getAllPointerTypesForPOS(indexWord1
-														.getPOS()));
-								if (similarity < calculatedSimilarity) {
-									similarity = calculatedSimilarity;
-								}
-
-							} catch (CloneNotSupportedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (JWNLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-						}
-
-					}
-				}
-			}
-
-			return similarity;
-		}
-
-		/**
-		 * 
-		 * @param relationship
-		 */
-		private void printPointerRelationshipInfo(Relationship relationship) {
-			log("=======================");
-			log(relationship.getType().toString()
-					+ " relationship with depth: " + relationship.getDepth());
-			PointerTargetNodeList nodes = relationship.getNodeList();
-			Iterator<PointerTargetNode> iterator = nodes.iterator();
-			log("Pointer Target Nodes: ");
-			while (iterator.hasNext()) {
-				PointerTargetNode n = iterator.next();
-				log("	" + n.getPointerTarget().toString());
-
-			}
-
-		}
-
-	}
 
 
 }

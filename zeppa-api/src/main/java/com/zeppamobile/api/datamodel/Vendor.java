@@ -42,9 +42,6 @@ public class Vendor {
 	private Long masterUserId;
 	
 	@Persistent
-	private Boolean isPrivakeyEnabled;
-	
-	@Persistent
 	private BillingInfo billingInfo;
 	
 	@Persistent
@@ -72,7 +69,6 @@ public class Vendor {
 //		obj.put("state", state);
 //		obj.put("zipcode", zipcode);
 		obj.put("masterUserId", masterUserId);
-		obj.put("isPrivakeyEnabled", isPrivakeyEnabled);
 
 
 		return obj;
@@ -102,8 +98,7 @@ public class Vendor {
 	 */
 	public Vendor(Long created, Long updated, String companyName,
 			String addressLine1, String addressLine2, String city,
-			String state, Integer zipcode, Long masterUserId,
-			Boolean isPrivakeyEnabled) {
+			String state, Integer zipcode, Long masterUserId) {
 		super();
 		this.created = created;
 		this.updated = updated;
@@ -114,7 +109,6 @@ public class Vendor {
 //		this.state = state;
 //		this.zipcode = zipcode;
 		this.masterUserId = masterUserId;
-		this.isPrivakeyEnabled = isPrivakeyEnabled;
 	}
 
 	
@@ -222,14 +216,6 @@ public class Vendor {
 
 	public void setMasterUserId(Long masterUserId) {
 		this.masterUserId = masterUserId;
-	}
-
-	public Boolean getIsPrivakeyEnabled() {
-		return isPrivakeyEnabled;
-	}
-
-	public void setIsPrivakeyEnabled(Boolean isPrivakeyEnabled) {
-		this.isPrivakeyEnabled = isPrivakeyEnabled;
 	}
 
 	public Key getKey() {

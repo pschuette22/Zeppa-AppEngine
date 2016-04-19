@@ -15,7 +15,7 @@
 		<servlet-name>CreateInitialFollowsServlet</servlet-name>
 		<url-pattern>/create-initial</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Compare two tags -->
 	<servlet>
 		<servlet-name>CompareTagsServlet</servlet-name>
@@ -26,4 +26,16 @@
 		<url-pattern>/compare-tags</url-pattern>
 	</servlet-mapping>
 
+	<!-- Word Tagger -->
+
+	<servlet>
+		<servlet-name>WordTaggerServlet</servlet-name>
+		<servlet-class>com.zeppamobile.smartfollow.servlet.WordTaggerServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WordTaggerServlet</servlet-name>
+		<url-pattern>/word-tagger</url-pattern>
+	</servlet-mapping>
+	
+	
 </web-app>

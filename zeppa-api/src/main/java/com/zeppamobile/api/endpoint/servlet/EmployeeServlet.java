@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Employee;
+import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 
 /**
  * 
@@ -167,6 +168,9 @@ public class EmployeeServlet extends HttpServlet {
 			employee.setUpdated(System.currentTimeMillis());
 
 			employee.setPrivakeyGuid(privakeyGuid);
+			EmployeeUserInfo userinfo = employee.getUserInfo();
+			userinfo.setIsPrivaKeyRequired(true);
+			employee.setUserInfo(userinfo);
 			
 			// Persist the tag
 			employee = mgr.makePersistent(employee);

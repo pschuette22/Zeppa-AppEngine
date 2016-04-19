@@ -26,7 +26,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>TaskServlet</servlet-name>
-		<url-pattern>/tasks/servlet/</url-pattern>
+		<url-pattern>/tasks/servlet</url-pattern>
 	</servlet-mapping>
 
 	<!-- Notification Building Servlet -->
@@ -43,26 +43,21 @@
 
 
 	<!-- Admin Servlet for events -->
-<!-- 	<servlet>
-		<servlet-name>EventAdminServlet</servlet-name>
-		<servlet-class>com.zeppamobile.api.endpoint.admin.EventAdminServlet
+	<!-- <servlet> <servlet-name>EventAdminServlet</servlet-name> <servlet-class>com.zeppamobile.api.endpoint.admin.EventAdminServlet 
+		</servlet-class> </servlet> <servlet-mapping> <servlet-name>EventAdminServlet</servlet-name> 
+		<url-pattern>/admin/event-servlet/</url-pattern> </servlet-mapping> -->
+
+	<servlet>
+		<servlet-name>StartupServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet
 		</servlet-class>
+		<load-on-startup>0</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>EventAdminServlet</servlet-name>
-		<url-pattern>/admin/event-servlet/</url-pattern>
-	</servlet-mapping> -->
-
-	<servlet> 
-		<servlet-name>StartupServlet</servlet-name> 
-		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet</servlet-class> 
-		<load-on-startup>0</load-on-startup> 
-	</servlet> 
-	<servlet-mapping> 
-		<servlet-name>StartupServlet</servlet-name> 
-		<url-pattern>/_ah/start</url-pattern> 
+		<servlet-name>StartupServlet</servlet-name>
+		<url-pattern>/_ah/start</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Vendor Servlet -->
 	<servlet>
 		<servlet-name>VendorServlet</servlet-name>
@@ -73,7 +68,7 @@
 		<servlet-name>VendorServlet</servlet-name>
 		<url-pattern>/endpoint/vendor-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- VendorEvent Servlet -->
 	<servlet>
 		<servlet-name>VendorEventServlet</servlet-name>
@@ -84,7 +79,7 @@
 		<servlet-name>VendorEventServlet</servlet-name>
 		<url-pattern>/endpoint/vendor-event-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Dashboard Servlet -->
 	<servlet>
 		<servlet-name>DashboardServlet</servlet-name>
@@ -95,9 +90,9 @@
 		<servlet-name>DashboardServlet</servlet-name>
 		<url-pattern>/endpoint/dashboard-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<!-- Tags Servlet -->
-		<servlet>
+	<servlet>
 		<servlet-name>EventTagServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.EventTagServlet
 		</servlet-class>
@@ -105,7 +100,7 @@
 	<servlet-mapping>
 		<servlet-name>EventTagServlet</servlet-name>
 		<url-pattern>/endpoint/event-tag-servlet/</url-pattern>
-	</servlet-mapping>	
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>VendorEventRelationshipServlet</servlet-name>
@@ -115,8 +110,8 @@
 	<servlet-mapping>
 		<servlet-name>VendorEventRelationshipServlet</servlet-name>
 		<url-pattern>/endpoint/event-relationship-servlet/</url-pattern>
-	</servlet-mapping>	
-	
+	</servlet-mapping>
+
 	<!-- Employee Servlet -->
 	<servlet>
 		<servlet-name>EmployeeServlet</servlet-name>
@@ -127,9 +122,9 @@
 		<servlet-name>EmployeeServlet</servlet-name>
 		<url-pattern>/endpoint/employee-servlet/</url-pattern>
 	</servlet-mapping>
-	
-	
-		<!-- Authentication Servlet -->
+
+
+	<!-- Authentication Servlet -->
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.AuthenticationServlet
@@ -149,7 +144,7 @@
 		<servlet-name>ZeppaUserServlet</servlet-name>
 		<url-pattern>/endpoint/user-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>AnalyticsServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.AnalyticsServlet
@@ -159,7 +154,7 @@
 		<servlet-name>AnalyticsServlet</servlet-name>
 		<url-pattern>/endpoint/analytics-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>IndividualEventAnalyticsServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.IndividualEventAnalyticsServlet
@@ -169,7 +164,7 @@
 		<servlet-name>IndividualEventAnalyticsServlet</servlet-name>
 		<url-pattern>/endpoint/individual-analytics-servlet/</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>PrivaKeyServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.PrivaKeyServlet

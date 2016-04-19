@@ -126,9 +126,9 @@ public class UniversalConstants {
 	 */
 	public static final String PRIVAKEY_CLIENT_ID = "047b5731c6fe4fc79d1eda8dae46e4d2";
 	public static final String PRIVAKEY_CLIENT_SECRET = "clglJQEdtMw2794KI53e0q9SYHJ5_pCCy1sZOF-P0";
-	public static final double WEIGHT_NOUN = .3;
+	public static final double WEIGHT_NOUN = .7;
 	public static final double WEIGHT_VERB = .5;
-	public static final double WEIGHT_ADVERB = .1;
+	public static final double WEIGHT_ADVERB = .15;
 	public static final double WEIGHT_ADJECTIVE = .1;
 
 }

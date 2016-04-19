@@ -53,10 +53,12 @@ public class DashboardServlet extends HttpServlet {
 				String ageData = AnalyticsServlet.getDemographicCountAllEvents(userInfo)[1];
 				// Get the chart js string for the tags graph
 				String tagsData = AnalyticsServlet.getTagsAllEvents(userInfo, true);
+				String popularDays = AnalyticsServlet.getPopularDaysAllEvents(userInfo);
 				
 				JSONArray upcomingEvents = getUpcomingEvents(userInfo.getVendorID());
 				JSONArray pastEvents = getPastEvents(userInfo.getVendorID());
 				
+				req.setAttribute("popDaysData", popularDays);
 				req.setAttribute("ageData", ageData);
 				req.setAttribute("tagData", tagsData);
 				req.setAttribute("upcomingEvents", upcomingEvents.toJSONString());

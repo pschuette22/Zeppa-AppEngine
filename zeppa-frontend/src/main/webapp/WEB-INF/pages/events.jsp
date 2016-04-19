@@ -61,28 +61,7 @@ $(document).ready(function() {
 		// other options: "ddmmyyyy" & "yyyymmdd"
 		dateFormat: "mmddyyyy",
 
-		// The key used to select more than one column for multi-column
-		// sorting.
-		sortMultiSortKey: "shiftKey",
-
-		// key used to remove sorting on a column
-		sortResetKey: 'ctrlKey',
-
-		// false for German "1.234.567,89" or French "1 234 567,89"
-		usNumberFormat: true,
-
-		// If true, parsing of all table cell data will be delayed
-		// until the user initializes a sort
-		delayInit: false,
-
-		// if true, server-side sorting should be performed because
-		// client-side sorting will be disabled, but the ui and events
-		// will still be used.
-		serverSideSorting: false,
-
-		// default setting to trigger a resort after an "update",
-		// "addRows", "updateCell", etc has completed
-		resort: true,
+		
 
 		// *** SORT OPTIONS ***
 		// These are detected by default,
@@ -95,11 +74,7 @@ $(document).ready(function() {
 			4: { sorter: false}
 		},
 
-		// ignore case while sorting
-		ignoreCase: true,
-
-		// forces the user to have this/these column(s) sorted first
-		sortForce: null,
+		
 		// initial sort order of the columns, example sortList: [[0,0],[1,0]],
 		// [[columnIndex, sortDirection], ... ]
 		sortList: [ [2,1],[0,0],[1,0] ],
@@ -118,33 +93,7 @@ $(document).ready(function() {
 		// for alphanumeric sorting
 		sortLocaleCompare: false,
 
-		// third click on the header will reset column to default - unsorted
-		sortReset: false,
-
-		// restart sort to "sortInitialOrder" when clicking on previously
-		// unsorted columns
-		sortRestart: false,
-
-		// sort empty cell to bottom, top, none, zero, emptyMax, emptyMin
-		emptyTo: "bottom",
-
-		// sort strings in numerical column as max, min, top, bottom, zero
-		stringTo: "max",
-
-		// extract text from the table
-		textExtraction: {
-			0: function (node, table) {
-				// this is how it is done by default
-				return $(node).attr(table.config.textAttribute) ||
-					node.textContent ||
-					node.innerText ||
-					$(node).text() ||
-					'';
-			},
-			1: function (node) {
-				return $(node).text();
-			}
-		},
+		
 
 		// data-attribute that contains alternate cell text
 		// (used in default textExtraction function)

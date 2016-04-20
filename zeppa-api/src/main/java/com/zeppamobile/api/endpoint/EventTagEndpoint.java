@@ -27,7 +27,8 @@ import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.utils.Utils;
 
-@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = {
+		Constants.WEB_CLIENT_ID })
 public class EventTagEndpoint {
 
 	/**
@@ -40,19 +41,15 @@ public class EventTagEndpoint {
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
 	@ApiMethod(name = "listEventTag", path = "listEventTag")
-	public CollectionResponse<EventTag> listEventTag(
-			@Nullable @Named("filter") String filterString,
-			@Nullable @Named("cursor") String cursorString,
-			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+	public CollectionResponse<EventTag> listEventTag(@Nullable @Named("filter") String filterString,
+			@Nullable @Named("cursor") String cursorString, @Nullable @Named("ordering") String orderingString,
+			@Nullable @Named("limit") Integer limit, @Named("idToken") String tokenString)
+			throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
 		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
+			throw new UnauthorizedException("No matching user found for this token");
 		}
 
 		PersistenceManager mgr = null;
@@ -99,8 +96,7 @@ public class EventTagEndpoint {
 			mgr.close();
 		}
 
-		return CollectionResponse.<EventTag> builder().setItems(execute)
-				.setNextPageToken(cursorString).build();
+		return CollectionResponse.<EventTag> builder().setItems(execute).setNextPageToken(cursorString).build();
 	}
 
 	// /**
@@ -143,19 +139,17 @@ public class EventTagEndpoint {
 	 */
 	@SuppressWarnings("unchecked")
 	@ApiMethod(name = "insertEventTag")
-	public EventTag insertEventTag(EventTag eventtag,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+	public EventTag insertEventTag(EventTag eventtag, @Named("idToken") String tokenString)
+			throws UnauthorizedException {
 
 		if (eventtag.getOwnerId() == null) {
 			throw new NullPointerException("Event Tag Must Specify OwnerId");
 		}
 
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
 		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
+			throw new UnauthorizedException("No matching user found for this token");
 		}
 
 		// This could be unnecessary
@@ -184,23 +178,27 @@ public class EventTagEndpoint {
 
 			// Query for existing user relationships for this user
 			Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
-			query.setFilter("((creatorId=="+user.getId()+")||(subjectId=="+user.getId()+")) && relationshipType=='MINGLING'");
-			
+			query.setFilter("((creatorId==" + user.getId() + ")||(subjectId==" + user.getId()
+					+ ")) && relationshipType=='MINGLING'");
+
 			List<ZeppaUserToUserRelationship> relationships = (List<ZeppaUserToUserRelationship>) query.execute();
-			List<EventTagFollow> tagFollowObjects = new ArrayList<EventTagFollow>();
-			// Iterate through all the relevant relationships to this user and create follow relationship
-			for(ZeppaUserToUserRelationship relationship: relationships) {
-				// Generate this relationship
-				EventTagFollow follow = new EventTagFollow(eventtag, relationship.getOtherUserId(user.getId()));
-				tagFollowObjects.add(follow);
+			if (relationships != null && !relationships.isEmpty()) {
+				List<EventTagFollow> tagFollowObjects = new ArrayList<EventTagFollow>();
+				// Iterate through all the relevant relationships to this user
+				// and create follow relationship
+				for (ZeppaUserToUserRelationship relationship : relationships) {
+					// Generate this relationship
+					EventTagFollow follow = new EventTagFollow(eventtag, relationship.getOtherUserId(user.getId()));
+					tagFollowObjects.add(follow);
+				}
+
+				tagFollowObjects = (List<EventTagFollow>) mgr.makePersistentAll(tagFollowObjects);
 			}
-			
-			tagFollowObjects = (List<EventTagFollow>) mgr.makePersistentAll(tagFollowObjects);
 			txn.commit();
-			
-			// Schedule this tag to be indexed 
+
+			// Schedule this tag to be indexed
 			TaskUtility.scheduleIndexEventTag(eventtag, true);
-			
+
 		} finally {
 			// If transaction was not committed, roll it back
 			if (txn.isActive()) {
@@ -224,15 +222,13 @@ public class EventTagEndpoint {
 	 * @throws OAuthRequestException
 	 */
 	@ApiMethod(name = "removeEventTag")
-	public void removeEventTag(@Named("tagId") Long tagId,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+	public void removeEventTag(@Named("tagId") Long tagId, @Named("idToken") String tokenString)
+			throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
 		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
+			throw new UnauthorizedException("No matching user found for this token");
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
@@ -245,16 +241,14 @@ public class EventTagEndpoint {
 			if (eventtag != null) {
 				txn.begin();
 				// Remove the follow objects
-				long deleted = mgr.newQuery(EventTagFollow.class,
-						"tagId==" + eventtag.getId().longValue())
+				long deleted = mgr.newQuery(EventTagFollow.class, "tagId==" + eventtag.getId().longValue())
 						.deletePersistentAll();
 				// TODO: remove references to this tag in events
 				// Remove the tag
 				mgr.deletePersistent(eventtag);
 				txn.commit();
 			} else {
-				throw new UnauthorizedException(
-						"Cannot delete a tag you don't own");
+				throw new UnauthorizedException("Cannot delete a tag you don't own");
 			}
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {

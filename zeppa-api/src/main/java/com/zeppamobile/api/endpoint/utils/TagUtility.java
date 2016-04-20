@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.jdo.Transaction;
 
 import org.json.simple.JSONObject;
@@ -57,24 +56,23 @@ public class TagUtility {
 
 			ZeppaUser userOwner = null;
 			Vendor vendorOwner = null;
-			
-			if(isUserTag) {
+
+			if (isUserTag) {
 				userOwner = mgr.getObjectById(ZeppaUser.class, tag.getOwnerId());
 			} else {
 				vendorOwner = mgr.getObjectById(Vendor.class, tag.getOwnerId());
 			}
-			
-			
-			
+
 			// Get the indexed words from smartfollow
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(UniversalConstants.kREQ_TAG_TEXT, tag.getTagText());
 
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-smartfollow", "/word-tagger/", params);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-smartfollow", "word-tagger", params);
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
+			connection.setReadTimeout(60*1000);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -99,24 +97,20 @@ public class TagUtility {
 
 					// TODO: Determine the weight based on word POS
 					double totalWeight = 0.0;
-					
-					for(String indexWord: indexWords) {
-						totalWeight+=getIndexWordWeight(indexWord);
+
+					for (String indexWord : indexWords) {
+						totalWeight += getIndexWordWeight(indexWord);
 					}
-					
-					
+
 					// TODO: Add metatag objects pointing to this tag/ user into
 					// the datastore
-					
-					
+
 					for (String indexWord : indexWords) {
 
-						Query query = mgr.newQuery(MetaTag.class, "indexWord=='" + indexWord + "'");
-						query.setUnique(true);
 						MetaTag metatag = null;
 						try {
 							// try to fetch the appropriate metatag
-							metatag = (MetaTag) query.execute();
+							metatag = mgr.getObjectById(MetaTag.class, indexWord);
 
 						} catch (JDOObjectNotFoundException e) {
 							// Catch it not being found quickly
@@ -127,25 +121,22 @@ public class TagUtility {
 						if (metatag == null) {
 							metatag = new MetaTag(indexWord, synsMap.get(indexWord));
 							metatag = mgr.makePersistent(metatag);
-							txn.commit();
 						}
 
 						// Assume the metatag was created or fetched
 						// Create the entity
 						// NOTE: set to .5 weight for all right now. Needs to be
 						// changed ASAP
-						
-						MetaTagEntity entity = new MetaTagEntity(tag.getKey(), (isUserTag?userOwner.getKey():vendorOwner.getKey()), metatag.getKey(),
-								isUserTag, (getIndexWordWeight(indexWord)/totalWeight));
+
+						MetaTagEntity entity = new MetaTagEntity(tag.getId(),
+								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()), isUserTag,
+								(getIndexWordWeight(indexWord) / totalWeight));
 						entity = mgr.makePersistent(entity);
-						txn.commit();
 						metatag.getEntities().add(entity.getKey());
-						txn.commit();
 					}
-					
+
 					// Update the tag so it has index words for computation
 					tag.setIndexedWords(indexWords);
-					txn.commit();
 				}
 			} else {
 				// TODO: reschedule task if recoverable exception
@@ -187,24 +178,24 @@ public class TagUtility {
 	 * @param indexWord
 	 * @return associated weight or 0;
 	 */
-	private static double getIndexWordWeight(String indexWord) {
-		if(indexWord.contains("-n-")){
+	public static double getIndexWordWeight(String indexWord) {
+		if (indexWord.contains("-N-")) {
 			// noun
 			return UniversalConstants.WEIGHT_NOUN;
-		} else if (indexWord.contains("-v-")){
+		} else if (indexWord.contains("-V-")) {
 			// verb
 			return UniversalConstants.WEIGHT_VERB;
-		} else if (indexWord.contains("-r-")){
+		} else if (indexWord.contains("-R-")) {
 			// adverb
 			return UniversalConstants.WEIGHT_ADVERB;
-		} else if (indexWord.contains("-a-")) {
+		} else if (indexWord.contains("-A-")) {
 			// adjective
 			return UniversalConstants.WEIGHT_ADJECTIVE;
 		} else {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Get the persistence manager
 	 * 

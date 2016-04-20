@@ -14,6 +14,14 @@
 <script src="../js/Chart.js/Chart.js"></script>
 
 <script type="text/javascript">
+var genderChart = -1;
+var ageChart = -1;
+var popDaysChart = -1;
+var popEventsChart = -1;
+var popEventsWatchedChart = -1;
+var tagChart = -1;
+var watchedChart = -1;
+
 	$(document).ready(function(){
 		$('#startTimePicker').datetimepicker();
 		$('#endTimePicker').datetimepicker();
@@ -29,23 +37,56 @@
 	});
 	
 	$(document).ready(function(){
-		createGraphs();
+		createGraphs(${genderData}, ${ageData}, ${popDays}, ${popEvents}, ${popEventsWatched}, ${tagData}, ${watchedTagData});
 		populateAgeDropdowns();
-		// When the filter is submitted, retain the values when the page is reloaded
-		$("#filterForm").submit(function() {
-			sessionStorage.setItem("defaultMinAge", document.getElementById("minAgeFilter").value);
-			sessionStorage.setItem("defaultMaxAge", document.getElementById("maxAgeFilter").value);
-			sessionStorage.setItem("defaultGender", document.getElementById("genderFilter").value);
-		});
-		if (sessionStorage.getItem("defaultMinAge")) {
-			   $('#minAgeFilter').val(sessionStorage.getItem("defaultMinAge")); 
-		}
-		if (sessionStorage.getItem("defaultMaxAge")) {
-			   $('#maxAgeFilter').val(sessionStorage.getItem("defaultMaxAge")); 
-		}
-		if (sessionStorage.getItem("defaultGender")) {
-			   $('#genderFilter').val(sessionStorage.getItem("defaultGender")); 
-		}
+		
+		// When the filter button is clicked, get updated info without refreshing
+		$("#filterButton").click(function() {
+			var start = $('#startTimePicker').val();
+			var end = $('#endTimePicker').val();
+			var min = $('#minAgeFilter').val();
+	 		var max = $('#maxAgeFilter').val();
+	 		var gen = $('#genderFilter').val();
+	 		console.log("start: "+start+" end: "+end+" min: "+min+" max: "+" gen: "+gen);
+	 		var dataObj = {'startDate':start, 'endDate':end, 'minAge':min, 'maxAge':max, 'gender':gen };
+	 	    
+	 		$.ajax({
+	            url : '/analytics',
+	            tpye: "GET",
+	            data : dataObj,
+	            success : function(data, status, xhr) {
+					var newGen =eval("("+xhr.getResponseHeader('genderGraph')+")");
+					var newAge = eval("("+xhr.getResponseHeader('ageGraph')+")");
+					var newTag = eval("("+xhr.getResponseHeader('tagGraph')+")");
+					var newWatch = eval("("+xhr.getResponseHeader('tagWatchGraph')+")");
+					var newPopEvents = eval("("+xhr.getResponseHeader('popEventsGraph')+")");
+					var newPopEventsWatch = eval("("+xhr.getResponseHeader('popEventsWatchedGraph')+")");
+					var newPopDays = eval("("+xhr.getResponseHeader('popDaysGraph')+")");
+					if(genderChart != -1) {
+						genderChart.destroy();
+					}
+					if(ageChart != -1) {
+						ageChart.destroy();
+					}
+					if(tagChart != -1) {
+						tagChart.destroy();
+					}
+					if(watchedChart != -1) {
+						watchedChart.destroy();
+					}
+					if(popDaysChart != -1) {
+						popDaysChart.destroy();
+					}
+					if(popEventsChart != -1) {
+						popEventsChart.destroy();
+					}
+					if(popEventsWatchedChart != -1) {
+						popEventsWatchedChart.destroy();
+					}
+	            	createGraphs(newGen, newAge, newPopDays, newPopEvents, newPopEventsWatch, newTag, newWatch);
+	            }
+	 		});
+        });
 	});
 	
 	
@@ -55,6 +96,61 @@
 		//responsive: true,
 		animationEasing: "easeOutQuart"
 	};
+	
+	function createGraphs(genParam, ageParam, daysParam, eventsParam, eventsWatchedParam, tagsParam, tagsWatchedParam) {
+		// Get the context of the canvas element we want to select
+		var genderContext = document.getElementById("gender").getContext("2d");
+		var ageContext = document.getElementById("age").getContext("2d");
+		var daysContext = document.getElementById("dayOfWeek").getContext("2d");
+		var eventsContext = document.getElementById("popularEvents").getContext("2d");
+		var eventsWatchedContext = document.getElementById("popularEventsWatched").getContext("2d");
+		var tagsContext = document.getElementById("popularTags").getContext("2d");
+		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
+		if(genParam != "none") {
+			genderChart = new Chart(genderContext).Doughnut(genParam, options);
+		} else {
+			genderContext.font = "12px Arial";
+			genderContext.fillText("There is no event data for this vendor", 10,50);
+		}
+		if(ageParam.labels.length > 0) {
+			ageChart = new Chart(ageContext).Bar(ageParam, options);
+		} else {
+			ageContext.font = "12px Arial";
+			ageContext.fillText("There is no event data for this vendor", 10,50);
+		}
+		if(daysParam.labels.length > 0) {
+			popDaysChart = new Chart(daysContext).Bar(daysParam, options);
+		} else {
+			daysContext.font = "12px Arial";
+			daysContext.fillText("There are no events for this vendor", 10,50);
+		}
+		if(eventsParam.labels.length > 0) {
+			popEventsChart = new Chart(eventsContext).Bar(eventsParam, options);
+		} else {
+			eventsContext.font = "12px Arial";
+			eventsContext.fillText("There are no events for this vendor", 10,50);
+		}
+		if(eventsWatchedParam.labels.length > 0) {
+			popEventsWatchedChart = new Chart(eventsWatchedContext).Bar(eventsWatchedParam, options);
+		} else {
+			console.log(eventsWatchedParam);
+			eventsWatchedContext.font = "12px Arial";
+			eventsWatchedContext.fillText("There are no events for this vendor", 10,50);
+		}
+		if(tagsParam.labels.length > 0) {
+			tagChart = new Chart(tagsContext).Bar(tagsParam, options);
+		} else {
+			tagsContext.font = "12px Arial";
+			tagsContext.fillText("There are no common tags", 10,50);
+		}
+		if(tagsWatchedParam.labels.length > 0) {
+			watchedChart = new Bar(tagsWatchedContext).Bar(tagsWatchedParam, options);
+		} else {
+			console.log(tagsWatchedParam);
+			tagsWatchedContext.font = "12px Arial";
+			tagsWatchedContext.fillText("No users have watched an event for this vendor",10,50);
+		}
+	}
 	
 	function populateAgeDropdowns() {
 		var min = document.getElementById("minAgeFilter");
@@ -95,52 +191,6 @@
 		over60two.value = "over60";
 		over60two.textContent = "over60";
 		max.appendChild(over60two);
-	}
-	
-	function createGraphs() {
-		// Get the context of the canvas element we want to select
-		var genderContext = document.getElementById("gender").getContext("2d");
-		var ageContext = document.getElementById("age").getContext("2d");
-		var daysContext = document.getElementById("dayOfWeek").getContext("2d");
-		var eventsContext = document.getElementById("popularEvents").getContext("2d");
-		var tagsContext = document.getElementById("popularTags").getContext("2d");
-		var tagsWatchedContext = document.getElementById("watchedTags").getContext("2d");
-		if(${genderData} != "none") {
-			var genderChart = new Chart(genderContext).Doughnut(${genderData}, options);
-		} else {
-			genderContext.font = "12px Arial";
-			genderContext.fillText("There is no event data for this vendor", 10,50);
-		}
-		if(${ageData}.labels.length > 0) {
-			var ageChart = new Chart(ageContext).Bar(${ageData}, options);
-		} else {
-			ageContext.font = "12px Arial";
-			ageContext.fillText("There is no event data for this vendor", 10,50);
-		}
-		if(${popDays}.labels.length > 0) {
-			var popDaysChart = new Chart(daysContext).Bar(${popDays}, options);
-		} else {
-			daysContext.font = "12px Arial";
-			daysContext.fillText("There are no events for this vendor", 10,50);
-		}
-		if(${popEvents}.labels.length > 0) {
-			var popEventsChart = new Chart(eventsContext).Bar(${popEvents}, options);
-		} else {
-			eventsContext.font = "12px Arial";
-			eventsContext.fillText("There are no events for this vendor", 10,50);
-		}
-		if(${tagData}.labels.length > 0) {
-			var tagChart = new Chart(tagsContext).Bar(${tagData}, options);
-		} else {
-			tagsContext.font = "12px Arial";
-			tagsContext.fillText("There are no common tags", 10,50);
-		}
-		if(${watchedTagData}.labels.length > 0) {
-			var watchedChart = new Chart(tagsWatchedContext).Bar(${watchedTagData}, options);
-		} else {
-			tagsWatchedContext.font = "12px Arial";
-			tagsWatchedContext.fillText("No users have watched an event for this vendor",10,50);
-		}
 	}
 	
 </script>
@@ -218,7 +268,6 @@
 	<jsp:body>
 		<!-- <div id="filters">Filters</div> -->
 		<div class="filterDiv">
-		  <form method="GET" id="filterForm">
 			<table style="width:99%">
 			  <tr style="width:99%">
 			    <th style="width:20%; text-align:center">Start Date</th>
@@ -228,23 +277,23 @@
 			    <th style="width:10%; text-align:center">Gender</th>
 			  </tr>
 			  <tr style="width:99%">
-			    <td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate" form="filterForm"/></td>
-	    		<td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate" form="filterForm"/></td>
+			    <td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='startTimePicker' name="startDate"/></td>
+	    		<td style="width:15%; text-align:center"><input type='text' style="display:table-cell;" id='endTimePicker' name="endDate"/></td>
 	    		<td style="width:10%; text-align:center">
-	    			<select id="minAgeFilter" name="minAge" form="filterForm"></select>
+	    			<select id="minAgeFilter" name="minAge"></select>
 	    		</td>
 	    		<td style="width:10%; text-align:center">
-	    			<select id="maxAgeFilter" name="maxAge" form="filterForm"></select>
+	    			<select id="maxAgeFilter" name="maxAge"></select>
 	    		</td>
 	    		<td style="width:10%; text-align:center">
-	    			<select id="genderFilter" name="gender" form="filterForm">
+	    			<select id="genderFilter" name="gender">
 	    				<option value="all">All</option>
 	    				<option value="male">Male</option>
 	    				<option value="female">Female</option>
 	    				<option value="undefined">Undefined</option>
 	    			</select>
 	    		</td>
-	    		<td style="width:10%; text-align:center"><input id="filterButton" type="submit" value="Filter" form="filterForm"/></td>
+	    		<td style="width:10%; text-align:center"><input id="filterButton" type="button" value="Filter"/></td>
 			  </tr>
 			</table>
 		  </form>
@@ -285,7 +334,11 @@
  			<div class="container">
  				<div class="column-center">
  					<canvas id="popularEvents" width="300" height="300"></canvas>
-					<div class="event-desc">Most popular events</div>
+					<div class="event-desc">Most Joined Events</div>
+				</div>
+				<div class="column-center">
+ 					<canvas id="popularEventsWatched" width="300" height="300"></canvas>
+					<div class="event-desc">Most Watched Events</div>
 				</div>
  			</div>
  		</div>

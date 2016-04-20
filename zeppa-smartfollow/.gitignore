@@ -3,8 +3,11 @@
 .settings
 /target/
 /bin/
+<<<<<<< HEAD
 
 # UMLs and corresponding images
+=======
+>>>>>>> da5e4fbe718b08a5531f0156cb475661b3d1c6db
 *.ucls
 *.jpg
 

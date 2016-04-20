@@ -1,7 +1,7 @@
 package com.zeppamobile.api.datamodel;
 
 import java.util.List;
-import com.zeppamobile.api.datamodel.BillingInfo;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -11,43 +11,47 @@ import org.json.simple.JSONObject;
 
 import com.google.appengine.api.datastore.Key;
 
-
 @PersistenceCapable
 public class Vendor {
 
-	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
-	
+
 	@Persistent
 	private Long created;
 
 	@Persistent
 	private Long updated;
-	
+
 	@Persistent
 	private String companyName;
-	
+
 	@Persistent
 	private String companyLogoUrl;
-	
+
 	@Persistent
 	private String placeId;
 
 	@Persistent
 	private Address address;
-	
+
 	@Persistent
 	private Long masterUserId;
-	
+
 	@Persistent
 	private BillingInfo billingInfo;
-	
+
 	@Persistent
 	private List<Bill> billHistory;
 
-	
+	// Store location for simple querying purposes
+	@Persistent
+	private Double latitude;
+
+	@Persistent
+	private Double longitude;
+
 	/**
 	 * Convert this object to a json object
 	 * 
@@ -63,25 +67,23 @@ public class Vendor {
 
 		obj.put("companyName", companyName);
 		obj.put("companyLogoUrl", companyLogoUrl);
-//		obj.put("addressLine1", addressLine1);
-//		obj.put("addressLine2", addressLine2);
-//		obj.put("city", city);
-//		obj.put("state", state);
-//		obj.put("zipcode", zipcode);
+		// obj.put("addressLine1", addressLine1);
+		// obj.put("addressLine2", addressLine2);
+		// obj.put("city", city);
+		// obj.put("state", state);
+		// obj.put("zipcode", zipcode);
 		obj.put("masterUserId", masterUserId);
-
 
 		return obj;
 	}
-	
+
 	/**
-	 * Default vendor constructor 
+	 * Default vendor constructor
 	 **/
-	public Vendor()
-	{
+	public Vendor() {
 		super();
 	}
-	
+
 	/**
 	 * Construct a vendor object
 	 * 
@@ -103,15 +105,14 @@ public class Vendor {
 		this.created = created;
 		this.updated = updated;
 		this.companyName = companyName;
-//		this.addressLine1 = addressLine1;
-//		this.addressLine2 = addressLine2;
-//		this.city = city;
-//		this.state = state;
-//		this.zipcode = zipcode;
+		// this.addressLine1 = addressLine1;
+		// this.addressLine2 = addressLine2;
+		// this.city = city;
+		// this.state = state;
+		// this.zipcode = zipcode;
 		this.masterUserId = masterUserId;
 	}
 
-	
 	public Long getCreated() {
 		return created;
 	}
@@ -136,48 +137,46 @@ public class Vendor {
 		this.companyName = companyName;
 	}
 
-//	public String getAddressLine1() {
-//		return addressLine1;
-//	}
-//
-//	public void setAddressLine1(String addressLine1) {
-//		this.addressLine1 = addressLine1;
-//	}
-//
-//	public String getAddressLine2() {
-//		return addressLine2;
-//	}
-//
-//	public void setAddressLine2(String addressLine2) {
-//		this.addressLine2 = addressLine2;
-//	}
-//
-//	public String getCity() {
-//		return city;
-//	}
-//
-//	public void setCity(String city) {
-//		this.city = city;
-//	}
-//
-//	public String getState() {
-//		return state;
-//	}
-//
-//	public void setState(String state) {
-//		this.state = state;
-//	}
-//
-//	public Integer getZipcode() {
-//		return zipcode;
-//	}
-//
-//	public void setZipcode(Integer zipcode) {
-//		this.zipcode = zipcode;
-//	}
+	// public String getAddressLine1() {
+	// return addressLine1;
+	// }
+	//
+	// public void setAddressLine1(String addressLine1) {
+	// this.addressLine1 = addressLine1;
+	// }
+	//
+	// public String getAddressLine2() {
+	// return addressLine2;
+	// }
+	//
+	// public void setAddressLine2(String addressLine2) {
+	// this.addressLine2 = addressLine2;
+	// }
+	//
+	// public String getCity() {
+	// return city;
+	// }
+	//
+	// public void setCity(String city) {
+	// this.city = city;
+	// }
+	//
+	// public String getState() {
+	// return state;
+	// }
+	//
+	// public void setState(String state) {
+	// this.state = state;
+	// }
+	//
+	// public Integer getZipcode() {
+	// return zipcode;
+	// }
+	//
+	// public void setZipcode(Integer zipcode) {
+	// this.zipcode = zipcode;
+	// }
 
-	
-	
 	public Long getMasterUserId() {
 		return masterUserId;
 	}
@@ -221,9 +220,29 @@ public class Vendor {
 	public Key getKey() {
 		return key;
 	}
-	
-	
-	
-	
-	
+
+	public String getPlaceId() {
+		return placeId;
+	}
+
+	public void setPlaceId(String placeId) {
+		this.placeId = placeId;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
 }

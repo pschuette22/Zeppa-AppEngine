@@ -23,7 +23,7 @@ public class ZeppaUser {
 	@Persistent
 	private Long updated;
 
-	@Persistent(embeddedElement = "true", dependent = "true", defaultFetchGroup = "true")
+	@Persistent(embeddedElement = "true", dependent = "true")
 	private ZeppaUserInfo userInfo;
 
 	@Persistent
@@ -66,7 +66,6 @@ public class ZeppaUser {
 	 * Blank Constructor
 	 */
 	public ZeppaUser() {
-		// NOTE: Required for appengine
 	}
 	
 	/**

@@ -15,6 +15,7 @@ import it.uniroma1.lcl.jlt.Configuration;
 
 import com.zeppamobile.smartfollow.AppConfig;
 import com.zeppamobile.smartfollow.StorageUtils;
+
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 
 /**
@@ -30,8 +31,9 @@ public class CompareTagsTask extends SmartFollowTask {
 	// APPENGINE
 	private static String configDir = "zeppa-smartfollow-1.war/WEB-INF/config/";
 	// LOCAL
-//	private static String configDir = "src/main/webapp/WEB-INF/config/";
-	//JLT
+	// private static String configDir = "src/main/webapp/WEB-INF/config/";
+
+	// JLT
 	File jltConfig = new File(configDir, "jlt.properties");
 
 	// Each tag represented as a list of word-parts (POS tagged)
@@ -56,8 +58,8 @@ public class CompareTagsTask extends SmartFollowTask {
 	}
 
 	/**
-	 * Compares tag1 and tag2 and sets similarity accordingly.
-	 * Similarity is -1 if ADW causes an exception.
+	 * Compares tag1 and tag2 and sets similarity accordingly. Similarity is -1
+	 * if ADW causes an exception.
 	 */
 	public void execute() {
 		try {
@@ -68,11 +70,12 @@ public class CompareTagsTask extends SmartFollowTask {
 				if (!ADWConfiguration.getConfigDir().equalsIgnoreCase(configDir)) {
 					ADWConfiguration.setConfigDir(configDir);
 				}
-				if (!StorageUtils.getInstance().getCredentialsPath().equals(configDir + "serviceAccountCredentials.json")) {
+				if (!StorageUtils.getInstance().getCredentialsPath()
+						.equals(configDir + "serviceAccountCredentials.json")) {
 					StorageUtils.setCredentialsPath(configDir + "serviceAccountCredentials.json");
 				}
 			}
-						
+
 			ADW pipeline = new ADW();
 
 			// The two lexical items
@@ -88,16 +91,15 @@ public class CompareTagsTask extends SmartFollowTask {
 			SignatureComparison measure = new WeightedOverlap();
 
 			// Calculate the similarity of text1 and text2
-			similarity = pipeline.getPairSimilarity(text1, text2,
-					DisambiguationMethod.ALIGNMENT_BASED, measure, text1Type,
-					text2Type);
-			System.out.println("Calculated similarity: "+similarity);
+			similarity = pipeline.getPairSimilarity(text1, text2, DisambiguationMethod.ALIGNMENT_BASED, measure,
+					text1Type, text2Type);
+			System.out.println("Calculated similarity: " + similarity);
 		} catch (Exception e) {
 			System.err.println("Exception in ADW library similarity comparison");
 			e.printStackTrace();
 			similarity = -1;
 		}
-		
+
 	}
 
 	/**
@@ -141,7 +143,7 @@ public class CompareTagsTask extends SmartFollowTask {
 	@Override
 	public void finalize() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

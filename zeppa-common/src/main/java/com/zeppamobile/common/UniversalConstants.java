@@ -61,12 +61,6 @@ public class UniversalConstants {
 	 * Authorization Scopes
 	 */
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-	
-	
-	/*
-	 * Request keys used when making calls between modules
-	 */
-	public static final String kREQ_TAG_TEXT = "tag-text";	
 
 	
 	/*
@@ -100,11 +94,13 @@ public class UniversalConstants {
 	// Parameter values to differentiate calls to the Analytics API server
 	public static final String INDIV_EVENT_DEMOGRAPHICS = "indivDemographics";
 	public static final String INDIV_EVENT_TAGS = "indivTags";
+	public static final String INDIV_EVENT_TAGS_WATCHED = "indivTagsWatched";
 	public static final String OVERALL_EVENT_DEMOGRAPHICS = "overallDemographics";
 	public static final String OVERALL_EVENT_TAGS = "overallTags";
 	public static final String OVERALL_EVENT_TAGS_WATCHED = "overallTagsWatched";
 	public static final String OVERALL_EVENT_POPULAR_DAYS = "overallPopularDays";
 	public static final String OVERALL_EVENT_POPULAR_EVENTS = "overallPopularEvents";
+	public static final String OVERALL_EVENT_POPULAR_EVENTS_WATCHED = "overallPopularEventsWatched";
 	
 	public static final String START_DATE_FILTER = "startDateFilter";
 	public static final String END_DATE_FILTER = "endDateFilter";
@@ -124,9 +120,19 @@ public class UniversalConstants {
 	 */
 	public static final String PRIVAKEY_CLIENT_ID = "047b5731c6fe4fc79d1eda8dae46e4d2";
 	public static final String PRIVAKEY_CLIENT_SECRET = "clglJQEdtMw2794KI53e0q9SYHJ5_pCCy1sZOF-P0";
-	public static final double WEIGHT_NOUN = .3;
+	public static final double WEIGHT_NOUN = .7;
 	public static final double WEIGHT_VERB = .5;
-	public static final double WEIGHT_ADVERB = .1;
+	public static final double WEIGHT_ADVERB = .15;
 	public static final double WEIGHT_ADJECTIVE = .1;
 
+	
+	
+	/*
+	 * Request keys used when making calls between modules
+	 */
+	public static final String kREQ_TAG_TEXT = "tag-text";	
+
+	
+	
+	
 }

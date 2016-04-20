@@ -1092,4 +1092,3 @@
 20:52:46,466 (main) INFO  [DataNucleus.Enhancer] - Writing class file "C:\Users\Kevin\SeniorDesignWorkspace\Zeppa-AppEngine\zeppa-api\target\zeppa-api-1\WEB-INF\classes\com\zeppamobile\api\datamodel\ZeppaUserInfo.class" with enhanced definition
 20:52:46,470 (main) INFO  [DataNucleus.Enhancer] - Writing class file "C:\Users\Kevin\SeniorDesignWorkspace\Zeppa-AppEngine\zeppa-api\target\zeppa-api-1\WEB-INF\classes\com\zeppamobile\api\datamodel\ZeppaUserToUserRelationship.class" with enhanced definition
 20:52:46,470 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 23 classes. Timings : input=297 ms, enhance=121 ms, total=418 ms. Consult the log for full details
->>>>>>> Stashed changes

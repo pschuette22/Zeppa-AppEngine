@@ -61,12 +61,6 @@ public class UniversalConstants {
 	 * Authorization Scopes
 	 */
 	public static final String EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email";
-	
-	
-	/*
-	 * Request keys used when making calls between modules
-	 */
-	public static final String kREQ_TAG_TEXT = "tag-text";	
 
 	
 	/*
@@ -131,4 +125,14 @@ public class UniversalConstants {
 	public static final double WEIGHT_ADVERB = .15;
 	public static final double WEIGHT_ADJECTIVE = .1;
 
+	
+	
+	/*
+	 * Request keys used when making calls between modules
+	 */
+	public static final String kREQ_TAG_TEXT = "tag-text";	
+
+	
+	
+	
 }

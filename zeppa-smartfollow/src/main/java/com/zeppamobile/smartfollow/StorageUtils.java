@@ -26,6 +26,7 @@ public class StorageUtils {
 //	private static String CREDENTIALS_PATH = "src/main/webapp/WEB-INF/config/serviceAccountCredentials.json";
 	//AppEngine
 	private static String CREDENTIALS_PATH = "zeppa-smartfollow-1.war/WEB-INF/config/serviceAccountCredentials.json";
+
 	private static StorageUtils instance;
 	private static Storage storageService;
 	/** Global instance of the JSON factory. */
@@ -47,6 +48,7 @@ public class StorageUtils {
 	
 	public String getCredentialsPath() {
 		return CREDENTIALS_PATH;
+
 	}
 
 	public static StorageUtils getInstance() {

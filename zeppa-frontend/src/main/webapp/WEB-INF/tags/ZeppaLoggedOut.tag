@@ -1,4 +1,4 @@
-<%@tag language="java" description="No Side Bar Page template" pageEncoding="UTF-8"%>
+<%@tag language="java" description="Logged out template" pageEncoding="UTF-8"%>
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
 <%@attribute name="title" fragment="true" %>
@@ -24,39 +24,18 @@
 								<div class="inner">
 
 									<!-- Logo -->
-										<h1><a href="dashboard" id="logo">Zeppa</a></h1>
+										<h1><a href="home.jsp" id="logo">Zeppa</a></h1>
 
 									<!-- Nav -->
 										<nav id="nav">
 											<ul>
-												<li><a href="/dashboard">Home</a></li>
-												<li>
-													<a href="/events">Events</a>
-													<!--  <ul>
-														<li><a href="#">Lorem ipsum dolor</a></li>
-														<li><a href="#">Magna phasellus</a></li>
-														<li>
-															<a href="#">Phasellus consequat</a>
-															<ul>
-																<li><a href="#">Lorem ipsum dolor</a></li>
-																<li><a href="#">Phasellus consequat</a></li>
-																<li><a href="#">Magna phasellus</a></li>
-																<li><a href="#">Etiam dolore nisl</a></li>
-															</ul>
-														</li>
-														<li><a href="#">Veroeros feugiat</a></li>
-													</ul>-->
-												</li>
-												<li><a href="/analytics">Analytics</a></li>
-												<li><a href="/account-settings">Account</a></li>
-												<li><a href="/logout">Logout</a></li>
-												
+												<li><a href="/create-account">Create Account</a></li>
+												<li><a href="/login">Login</a></li>
 											</ul>
 										</nav>
 
 								</div>
 							</header>
-
 					</div>
 				</div>
 
@@ -199,12 +178,13 @@
 
 		<!-- Scripts -->
 
-			<script src="../template/assets/js/jquery.dropotron.min.js"></script>
-			<script src="../template/assets/js/skel.min.js"></script>
-			<script src="../template/assets/js/skel-viewport.min.js"></script>
-			<script src="../template/assets/js/util.js"></script>
-			<!--[if lte IE 8]><script src="../template/assets/js/ie/respond.min.js"></script><![endif]-->
-			<script src="../template/assets/js/main.js"></script>
+			<script src="template/assets/js/jquery.min.js"></script>
+			<script src="template/assets/js/jquery.dropotron.min.js"></script>
+			<script src="template/assets/js/skel.min.js"></script>
+			<script src="template/assets/js/skel-viewport.min.js"></script>
+			<script src="template/assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="template/assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="template/assets/js/main.js"></script>
 
 	</body>
 </html>

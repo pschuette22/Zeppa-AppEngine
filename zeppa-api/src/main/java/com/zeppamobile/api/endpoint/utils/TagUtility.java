@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.jdo.Transaction;
 
 import org.json.simple.JSONObject;
@@ -68,11 +67,12 @@ public class TagUtility {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(UniversalConstants.kREQ_TAG_TEXT, tag.getTagText());
 
-			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-smartfollow", "/word-tagger/", params);
+			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-smartfollow", "word-tagger", params);
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(false);
 			connection.setRequestMethod("GET");
+			connection.setReadTimeout(60*1000);
 
 			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
@@ -107,7 +107,6 @@ public class TagUtility {
 
 					for (String indexWord : indexWords) {
 
-						
 						MetaTag metatag = null;
 						try {
 							// try to fetch the appropriate metatag
@@ -122,7 +121,6 @@ public class TagUtility {
 						if (metatag == null) {
 							metatag = new MetaTag(indexWord, synsMap.get(indexWord));
 							metatag = mgr.makePersistent(metatag);
-							txn.commit();
 						}
 
 						// Assume the metatag was created or fetched
@@ -134,14 +132,11 @@ public class TagUtility {
 								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()), isUserTag,
 								(getIndexWordWeight(indexWord) / totalWeight));
 						entity = mgr.makePersistent(entity);
-						txn.commit();
 						metatag.getEntities().add(entity.getKey());
-						txn.commit();
 					}
 
 					// Update the tag so it has index words for computation
 					tag.setIndexedWords(indexWords);
-					txn.commit();
 				}
 			} else {
 				// TODO: reschedule task if recoverable exception
@@ -184,16 +179,16 @@ public class TagUtility {
 	 * @return associated weight or 0;
 	 */
 	public static double getIndexWordWeight(String indexWord) {
-		if (indexWord.contains("-n-")) {
+		if (indexWord.contains("-N-")) {
 			// noun
 			return UniversalConstants.WEIGHT_NOUN;
-		} else if (indexWord.contains("-v-")) {
+		} else if (indexWord.contains("-V-")) {
 			// verb
 			return UniversalConstants.WEIGHT_VERB;
-		} else if (indexWord.contains("-r-")) {
+		} else if (indexWord.contains("-R-")) {
 			// adverb
 			return UniversalConstants.WEIGHT_ADVERB;
-		} else if (indexWord.contains("-a-")) {
+		} else if (indexWord.contains("-A-")) {
 			// adjective
 			return UniversalConstants.WEIGHT_ADJECTIVE;
 		} else {

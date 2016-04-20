@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <queue-entries>
 
 	<!-- Queue of items that need to be stored as notifications -->
@@ -9,6 +8,7 @@
 		<bucket-size>100</bucket-size>
 	</queue>
 
+
 	<!-- Pull Queue for delivering notifications/cloud messages -->
 	<queue>
 		<name>notification-delivery</name>
@@ -17,6 +17,7 @@
 			<task-retry-limit>5</task-retry-limit>
 		</retry-parameters>
 	</queue>
+
 
 	<!-- Queue for automatically managing entity relationships -->
 	<queue>

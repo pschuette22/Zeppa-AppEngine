@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jdoconfig xmlns="http://java.sun.com/xml/ns/jdo/jdoconfig"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/jdo/jdoconfig http://java.sun.com/xml/ns/jdo/jdoconfig_3_0.xsd">
+<jdoconfig xmlns="http://xmlns.jcp.org/xml/ns/jdo/jdoconfig"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 	<persistence-manager-factory name="transactions-optional">
 		<property name="javax.jdo.PersistenceManagerFactoryClass"
@@ -13,8 +12,7 @@
 		<property name="javax.jdo.option.RetainValues" value="true" />
 		<property name="datanucleus.appengine.autoCreateDatastoreTxns"
 			value="true" />
-		<property name="datanucleus.appengine.datastoreEnableXGTransactions"
-			value="true" />
+		<!-- <property name="datanucleus.appengine.ignorableMetaDataBehavior" value="none"/> -->
 		<property name="datanucleus.appengine.singletonPMFForName"
 			value="true" />
 	</persistence-manager-factory>

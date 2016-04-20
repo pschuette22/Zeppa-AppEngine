@@ -190,7 +190,7 @@
 			<artifactId>jlt</artifactId>
 			<scope>system</scope>
 			<version>2.0.0</version>
-			<systemPath>${basedir}/libs/jlt-2.0.0.jar</systemPath>
+			<systemPath>${basedir}/lib/jlt-2.0.0.jar</systemPath>
 
 		</dependency>
 

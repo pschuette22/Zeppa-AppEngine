@@ -154,7 +154,6 @@ public class IndividualEventServlet extends HttpServlet {
 				maxAgeFilter = req.getParameter("maxAge");
 				genderFilter = req.getParameter("gender");
 				if (eventId != null) {
-					System.out.println("HERE----");
 					resp.setContentType("text/html");
 					String eventInformation = getEventInformation(eventId);
 					req.setAttribute("eventInfo", eventInformation);
@@ -305,9 +304,7 @@ public class IndividualEventServlet extends HttpServlet {
 					// Get all of the demographic info from the json response
 					JSONObject genderInfo = (JSONObject) demoInfo.get(0);
 					maleCount = (Long) genderInfo.get("maleCount");
-					System.out.println("MALE: "+maleCount);
 					femaleCount = (Long) genderInfo.get("femaleCount");
-					System.out.println("FEMALE: "+femaleCount);
 					unidentified = (Long) genderInfo.get("unidentified");
 					JSONObject ageInfo = (JSONObject) demoInfo.get(1);
 					under18 = (Long) ageInfo.get("under18");

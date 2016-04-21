@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <!--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>-->
 
 <link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
@@ -9,9 +10,11 @@
 <script type="text/javascript" src="lib/js/transition.js"></script>
 <script type="text/javascript" src="lib/js/collapse.js"></script>
 <script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="lib/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript"
+	src="lib/js/bootstrap-datetimepicker.min.js"></script>
 <link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap.min.css" />
-<link rel="stylesheet" href="lib/css/bootstrap/css/bootstrap-theme.min.css" />
+<link rel="stylesheet"
+	href="lib/css/bootstrap/css/bootstrap-theme.min.css" />
 <link rel="stylesheet" href="lib/css/bootstrap-datetimepicker.min.css" />
 
 <script>
@@ -25,6 +28,14 @@ $( document ).ready(function() {
 	$('#startTime').datetimepicker();
 	$('#endTime').datetimepicker();
 	
+	$(".mainTabNav").click(function(){
+		//Styling stuff (changing colors and hiding/showing)
+		$(".eventTab").removeClass("active");
+		var tabID = $(this).data("tab");
+		$("#"+tabID).addClass("active");
+		$(".mainTabNav").removeClass("active");
+		$(this).addClass("active");
+	});
 	$(".tabNav").click(function(){
 		//Styling stuff (changing colors and hiding/showing)
 		$(".analyticsTab").removeClass("active");
@@ -327,222 +338,307 @@ function getDateString(date) {
         });
       }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdzV3Wi4EVmmF34N-cwEEgic4lhj8AvCY&libraries=places&callback=initMap" async defer></script>
-    
+<script
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAdzV3Wi4EVmmF34N-cwEEgic4lhj8AvCY&libraries=places&callback=initMap"
+	async defer></script>
+
 <style>
-	#tabNavBar{
- 		width:100%;
- 	}
- 	.tabNav{
- 		color: rgb(31,169,255);
- 		width: 45%;
- 		display:inline-block;
-     	border-top-right-radius: 1em;
-     	border-top-left-radius: 1em;
-     	text-align:center;
- 	}
- 	.tabNav.active{
- 		background-color: rgb(31,169,255);
- 		color:#FFF
- 	}
- 	.tabNav:hover{
- 		background-color: rgb(31,169,255);
- 		color:#FFF;
- 		cursor:pointer;
- 	}
- 	.analyticsTab{
- 		display:none;
- 	}
- 	.analyticsTab.active{
- 		display:block;
- 	}
- 	
-	.tag{
-    	float:left!important;
-    	border: 1px solid rgb(31,169,255)!important;
-    	border-radius: 3px!important; 
-    	width:auto!important;
-    	padding: 5px;
-    	margin: 3px;
-    	cursor: pointer;
-    	
-    }
-    .tag.active{
-    	background-color:rgb(31,169,255)!important;
-    	color:#FFF!important;'
-    }
-    textarea:focus, input:focus, textarea, input{
-    	outline: none!important;
-	}
-	.label{
-		font-weight:bold;
-		color:#000;
-		margin-top:5px;
-	}
-	.column-right{
-		float:right;
-		overflow-y: auto;
-		overflow-x: hidden;
-		width:35%;
-		height:auto;
-	}
-	.event-desc {
-		text-align: center;
-		padding: 10px;
-	}
-	.description{
-	    width:70%;
-	    height:75px;
-	}
-	.addressText{
-		width:75%;
-	}
-	.picker{
-		width:auto;
-	}
+.tabsDiv {
+	width: 100%;
+	margin-bottom: 2em;
+}
+.tabNav {
+	color: rgb(31, 169, 255);
+	width: 45%;
+	display: inline-block;
+	border-top-right-radius: 1em;
+	border-top-left-radius: 1em;
+	text-align: center;
+}
+.mainTabNav {
+	color: rgb(31, 169, 255);
+	width: 45%;
+	display: inline-block;
+	border-top-right-radius: 1em;
+	border-top-left-radius: 1em;
+	text-align: center;
+}
+.tabNav.active {
+	background-color: rgb(31, 169, 255);
+	color: #FFF
+}
+.tabNav:hover {
+	background-color: rgb(31, 169, 255);
+	color: #FFF;
+	cursor: pointer;
+}
+.mainTabNav.active {
+	background-color: rgb(31, 169, 255);
+	color: #FFF
+}
 
-    .tag.active{
-    	background-color:rgb(31,169,255)!important;
-    	color:#FFF!important;
-    }
-    #newTagRow{
-    	display:none;
-    }
-	
-	#map {
-        height: 300px;
-      }
-    .controls {
-      background-color: #fff;
-      border-radius: 2px;
-      border: 1px solid transparent;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-      box-sizing: border-box;
-      font-family: Roboto;
-      font-size: 15px;
-      font-weight: 300;
-      height: 29px;
-      margin-left: 17px;
-      margin-top: 10px;
-      outline: none;
-      padding: 0 11px 0 13px;
-      text-overflow: ellipsis;
-      width: 400px;
-    }
+.mainTabNav:hover {
+	background-color: rgb(31, 169, 255);
+	color: #FFF;
+	cursor: pointer;
+}
+.analyticsTab {
+	display: none;
+}
+.analyticsTab.active {
+	display: block;
+}
 
-    .controls:focus {
-      border-color: #4d90fe;
-    }
-    .smallButton{
-    	font-size:13px!important;
-    	padding:5px 10px!important;
-    }
-    #submitButtonRow{
-    	display:none;
-    }
+.eventTab {
+	display: none;
+}
+
+.eventTab.active {
+	display: block;
+}
+
+.tag {
+	float: left !important;
+	border: 1px solid rgb(31, 169, 255) !important;
+	border-radius: 3px !important;
+	width: auto !important;
+	padding: 5px;
+	margin: 3px;
+	cursor: pointer;
+}
+
+.tag.active {
+	background-color: rgb(31, 169, 255) !important;
+	color: #FFF !important;
+	'
+}
+
+textarea:focus, input:focus, textarea, input {
+	outline: none !important;
+}
+
+.label {
+	font-weight: bold;
+	color: #000;
+	margin-top: 5px;
+}
+
+.column-right {
+/* 	float: right; */
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 85%;
+	height: auto;
+}
+.column-center { 
+		display: inline-block; 
+		width: 50%; 
+		padding: 25px;
+		text-align:center;
+}
+.column-left { 
+		float: left; 
+		width: 50%;
+		padding: 25px;
+		text-align:center;
+}
+
+.event-desc {
+	text-align: center;
+	padding: 10px;
+}
+
+.description {
+	width: 70%;
+	height: 75px;
+}
+
+.addressText {
+	width: 75%;
+}
+
+.picker {
+	width: auto;
+}
+
+.tag.active {
+	background-color: rgb(31, 169, 255) !important;
+	color: #FFF !important;
+}
+
+#newTagRow {
+	display: none;
+}
+
+#map {
+	height: 300px;
+}
+
+.controls {
+	background-color: #fff;
+	border-radius: 2px;
+	border: 1px solid transparent;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+	box-sizing: border-box;
+	font-family: Roboto;
+	font-size: 15px;
+	font-weight: 300;
+	height: 29px;
+	margin-left: 17px;
+	margin-top: 10px;
+	outline: none;
+	padding: 0 11px 0 13px;
+	text-overflow: ellipsis;
+	width: 400px;
+}
+
+.controls:focus {
+	border-color: #4d90fe;
+}
+
+.smallButton {
+	font-size: 13px !important;
+	padding: 5px 10px !important;
+}
+.filterDiv {
+     	width: 40%; 
+    	padding-bottom : 1%; /* = width for a 1:1 aspect ratio */
+    	margin: 0% 0% 2% 0%;
+  	}
+
+#submitButtonRow {
+	display: none;
+}
 </style>
 <t:ZeppaBase>
-	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
+	<jsp:attribute name="title">
+		<h2>Individual Event</h2>
+	</jsp:attribute>
 	<jsp:body>
-		<div class="column-right">
-			<div class="filterDiv">
-		  	<input type="hidden" id="eventIdInput" name="event-id" value="${eventId}" />
-			<table style="width: 99%; margin-bottom: 1em">
-			  <tr style="width: 99%">
-			    <th style="width: 10%; text-align: center">Min Age</th>
-			    <th style="width: 10%; text-align: center">Max Age</th>
-			    <th style="width: 10%; text-align: center">Gender</th>
-			  </tr>
-			  <tr style="width: 99%">
-	    		<td style="width: 10%; text-align: center">
-	    			<select id="minAgeFilter" name="minAge"></select>
-	    		</td>
-	    		<td style="width: 10%; text-align: center">
-	    			<select id="maxAgeFilter" name="maxAge"></select>
-	    		</td>
-	    		<td style="width: 10%; text-align: center">
-	    			<select id="genderFilter" name="gender">
-	    				<option value="all">All</option>
-	    				<option value="male">Male</option>
-	    				<option value="female">Female</option>
-	    				<option value="undefined">Undefined</option>
-	    			</select>
-	    		</td>
-			  </tr>
-			  <tr>
-	    		<td align="center" colspan="3" style="width: 10%; text-align: center">
-	    			<input style="margin-top: 10px" class="smallButton" id="filterButton" type="button" value="Filter"/>
-	    		</td>
-	    	  </tr>
-			</table>
-		</div>
-			<div id="tabNavBar">
-	 			<!-- These comments are required to fix html bug which moves tab down to next line -->
-	 			<span class="tabNav active" data-tab="demographicsTab">Demographics</span><!--
-	 			--><span class="tabNav" data-tab="tagsTab">Tags</span>
- 			</div>
- 			<div class="analyticsTab active" id="demographicsTab">
- 				<p><h3>Event Demographic Data</h3></p>
- 				<div style="width:65%; text-align:center">
-					<canvas id="gender" width="250" height="250"></canvas>
-					<div class="event-desc">Attendee Gender Statistics</div>
- 				</div>
-				<p><h3>Age Demographic Data</h3></p>
-				<div style="width:65%; text-align:center">
-					<canvas id="age" width="250" height="250"></canvas>
-					<div class="event-desc">Attendee Age Statistics</div>
+		<div id="mainTabNavBar" class="tabsDiv">
+	 		<!-- These comments are required to fix html bug which moves tab down to next line -->
+	 		<span class="mainTabNav active" data-tab="eventInfoTab">Event Info</span><!--
+	 		--><span class="mainTabNav" data-tab="eventAnalyticsTab">Event Analytics</span>
+ 		</div>
+ 		<div id="eventAnalyticsTab" class="eventTab">
+			<div class="column-right">
+				<div class="filterDiv">
+			  	<input type="hidden" id="eventIdInput" name="event-id"
+						value="${eventId}" />
+				<table style="width: 99%; margin-bottom: 1em">
+				  <tr style="width: 99%">
+				    <th style="width: 10%; text-align: center">Min Age</th>
+				    <th style="width: 10%; text-align: center">Max Age</th>
+				    <th style="width: 10%; text-align: center">Gender</th>
+				  </tr>
+				  <tr style="width: 99%">
+		    		<td style="width: 10%; text-align: center">
+		    			<select id="minAgeFilter" name="minAge"></select>
+		    		</td>
+		    		<td style="width: 10%; text-align: center">
+		    			<select id="maxAgeFilter" name="maxAge"></select>
+		    		</td>
+		    		<td style="width: 10%; text-align: center">
+		    			<select id="genderFilter" name="gender">
+		    				<option value="all">All</option>
+		    				<option value="male">Male</option>
+		    				<option value="female">Female</option>
+		    				<option value="undefined">Undefined</option>
+		    			</select>
+		    		</td>
+		    		<td align="center" colspan="3"
+								style="width: 10%; text-align: center">
+		    			<input style="margin-top: 10px" class="smallButton"
+								id="filterButton" type="button" value="Filter" />
+		    		</td>
+				  </tr>
+				</table>
+			</div>
+				<div id="tabNavBar" style="margin-bottom: 2em; width: 70%">
+		 			<!-- These comments are required to fix html bug which moves tab down to next line -->
+		 			<span class="tabNav active" data-tab="demographicsTab">Demographics</span><!--
+		 			--><span class="tabNav" data-tab="tagsTab">Tags</span>
+	 			</div>
+	 			<div class="analyticsTab active" id="demographicsTab">
+	 			<p><h3>Event Demographic Analytics</h3></p>
+	 				<div class="column-left">
+						<canvas id="gender" width="300" height="300"></canvas>
+						<div class="event-desc">Attendee Gender Statistics</div>
+	 				</div>
+					<div class="column-center">
+						<canvas id="age" width="300" height="300"></canvas>
+						<div class="event-desc">Attendee Age Statistics</div>
+					</div>
+				</div>
+				<div class="analyticsTab" id="tagsTab">
+				<p><h2>Event Tag Analytics</h2></p>
+					<div class="column-left">
+		 				<canvas id="popularTags" width="300" height="300"></canvas>
+						<div class="event-desc">Popular Tags Among People who Joined Events</div>
+					</div>
+					<div class="column-center">
+						<canvas id="watchedTags" width="300" height="300"></canvas>
+						<div class="event-desc">Popular Tags Among People who Watched Events</div>
+					</div>
 				</div>
 			</div>
-			<div class="analyticsTab" id="tagsTab">
- 				<p><h3>Event Tag Data</h3></p>
-				<div style="width:65%; text-align:center">
-	 				<canvas id="popularTags" width="250" height="250"></canvas>
-					<div class="event-desc">Popular Tags Among People who Joined Events</div>
-				</div>
-				<div style="width:65%; text-align:center">
-					<canvas id="watchedTags" width="250" height="250"></canvas>
-					<div class="event-desc">Popular Tags Among People who Watched Events</div>
-				</div>
-			</div>
 		</div>
-		<div style="width:50%">
-			<table>
-		    	<tr>
-		    		<td>Event Title</td>
-		    		<td>Start Time</td>
-		    		<td>End Time</td>  
-		    	</tr>
-		    	<tr>
-		    		<td><input type="text" id="title" style="display:table-cell;" /></td>
-		    		<td><input type='text' class="form-control picker" style="display:table-cell;" id='startTime' /></td>
-		    		<td><input type='text' class="form-control picker" style="display:table-cell;" id='endTime' /></td>
-		    	</tr>
-		    	<tr><td>Select Tags</td></tr>
-		    	<tr id="tagsRow">
-		    		<td colspan="3"><div id="tagsContainer"></div></td>
-		    	</tr>
-		    	<tr>
-		    		<td id="newTagRow" colspan="3"><input type='text' placeholder='New Tag' id='tagText' /> <input type="button" class="smallButton" id="newTagBtn" value="Add Tag"/></td>
-		    	</tr>
-		    	<tr>
-		    		<td>Description</td>    		 
-		    	</tr>
-		    	 <tr>
-		    		<td colspan="3"><textarea class="description" id="description"></textarea></td>
-		    	</tr>
-		    	<tr>
-		    		<td>Address</td> 		 
-		    	</tr>
-		    	<tr>
-		    		<td colspan="3">
-		    			<input id="addressInput" class="controls" type="text" placeholder="Enter a location">
-	    				<div id="map"></div>
-	    			</td>   		 
-		    	</tr>
-		    	<tr id="editButtonRow"><td style="padding:10px;"><input type="button" id="editBtn" value="Edit" onclick="makeEditable()"/></td></tr> 	
-		    	<tr id="submitButtonRow"><td style="padding:10px;"><input type="submit" id="submitBtn" onclick="editEvent()"/></td></tr> 	
-	    	</table>
+		<div id="eventInfoTab" class="eventTab active">
+			<p><h2>Event Info</h2></p>
+			<div style="width: 50%">
+				<table>
+			    	<tr>
+			    		<td><b>Event Title</b></td>
+			    		<td><b>Start Time</b></td>
+			    		<td><b>End Time</b></td>  
+			    	</tr>
+			    	<tr>
+			    		<td><input type="text" id="title"
+							style="display: table-cell;" /></td>
+			    		<td><input type='text' class="form-control picker"
+							style="display: table-cell;" id='startTime' /></td>
+			    		<td><input type='text' class="form-control picker"
+							style="display: table-cell;" id='endTime' /></td>
+			    	</tr>
+			    	<tr>
+						<td style="padding-top: 1em"><b>Select Tags</b></td>
+					</tr>
+			    	<tr id="tagsRow">
+			    		<td colspan="3"><div id="tagsContainer"></div></td>
+			    	</tr>
+			    	<tr>
+			    		<td id="newTagRow" colspan="3"><input type='text'
+							placeholder='New Tag' id='tagText' /> <input type="button"
+							class="smallButton" id="newTagBtn" value="Add Tag" /></td>
+			    	</tr>
+			    	<tr>
+			    		<td style="padding-top: 1em"><b>Description</b></td>    		 
+			    	</tr>
+			    	 <tr>
+			    		<td colspan="3"><textarea class="description"
+								id="description"></textarea></td>
+			    	</tr>
+			    	<tr>
+			    		<td style="padding-top: 1em"><b>Address</b></td> 		 
+			    	</tr>
+			    	<tr>
+			    		<td colspan="3">
+			    			<input id="addressInput" class="controls" type="text"
+							placeholder="Enter a location">
+		    				<div id="map"></div>
+		    			</td>   		 
+			    	</tr>
+			    	<tr id="editButtonRow">
+						<td style="padding: 10px;"><input type="button" id="editBtn"
+							value="Edit" onclick="makeEditable()" /></td>
+					</tr> 	
+			    	<tr id="submitButtonRow">
+						<td style="padding: 10px;"><input type="submit" id="submitBtn"
+							onclick="editEvent()" /></td>
+					</tr> 	
+		    	</table>
+		    </div>
 	    </div>
 	</jsp:body>
-	
+
 </t:ZeppaBase>

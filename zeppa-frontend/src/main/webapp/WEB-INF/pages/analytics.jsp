@@ -133,7 +133,6 @@ var watchedChart = -1;
 		if(eventsWatchedParam.labels.length > 0) {
 			popEventsWatchedChart = new Chart(eventsWatchedContext).Bar(eventsWatchedParam, options);
 		} else {
-			console.log(eventsWatchedParam);
 			eventsWatchedContext.font = "12px Arial";
 			eventsWatchedContext.fillText("There are no events for this vendor", 10,50);
 		}
@@ -144,9 +143,8 @@ var watchedChart = -1;
 			tagsContext.fillText("There are no common tags", 10,50);
 		}
 		if(tagsWatchedParam.labels.length > 0) {
-			watchedChart = new Bar(tagsWatchedContext).Bar(tagsWatchedParam, options);
+			watchedChart = new Chart(tagsWatchedContext).Bar(tagsWatchedParam, options);
 		} else {
-			console.log(tagsWatchedParam);
 			tagsWatchedContext.font = "12px Arial";
 			tagsWatchedContext.fillText("No users have watched an event for this vendor",10,50);
 		}
@@ -253,6 +251,11 @@ var watchedChart = -1;
     	margin: 2% 0% 1% 0%;
   	}
   	
+  	.smallButton{
+    	font-size:13px!important;
+    	padding:5px 10px!important;
+    }
+  	
   	form input[type="text"],
   	form select {
   		border-radius: 8px;
@@ -268,7 +271,7 @@ var watchedChart = -1;
 	<jsp:body>
 		<!-- <div id="filters">Filters</div> -->
 		<div class="filterDiv">
-			<table style="width:99%">
+			<table style="width:70%">
 			  <tr style="width:99%">
 			    <th style="width:20%; text-align:center">Start Date</th>
 			    <th style="width:20%; text-align:center">End Date</th>
@@ -293,7 +296,7 @@ var watchedChart = -1;
 	    				<option value="undefined">Undefined</option>
 	    			</select>
 	    		</td>
-	    		<td style="width:10%; text-align:center"><input id="filterButton" type="button" value="Filter"/></td>
+	    		<td style="width:10%; text-align:center"><input class="smallButton" id="filterButton" type="button" value="Filter"/></td>
 			  </tr>
 			</table>
 		  </form>

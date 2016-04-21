@@ -116,6 +116,35 @@ public class Vendor {
 		this.masterUserId = masterUserId;
 		this.isPrivakeyEnabled = isPrivakeyEnabled;
 	}
+	
+	/**
+	 * Construct a vendor object
+	 * 
+	 * @param created
+	 * @param updated
+	 * @param companyName
+	 * @param addressLine1
+	 * @param addressLine2
+	 * @param city
+	 * @param state
+	 * @param zipcode
+	 * @param masterUserId
+	 * @param isPrivakeyEnabled
+	 */
+	public Vendor(Long created, Long updated, String companyName,
+			String addressLine1, String addressLine2, String city,
+			String state, Integer zipcode, Long masterUserId) {
+		super();
+		this.created = created;
+		this.updated = updated;
+		this.companyName = companyName;
+		// this.addressLine1 = addressLine1;
+		// this.addressLine2 = addressLine2;
+		// this.city = city;
+		// this.state = state;
+		// this.zipcode = zipcode;
+		this.masterUserId = masterUserId;
+	}
 
 	public Long getCreated() {
 		return created;

@@ -42,7 +42,6 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 		FilterCerealWrapper filter = getFilterInfo(request);
 		if (type != null && type.equals(UniversalConstants.INDIV_EVENT_DEMOGRAPHICS)) {
 			// Get map with the gender counts
-			System.out.println("Getting gender counts");
 			Map<String, Integer> genderCounts = getEventGenderInfo(filter, Long.valueOf(eventId));
 			JSONObject json = new JSONObject();
 			// put the counts in the JSON object so they can be returned to the
@@ -51,7 +50,6 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 			json.put("femaleCount", genderCounts.get("FEMALE"));
 			json.put("unidentified", genderCounts.get("UNIDENTIFIED"));
 			
-			System.out.println("Getting age counts");
 			Map<String, Integer> ageCounts = getEventAgeCount(filter, Long.valueOf(eventId));
 			JSONObject ageJson = new JSONObject();
 			ageJson.put("under18", ageCounts.get("under18"));
@@ -70,7 +68,6 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 			response.getWriter().write(respArray.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.INDIV_EVENT_TAGS)) {
 			// Get all of the tags that brought users to events
-			System.out.println("Getting tag counts");
 			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(eventId), true);
 			JSONObject json = new JSONObject();
 			for (AnalyticsDataWrapper adw : tags) {
@@ -80,7 +77,6 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 			response.getWriter().write(json.toJSONString());
 		} else if (type != null && type.equals(UniversalConstants.INDIV_EVENT_TAGS_WATCHED)) {
 			// Get all of the tags that brought users to events
-			System.out.println("Getting watched counts");
 			List<AnalyticsDataWrapper> tags = getAllEventTags(filter, Long.valueOf(eventId), false);
 			JSONObject json = new JSONObject();
 			for (AnalyticsDataWrapper adw : tags) {
@@ -102,7 +98,6 @@ public class IndividualEventAnalyticsServlet extends HttpServlet {
 		// Get all events for the vendor
 		VendorEvent event = VendorEventServlet.getIndividualEvent(String.valueOf(eventId));
 		List<VendorEventRelationship> rels = VendorEventRelationshipServlet.getAllJoinedRelationshipsForEvent(event.getId(), filter);
-		System.out.println("COUNT: "+rels.size());
 		
 		// Get the gender count across all events for the vendor
 		allEventGender = AnalyticsServlet.getGenderCountAllEvents(rels);

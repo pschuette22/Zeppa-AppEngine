@@ -204,6 +204,9 @@ var watchedChart = -1;
      	border-top-right-radius: 1em;
      	border-top-left-radius: 1em;
      	text-align:center;
+     	border-style: solid;
+    	border-width: 1px;
+    	border-color: rgb(31,169,255);
  	}
  	.tabNav.active{
  		background-color: rgb(31,169,255);

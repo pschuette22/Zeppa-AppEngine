@@ -316,6 +316,9 @@ var options = {
 </style>
 <t:ZeppaBase>
 	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 	<jsp:body>
 		<div class="column-right">
 			<canvas id="event1" width="150" height="150"></canvas>

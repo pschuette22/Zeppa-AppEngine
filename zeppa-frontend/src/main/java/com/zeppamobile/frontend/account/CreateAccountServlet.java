@@ -14,8 +14,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 
 import com.zeppamobile.common.UniversalConstants;
+import com.zeppamobile.common.cerealwrapper.CerealWrapperFactory;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
@@ -42,7 +47,10 @@ public class CreateAccountServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");
-		request.setAttribute("attribute1", "This is attribute 1");
+	    String token = request.getParameter("token");
+	    String email = request.getParameter("email");
+		request.setAttribute("token", token);
+		request.setAttribute("email", email);
 		
 		request.getRequestDispatcher("WEB-INF/pages/create-account.jsp").forward(request, response);
 	}
@@ -50,6 +58,7 @@ public class CreateAccountServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		
@@ -103,17 +112,32 @@ public class CreateAccountServlet extends HttpServlet {
 				String line;
 				
 	            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-	                // OK
-	            	response.getWriter().println("Connection Response OK: " + connection.getResponseMessage());
-
 					// Read from the buffer line by line and write to the response
-					// item					
+					// item	
+	            	String s = ""; 
 					while ((line = reader.readLine()) != null) {
-						response.getWriter().println(line);
+						s += line;
 					}
+					
+					CerealWrapperFactory fact = new CerealWrapperFactory();
+					UserInfoCerealWrapper userInfo = (UserInfoCerealWrapper)fact.getFromCereal(s);
+					
+					HttpSession session = request.getSession(true);
+					session.setAttribute("UserInfo", userInfo);
+					
+					JSONObject obj = new JSONObject();
+	            	obj.put("redirectURL", "/dashboard?accountCreated=true");
+	            	response.getWriter().println(obj.toString());
 
 					
-	            } else {
+	            }
+	            else if(connection.getResponseCode() == HttpURLConnection.HTTP_FORBIDDEN)
+	            {
+	            	JSONObject obj = new JSONObject();
+	            	obj.put("forbidden", "true");
+	            	response.getWriter().println(obj.toString());
+	            }
+	            else {
 	                // Server returned HTTP error code.
 	            	response.getWriter().println("Connection Response Error: " + connection.getResponseMessage());
 	            	

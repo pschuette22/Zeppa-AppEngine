@@ -2641,3 +2641,29 @@
 16:41:49,586 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaUserInfo" is already enhanced.
 16:41:49,587 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship" is already enhanced.
 16:41:49,588 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 21 classes. Timings : input=1007 ms, enhance=166 ms, total=1173 ms. Consult the log for full details
+17:21:40,363 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer for API "JDO"
+17:21:40,593 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer (version 3.1.1) : Enhancement of classes
+17:21:44,027 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.Address" is already enhanced.
+17:21:44,029 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.Bill" is already enhanced.
+17:21:44,030 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.BillingInfo" is already enhanced.
+17:21:44,031 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.DeviceInfo" is already enhanced.
+17:21:44,032 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.Employee" is already enhanced.
+17:21:44,033 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.EmployeeUserInfo" is already enhanced.
+17:21:44,034 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.EventComment" is already enhanced.
+17:21:44,035 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.EventTag" is already enhanced.
+17:21:44,036 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.EventTagFollow" is already enhanced.
+17:21:44,037 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.InviteGroup" is already enhanced.
+17:21:44,038 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.MetaTag" is already enhanced.
+17:21:44,039 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.MetaTagEntity" is already enhanced.
+17:21:44,040 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.PhotoInfo" is already enhanced.
+17:21:44,041 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.Vendor" is already enhanced.
+17:21:44,042 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.VendorEvent" is already enhanced.
+17:21:44,043 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.VendorEventRelationship" is already enhanced.
+17:21:44,044 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaEvent" is already enhanced.
+17:21:44,046 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaEventToUserRelationship" is already enhanced.
+17:21:44,048 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaFeedback" is already enhanced.
+17:21:44,049 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaNotification" is already enhanced.
+17:21:44,051 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaUser" is already enhanced.
+17:21:44,052 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaUserInfo" is already enhanced.
+17:21:44,054 (main) INFO  [DataNucleus.Enhancer] - Class "com.zeppamobile.api.datamodel.ZeppaUserToUserRelationship" is already enhanced.
+17:21:44,054 (main) INFO  [DataNucleus.Enhancer] - DataNucleus Enhancer completed with success for 23 classes. Timings : input=3403 ms, enhance=57 ms, total=3460 ms. Consult the log for full details

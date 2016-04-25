@@ -81,6 +81,7 @@ public class AnalyticsServlet extends HttpServlet {
 			String popularDays = getPopularDaysAllEvents(sessionInfo);
 			req.setAttribute("popDays", popularDays);
 			
+			req.setAttribute("userName", sessionInfo.getGivenName() + " " + sessionInfo.getFamilyName());
 			req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		} else {
 			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);

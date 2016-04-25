@@ -98,6 +98,7 @@ public class AccountSettingsServlet extends HttpServlet {
 					req.setAttribute("errorDivText", "There was a problem when authenticating with PrivaKey, please try again.");
 				}
 				
+				req.setAttribute("userName", userInfo.getGivenName() + " " + userInfo.getFamilyName());
 				req.getRequestDispatcher("WEB-INF/pages/account.jsp").forward(req, resp);
 
 		    }

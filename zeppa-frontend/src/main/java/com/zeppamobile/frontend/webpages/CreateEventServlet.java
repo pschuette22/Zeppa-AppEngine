@@ -95,6 +95,7 @@ public class CreateEventServlet extends HttpServlet {
 				
 			}
 			
+			request.setAttribute("userName", userInfo.getGivenName() + " " + userInfo.getFamilyName());
 			request.getRequestDispatcher("WEB-INF/pages/create-event.jsp").forward(request, response);
 		}
 		else

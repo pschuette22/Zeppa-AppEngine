@@ -23,6 +23,8 @@ import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
+import com.zeppamobile.api.endpoint.utils.ApiCerealWrapperFactory;
+import com.zeppamobile.common.cerealwrapper.UserInfoCerealWrapper;
 
 /**
  * 
@@ -73,6 +75,14 @@ public class VendorServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 				
 		try {
+			String email = URLDecoder.decode(req.getParameter("emailAddress"), "UTF-8");
+			//If this employee already exist with this email then dont create account
+			if(EmployeeServlet.getEmployeeByEmail(email) != null)
+			{
+				resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+				return;
+			}
+			
 			//Set vendor info
 			System.out.println("In the Vendor Servlet");
 			Vendor vendor = new Vendor();
@@ -90,7 +100,7 @@ public class VendorServlet extends HttpServlet {
 			 
 			//Set employee info
 			Employee employee = new Employee();
-			employee.setEmailAddress(URLDecoder.decode(req.getParameter("emailAddress"), "UTF-8"));
+			employee.setEmailAddress(email);
 			employee.setIsEmailVerified(false);
 			employee.setPassword(URLDecoder.decode(req.getParameter("password"), "UTF-8"));
 			employee.setPrivakeyGuid("");			
@@ -104,9 +114,16 @@ public class VendorServlet extends HttpServlet {
 			
 			vendor = insertVendor(vendor, employee);
 
-			// Convert the object to json and return in the writer
-			JSONObject json = vendor.toJson();
-			resp.getWriter().write(json.toJSONString());
+			Employee newEmployee = EmployeeServlet.getEmployeeByEmail(email);
+
+			if(vendor != null && newEmployee != null)
+			{
+				ApiCerealWrapperFactory fact = new ApiCerealWrapperFactory();
+				UserInfoCerealWrapper wrapper = (UserInfoCerealWrapper)fact.makeCereal(newEmployee.getUserInfo());
+				String userInfoString = fact.toCereal(wrapper);
+				resp.setStatus(HttpServletResponse.SC_OK);
+				resp.getWriter().write(userInfoString);
+			}
 
 		} catch (Exception e) {
 			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

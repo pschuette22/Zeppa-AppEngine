@@ -107,6 +107,7 @@ public class EventsServlet extends HttpServlet {
 				
 			}
 			
+			request.setAttribute("userName", userInfo.getGivenName() + " " + userInfo.getFamilyName());
 			request.getRequestDispatcher("WEB-INF/pages/events.jsp").forward(request, response);
 		}	
 		else

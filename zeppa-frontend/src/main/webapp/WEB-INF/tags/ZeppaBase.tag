@@ -2,6 +2,7 @@
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
 <%@attribute name="title" fragment="true" %>
+<%@attribute name="username" fragment="true" %>
 <html>
 	<head>
 		<title>Zeppa</title>
@@ -49,7 +50,9 @@
 												</li>
 												<li><a href="/analytics">Analytics</a></li>
 												<li><a href="/account-settings">Account</a></li>
-												<li><a href="/logout">Logout</a></li>
+												<li><a href="/logout">Logout <jsp:invoke fragment="username"/></a>
+												
+												</li>
 												
 											</ul>
 										</nav>

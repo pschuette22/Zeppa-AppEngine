@@ -2,6 +2,9 @@
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
 <%@attribute name="title" fragment="true" %>
+
+
+
 <html>
 	<head>
 		<title>Zeppa</title>

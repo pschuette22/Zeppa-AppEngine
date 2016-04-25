@@ -16,6 +16,7 @@ import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EmployeeUserInfo;
+import com.zeppamobile.api.datamodel.ZeppaUser;
 
 /**
  * 
@@ -86,6 +87,31 @@ public class EmployeeServlet extends HttpServlet {
 		try {
 			
 			employee = mgr.getObjectById(Employee.class, id);
+
+		} catch (Exception e) {
+			// catch any errors that might occur
+			e.printStackTrace();
+			employee = null;
+		} finally {
+			mgr.close();
+
+		}
+
+		return employee;
+	}
+	
+	public static Employee getEmployeeByEmail(String email)
+	{
+		PersistenceManager mgr = getPersistenceManager();
+
+		Employee employee = null;
+		try {
+			
+			Query q = mgr.newQuery(Employee.class,
+					"emailAddress == '" + email + "'");
+			q.setUnique(true);
+
+			employee = (Employee) q.execute();
 
 		} catch (Exception e) {
 			// catch any errors that might occur

@@ -63,6 +63,13 @@ public class DashboardServlet extends HttpServlet {
 				req.setAttribute("tagData", tagsData);
 				req.setAttribute("upcomingEvents", upcomingEvents.toJSONString());
 				req.setAttribute("pastEvents", pastEvents.toJSONString());
+				req.setAttribute("userName", userInfo.getGivenName() + " " + userInfo.getFamilyName());
+				
+				String accountCreated = req.getParameter("accountCreated");
+				if(accountCreated != null  && accountCreated.toLowerCase().equals("true"))
+				{					
+					req.setAttribute("successDivText", "You have successfully created your Zeppa account!");
+				}
 				req.getRequestDispatcher("WEB-INF/pages/home.jsp").forward(req, resp);
 			}
 			else {

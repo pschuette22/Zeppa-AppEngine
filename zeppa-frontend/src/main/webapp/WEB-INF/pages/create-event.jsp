@@ -225,6 +225,9 @@ function createEvent() {
 	<jsp:attribute name="title">
 	  <h2>Create Event</h2>
 	</jsp:attribute>
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 <jsp:body>
 	<div>
 		<div id="successDiv" style="color: green;"></div>

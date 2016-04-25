@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.Employee;
@@ -22,7 +21,7 @@ import com.zeppamobile.api.datamodel.ZeppaUser;
  * 
  * @author Pete Schuette
  * 
- * Servlet for interacting with employee objects
+ *         Servlet for interacting with employee objects
  *
  */
 public class EmployeeServlet extends HttpServlet {
@@ -33,59 +32,48 @@ public class EmployeeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		//try {
+		// try {
 
-			// Fetch the current ID token
-			boolean isLogin = Boolean.parseBoolean(req.getParameter("isLogin"));
-			
-			if(isLogin)
-			{
-				String email = req.getParameter("email");
-				String password = req.getParameter("password");
-				
-				if(!email.isEmpty() && !password.isEmpty())
-					resp.setStatus(HttpServletResponse.SC_OK);
-				else
-					resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			}
+		// Fetch the current ID token
+		boolean isLogin = Boolean.parseBoolean(req.getParameter("isLogin"));
+
+		if (isLogin) {
+			String email = req.getParameter("email");
+			String password = req.getParameter("password");
+
+			if (!email.isEmpty() && !password.isEmpty())
+				resp.setStatus(HttpServletResponse.SC_OK);
 			else
-			{
 				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			}
+		} else {
+			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		}
 
-
-			
-			
-		//} catch (UnauthorizedException e) {
-		//	// user is not authorized to make this call
-		//	resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		//	e.printStackTrace(resp.getWriter());
-		//} 
+		// } catch (UnauthorizedException e) {
+		// // user is not authorized to make this call
+		// resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		// e.printStackTrace(resp.getWriter());
+		// }
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		
-		
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
 	}
-	
-	public static Employee getEmployeeByID(long id)
-	{
+
+	public static Employee getEmployeeByID(long id) {
 		PersistenceManager mgr = getPersistenceManager();
 
 		Employee employee = null;
 		try {
-			
+
 			employee = mgr.getObjectById(Employee.class, id);
 
 		} catch (Exception e) {
@@ -126,31 +114,44 @@ public class EmployeeServlet extends HttpServlet {
 	}
 	
 	/**
-	 * This inserts a new Employee entity into App Engine datastore. If the entity
-	 * already exists in the datastore, an exception is thrown.
+	 * This inserts a new Employee entity into App Engine datastore. If the
+	 * entity already exists in the datastore, an exception is thrown.
 	 * 
-	 * @param employee - the entity to be inserted.
+	 * @param employee
+	 *            - the entity to be inserted.
 	 * @return The inserted entity.
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static Employee insertVendor(Employee employee) throws UnauthorizedException,
-			IOException {
+	public static Employee insertVendor(Employee employee) throws UnauthorizedException, IOException {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
 
 		try {
+
 			// Start the transaction
 			txn.begin();
+			
+			// Verify the employee does not already exist!
+			Query q = mgr.newQuery(Employee.class, "emailAddress=='" + employee.getEmailAddress() + "'");
+			q.setUnique(true);
+			Employee e = (Employee) q.execute();
+			if (e != null) {
+				employee = e;
+			} else {
 
-			// Set tag time characteristics
-			employee.setCreated(System.currentTimeMillis());
-			employee.setUpdated(System.currentTimeMillis());
+				
 
-			// Persist the tag
-			employee = mgr.makePersistent(employee);
-			// commit the changes
+				// Set tag time characteristics
+				employee.setCreated(System.currentTimeMillis());
+				employee.setUpdated(System.currentTimeMillis());
+
+				// Persist the tag
+				employee = mgr.makePersistent(employee);
+				// commit the changes
+			}
+			
 			txn.commit();
 
 		} catch (Exception e) {
@@ -173,12 +174,13 @@ public class EmployeeServlet extends HttpServlet {
 	/**
 	 * This updates the employees privaKey identifier in the data store
 	 * 
-	 * @param employeeID - the employee ID to be updated.
+	 * @param employeeID
+	 *            - the employee ID to be updated.
 	 * @return The updated entity.
 	 * @throws GeneralSecurityException
 	 * @throws IOException
 	 */
-	public static Employee updateEmployeePrivaKeyID(Long employeeID, String privakeyGuid)  {
+	public static Employee updateEmployeePrivaKeyID(Long employeeID, String privakeyGuid) {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();
 		Transaction txn = mgr.currentTransaction();
@@ -187,7 +189,7 @@ public class EmployeeServlet extends HttpServlet {
 		try {
 			// Start the transaction
 			txn.begin();
-			
+
 			employee = mgr.getObjectById(Employee.class, employeeID);
 
 			// Set tag time characteristics
@@ -197,7 +199,7 @@ public class EmployeeServlet extends HttpServlet {
 			EmployeeUserInfo userinfo = employee.getUserInfo();
 			userinfo.setIsPrivaKeyRequired(true);
 			employee.setUserInfo(userinfo);
-			
+
 			// Persist the tag
 			employee = mgr.makePersistent(employee);
 			// commit the changes
@@ -219,7 +221,7 @@ public class EmployeeServlet extends HttpServlet {
 
 		return employee;
 	}
-	
+
 	/**
 	 * Get the persistence manager for interacting with datastore
 	 */

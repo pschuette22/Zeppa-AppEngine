@@ -135,6 +135,10 @@ public class TaskServlet extends HttpServlet {
 				long userId = Long.parseLong(userIdString);
 				RelationshipUtility.removeZeppaAccountEntities(userId);
 
+			} else if (action.equals("indexTag")) {
+				Long tagId = Long.valueOf(req.getParameter("tagId"));
+				boolean isUserTag = Boolean.valueOf(req.getParameter("isUserTag"));
+				TagUtility.indexTag(tagId, isUserTag);
 			}
 
 		} finally {

@@ -11,10 +11,13 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.Calendar.Freebusy;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event.Creator;
 import com.google.api.services.calendar.model.Event.Organizer;
 import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.FreeBusyRequest;
+import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.google.appengine.api.users.User;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
@@ -109,7 +112,6 @@ public class GoogleCalendarUtils {
 		organizer.setEmail(user.getEmail());
 
 		return organizer;
-
 	}
 
 }

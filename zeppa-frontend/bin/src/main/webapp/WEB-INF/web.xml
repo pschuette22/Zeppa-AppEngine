@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+
+	
+
+	<!-- Upload handles uploading a blob to blobstore -->
+	<servlet>
+		<servlet-name>Upload</servlet-name>
+		<servlet-class>com.zeppamobile.frontend.imageupload.Upload</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Upload</servlet-name>
+		<url-pattern>/image/upload/</url-pattern>
+	</servlet-mapping>
+
+	<!-- GetUploadUrl is for obtaining an upload url for blobstore -->
+	<servlet>
+		<servlet-name>GetUploadUrl</servlet-name>
+		<servlet-class>com.zeppamobile.frontend.imageupload.GetUploadUrl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetUploadUrl</servlet-name>
+		<url-pattern>/getuploadurl</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Security contraints for managing backend transactions -->
+<!-- 	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/admin/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint> -->
+
+</web-app>

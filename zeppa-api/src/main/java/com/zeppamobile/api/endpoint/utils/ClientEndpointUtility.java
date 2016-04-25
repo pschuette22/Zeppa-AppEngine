@@ -1,7 +1,7 @@
 package com.zeppamobile.api.endpoint.utils;
 
-
 import java.security.GeneralSecurityException;
+
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -27,8 +27,7 @@ import com.zeppamobile.common.utils.Utils;
  */
 public class ClientEndpointUtility {
 
-	private static final Logger LOG = Logger
-			.getLogger(ClientEndpointUtility.class.getName());
+	private static final Logger LOG = Logger.getLogger(ClientEndpointUtility.class.getName());
 
 	/**
 	 * <p>
@@ -42,8 +41,7 @@ public class ClientEndpointUtility {
 	 * @throws UnauthorizedException
 	 *             if token is not valid
 	 */
-	public static ZeppaUser getAuthorizedZeppaUser(String tokenString)
-			throws UnauthorizedException {
+	public static ZeppaUser getAuthorizedZeppaUser(String tokenString) throws UnauthorizedException {
 		// Get payload for token
 		GoogleIdToken.Payload payload = checkToken(tokenString);
 		// Return user based on payload
@@ -56,8 +54,7 @@ public class ClientEndpointUtility {
 	 * @param payload
 	 * @return
 	 */
-	public static ZeppaUser getAuthorizedUserForPayload(
-			GoogleIdToken.Payload payload) throws UnauthorizedException {
+	public static ZeppaUser getAuthorizedUserForPayload(GoogleIdToken.Payload payload) throws UnauthorizedException {
 		// Verify it is valid
 		if (payload == null || !Utils.isWebSafe(payload.getEmail())) {
 			throw new UnauthorizedException("Invalid id-token");
@@ -71,8 +68,7 @@ public class ClientEndpointUtility {
 
 		try {
 
-			Query q = mgr.newQuery(ZeppaUser.class,
-					"authEmail == '" + payload.getEmail() + "'");
+			Query q = mgr.newQuery(ZeppaUser.class, "authEmail == '" + payload.getEmail() + "'");
 			q.setUnique(true);
 
 			result = (ZeppaUser) q.execute();
@@ -90,12 +86,10 @@ public class ClientEndpointUtility {
 	 *            id token sent from client
 	 * @return Payload for this token or null if invalid
 	 */
-	public static GoogleIdToken.Payload checkToken(String tokenString)
-			throws UnauthorizedException {
+	public static GoogleIdToken.Payload checkToken(String tokenString) throws UnauthorizedException {
 
 		// TODO: validate auth token, client id, etc.
-		AuthChecker checker = new AuthChecker(
-				UniversalConstants.APP_CLIENT_IDS, Constants.WEB_CLIENT_ID);
+		AuthChecker checker = new AuthChecker(UniversalConstants.APP_CLIENT_IDS, Constants.WEB_CLIENT_ID);
 
 		try {
 			GoogleIdToken.Payload payload = checker.check(tokenString);
@@ -105,13 +99,11 @@ public class ClientEndpointUtility {
 				return payload;
 			} else {
 
-				throw new UnauthorizedException("Invalid Auth With Problem: "
-						+ checker.problem());
+				throw new UnauthorizedException("Invalid Auth With Problem: " + checker.problem());
 			}
 		} catch (GeneralSecurityException e) {
 			// TODO: flag the security error
-			throw new UnauthorizedException("Security Error: "
-					+ e.getLocalizedMessage());
+			throw new UnauthorizedException("Security Error: " + e.getLocalizedMessage());
 		}
 
 	}
@@ -123,14 +115,14 @@ public class ClientEndpointUtility {
 	 * @return true if object was persisted successfully
 	 */
 	public static boolean updateUserEntityRelationships(ZeppaUser user) {
-//		PersistenceManager mgr = getPersistenceManager();
-//		try {
-//			mgr.makePersistent(user);
-//		} catch (Exception e) {
-//			return false;
-//		} finally {
-//			mgr.close();
-//		}
+		// PersistenceManager mgr = getPersistenceManager();
+		// try {
+		// mgr.makePersistent(user);
+		// } catch (Exception e) {
+		// return false;
+		// } finally {
+		// mgr.close();
+		// }
 
 		return true;
 	}
@@ -159,15 +151,12 @@ public class ClientEndpointUtility {
 	 * @param userId2
 	 * @return
 	 */
-	public static ZeppaUserToUserRelationship getUserRelationship(Long userId1,
-			Long userId2) {
+	public static ZeppaUserToUserRelationship getUserRelationship(Long userId1, Long userId2) {
 		if (userId1.longValue() == userId2.longValue()) {
 			throw new NullPointerException("Missing a user id");
 		}
-		String filter = "(creatorId == " + userId1 + " || creatorId == "
-				+ userId2.longValue() + ") && (subjectId == "
-				+ userId1.longValue() + "|| subjectId == "
-				+ userId2.longValue() + ")";
+		String filter = "(creatorId == " + userId1 + " || creatorId == " + userId2.longValue() + ") && (subjectId == "
+				+ userId1.longValue() + "|| subjectId == " + userId2.longValue() + ")";
 
 		PersistenceManager mgr = getPersistenceManager();
 		ZeppaUserToUserRelationship result = null;
@@ -185,7 +174,6 @@ public class ClientEndpointUtility {
 
 		return result;
 	}
-
 
 	/**
 	 * Get the persistence manager

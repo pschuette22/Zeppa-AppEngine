@@ -158,12 +158,12 @@ public class StartupServlet extends HttpServlet {
 		// Add EventTags to the datastore
 		EventTag tag = new EventTag();
 		tag.setOwnerId(vendor.getKey().getId());
-		tag.setTagText("Happy Hour");
+		tag.setTagText("HappyHour");
 		tag.setType(TagType.VENDOR);
 		
 		EventTag tag2 = new EventTag();
 		tag2.setOwnerId(vendor.getKey().getId());
-		tag2.setTagText("Drink Special");
+		tag2.setTagText("DrinkSpecial");
 		tag2.setType(TagType.VENDOR);
 		
 		EventTag tag3 = new EventTag();
@@ -173,17 +173,17 @@ public class StartupServlet extends HttpServlet {
 		
 		EventTag tag4 = new EventTag();
 		tag4.setOwnerId(vendor.getKey().getId());
-		tag4.setTagText("Play Basketball");
+		tag4.setTagText("PlayBasketball");
 		tag4.setType(TagType.USER);
 		
 		EventTag tag5 = new EventTag();
 		tag5.setOwnerId(vendor.getKey().getId());
-		tag5.setTagText("Watch Football");
+		tag5.setTagText("WatchFootball");
 		tag5.setType(TagType.VENDOR);
 		
 		EventTag tag6 = new EventTag();
 		tag6.setOwnerId(vendor.getKey().getId());
-		tag6.setTagText("Play Poker");
+		tag6.setTagText("PlayPoker");
 		tag6.setType(TagType.USER);
 		
 		try {
@@ -256,7 +256,7 @@ public class StartupServlet extends HttpServlet {
 		testUser2.setUserInfo(ui2);
 		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
 		
-		ZeppaUser testUser3 = new ZeppaUser(u2AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
+		ZeppaUser testUser3 = new ZeppaUser(u3AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui3 = testUser3.getUserInfo();
 		ui3.setGender(Gender.FEMALE);
 		// 2003

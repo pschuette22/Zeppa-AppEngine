@@ -147,6 +147,7 @@ public class SemSigProcess {
 						storageService = StorageUtils.getInstance().getService();
 					}
 					
+
 					Storage.Objects.Get getObject = storageService.objects().get(
 							bucketName, objectName);
 										

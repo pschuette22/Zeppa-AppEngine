@@ -55,21 +55,38 @@ function parseTags(tagsString){
 }
 function postTag(){
 	var tagText = $("#tagText").val();
-	var data = {'tagText': tagText};
-	
-	console.log("Posting tag: "+tagText);
-	 $.post( "/create-tag", data, function( resp ) {
- 	 	console.log("success");
- 	 	console.log(resp);
- 	 	var tagInfo = jQuery.parseJSON(resp);
- 	 	var id = tagInfo.id;
- 	 	var text = tagInfo.tagText;
- 	 	$("#tagsContainer").append("<div class='tag' data-tagid='"+id+"'>"+text+"</div>");
- 	 	$("#tagsContainer").find(".tag:last").click();
- 	}).fail(function() {
- 	    console.log( "error" );
- 	});
-	
+	tagText = capitalizeTagWords(tagText);
+	console.log("CASE: "+tagText);
+	// remove all spaces from the tag text 
+	tagText = tagText.replace(/\s+/g, "");
+	console.log("RM: "+tagText);
+	// Check that there are only alphanumeric characters in the tag text
+	if( /[^a-zA-Z0-9]/.test( tagText ) ) {
+	       alert('Tags can only contain alphanumeric characters');
+	} else {
+		var data = {'tagText': tagText};
+		
+		console.log("Posting tag: "+tagText);
+		$("#tagText").val("");
+		 $.post( "/create-tag", data, function( resp ) {
+	 	 	console.log("success");
+	 	 	console.log(resp);
+	 	 	var tagInfo = jQuery.parseJSON(resp);
+	 	 	var id = tagInfo.id;
+	 	 	var text = tagInfo.tagText;
+	 	 	$("#tagsContainer").append("<div class='tag' data-tagid='"+id+"'>"+text+"</div>");
+	 	 	$("#tagsContainer").find(".tag:last").click();
+	 	}).fail(function() {
+	 	    console.log( "error" );
+	 	});
+	}
+}
+
+function capitalizeTagWords(tag) {
+// 	  var lower = tag.toLowerCase();
+	  return tag.replace(/(^| )(\w)/g, function(str) {
+	    return str.toUpperCase();
+	  });
 }
 
 function createEvent() {

@@ -56,8 +56,6 @@ public class AnalyticsServlet extends HttpServlet {
 		minAgeFilter = req.getParameter("minAge");
 		maxAgeFilter = req.getParameter("maxAge");
 		genderFilter = req.getParameter("gender");
-//		System.out.println("----start: "+startDateFilter);
-//		System.out.println("----end: "+endDateFilter);
 		
 		HttpSession session = req.getSession(true);
 		Object obj = session.getAttribute("UserInfo");
@@ -75,13 +73,28 @@ public class AnalyticsServlet extends HttpServlet {
 			String allEventTagsWatched = getTagsAllEvents(sessionInfo, false);
 			req.setAttribute("watchedTagData", allEventTagsWatched);
 			
-			String popularEvents = getPopularEventsAllEvents(sessionInfo);
+			String popularEvents = getPopularEventsAllEvents(sessionInfo, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
 			req.setAttribute("popEvents", popularEvents);
+			
+			String popularEventsWatched = getPopularEventsAllEvents(sessionInfo, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS_WATCHED);
+			req.setAttribute("popEventsWatched", popularEventsWatched);
 			
 			String popularDays = getPopularDaysAllEvents(sessionInfo);
 			req.setAttribute("popDays", popularDays);
 			
+
 			req.setAttribute("userName", sessionInfo.getGivenName() + " " + sessionInfo.getFamilyName());
+
+			// Response headers used when filtering
+			resp.addHeader("genderGraph", allEventDemo[0]);
+			resp.addHeader("ageGraph", allEventDemo[1]);
+			resp.addHeader("tagGraph", allEventTags);
+			resp.addHeader("tagWatchGraph", allEventTagsWatched);
+			resp.addHeader("popEventsGraph", popularEvents);
+			resp.addHeader("popEventsWatchedGraph", popularEventsWatched);
+			resp.addHeader("popDaysGraph", popularDays);
+			
+
 			req.getRequestDispatcher("WEB-INF/pages/analytics.jsp").forward(req, resp);
 		} else {
 			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
@@ -255,7 +268,7 @@ public class AnalyticsServlet extends HttpServlet {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String getPopularEventsAllEvents(UserInfoCerealWrapper sessionInfo) {
+	public static String getPopularEventsAllEvents(UserInfoCerealWrapper sessionInfo, String type) {
 		List<AnalyticsDataWrapper> eventCounts = new ArrayList<AnalyticsDataWrapper>();
 		
 		try {
@@ -263,7 +276,7 @@ public class AnalyticsServlet extends HttpServlet {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(UniversalConstants.PARAM_VENDOR_ID,
 					URLEncoder.encode(String.valueOf(sessionInfo.getVendorID()), "UTF-8"));
-			params.put(UniversalConstants.ANALYTICS_TYPE, UniversalConstants.OVERALL_EVENT_POPULAR_EVENTS);
+			params.put(UniversalConstants.ANALYTICS_TYPE, type);
 			params = createFilterParams(params);
 			URL url = ModuleUtils.getZeppaModuleUrl("zeppa-api", "/endpoint/analytics-servlet/", params);
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();

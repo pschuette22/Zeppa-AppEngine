@@ -69,9 +69,6 @@ public class VendorEventRelationship {
 	}
 
 	public void setEventId(Long eventId) {
-		// To get dependency in UML
-		VendorEvent ve;
-		ZeppaUser u;
 		this.eventId = eventId;
 	}
 
@@ -114,6 +111,8 @@ public class VendorEventRelationship {
 	public void setShareIds(List<Long> shareIds) {
 		this.shareIds = shareIds;
 	}
+	
+	
 
 	/**
 	 * Convert this object to a json object

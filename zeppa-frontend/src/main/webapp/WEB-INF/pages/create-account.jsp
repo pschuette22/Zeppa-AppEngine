@@ -57,13 +57,13 @@ function createAccount() {
     addressLine2 = document.getElementById("txtAddressLine2").value,
     city = document.getElementById("txtCity").value,
     state = document.getElementById("ddlState").value,
-    zipcode = document.getElementById("txtZipcode").value,
-    password1 = document.getElementById("txtPassword1").value,
-    password2 = document.getElementById("txtPassword2").value;
+    zipcode = document.getElementById("txtZipcode").value;
+    //password1 = document.getElementById("txtPassword1").value,
+    //password2 = document.getElementById("txtPassword2").value;
         
     var data = {'firstName': firstName, 'lastName': lastName, 'emailAddress': emailAddress,
     		'companyName': companyName, 'addressLine1': addressLine1, 'addressLine2': addressLine2,
-    		'city': city, 'state': state, 'zipcode': zipcode, 'password': password1};
+    		'city': city, 'state': state, 'zipcode': zipcode};
     
     console.log("Account Info: ", data);
     $.post( "/create-account", data, function( resp ) {
@@ -126,14 +126,14 @@ function createAccount() {
 	    		<td><input type="select" id="ddlState" /></td>
 	    		<td><input type="text" id="txtZipcode" /></td> 
 	    	</tr>
-	   	  	<tr>
+	   	  	<!--<tr>
 	    		<td>Password</td>
 	    		<td>Re-Enter Password</td>	    		 
 	    	</tr>
 	    	 <tr>
 	    		<td><input type="text" id="txtPassword1" /></td>
 	    		<td><input type="text" id="txtPassword2" /></td>
-	    	</tr>
+	    	</tr>-->
 	    	<tr><td style="padding:10px;"><input type="submit" onClick="javascript:createAccount()" /></td></tr> 
 	    </table>
     </div>

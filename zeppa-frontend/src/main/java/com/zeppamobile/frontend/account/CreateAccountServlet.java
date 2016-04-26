@@ -74,7 +74,7 @@ public class CreateAccountServlet extends HttpServlet {
 	   	String city = request.getParameter("city");
 	   	String state = request.getParameter("state");
 	   	String zipcode = request.getParameter("zipcode");
-	   	String password = request.getParameter("password");
+	   	//String password = request.getParameter("password");
 		
 		if (Utils.isWebSafe(firstName)) {
 
@@ -92,7 +92,7 @@ public class CreateAccountServlet extends HttpServlet {
 			params.put("city", URLEncoder.encode(city, "UTF-8"));
 			params.put("state", URLEncoder.encode(state, "UTF-8"));
 			params.put("zipcode", URLEncoder.encode(zipcode, "UTF-8"));
-			params.put("password", URLEncoder.encode(password, "UTF-8"));
+			//params.put("password", URLEncoder.encode(password, "UTF-8"));
 			
 			/*
 			 * Read from the request

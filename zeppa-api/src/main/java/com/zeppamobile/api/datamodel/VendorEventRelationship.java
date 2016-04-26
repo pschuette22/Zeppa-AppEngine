@@ -52,6 +52,10 @@ public class VendorEventRelationship {
 		this.shareIds = shareIds;
 	}
 
+	public Key getKey(){
+		return key;
+	}
+	
 	public Long getId() {
 		return key.getId();
 	}

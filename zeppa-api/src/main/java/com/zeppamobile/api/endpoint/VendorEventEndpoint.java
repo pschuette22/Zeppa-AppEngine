@@ -24,7 +24,8 @@ import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.utils.ClientEndpointUtility;
 import com.zeppamobile.common.utils.Utils;
 
-@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = { Constants.WEB_CLIENT_ID })
+@Api(name = Constants.API_NAME, version = "v1", scopes = { Constants.EMAIL_SCOPE }, audiences = {
+		Constants.WEB_CLIENT_ID })
 public class VendorEventEndpoint {
 
 	/**
@@ -37,19 +38,15 @@ public class VendorEventEndpoint {
 	 */
 	@SuppressWarnings({ "unchecked", "unused" })
 	@ApiMethod(name = "listVendorEvent", path = "listVendorEvent")
-	public CollectionResponse<VendorEvent> listVendorEvent(
-			@Nullable @Named("filter") String filterString,
-			@Nullable @Named("cursor") String cursorString,
-			@Nullable @Named("ordering") String orderingString,
-			@Nullable @Named("limit") Integer limit,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+	public CollectionResponse<VendorEvent> listVendorEvent(@Nullable @Named("filter") String filterString,
+			@Nullable @Named("cursor") String cursorString, @Nullable @Named("ordering") String orderingString,
+			@Nullable @Named("limit") Integer limit, @Named("idToken") String tokenString)
+			throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
 		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
+			throw new UnauthorizedException("No matching user found for this token");
 		}
 
 		PersistenceManager mgr = null;
@@ -97,15 +94,24 @@ public class VendorEventEndpoint {
 			// accomodate
 			// for lazy fetch.
 			for (VendorEvent obj : execute) {
-				Query rQuery = mgr.newQuery(
-						VendorEventRelationship.class,
-						"userId==" + user.getId() + " && eventId=="
-								+ obj.getId());
+				Query rQuery = mgr.newQuery(VendorEventRelationship.class,
+						"userId==" + user.getId() + " && eventId==" + obj.getId());
 				rQuery.setUnique(true);
 				try {
-					VendorEventRelationship r = (VendorEventRelationship) rQuery
-							.execute();
-					obj.setRelationship(r);
+					VendorEventRelationship r = (VendorEventRelationship) rQuery.execute();
+					if (r != null) {
+						// Touch all the needed fields
+						r.getKey();
+						r.getId();
+						r.getEventId();
+						r.getUserId();
+						r.isJoined();
+						r.isSeen();
+						r.isWatched();
+						r.isShared();
+
+						obj.setRelationship(r);
+					}
 				} catch (JDOObjectNotFoundException e) {
 
 				}
@@ -115,8 +121,7 @@ public class VendorEventEndpoint {
 		}
 
 		// Return That Collection!
-		return CollectionResponse.<VendorEvent> builder().setItems(execute)
-				.setNextPageToken(cursorString).build();
+		return CollectionResponse.<VendorEvent> builder().setItems(execute).setNextPageToken(cursorString).build();
 	}
 
 	/**
@@ -130,22 +135,19 @@ public class VendorEventEndpoint {
 	 */
 
 	@ApiMethod(name = "getVendorEvent", path = "getVendorEvent")
-	public VendorEvent getVendorEvent(@Named("id") Long id,
-			@Named("idToken") String tokenString) throws UnauthorizedException {
+	public VendorEvent getVendorEvent(@Named("id") Long id, @Named("idToken") String tokenString)
+			throws UnauthorizedException {
 
 		// Fetch Authorized Zeppa User
-		ZeppaUser user = ClientEndpointUtility
-				.getAuthorizedZeppaUser(tokenString);
+		ZeppaUser user = ClientEndpointUtility.getAuthorizedZeppaUser(tokenString);
 		if (user == null) {
-			throw new UnauthorizedException(
-					"No matching user found for this token");
+			throw new UnauthorizedException("No matching user found for this token");
 		}
 
 		PersistenceManager mgr = getPersistenceManager();
 		VendorEvent VendorEvent = null;
 		try {
 			VendorEvent = mgr.getObjectById(VendorEvent.class, id);
-
 		} finally {
 			mgr.close();
 		}

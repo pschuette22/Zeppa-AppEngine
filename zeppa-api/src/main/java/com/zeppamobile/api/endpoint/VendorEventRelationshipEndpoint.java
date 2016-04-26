@@ -178,7 +178,7 @@ public class VendorEventRelationshipEndpoint {
 			// exist between this user and event
 
 			
-
+			relationship.setUserId(user.getId());
 			relationship = mgr.makePersistent(relationship);
 
 			
@@ -243,6 +243,8 @@ public class VendorEventRelationshipEndpoint {
 			current.setShared(false);
 
 			relationship = mgr.makePersistent(current);
+			
+			
 			txn.commit();
 
 		} catch (javax.jdo.JDOObjectNotFoundException e) {

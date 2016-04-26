@@ -63,13 +63,13 @@ function onSuccess(googleUser) {
   }
   
 </script>
-<t:ZeppaBase>
+<t:ZeppaLoggedOut>
 
 <jsp:body>
 	<h1>Login</h1>	
 	<div id="successDiv" style="color: green;">${successDivText}</div>
 	<div id="errorDiv" style="color: red;">${errorDivText}</div>	
-	<div id="my-signin2" class="g-signin2"></div>
+	<div id="my-signin2" class="g-signin2" data-width="300" data-longtitle="true"></div>
 	
 	<!--  <div>	
 		<div id="successDiv" style="color: green;"></div>
@@ -87,4 +87,4 @@ function onSuccess(googleUser) {
 	    </table>
     </div> -->
 </jsp:body>
-</t:ZeppaBase>
+</t:ZeppaLoggedOut>

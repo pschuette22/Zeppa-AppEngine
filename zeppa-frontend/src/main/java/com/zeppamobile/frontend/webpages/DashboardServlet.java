@@ -77,7 +77,14 @@ public class DashboardServlet extends HttpServlet {
 			}
 		}
 		else {
-			req.setAttribute("errorDivText", "There was a problem when enabling PrivaKey, please try again. Error:" + error);
+			if(error != null)
+			{
+				req.setAttribute("errorDivText", "There was a problem when enabling PrivaKey, please try again.");
+			}
+			else
+			{
+				req.setAttribute("errorDivText", "There was a problem. Please login and try again.");
+			}
 			
 			req.getRequestDispatcher("WEB-INF/pages/login.jsp").forward(req, resp);
 		}
@@ -110,6 +117,7 @@ public class DashboardServlet extends HttpServlet {
 			params.put("employeeID", employeeID.toString());
 			
 			/*
+			 * 
 			 * Read from the request
 			 */
 			try {

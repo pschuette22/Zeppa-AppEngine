@@ -313,9 +313,9 @@ public class ZeppaUserEndpoint {
 			user.getLongitude();
 			
 			user.getUserInfo();
-			user.getUserInfo().getGivenName();
-			user.getUserInfo().getFamilyName();
-			user.getUserInfo().getImageUrl();
+//			user.getUserInfo().getGivenName();
+//			user.getUserInfo().getFamilyName();
+//			user.getUserInfo().getImageUrl();
 		}
 
 		return user;

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 import javax.jdo.Transaction;
@@ -90,8 +91,22 @@ public class EventTagEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
-			for (EventTag obj : execute)
-				;
+			for (EventTag obj : execute) {
+				Query followQuery = mgr.newQuery(EventTagFollow.class);
+				followQuery.setFilter("followerId==" + user.getId() + " && tagId==" + obj.getId() + " && tagOwnerId=="+obj.getOwnerId());
+				followQuery.setUnique(true);
+				
+				try {
+					EventTagFollow follow = (EventTagFollow) followQuery.execute();
+					
+				} catch (JDOObjectNotFoundException e){
+					// To be expected when grabbing vendor events
+				}
+				
+				
+			}
+			
+			// TODO: consider grabbing tag relationships from here
 		} finally {
 			mgr.close();
 		}

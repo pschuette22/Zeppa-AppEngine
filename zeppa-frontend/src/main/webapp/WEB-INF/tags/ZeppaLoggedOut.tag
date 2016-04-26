@@ -32,6 +32,7 @@
 									<!-- Nav -->
 										<nav id="nav">
 											<ul>
+												<li><a href="/">Home</a></li>
 												<li><a href="/create-account">Create Account</a></li>
 												<li><a href="/login">Login</a></li>
 											</ul>

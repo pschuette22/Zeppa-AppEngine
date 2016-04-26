@@ -90,7 +90,7 @@ function createAccount() {
 	</jsp:attribute>
 <jsp:body>
 	<div id="divGoogleSignUp">
-		<div id="my-signin2" class="g-signin2" data-longtitle="true"></div>
+		<div id="my-signin2" class="g-signin2" data-width="300" data-longtitle="true"></div>
 	</div>
 	<div id="divAccountInfo" style="display:none;">
 		<div id="successDiv" style="color: green;"></div>

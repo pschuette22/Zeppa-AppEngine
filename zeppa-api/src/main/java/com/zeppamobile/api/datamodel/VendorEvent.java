@@ -78,6 +78,9 @@ public class VendorEvent extends ZeppaEvent {
 	@NotPersistent
 	private  VendorEventRelationship relationship;
 	
+	public Long getId(){
+		return key.getId();
+	}
 
 	public String getPlaceId() {
 		return placeId;

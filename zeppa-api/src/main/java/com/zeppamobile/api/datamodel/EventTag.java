@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -40,7 +41,8 @@ public class EventTag {
 	@Persistent
 	private TagType type;
 
-	
+	@NotPersistent
+	private EventTagFollow follow;
 	
 	/**
 	 * Blank Constructor
@@ -153,6 +155,15 @@ public class EventTag {
 	public void setIndexedWords(List<String> indexedWords) {
 		this.indexedWords = indexedWords;
 	}
+
+	public EventTagFollow getFollow() {
+		return follow;
+	}
+
+	public void setFollow(EventTagFollow follow) {
+		this.follow = follow;
+	}
+	
 	
 
 }

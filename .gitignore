@@ -16,11 +16,11 @@ hs_err_pid*
 .classpath
 .metadata/
 .metadata/*
-.gitignore
+
 # Generated files
 target/
 build/
-datanucleus.log
+**/*datanucleus.log
 .DS_STORE
 out
 

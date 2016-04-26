@@ -3,6 +3,7 @@ package com.zeppamobile.api.datamodel;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
@@ -144,6 +145,10 @@ public class Vendor {
 		// this.state = state;
 		// this.zipcode = zipcode;
 		this.masterUserId = masterUserId;
+	}
+	
+	public Long getId(){
+		return key.getId();
 	}
 
 	public Long getCreated() {

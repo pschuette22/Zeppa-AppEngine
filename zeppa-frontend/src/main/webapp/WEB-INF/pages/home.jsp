@@ -555,8 +555,12 @@
   <jsp:attribute name="title">
 	  <h2 class="header-small">Dashboard</h2>
   </jsp:attribute>  
+  <jsp:attribute name="username">
+	 (${userName})
+  </jsp:attribute>
   
   <jsp:body>
+  	<div id="successDiv" style="color: green;">${successDivText}</div>
     <div id="dashboardContent" style="overflow:auto">
 	    <div id="currentHeader" class="boxHeader"><h3 class="header-small">Upcoming Events</h3></div>
 		<div id="pastHeader" class="boxHeader"><h3 class="header-small">Past Events</h3></div>

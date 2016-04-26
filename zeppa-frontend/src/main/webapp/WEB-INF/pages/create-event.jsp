@@ -91,8 +91,12 @@ function capitalizeTagWords(tag) {
 
 function createEvent() {
 	var title = $("#txtTitle").val();
-	var start = $("#startTimePicker").data("DateTimePicker").date().toDate().getTime();
-	var end = $("#endTimePicker").data("DateTimePicker").date().toDate().getTime();
+	if($("#startTimePicker").val().length > 0) {
+		var start = $("#startTimePicker").data("DateTimePicker").date().toDate().getTime();
+	}
+	if($("#endTimePicker").val().length > 0) {
+		var end = $("#endTimePicker").data("DateTimePicker").date().toDate().getTime();
+	}
 	var address = $("#addressInput").val();
 	var description = $("#txtDescription").val();
 	
@@ -242,6 +246,9 @@ function createEvent() {
 	<jsp:attribute name="title">
 	  <h2>Create Event</h2>
 	</jsp:attribute>
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 <jsp:body>
 	<div>
 		<div id="successDiv" style="color: green;"></div>

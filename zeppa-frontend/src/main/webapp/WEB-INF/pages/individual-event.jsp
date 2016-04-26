@@ -517,9 +517,10 @@ textarea:focus, input:focus, textarea, input {
 }
 </style>
 <t:ZeppaBase>
-	<jsp:attribute name="title">
-		<h2>Individual Event</h2>
-	</jsp:attribute>
+	<jsp:attribute name="title"><h2>Individual Event</h2></jsp:attribute>
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 	<jsp:body>
 		<div id="mainTabNavBar" class="tabsDiv">
 	 		<!-- These comments are required to fix html bug which moves tab down to next line -->
@@ -577,7 +578,7 @@ textarea:focus, input:focus, textarea, input {
 					</div>
 				</div>
 				<div class="analyticsTab" id="tagsTab">
-				<p><h2>Event Tag Analytics</h2></p>
+				<p><h3>Event Tag Analytics</h3></p>
 					<div class="column-left">
 		 				<canvas id="popularTags" width="300" height="300"></canvas>
 						<div class="event-desc">Popular Tags Among People who Joined Events</div>
@@ -590,7 +591,6 @@ textarea:focus, input:focus, textarea, input {
 			</div>
 		</div>
 		<div id="eventInfoTab" class="eventTab active">
-			<p><h2>Event Info</h2></p>
 			<div style="width: 50%">
 				<table>
 			    	<tr>

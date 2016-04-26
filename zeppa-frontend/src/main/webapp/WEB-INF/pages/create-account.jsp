@@ -2,8 +2,51 @@
     pageEncoding="ISO-8859-1"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
+<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+<meta name="google-signin-client_id" content="<%= com.zeppamobile.common.UniversalConstants.WEB_CLIENT_ID %>">
+
+
 <script type="text/javascript" src="lib/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+
+function onSuccess(googleUser) {
+	var profile = googleUser.getBasicProfile();
+    console.log(googleUser);
+    console.log(profile);
+    //console.log(googleUser.hg.access_token);
+    var access_token = googleUser.hg.id_token;
+    //var data = {'token': access_token, 'email': profile.email};
+    toggleAccountInfo(profile.getGivenName(), profile.getFamilyName(), profile.getEmail())
+    /*$.get( "/create-account", data, function( resp ) {
+    	 	console.log("success");
+    	}).fail(function() {
+    	    console.log( "error" );
+    	});*/
+}
+
+  function onFailure(error) {
+    console.log(error);
+  }
+  
+  function renderButton() {
+    gapi.signin2.render('my-signin2', {
+      'scope': 'https://www.googleapis.com/auth/userinfo.email',
+      'call-to-action': 'Sign up with Google',
+      'onsuccess': onSuccess,
+      'onfailure': onFailure
+    });
+  }
+  
+function toggleAccountInfo(firstName, lastName, email)
+{
+    document.getElementById("txtFirst").value = firstName;
+    document.getElementById("txtLast").value = lastName;
+    document.getElementById("txtEmail").value = email;
+    
+    document.getElementById("divGoogleSignUp").style.display = "none";
+    document.getElementById("divAccountInfo").style.display = "block";
+}
 
 function createAccount() {
     var firstName = document.getElementById("txtFirst").value,
@@ -26,7 +69,15 @@ function createAccount() {
     $.post( "/create-account", data, function( resp ) {
     	 	console.log("success");
     	 	console.log(resp);
-    	 	document.getElementById("successDiv").innerHTML = "Your account was added successfully";
+    	 	console.log("Forbidden: " + resp.forbidden);
+    	 	var obj = JSON.parse(resp);
+    	 	if(obj.forbidden){
+    	 		document.getElementById("errorDiv").innerHTML = "An account with this email address has already been created. Please use another email address or login.";
+    	 	}
+    	 	else if(obj.redirectURL != null && obj.redirectURL.length > 0){
+    	 		window.location = obj.redirectURL;
+    	 		//document.getElementById("successDiv").innerHTML = "Your account was added successfully";
+    	 	}
     	}).fail(function() {
     	    console.log( "error" );
     	    document.getElementById("errorDiv").innerHTML = "We were unable to create your account";
@@ -38,7 +89,10 @@ function createAccount() {
 	  <h2>Create Account</h2>
 	</jsp:attribute>
 <jsp:body>
-	<div>
+	<div id="divGoogleSignUp">
+		<div id="my-signin2" class="g-signin2" data-longtitle="true"></div>
+	</div>
+	<div id="divAccountInfo" style="display:none;">
 		<div id="successDiv" style="color: green;"></div>
 		<div id="errorDiv" style="color: red;"></div>
 	    <table style="width:600px;">
@@ -50,7 +104,7 @@ function createAccount() {
 	    	<tr>
 	    		<td><input type="text" id="txtFirst" /></td>
 	    		<td><input type="text" id="txtLast" /></td> 
-	    		<td><input type="text" id="txtEmail" /></td>
+	    		<td><input type="text" id="txtEmail" value="${email}" /></td>
 	    	</tr>
 	  	    <tr>
 	    		<td>Company Name</td>

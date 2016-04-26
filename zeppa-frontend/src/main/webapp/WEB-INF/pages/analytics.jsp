@@ -270,14 +270,16 @@ var watchedChart = -1;
 	<jsp:attribute name="title">
 	  <h2>Analytics</h2>
 	</jsp:attribute>
-	
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 	<jsp:body>
 		<!-- <div id="filters">Filters</div> -->
 		<div class="filterDiv">
 			<table style="width:70%">
 			  <tr style="width:99%">
-			    <th style="width:20%; text-align:center">Start Date</th>
-			    <th style="width:20%; text-align:center">End Date</th>
+			    <th style="width:20%; text-align:center">Start Filter Range</th>
+			    <th style="width:20%; text-align:center">End Filter Range</th>
 			    <th style="width:10%; text-align:center">Min Age</th>
 			    <th style="width:10%; text-align:center">Max Age</th>
 			    <th style="width:10%; text-align:center">Gender</th>

@@ -76,6 +76,9 @@ function enablePrivaKey() {
 	<jsp:attribute name="title">
 	  <h2>Account Settings</h2>
 	</jsp:attribute>
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 	<jsp:body>
  		<div id="successDiv" style="color: green;">${successDivText}</div>
 		<div id="errorDiv" style="color: red;">${errorDivText}</div>

@@ -2,6 +2,9 @@
 <%@attribute name="header" fragment="true" %>
 <%@attribute name="footer" fragment="true" %>
 <%@attribute name="title" fragment="true" %>
+
+
+
 <html>
 	<head>
 		<title>Zeppa</title>
@@ -29,6 +32,7 @@
 									<!-- Nav -->
 										<nav id="nav">
 											<ul>
+												<li><a href="/">Home</a></li>
 												<li><a href="/create-account">Create Account</a></li>
 												<li><a href="/login">Login</a></li>
 											</ul>

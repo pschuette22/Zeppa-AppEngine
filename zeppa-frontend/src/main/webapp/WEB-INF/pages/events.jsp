@@ -478,7 +478,9 @@ function parseEvents(eventsString){
 	<jsp:attribute name="title">
 	  <h2>Events</h2>
 	</jsp:attribute>
-
+	<jsp:attribute name="username">
+	 (${userName})
+  	</jsp:attribute>
 <jsp:body>
 	<div>
 	    <table id="eventsTable">

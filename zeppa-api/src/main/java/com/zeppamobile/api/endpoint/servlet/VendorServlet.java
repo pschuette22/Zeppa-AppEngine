@@ -102,7 +102,7 @@ public class VendorServlet extends HttpServlet {
 			Employee employee = new Employee();
 			employee.setEmailAddress(email);
 			employee.setIsEmailVerified(false);
-			employee.setPassword(URLDecoder.decode(req.getParameter("password"), "UTF-8"));
+			//employee.setPassword(URLDecoder.decode(req.getParameter("password"), "UTF-8"));
 			employee.setPrivakeyGuid("");			
 			
 			//Set employees user info

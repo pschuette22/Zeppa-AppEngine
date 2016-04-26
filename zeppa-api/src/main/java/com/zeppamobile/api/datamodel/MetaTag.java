@@ -13,8 +13,13 @@ import com.google.appengine.api.datastore.Key;
 @PersistenceCapable
 public class MetaTag {
 
+	
+	
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
+	@Persistent
 	private String indexedWordId;
 	
 	@Persistent
@@ -30,6 +35,10 @@ public class MetaTag {
 		this.entities = new ArrayList<Key>();
 	}
 
+	public Key getKey() {
+		return key;
+	}
+	
 	public String getIndexedWordId() {
 		return indexedWordId;
 	}

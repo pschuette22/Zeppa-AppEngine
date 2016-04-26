@@ -91,8 +91,12 @@ function capitalizeTagWords(tag) {
 
 function createEvent() {
 	var title = $("#txtTitle").val();
-	var start = $("#startTimePicker").data("DateTimePicker").date().toDate().getTime();
-	var end = $("#endTimePicker").data("DateTimePicker").date().toDate().getTime();
+	if($("#startTimePicker").val().length > 0) {
+		var start = $("#startTimePicker").data("DateTimePicker").date().toDate().getTime();
+	}
+	if($("#endTimePicker").val().length > 0) {
+		var end = $("#endTimePicker").data("DateTimePicker").date().toDate().getTime();
+	}
 	var address = $("#addressInput").val();
 	var description = $("#txtDescription").val();
 	

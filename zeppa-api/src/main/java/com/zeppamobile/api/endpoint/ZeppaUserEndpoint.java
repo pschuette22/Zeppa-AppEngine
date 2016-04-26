@@ -312,10 +312,11 @@ public class ZeppaUserEndpoint {
 			user.getLatitude();
 			user.getLongitude();
 			
-			user.getUserInfo();
-//			user.getUserInfo().getGivenName();
-//			user.getUserInfo().getFamilyName();
-//			user.getUserInfo().getImageUrl();
+			ZeppaUserInfo info = user.getUserInfo();
+			info.getDateOfBirth();
+			info.getFamilyName();
+			info.getGivenName();
+			info.getImageUrl();
 		}
 
 		return user;

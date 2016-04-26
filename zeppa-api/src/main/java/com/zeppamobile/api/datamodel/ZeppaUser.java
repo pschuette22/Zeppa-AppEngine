@@ -23,7 +23,7 @@ public class ZeppaUser {
 	@Persistent
 	private Long updated;
 
-	@Persistent(embeddedElement = "true", dependent = "true")
+	@Persistent(embeddedElement = "true", dependent = "true",defaultFetchGroup="true")
 	private ZeppaUserInfo userInfo;
 
 	@Persistent

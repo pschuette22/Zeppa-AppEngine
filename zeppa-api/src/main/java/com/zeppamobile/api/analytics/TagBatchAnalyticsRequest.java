@@ -39,6 +39,7 @@ public class TagBatchAnalyticsRequest extends AnalyticsRequest {
 	public void execute() {
 		// Iterate through the tags and set analytics/ execute request
 		for (EventTag tag : tagAnalytics.keySet()) {
+			System.out.println("---------TAG: "+tag.getTagText());
 			TagAnalyticsRequest req = new TagAnalyticsRequest(tag, filter);
 			req.execute();
 			tagAnalytics.put(tag, req);

@@ -88,8 +88,8 @@ public class StartupServlet extends HttpServlet {
     	employeeEric.setEmailAddress("ericmmost@gmail.com");
     	
     	try {
-    		employeeKevin = EmployeeServlet.insertVendor(employeeKevin);
-    		employeeKieran = EmployeeServlet.insertVendor(employeeKieran);
+    		//employeeKevin = EmployeeServlet.insertVendor(employeeKevin);
+    		//employeeKieran = EmployeeServlet.insertVendor(employeeKieran);
     		employeePete = EmployeeServlet.insertVendor(employeePete);
     		employeeBrendan = EmployeeServlet.insertVendor(employeeBrendan);
     		employeeEric = EmployeeServlet.insertVendor(employeeEric);
@@ -109,7 +109,7 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
+//		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
 		
 		try {
 			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
@@ -127,7 +127,7 @@ public class StartupServlet extends HttpServlet {
 		add2.setZipCode(19104);
 		vendor1.setAddress(add2);
 		vendor1.setCompanyName("Test Company 2");
-		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
+//		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
 		
 		try {
 			vendor1 = VendorServlet.insertVendor(vendor1, employeeKieran);
@@ -207,18 +207,18 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag5.getId());
 		tagIds.add(tag6.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", (System.currentTimeMillis() + 80000000L), 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
 		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, (System.currentTimeMillis() + 800000000L), 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
 		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 
 		
 		try {

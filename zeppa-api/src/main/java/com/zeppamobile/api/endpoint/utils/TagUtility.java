@@ -13,12 +13,14 @@ import java.util.Map;
 
 import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.jdo.Transaction;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.google.appengine.api.datastore.Key;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.MetaTag;
@@ -110,7 +112,10 @@ public class TagUtility {
 						MetaTag metatag = null;
 						try {
 							// try to fetch the appropriate metatag
-							metatag = mgr.getObjectById(MetaTag.class, indexWord);
+							Query q = mgr.newQuery(MetaTag.class);
+							q.setFilter("indexedWordId=='"+indexWord+"'");
+							q.setUnique(true);
+							metatag = (MetaTag) q.execute();
 
 						} catch (JDOObjectNotFoundException e) {
 							// Catch it not being found quickly
@@ -132,7 +137,9 @@ public class TagUtility {
 								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()), isUserTag,
 								(getIndexWordWeight(indexWord) / totalWeight));
 						entity = mgr.makePersistent(entity);
-						metatag.getEntities().add(entity.getKey());
+						List<Key> entities = metatag.getEntities();
+						entities.add(entity.getKey());
+						metatag.setEntities(entities);
 					}
 
 					// Update the tag so it has index words for computation

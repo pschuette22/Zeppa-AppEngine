@@ -112,7 +112,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			relationships = AnalyticsFilter.filterRelationshipsOnGender(relationships, filter.getGender());
 		}
 		// Filter results on age if filter info specified 
-		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+		if(!(filter.getMinAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) || !(filter.getMaxAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE))) {
 			relationships = AnalyticsFilter.filterRelationshipsOnAge(relationships, filter.getMinAge(), filter.getMaxAge());
 		} 
 		// Filter results on date if filter info specified 
@@ -161,7 +161,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			joinedList = AnalyticsFilter.filterRelationshipsOnGender(joinedList, filter.getGender());
 		} 
 		// Filter results on age if filter info specified 
-		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+		if(!(filter.getMinAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) || !(filter.getMaxAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE))) {
 			joinedList = AnalyticsFilter.filterRelationshipsOnAge(joinedList, filter.getMinAge(), filter.getMaxAge());
 		}
 		// Filter results on date if filter info specified 
@@ -208,7 +208,7 @@ public class VendorEventRelationshipServlet extends HttpServlet {
 			watchedList = AnalyticsFilter.filterRelationshipsOnGender(watchedList, filter.getGender());
 		}
 		// Filter results on age if filter info specified 
-		if(!(filter.getMinAge() == -1) || !(filter.getMaxAge() == -1)) {
+		if(!(filter.getMinAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) || !(filter.getMaxAge().equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE))) {
 			watchedList = AnalyticsFilter.filterRelationshipsOnAge(watchedList, filter.getMinAge(), filter.getMaxAge());
 		}
 		// Filter results on date if filter info specified 

@@ -389,6 +389,12 @@ public class AnalyticsServlet extends HttpServlet {
 		return ret;
 	}
 	
+	/**
+	 * Add all of the filter params to the map that will be sent to the api in the request
+	 * @param map
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
 	private static Map<String, String> createFilterParams(Map<String, String> map) throws UnsupportedEncodingException {
 		Map<String, String> params = map;
 		if(startDateFilter != null)

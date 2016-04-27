@@ -462,19 +462,17 @@ public class AnalyticsServlet extends HttpServlet {
 			}
 		}
 		// Set age filters to default values if they are null
-		int min = -1;
-		int max = -1;
+		String min = UniversalConstants.AGE_FILTER_NONE;
+		String max = UniversalConstants.AGE_FILTER_NONE;
 		if (req.getParameter(UniversalConstants.MIN_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("None")
-				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase("under18")) {
-			min = Integer.valueOf(req.getParameter(UniversalConstants.MIN_AGE_FILTER));
+				&& !req.getParameter(UniversalConstants.MIN_AGE_FILTER).equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) {
+			min = req.getParameter(UniversalConstants.MIN_AGE_FILTER);
 		}
 		if (req.getParameter(UniversalConstants.MAX_AGE_FILTER) != null
 				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).isEmpty()
-				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("None")
-				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase("over60")) {
-			max = Integer.valueOf(req.getParameter(UniversalConstants.MAX_AGE_FILTER));
+				&& !req.getParameter(UniversalConstants.MAX_AGE_FILTER).equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) {
+			max = req.getParameter(UniversalConstants.MAX_AGE_FILTER);
 		}
 		// TODO: add in vendor id and max distance (in km) you want to extend user search to
 		// Max distance is set to 20 by default right now

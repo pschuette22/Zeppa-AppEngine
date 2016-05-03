@@ -63,6 +63,7 @@ public class EventTag {
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
 		this.ownerId = owner.getId();
+		this.type = TagType.USER;
 		this.indexedWords = new ArrayList<String>();
 	}
 

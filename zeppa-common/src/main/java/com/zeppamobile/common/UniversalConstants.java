@@ -88,6 +88,7 @@ public class UniversalConstants {
 	public static final String PARAM_EVENT_ID = "event-id";
 	public static final String PARAM_TAG_ID = "tag-id";
 	public static final String PARAM_USER_ID = "userId";
+	public static final String PARAM_IS_USER_TAG = "is-user-tag";
 	
 	// Parameter key to differentiate calls to the Analytics API server
 	public static final String ANALYTICS_TYPE = "analyticsType";

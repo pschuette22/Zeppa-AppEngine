@@ -178,11 +178,11 @@ public class EventTagServlet extends HttpServlet {
 			IOException {
 		// Manager to insert the tag
 		PersistenceManager mgr = getPersistenceManager();
-		Transaction txn = mgr.currentTransaction();
+//		Transaction txn = mgr.currentTransaction();
 
 		try {
 			// Start the transaction
-			txn.begin();
+//			txn.begin();
 
 			// Set tag time characteristics
 			tag.setCreated(System.currentTimeMillis());
@@ -192,7 +192,7 @@ public class EventTagServlet extends HttpServlet {
 			tag = mgr.makePersistent(tag);
 
 			// commit the changes
-			txn.commit();
+//			txn.commit();
 
 			TaskUtility.scheduleIndexEventTag(tag, false);
 			
@@ -200,11 +200,11 @@ public class EventTagServlet extends HttpServlet {
 			// catch any errors that might occur
 			e.printStackTrace();
 		} finally {
-
-			if (txn.isActive()) {
-				txn.rollback();
-				tag = null;
-			}
+			
+//			if (txn.isActive()) {
+//				txn.rollback();
+//				tag = null;
+//			}
 
 			mgr.close();
 

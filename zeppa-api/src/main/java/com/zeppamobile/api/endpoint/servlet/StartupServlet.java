@@ -46,6 +46,8 @@ public class StartupServlet extends HttpServlet {
     		return;
     	}
     	
+    	// PSchuette - I removed the warmup call so this isn't invoked
+    	// I CANNOT STAND THIS CLASS
     	
     	// Kevin Account
     	EmployeeUserInfo kevinUI = new EmployeeUserInfo();

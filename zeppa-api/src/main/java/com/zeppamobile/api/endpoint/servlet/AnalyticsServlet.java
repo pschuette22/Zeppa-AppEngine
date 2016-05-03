@@ -21,11 +21,14 @@ import org.json.simple.JSONObject;
 import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.google.appengine.repackaged.org.joda.time.LocalDate;
 import com.google.appengine.repackaged.org.joda.time.Years;
+import com.zeppamobile.api.analytics.DemographicsFilter;
+import com.zeppamobile.api.analytics.TagBatchAnalyticsRequest;
 import com.zeppamobile.api.datamodel.EventTag;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.datamodel.ZeppaUserInfo;
+import com.zeppamobile.api.endpoint.utils.TagUtility;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.AnalyticsDataWrapper;
 import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper;
@@ -328,6 +331,8 @@ public class AnalyticsServlet extends HttpServlet {
 		Map<String, Integer> tagsHash = new HashMap<String, Integer>();
 		// First get all events for the vendor
 		List<VendorEvent> events = VendorEventServlet.getAllEvents(vendorId);
+		List<EventTag> eventsTags = new ArrayList<EventTag>();
+		List<Long> userIds = new ArrayList<Long>();
 		// Loop through each event for the vendor
 		for(VendorEvent event : events) {
 			// Create a list that will store all of the tags that were used for the event
@@ -335,11 +340,14 @@ public class AnalyticsServlet extends HttpServlet {
 			for(Long id : event.getTagIds()) {
 				// Get the tag text from each tag
 				EventTag tag = EventTagServlet.getTag(id);
+//				TagUtility.indexTag(id, false);
+				eventsTags.add(tag);
 				// If the tag hasn't been seen yet add it to the list
 				if (!tagList.contains(tag.getTagText())) {
 					tagList.add(tag.getTagText());
 				}
 			}
+			
 			List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 			if(joined) {
 			// get all users with a joined relationship to the event
@@ -348,9 +356,21 @@ public class AnalyticsServlet extends HttpServlet {
 				relationships = VendorEventRelationshipServlet.getAllWatchedRelationshipsForEvent(event.getId(), filter);
 			}
 			
+			for(VendorEventRelationship rel : relationships) {
+				userIds.add(rel.getUserId());
+			}
 			// This hash map contains all tag texts that are common 
 			// between one of the vendor's events and a user with a relationship to it
 			tagsHash.putAll(getRelatedUserTagInfo(tagList, relationships));
+		}
+		
+		System.out.println("In api AnalyticsServlet.getAllEventTags");
+		DemographicsFilter demFilt = new DemographicsFilter(userIds);
+		TagBatchAnalyticsRequest tagBatch = new TagBatchAnalyticsRequest(demFilt, eventsTags);
+		tagBatch.execute();
+		Map<String, Double> interests = tagBatch.getAllTagInterest();
+		for(Entry<String, Double> ent : interests.entrySet()) {
+			System.out.println("Tag: "+ent.getKey()+" - Interest: "+ent.getValue());
 		}
 		
 		List<AnalyticsDataWrapper> maxTags = new ArrayList<AnalyticsDataWrapper>();

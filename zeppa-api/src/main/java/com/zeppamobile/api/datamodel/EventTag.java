@@ -150,7 +150,7 @@ public class EventTag {
 	}
 
 	public List<String> getIndexedWords() {
-		return indexedWords;
+		return (indexedWords != null ? indexedWords : new ArrayList<String>());
 	}
 
 	public void setIndexedWords(List<String> indexedWords) {

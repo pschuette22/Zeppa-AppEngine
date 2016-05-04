@@ -46,6 +46,8 @@ public class StartupServlet extends HttpServlet {
     		return;
     	}
     	
+    	// PSchuette - I removed the warmup call so this isn't invoked
+    	// I CANNOT STAND THIS CLASS
     	
     	// Kevin Account
     	EmployeeUserInfo kevinUI = new EmployeeUserInfo();
@@ -88,8 +90,8 @@ public class StartupServlet extends HttpServlet {
     	employeeEric.setEmailAddress("ericmmost@gmail.com");
     	
     	try {
-    		employeeKevin = EmployeeServlet.insertVendor(employeeKevin);
-    		employeeKieran = EmployeeServlet.insertVendor(employeeKieran);
+    		//employeeKevin = EmployeeServlet.insertVendor(employeeKevin);
+    		//employeeKieran = EmployeeServlet.insertVendor(employeeKieran);
     		employeePete = EmployeeServlet.insertVendor(employeePete);
     		employeeBrendan = EmployeeServlet.insertVendor(employeeBrendan);
     		employeeEric = EmployeeServlet.insertVendor(employeeEric);
@@ -109,7 +111,7 @@ public class StartupServlet extends HttpServlet {
 		Vendor vendor = new Vendor();
 		vendor.setAddress(add);
 		vendor.setCompanyName("Test Company 1");
-		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
+//		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
 		
 		try {
 			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
@@ -127,7 +129,7 @@ public class StartupServlet extends HttpServlet {
 		add2.setZipCode(19104);
 		vendor1.setAddress(add2);
 		vendor1.setCompanyName("Test Company 2");
-		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
+//		vendor1.setMasterUserId(Long.valueOf(employeeKieran.getKey().getId()));
 		
 		try {
 			vendor1 = VendorServlet.insertVendor(vendor1, employeeKieran);
@@ -155,6 +157,31 @@ public class StartupServlet extends HttpServlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		Vendor vendor3 = new Vendor();
+		vendor3.setAddress(add3);
+		vendor3.setCompanyName("Test Company 4");
+		
+		try {
+			vendor3 = VendorServlet.insertVendor(vendor3, employeeEric);
+		} catch (UnauthorizedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Vendor vendor4 = new Vendor();
+		vendor4.setAddress(add3);
+		vendor4.setCompanyName("Test Company 5");
+		
+		try {
+			vendor4 = VendorServlet.insertVendor(vendor4, employeePete);
+		} catch (UnauthorizedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		// Add EventTags to the datastore
 		EventTag tag = new EventTag();
 		tag.setOwnerId(vendor.getKey().getId());

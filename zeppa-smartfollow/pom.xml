@@ -141,12 +141,11 @@
 			<version>3.4.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>edu.stanford.nlp</groupId>
-			<artifactId>stanford-corenlp</artifactId>
-			<version>3.4.1</version>
-			<classifier>models</classifier>
-		</dependency>
+		<!-- Following dependency removed(edu.stanford.nlp:stanford-corenlp:3.4.1:models) 
+			because it causes deploy error. How is this different from above dependency(edu.stanford.nlp:stanford-corenlp:3.4.1)? 
+			only difference is models classifier -->
+		<!-- <dependency> <groupId>edu.stanford.nlp</groupId> <artifactId>stanford-corenlp</artifactId> 
+			<version>3.4.1</version> <classifier>models</classifier> </dependency> -->
 
 		<dependency>
 			<groupId>edu.mit</groupId>
@@ -179,18 +178,16 @@
 		</dependency>
 
 		<!-- jlt library (ADW dependency) -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>it.uniroma1.lcl</groupId> -->
-<!-- 			<artifactId>jlt</artifactId> -->
-<!-- 			<version>2.0.0</version> -->
-<!-- 		</dependency> -->
+<!-- <dependency> <groupId>it.uniroma1.lcl</groupId> <artifactId>jlt</artifactId> 
+			<version>2.0.0</version> </dependency> -->
 
-		<dependency> 
-			<groupId>in-project</groupId> 
-			<artifactId>jlt</artifactId> 
-			<scope>system</scope> 
-			<version>2.0.0</version> 
-			<systemPath>${basedir}/lib/jlt-2.0.0.jar</systemPath> 
+		<!-- This is bad practice and a solution should be explored -->
+		<dependency>
+			<groupId>in-project</groupId>
+			<artifactId>jlt</artifactId>
+			<scope>system</scope>
+			<version>2.0.0</version>
+			<systemPath>${basedir}/lib/jlt-2.0.0.jar</systemPath>
 		</dependency>
 
 		<!-- Necessary for jwktl -->
@@ -240,7 +237,7 @@
 					<artifactId>appengine-maven-plugin</artifactId>
 					<version>${appengine.target.version}</version>
 					<configuration>
-						<enableJarClasses>false</enableJarClasses>
+						<enableJarSplitting>true</enableJarSplitting>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -253,7 +250,6 @@
 							<!-- in order to interpolate version from pom into appengine-web.xml -->
 							<resource>
 								<directory>${basedir}/src/main/webapp/WEB-INF</directory>
-								<!-- <filtering>true</filtering> -->
 								<targetPath>WEB-INF</targetPath>
 							</resource>
 						</webResources>
@@ -261,11 +257,7 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>com.google.appengine</groupId>
-				<artifactId>appengine-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+		<!-- <plugins> <plugin> <groupId>com.google.appengine</groupId> <artifactId>appengine-maven-plugin</artifactId> 
+			</plugin> </plugins> -->
 	</build>
 </project>

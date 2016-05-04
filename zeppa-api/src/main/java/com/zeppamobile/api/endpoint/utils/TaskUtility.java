@@ -1,11 +1,14 @@
 package com.zeppamobile.api.endpoint.utils;
 
+import org.mortbay.log.Log;
+
 import com.google.appengine.api.modules.ModulesServiceFactory;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.common.UniversalConstants;
 
 public class TaskUtility {
 
@@ -13,6 +16,8 @@ public class TaskUtility {
 	 * @constructor private constructor as this is a utility class
 	 */
 	private static final String TASK_SERVLET_URL = "/tasks/servlet";
+
+	private static final String TAG_INDEXING_SERVLET_URL = "/tasks/tag-indexing";
 
 	private TaskUtility() {
 	}
@@ -24,6 +29,15 @@ public class TaskUtility {
 	 */
 	private static Queue getRelationshipQueue() {
 		return QueueFactory.getQueue("relationship-management");
+	}
+
+	/**
+	 * Get the queue responsible for indexing tags
+	 * 
+	 * @return
+	 */
+	private static Queue getTagIndexingQueue() {
+		return QueueFactory.getQueue("tag-indexing");
 	}
 
 	// /**
@@ -128,10 +142,12 @@ public class TaskUtility {
 	public static void scheduleIndexEventTag(EventTag tag, boolean isUserTag) {
 
 		System.out.println("Indexing tag: " + tag.getTagText());
-		getRelationshipQueue()
-				.add(TaskOptions.Builder.withUrl(TASK_SERVLET_URL).method(Method.GET).param("action", "indexTag")
-						.param("tagId", String.valueOf(tag.getId())).param("isUserTag", String.valueOf(isUserTag))
-						.header("Host", ModulesServiceFactory.getModulesService().getVersionHostname(null, null)));
+		String hostHeader = ModulesServiceFactory.getModulesService().getVersionHostname("zeppa-api", "v1");
+		Log.warn("Index Event Tag Host Header: " + hostHeader + " for tag: " + tag.getId());
+		getTagIndexingQueue().add(TaskOptions.Builder.withUrl(TAG_INDEXING_SERVLET_URL).method(Method.POST)
+				.param(UniversalConstants.PARAM_TAG_ID, String.valueOf(tag.getId()))
+				.param(UniversalConstants.PARAM_IS_USER_TAG, String.valueOf(isUserTag))
+				.header("Host", hostHeader));
 
 	}
 

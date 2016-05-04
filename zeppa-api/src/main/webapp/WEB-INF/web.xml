@@ -29,6 +29,17 @@
 		<url-pattern>/tasks/servlet</url-pattern>
 	</servlet-mapping>
 
+	<!-- Dedicated servlet for indexing tags -->
+	<servlet>
+		<servlet-name>TagIndexingServlet</servlet-name>
+		<servlet-class>com.zeppamobile.api.tasks.TagIndexingServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TagIndexingServlet</servlet-name>
+		<url-pattern>/tasks/tag-indexing</url-pattern>
+	</servlet-mapping>
+
 	<!-- Notification Building Servlet -->
 
 	<servlet>
@@ -47,11 +58,13 @@
 		</servlet-class> </servlet> <servlet-mapping> <servlet-name>EventAdminServlet</servlet-name> 
 		<url-pattern>/admin/event-servlet/</url-pattern> </servlet-mapping> -->
 
+	<!-- PSchuette NOTE: I just commented out the load on startup in case we 
+		need data available in startup servlet -->
 	<servlet>
 		<servlet-name>StartupServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet
 		</servlet-class>
-		<load-on-startup>0</load-on-startup>
+		<!-- <load-on-startup>0</load-on-startup> -->
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>StartupServlet</servlet-name>

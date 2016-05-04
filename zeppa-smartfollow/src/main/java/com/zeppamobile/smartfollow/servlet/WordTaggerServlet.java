@@ -2,6 +2,7 @@ package com.zeppamobile.smartfollow.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,6 @@ import com.zeppamobile.common.utils.Utils;
 
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
-
 import edu.mit.jwi.item.POS;
 import edu.stanford.nlp.ling.WordLemmaTag;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
@@ -42,6 +42,7 @@ public class WordTaggerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+		
 		// Get the text of this tag
 		String tagText = req.getParameter(UniversalConstants.kREQ_TAG_TEXT);
 		if (Utils.isWebSafe(tagText)) {
@@ -67,7 +68,8 @@ public class WordTaggerServlet extends HttpServlet {
 			// These will be the objects that are returned
 			List<String> indexedWords = new ArrayList<String>();
 			Map<String, List<String>> synsetMap = new HashMap<String, List<String>>();
-
+			double totalTagWeight = 0;
+			
 			// If there are multiple words, find the ones closest to each other
 			// word
 			if (lemmaTags.size() > 1) {
@@ -112,6 +114,7 @@ public class WordTaggerServlet extends HttpServlet {
 							// }
 
 							synsetMap.put(indexedWordId, relatedWordIds);
+							totalTagWeight+=getIndexWordWeight(indexedWordId);
 						}
 					}
 					IWord word = closestSet[1];
@@ -132,29 +135,32 @@ public class WordTaggerServlet extends HttpServlet {
 							relatedWordIds.add(relatedWordId);
 						}
 						synsetMap.put(indexedWordId, relatedWordIds);
+						totalTagWeight+=getIndexWordWeight(indexedWordId);
 					}
 				}
-
-				// TODO: return these objects serialized
-
-				// for (IWord iword : indexedWords) {
-				// if (iword == null) {
-				// builder.append("null word ");
-				// } else {
-				// builder.append(iword.getLemma() + "#" + iword.getPOS() + "#"
-				// + iword.getSenseKey() + " ");
-				// }
-				// }
 
 			} else if (!lemmaTags.isEmpty()) {
 				WordLemmaTag taggedWord = lemmaTags.get(0);
 
 				builder.append(taggedWord.lemma() + "-" + GeneralUtils.getTagfromTag(taggedWord.tag()).getTag() + "-1");
 			}
+			
+			// Map the indexed words weight in the tag
+			Map<String,Double> weightMap = new HashMap<String,Double>();
+			if(totalTagWeight>0){
+				for(String indexedWord: indexedWords){
+					// Iterate through the list of indexed words mapping their relative weight
+					weightMap.put(indexedWord, getIndexWordWeight(indexedWord)/totalTagWeight);
+				}
+			}
+			
 
+			// Put together a nice little json object and badaboom badabing
 			JSONObject json = new JSONObject();
 			json.put(UniversalConstants.kJSON_INDEX_WORD_LIST, indexedWords);
 			json.put(UniversalConstants.kJSON_INDEX_WORD_SYNS_MAP, synsetMap);
+			json.put(UniversalConstants.kJSON_INDEX_WORD_WEIGHT_MAP, weightMap);
+			json.put(UniversalConstants.kJSON_TOTAL_WEIGHT, totalTagWeight);
 
 			// Write the response without extra spacing
 			resp.getWriter().write(json.toJSONString());
@@ -183,6 +189,36 @@ public class WordTaggerServlet extends HttpServlet {
 		s = s.substring(startIndex, endIndex);
 
 		return s;
+	}
+	
+	/**
+	 * Get the tag word weight based on the part of speech
+	 * 
+	 * @param indexWord
+	 * @return associated weight or 0;
+	 */
+	public static double getIndexWordWeight(String indexWord) {
+		/*
+		 * Pschuette NOTE: I copied this entire method and the majority of the above from
+		 * zeppa-api:com.zeppamobile.api.tasks.TagIndexingServlet ... This
+		 * kinda smells to me, perhaps smartfollow should be passing around tag
+		 * weights
+		 */
+		if (indexWord.contains("-N-")) {
+			// noun
+			return UniversalConstants.WEIGHT_NOUN;
+		} else if (indexWord.contains("-V-")) {
+			// verb
+			return UniversalConstants.WEIGHT_VERB;
+		} else if (indexWord.contains("-R-")) {
+			// adverb
+			return UniversalConstants.WEIGHT_ADVERB;
+		} else if (indexWord.contains("-A-")) {
+			// adjective
+			return UniversalConstants.WEIGHT_ADJECTIVE;
+		} else {
+			return 0;
+		}
 	}
 
 }

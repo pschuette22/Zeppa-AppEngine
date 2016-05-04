@@ -66,8 +66,22 @@ public class UniversalConstants {
 	/*
 	 * JSON object argument keys
 	 */
+	public static final String kJSON_INDEX_WORD = "index-word";
 	public static final String kJSON_INDEX_WORD_LIST = "index-word-list";
 	public static final String kJSON_INDEX_WORD_SYNS_MAP = "index-word-syns-map";
+	public static final String kJSON_INDEX_WORD_SYNS_ARRAY = "index-word-syns-array";
+	public static final String kJSON_INDEX_WORD_WEIGHT_MAP = "index-word-weight-map";
+	public static final String kJSON_TAG_WORD_COUNT = "tag-word-count";
+	public static final String kJSON_TAG_WORD_INFO_ARRAY = "tag-word-info-array";
+	public static final String kJSON_TAG_WORD_WEIGHT = "tag-word-weight";
+	public static final String kJSON_TOTAL_WEIGHT = "total-weight";
+
+	
+	/*
+	 * Header keys for servlet responses
+	 */
+	public static final String HEADER_TAG_INDEXING_INFO = "tag-indexing-info";
+	
 	
 	/*
 	 * Param keys are for parameters that are to be passed into calls
@@ -84,10 +98,12 @@ public class UniversalConstants {
 	public static final String PARAM_VENDOR_ID = "vendorId";
 	public static final String PARAM_UPCOMING_EVENTS = "upcoming-events-dashbboard";
 	public static final String PARAM_PAST_EVENTS = "past-events-dashbboard";
-	public static final String PARAM_TAG_TEXT = "tagText";
+	public static final String PARAM_TAG_TEXT = "tagText"; // Legacy....
+	public static final String PARAM_TAG_WEIGHT = "tag-weight";
 	public static final String PARAM_EVENT_ID = "event-id";
 	public static final String PARAM_TAG_ID = "tag-id";
 	public static final String PARAM_USER_ID = "userId";
+	public static final String PARAM_IS_USER_TAG = "is-user-tag";
 	
 	// Parameter key to differentiate calls to the Analytics API server
 	public static final String ANALYTICS_TYPE = "analyticsType";

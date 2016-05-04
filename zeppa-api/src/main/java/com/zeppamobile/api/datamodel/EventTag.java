@@ -63,6 +63,7 @@ public class EventTag {
 		this.updated = System.currentTimeMillis();
 		this.tagText = tagText;
 		this.ownerId = owner.getId();
+		this.type = TagType.USER;
 		this.indexedWords = new ArrayList<String>();
 	}
 
@@ -149,7 +150,7 @@ public class EventTag {
 	}
 
 	public List<String> getIndexedWords() {
-		return indexedWords;
+		return (indexedWords != null ? indexedWords : new ArrayList<String>());
 	}
 
 	public void setIndexedWords(List<String> indexedWords) {

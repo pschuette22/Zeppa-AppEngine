@@ -8,7 +8,7 @@ import javax.jdo.annotations.PrimaryKey;
 import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
-public class MetaTagEntity {
+public class MetaTagEntity implements Comparable<MetaTagEntity> {
 
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -34,7 +34,11 @@ public class MetaTagEntity {
 	 */
 	@Persistent
 	private Double weightInTag;
+	
+	@Persistent
+	private Double weightDifference;
 
+	
 	public MetaTagEntity(Long tagId, Long ownerId, Boolean isUserTag, Double weightInTag) {
 		super();
 		this.tagId = tagId;
@@ -79,5 +83,19 @@ public class MetaTagEntity {
 	public Key getKey() {
 		return key;
 	}
+	
+	public Double getWeightDifference() {
+		return weightDifference;
+	}
+	
+	public void calculateWeightDifference(Double relativeWeight) {
+		weightDifference = Math.abs(relativeWeight - weightInTag);
+	}
 
+	@Override
+	public int compareTo(MetaTagEntity tag) {
+		Double result = (this.getWeightDifference() - tag.getWeightDifference());
+		return (int) Math.ceil(result);
+	}
+	
 }

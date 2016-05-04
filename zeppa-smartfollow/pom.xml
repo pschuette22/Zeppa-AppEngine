@@ -144,8 +144,8 @@
 		<!-- Following dependency removed(edu.stanford.nlp:stanford-corenlp:3.4.1:models) 
 			because it causes deploy error. How is this different from above dependency(edu.stanford.nlp:stanford-corenlp:3.4.1)? 
 			only difference is models classifier -->
-	<!-- <dependency> <groupId>edu.stanford.nlp</groupId> <artifactId>stanford-corenlp</artifactId> 
-		<version>3.4.1</version> <classifier>models</classifier> </dependency> -->
+		<!-- <dependency> <groupId>edu.stanford.nlp</groupId> <artifactId>stanford-corenlp</artifactId> 
+			<version>3.4.1</version> <classifier>models</classifier> </dependency> -->
 
 		<dependency>
 			<groupId>edu.mit</groupId>
@@ -178,11 +178,8 @@
 		</dependency>
 
 		<!-- jlt library (ADW dependency) -->
-<!-- <dependency> -->
-		<!-- <groupId>it.uniroma1.lcl</groupId> -->
-		<!-- <artifactId>jlt</artifactId> -->
-		<!-- <version>2.0.0</version> -->
-		<!-- </dependency> -->
+<!-- <dependency> <groupId>it.uniroma1.lcl</groupId> <artifactId>jlt</artifactId> 
+			<version>2.0.0</version> </dependency> -->
 
 		<!-- This is bad practice and a solution should be explored -->
 		<dependency>

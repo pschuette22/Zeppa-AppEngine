@@ -22,8 +22,8 @@
 		// Iterate backwards through the loop
 		var isCaps = true;
 		for(i = 0; i < tagText.length; i++){
-			char ch = tagText[i];
-			if(ch==' '){
+			var ch = tagText[i];
+			if(ch ==" "){
 				// If this character is a space, capitalize the next
 				isCaps = true;
 			} else {
@@ -46,21 +46,22 @@
 	 */
 	function indexTag() {
 		// Grab the text for this tag
-		var txtRaw = document.getElementById("tagText").value();
-		console.log("Input Text: " + txtRaw);
+		var txtRaw = document.getElementById("tagText").textContent;
+		console.log("Input Text: %s", txtRaw);
 		var txtClean = formatTag(txtRaw);
-		console.log("Formatted Text: " + txtClean);
+		console.log("Formatted Text: %s", txtClean);
 		var data = {
 				'tag-text' : txtClean
 			};
-		$.get(
+		$.post(
 				"/index-tag-example",
 				data,
 				function(resp) {
 					console.log("success");
 					console.log(resp);
-					document.getElementById("successDiv").innerHTML = txtClean
-							+ " was indexed successfully";
+					var message = txtClean;
+					message+=" was indexed successfully";
+					document.getElementById("successDiv").innerHTML = message;
 					// TODO: print out an in depth report
 				})
 		.fail(

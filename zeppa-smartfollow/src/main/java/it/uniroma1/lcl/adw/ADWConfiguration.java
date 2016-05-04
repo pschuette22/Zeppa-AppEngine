@@ -1,7 +1,7 @@
 package it.uniroma1.lcl.adw;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -20,8 +20,8 @@ public class ADWConfiguration {
 	// Local
 	// private static String CONFIG_DIR = "src/main/webapp/WEB-INF/config";
 	// AppEngine
-	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config/";
-
+//	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config/";
+	private static String CONFIG_DIR = "WEB-INF/config/";
 	private static final String CONFIG_FILE = "adw.properties";
 
 	/**
@@ -30,7 +30,12 @@ public class ADWConfiguration {
 	 * @throws ConfigurationException
 	 */
 	private ADWConfiguration() {
-		File configFile = new File(CONFIG_DIR, CONFIG_FILE);
+		
+//		InputStream resourceStream = Thread.currentThread().getContextClassLoader()
+//			    .getResourceAsStream(CONFIG_DIR+CONFIG_FILE);
+		
+		File configFile = new File(CONFIG_DIR+CONFIG_FILE);
+//		File configFile = new File(CONFIG_FILE);
 
 		boolean bDone = false;
 		if (configFile.exists()) {

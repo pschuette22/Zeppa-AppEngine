@@ -13,8 +13,8 @@
 
 	<!-- Resource files for libraries -->
 	<resource-files>
-		<include path="/webapp/WEB-INF/config/**/*" />
-		<include path="/webapp/WEB-INF/resources/**/*" />
+		<include path="/config/**/*" />
+		<include path="/resources/**/*" />
 	</resource-files>
 
 </appengine-web-app>

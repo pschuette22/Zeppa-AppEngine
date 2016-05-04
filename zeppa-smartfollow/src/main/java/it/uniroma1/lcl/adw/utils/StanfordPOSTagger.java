@@ -2,6 +2,7 @@ package it.uniroma1.lcl.adw.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.Sentence;
@@ -10,14 +11,16 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import it.uniroma1.lcl.adw.ADWConfiguration;
 
 public class StanfordPOSTagger {
+	private static final Logger LOG = Logger.getLogger(StanfordPOSTagger.class.getName());
 	private final MaxentTagger tagger;
 
 	private static StanfordPOSTagger instance;
 
 	private StanfordPOSTagger() {
 		try {
-
-			this.tagger = new MaxentTagger(ADWConfiguration.getInstance().getStanfordPOSModel());
+			String posModelPath = ADWConfiguration.getInstance().getStanfordPOSModel();
+			LOG.warning("posModelPath: " + posModelPath);		
+			this.tagger = new MaxentTagger(posModelPath);
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot init: " + e.getLocalizedMessage());
 		}

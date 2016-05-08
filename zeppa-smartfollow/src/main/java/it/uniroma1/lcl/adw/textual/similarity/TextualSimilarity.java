@@ -22,6 +22,7 @@ import it.uniroma1.lcl.jlt.util.Strings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -50,7 +51,7 @@ public class TextualSimilarity
 	
 	private static List<Character> TAGS = Arrays.asList(new Character[]{'V','R','J','N'});
 	
-	private static MultiHashMap<String,String> allWordNetEntries = new MultiHashMap<String,String>();;
+	private static MultiHashMap<String,String> allWordNetEntries = null;
 	
 	private static boolean discardStopwords = ADWConfiguration.getInstance().getDiscardStopwordsCondition();
 	
@@ -60,6 +61,8 @@ public class TextualSimilarity
 	{
 		if(allWordNetEntries == null)
 		{
+			allWordNetEntries = new MultiHashMap<String,String>();
+			
 			for(String tag : Arrays.asList("n","v","r","a"))
 				allWordNetEntries.putAll(tag, WordNetUtils.getInstance().getAllWords(GeneralUtils.getTagfromTag(tag)));	
 		
@@ -232,10 +235,13 @@ public class TextualSimilarity
 		if(tag == null  || tag.trim().length() == 0 || tag.equals("?"))
 			return true;
 		
-		if(allWordNetEntries.get(tag).contains(word))
+		Collection<String> tagEntry = allWordNetEntries.get(tag);
+	
+		if(tagEntry != null && tagEntry.contains(word))
 			return false;
-		else
+		else {
 			return true;
+		}
 	}
 	
 	/**

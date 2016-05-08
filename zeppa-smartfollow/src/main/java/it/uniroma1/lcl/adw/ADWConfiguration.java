@@ -3,6 +3,8 @@ package it.uniroma1.lcl.adw;
 import java.io.File;
 import java.io.InputStream;
 
+import javax.servlet.ServletContext;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
@@ -15,6 +17,7 @@ import it.uniroma1.lcl.adw.semsig.LKB;
 public class ADWConfiguration {
 	private org.apache.commons.configuration.PropertiesConfiguration config = null;
 	private static final Log log = LogFactory.getLog(ADWConfiguration.class);
+	private static ServletContext context;
 
 	private static ADWConfiguration instance = null;
 	// Local
@@ -22,6 +25,7 @@ public class ADWConfiguration {
 	// AppEngine
 //	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config/";
 	private static String CONFIG_DIR = "WEB-INF/config/";
+
 	private static final String CONFIG_FILE = "adw.properties";
 
 	/**
@@ -30,12 +34,14 @@ public class ADWConfiguration {
 	 * @throws ConfigurationException
 	 */
 	private ADWConfiguration() {
-		
 //		InputStream resourceStream = Thread.currentThread().getContextClassLoader()
 //			    .getResourceAsStream(CONFIG_DIR+CONFIG_FILE);
 		
 		File configFile = new File(CONFIG_DIR+CONFIG_FILE);
 //		File configFile = new File(CONFIG_FILE);
+
+		log.info("ADW Config path: "+configFile.getAbsolutePath());
+
 
 		boolean bDone = false;
 		if (configFile.exists()) {
@@ -181,6 +187,10 @@ public class ADWConfiguration {
 
 	public static void setConfigDir(String path) {
 		CONFIG_DIR = path;
+	}
+	
+	public static void setServletContext(ServletContext servletContext) {
+		context = servletContext;
 	}
 
 	public boolean isAppEngine() {

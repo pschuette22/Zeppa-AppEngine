@@ -50,7 +50,7 @@ public class TextualSimilarity
 	
 	private static List<Character> TAGS = Arrays.asList(new Character[]{'V','R','J','N'});
 	
-	private static MultiHashMap<String,String> allWordNetEntries = null;
+	private static MultiHashMap<String,String> allWordNetEntries = new MultiHashMap<String,String>();;
 	
 	private static boolean discardStopwords = ADWConfiguration.getInstance().getDiscardStopwordsCondition();
 	
@@ -60,8 +60,6 @@ public class TextualSimilarity
 	{
 		if(allWordNetEntries == null)
 		{
-			allWordNetEntries = new MultiHashMap<String,String>();
-		
 			for(String tag : Arrays.asList("n","v","r","a"))
 				allWordNetEntries.putAll(tag, WordNetUtils.getInstance().getAllWords(GeneralUtils.getTagfromTag(tag)));	
 		

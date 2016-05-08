@@ -16,11 +16,14 @@ import org.json.simple.JSONObject;
 
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.utils.Utils;
+import com.zeppamobile.smartfollow.comparewords.WordInfo;
+import com.zeppamobile.smartfollow.task.CompareTagsTask;
 
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
 import edu.mit.jwi.item.POS;
 import edu.stanford.nlp.ling.WordLemmaTag;
+import it.uniroma1.lcl.adw.ADWConfiguration;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
 import it.uniroma1.lcl.adw.semsig.LKB;
 import it.uniroma1.lcl.adw.semsig.SemSigComparator;
@@ -41,8 +44,6 @@ public class WordTaggerServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		
 		// Get the text of this tag
 		String tagText = req.getParameter(UniversalConstants.kREQ_TAG_TEXT);
 		if (Utils.isWebSafe(tagText)) {

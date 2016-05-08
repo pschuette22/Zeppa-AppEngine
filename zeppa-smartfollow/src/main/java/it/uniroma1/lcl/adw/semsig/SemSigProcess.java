@@ -118,48 +118,23 @@ public class SemSigProcess {
 		TIntFloatMap map = new TIntFloatHashMap(size);
 
 		try {
-			BufferedReader br = null;
-			// Local
-			if (!ADWConfiguration.getInstance().getSignaturesSource()) {
-				log.info("Retrieving "+path);
-				if (!new File(path).exists()) {
-					if (warnings)
-						log.info("[WARNING: " + path + " does not exist]");
+			String bucketName = path.substring(0, path.indexOf("/"));
+			String objectName = path.substring(path.indexOf("/") + 1);
 
-					return vector;
-				}
-
-				br = new BufferedReader(new FileReader(path));
-			} else {
-				// Cloud
-				String bucketName = path.substring(0, path.indexOf("/"));
-				String objectName = path.substring(path.indexOf("/") + 1);
-
-				File semsig = new File("resources/signatures/", objectName.replaceAll("/","-"));
-				
-				// download the signature file if we haven't already
-				if (!semsig.exists()) {
-					semsig.getParentFile().mkdirs();
-					log.info("Downloading object gs://"+bucketName+"/"+objectName+" from cloud storage");
+			log.info("Downloading gs://"+bucketName+"/"+objectName+" from cloud storage");
 					
-					// Make sure the service is started
-					if (storageService == null) {
-						storageService = StorageUtils.getInstance().getService();
-					}
-					
-
-					Storage.Objects.Get getObject = storageService.objects().get(
-							bucketName, objectName);
-										
-					// prefer to download file all at once if not appengine
-					getObject.getMediaHttpDownloader().setDirectDownloadEnabled(!ADWConfiguration.getInstance().isAppEngine());
-					getObject.executeMediaAndDownloadTo(new FileOutputStream(semsig));
-				}
-
-				log.info("Retrieving "+objectName);
-				br = new BufferedReader(new InputStreamReader(new FileInputStream(semsig)));		
+			// Make sure the service is started
+			if (storageService == null) {
+				storageService = StorageUtils.getInstance().getService();
 			}
 
+			Storage.Objects.Get getObject = storageService.objects().get(bucketName, objectName);
+										
+			// prefer to download file all at once if not appengine
+			getObject.getMediaHttpDownloader().setDirectDownloadEnabled(!ADWConfiguration.getInstance().isAppEngine());
+												
+			BufferedReader br = new BufferedReader(new InputStreamReader(getObject.executeMediaAsInputStream()));		
+			
 			float prob;
 			float lastProb = 0.0f;
 			int lineCounter = 1;

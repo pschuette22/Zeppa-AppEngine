@@ -207,18 +207,18 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag5.getId());
 		tagIds.add(tag6.getId());
 		VendorEvent event = new VendorEvent("Test Event", "test event description", (System.currentTimeMillis() + 80000000L), 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Address Holder");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
 		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
 		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, (System.currentTimeMillis() + 800000000L), 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
 		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
-				(System.currentTimeMillis() + 10000), vendor1.getKey().getId(), tagIds, "Drexel University");
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
 
 		
 		try {
@@ -293,14 +293,14 @@ public class StartupServlet extends HttpServlet {
 		}
 		
 		// Create user relationships to event
-		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, true, false, new ArrayList<Long>());
 		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, true, false, new ArrayList<Long>());
 		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
 		

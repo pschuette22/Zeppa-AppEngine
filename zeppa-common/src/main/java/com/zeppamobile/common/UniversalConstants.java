@@ -107,6 +107,15 @@ public class UniversalConstants {
 	public static final String MIN_AGE_FILTER = "minAgeFilter";
 	public static final String MAX_AGE_FILTER = "maxAgeFilter";
 	public static final String GENDER_FILTER = "genderFilter";
+	public static final String AGE_FILTER_NONE = "None";
+	public static final String AGE_FILTER_UNDER18 = "under18";
+	public static final String AGE_FILTER_18to20 = "18-20";
+	public static final String AGE_FILTER_21to24 = "21-24";
+	public static final String AGE_FILTER_25to29 = "25-29";
+	public static final String AGE_FILTER_30to39 = "30-39";
+	public static final String AGE_FILTER_40to49 = "40-49";
+	public static final String AGE_FILTER_50to59 = "50-59";
+	public static final String AGE_FILTER_OVER60 = "over60";
 	
 	/*
 	 * Return argument keys

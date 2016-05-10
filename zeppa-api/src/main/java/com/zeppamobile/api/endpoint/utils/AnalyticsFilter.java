@@ -10,6 +10,7 @@ import com.zeppamobile.api.datamodel.VendorEventRelationship;
 import com.zeppamobile.api.datamodel.ZeppaUser;
 import com.zeppamobile.api.endpoint.servlet.VendorEventServlet;
 import com.zeppamobile.api.endpoint.servlet.ZeppaUserServlet;
+import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.FilterCerealWrapper.Gender;
 
 public class AnalyticsFilter {
@@ -49,10 +50,13 @@ public class AnalyticsFilter {
 	 * @param maxAge - maximum desired age
 	 * @return - list of relationships that meet filter criteria
 	 */
-	public static List<VendorEventRelationship> filterRelationshipsOnAge(List<VendorEventRelationship> rels, int minAge, int maxAge) {
+	public static List<VendorEventRelationship> filterRelationshipsOnAge(List<VendorEventRelationship> rels, String minAge, String maxAge) {
 		// If max age is above 60 then make it chosen large value
-		if(maxAge == -1) {
-			maxAge = 150;
+		if(maxAge.equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) {
+			maxAge = UniversalConstants.AGE_FILTER_OVER60;
+		}
+		if(minAge.equalsIgnoreCase(UniversalConstants.AGE_FILTER_NONE)) {
+			minAge = UniversalConstants.AGE_FILTER_UNDER18;
 		}
 		List<VendorEventRelationship> returnList = new ArrayList<VendorEventRelationship>();
 		for(VendorEventRelationship rel : rels) {
@@ -63,15 +67,61 @@ public class AnalyticsFilter {
 			VendorEvent event = VendorEventServlet.getIndividualEvent(String.valueOf(rel.getEventId()));
 			LocalDate eventTime = new LocalDate(event.getStart());
 			Years age = Years.yearsBetween(dob, eventTime);
+			int minVal = getMinAgeValue(minAge);
+			int maxVal = getMaxAgeValue(maxAge);
+			
+//			System.out.println("--NAME: "+user.getUserInfo().getGivenName());
+//			System.out.println("--AGECOMP: "+age.getYears()+" - MINVAL: " + minVal+ " - MAXVAL: "+maxVal);
 			// if the user is in the age range add them to the list
-			if(minAge <= age.getYears() && maxAge >= age.getYears()) {
-//				System.out.println("--NAME: "+user.getUserInfo().getGivenName());
-//				System.out.println("--AGEFILT: "+age+" - "+user.getUserInfo().getDateOfBirth());
+			if(age.getYears() >= minVal &&	age.getYears() <= maxVal) {
 				returnList.add(rel);
 			}
 		}
 		
 		return returnList;
+	}
+	
+	private static int getMinAgeValue(String value) {
+		if(value.equals(UniversalConstants.AGE_FILTER_UNDER18))
+			return 0;
+		else if(value.equals(UniversalConstants.AGE_FILTER_18to20))
+			return 18;
+		else if(value.equals(UniversalConstants.AGE_FILTER_21to24))
+			return 20;
+		else if(value.equals(UniversalConstants.AGE_FILTER_25to29))
+			return 25;
+		else if(value.equals(UniversalConstants.AGE_FILTER_30to39))
+			return 30;
+		else if(value.equals(UniversalConstants.AGE_FILTER_40to49))
+			return 40;
+		else if(value.equals(UniversalConstants.AGE_FILTER_50to59))
+			return 50;
+		else if(value.equals(UniversalConstants.AGE_FILTER_OVER60))
+			return 60;
+		
+		return -1;
+	}
+	
+	private static int getMaxAgeValue(String value) {
+		if(value.equals(UniversalConstants.AGE_FILTER_UNDER18))
+			return 18;
+		else if(value.equals(UniversalConstants.AGE_FILTER_18to20))
+			return 20;
+		else if(value.equals(UniversalConstants.AGE_FILTER_21to24))
+			return 24;
+		else if(value.equals(UniversalConstants.AGE_FILTER_25to29))
+			return 29;
+		else if(value.equals(UniversalConstants.AGE_FILTER_30to39))
+			return 39;
+		else if(value.equals(UniversalConstants.AGE_FILTER_40to49))
+			return 49;
+		else if(value.equals(UniversalConstants.AGE_FILTER_50to59))
+			return 59;
+		else if(value.equals(UniversalConstants.AGE_FILTER_OVER60))
+			return 150;
+		
+		// Arbitrary large age
+		return 150;
 	}
 	
 	/**

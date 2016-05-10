@@ -236,46 +236,26 @@ function getDateString(date) {
     return dateString;
 }
 
-	function populateAgeDropdowns() {
-		var min = document.getElementById("minAgeFilter");
-		var max = document.getElementById("maxAgeFilter");
-		var none = document.createElement("option");
-		none.value = "None";
-		none.textContent = "None";
-		none.selected = "selected"
-		var none2 = document.createElement("option");
-		none2.value = "None";
-		none2.textContent = "None";
-		none2.selected = "selected"
-		min.appendChild(none);
-		max.appendChild(none2);
-		var under18 = document.createElement("option");
-		under18.value = "under18";
-		under18.textContent = "under18";
-		var under18two = document.createElement("option");
-		under18two.value = "under18";
-		under18two.textContent = "under18";
-		min.appendChild(under18);
-		max.appendChild(under18two);
-		for(var i=18; i < 61; i++) {
-			var opt = document.createElement("option");
-			opt.value = i;
-			opt.textContent = i;
-			var opt2 = document.createElement("option");
-			opt2.value = i;
-			opt2.textContent = i;
-			min.appendChild(opt);
-			max.appendChild(opt2);
+function populateAgeDropdowns() {
+	var min = document.getElementById("minAgeFilter");
+	var max = document.getElementById("maxAgeFilter");
+	var none = document.createElement("option");
+	var values = ["None", "under18", "18-20", "21-24", "25-29", "30-39", "40-49", "50-59", "over60"];
+	for(var i=0; i<values.length; i++) {
+		var opt1 = document.createElement("option");
+		var opt2 = document.createElement("option");
+		opt1.value = values[i];
+		opt2.value = values[i];
+		opt1.textContent = values[i];
+		opt2.textContent = values[i];
+		if(values[i] == "None") {
+			opt1.selected = "selected";
+			opt2.selected = "selected";
 		}
-		var over60 = document.createElement("option");
-		over60.value = "over60";
-		over60.textContent = "over60";
-		min.appendChild(over60);
-		var over60two = document.createElement("option");
-		over60two.value = "over60";
-		over60two.textContent = "over60";
-		max.appendChild(over60two);
+		min.appendChild(opt1);
+		max.appendChild(opt2);
 	}
+}
 </script>
 
 

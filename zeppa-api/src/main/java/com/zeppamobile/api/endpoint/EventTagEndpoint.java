@@ -185,30 +185,30 @@ public class EventTagEndpoint {
 			// Update and store objects
 			eventtag = mgr.makePersistent(insert);
 
-			// Commit the transaction
-			txn.commit();
-
-			// Create follow relationships to this tag (with -1 interest
-			// indicating interest has not yet been calculated)
-
-			// Query for existing user relationships for this user
-			Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
-			query.setFilter("((creatorId==" + user.getId() + ")||(subjectId==" + user.getId()
-					+ ")) && relationshipType=='MINGLING'");
-
-			List<ZeppaUserToUserRelationship> relationships = (List<ZeppaUserToUserRelationship>) query.execute();
-			if (relationships != null && !relationships.isEmpty()) {
-				List<EventTagFollow> tagFollowObjects = new ArrayList<EventTagFollow>();
-				// Iterate through all the relevant relationships to this user
-				// and create follow relationship
-				for (ZeppaUserToUserRelationship relationship : relationships) {
-					// Generate this relationship
-					EventTagFollow follow = new EventTagFollow(eventtag, relationship.getOtherUserId(user.getId()));
-					tagFollowObjects.add(follow);
-				}
-
-				tagFollowObjects = (List<EventTagFollow>) mgr.makePersistentAll(tagFollowObjects);
-			}
+//			// Commit the transaction
+//			txn.commit();
+//
+//			// Create follow relationships to this tag (with -1 interest
+//			// indicating interest has not yet been calculated)
+//
+//			// Query for existing user relationships for this user
+//			Query query = mgr.newQuery(ZeppaUserToUserRelationship.class);
+//			query.setFilter("creatorId==" + user.getId() + "&& relationshipType=='MINGLING'");
+//			List<ZeppaUserToUserRelationship> relationships = new ArrayList<ZeppaUserToUserRelationship>();
+//			
+//			
+//			if (relationships != null && !relationships.isEmpty()) {
+//				List<EventTagFollow> tagFollowObjects = new ArrayList<EventTagFollow>();
+//				// Iterate through all the relevant relationships to this user
+//				// and create follow relationship
+//				for (ZeppaUserToUserRelationship relationship : relationships) {
+//					// Generate this relationship
+//					EventTagFollow follow = new EventTagFollow(eventtag, relationship.getOtherUserId(user.getId()));
+//					tagFollowObjects.add(follow);
+//				}
+//
+//				tagFollowObjects = (List<EventTagFollow>) mgr.makePersistentAll(tagFollowObjects);
+//			}
 			txn.commit();
 
 			// Schedule this tag to be indexed

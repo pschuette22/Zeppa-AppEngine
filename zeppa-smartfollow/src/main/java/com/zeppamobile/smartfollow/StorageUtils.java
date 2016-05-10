@@ -1,10 +1,6 @@
 package com.zeppamobile.smartfollow;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import java.io.FileInputStream;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -21,25 +17,14 @@ import com.google.appengine.api.utils.SystemProperty;
  *
  */
 public class StorageUtils {
-	private static final String APPLICATION_NAME = "zeppamobile";
-	//Local
-//	private static String CREDENTIALS_PATH = "src/main/webapp/WEB-INF/config/serviceAccountCredentials.json";
-	//AppEngine
-	private static String CREDENTIALS_PATH = "zeppa-smartfollow-1.war/WEB-INF/config/serviceAccountCredentials.json";
+	private static final String APPLICATION_NAME = "zeppa-cloud-1821";
+	private static String CREDENTIALS_PATH = "WEB-INF/config/serviceAccountCredentials.json";
 
 	private static StorageUtils instance;
 	private static Storage storageService;
-	/** Global instance of the JSON factory. */
-	private static final JsonFactory JSON_FACTORY = JacksonFactory
-			.getDefaultInstance();
 
 	private StorageUtils() {
 		storageService = getService();
-		
-		// since we will be downloading semsigs locally, go ahead and
-		// register a shutdown hook to clean them up on exit
-		// since this is a singleton only one hook is ever registered
-		Runtime.getRuntime().addShutdownHook(new OnShutdown());
 	}
 	
 	public static void setCredentialsPath(String path) {
@@ -57,9 +42,10 @@ public class StorageUtils {
 				instance = new StorageUtils();
 			return instance;
 		} catch (Exception e) {
-			throw new RuntimeException("Could not init StorageUtils: "
-					+ e.getMessage());
+			e.printStackTrace();
 		}
+		
+		return null;
 	}
 
 	/**
@@ -73,14 +59,7 @@ public class StorageUtils {
 				// If app is is not running on AppEngine use service account key
 				if (SystemProperty.environment.value() != SystemProperty.Environment.Value.Production) {
 					// Read JSON file
-					JSONParser parser = new JSONParser();
-					JSONObject jsonCredentials = (JSONObject) parser
-							.parse(new FileReader(System
-									.getProperty("user.dir") +"/"+ CREDENTIALS_PATH));
-					String jsonFile = jsonCredentials.toString();
-					credential = GoogleCredential
-							.fromStream(new ByteArrayInputStream(jsonFile
-									.getBytes()));
+					credential = GoogleCredential.fromStream(new FileInputStream(CREDENTIALS_PATH));
 				} else {
 					credential = GoogleCredential.getApplicationDefault();
 				}
@@ -95,13 +74,19 @@ public class StorageUtils {
 				if (credential.createScopedRequired()) {
 					credential = credential.createScoped(StorageScopes.all());
 				}
+
+				// Build http transport
 				HttpTransport httpTransport = GoogleNetHttpTransport
 						.newTrustedTransport();
+				// Create json factory
+				JsonFactory jsonFactory = new JacksonFactory();
+				// Init storage service
 				storageService = new Storage.Builder(httpTransport,
-						JSON_FACTORY, credential).setApplicationName(
+						jsonFactory, credential).setApplicationName(
 						APPLICATION_NAME).build();
 			}
 		} catch (Exception e) {
+			System.err.println("Error retrieving cloud storage service");
 			e.printStackTrace();
 		}
 

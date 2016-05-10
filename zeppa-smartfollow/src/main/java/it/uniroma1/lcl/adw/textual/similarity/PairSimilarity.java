@@ -144,7 +144,10 @@ public class PairSimilarity {
 				String ps = comps[1];
 
 				// otherwise check word exists in WordNet
-				if (!TextualSimilarity.getInstance().isOOV(word, ps))
+				TextualSimilarity ts = TextualSimilarity.getInstance();
+				if (ts == null)
+					log.error("Textual Similarity instance null");
+				else if (!ts.isOOV(word, ps))
 					newCS.add(word + "#" + ps);
 			}
 

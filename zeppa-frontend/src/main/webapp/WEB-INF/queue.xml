@@ -25,5 +25,12 @@
 		<bucket-size>100</bucket-size>
 	</queue>
 
+	<!-- Queue dedicated to indexing tags -->
+	<queue>
+		<name>tag-indexing</name>
+		<rate>100/s</rate>
+		<bucket-size>100</bucket-size>
+	</queue>
+
 
 </queue-entries>

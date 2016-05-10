@@ -59,6 +59,9 @@
 				<groupId>com.google.appengine</groupId>
 				<artifactId>appengine-maven-plugin</artifactId>
 				<version>${appengine.target.version}</version>
+				<configuration>
+					<enableJarSplitting>true</enableJarSplitting>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,24 +1,8 @@
 package it.uniroma1.lcl.adw.semsig;
 
-import edu.mit.jwi.item.IWord;
-import edu.mit.jwi.item.POS;
-import gnu.trove.map.TIntFloatMap;
-import gnu.trove.map.hash.TIntFloatHashMap;
-import it.uniroma1.lcl.adw.ADWConfiguration;
-import it.uniroma1.lcl.adw.ItemType;
-import it.uniroma1.lcl.adw.utils.GeneralUtils;
-import it.uniroma1.lcl.adw.utils.SemSigUtils;
-import it.uniroma1.lcl.adw.utils.WordNetUtils;
-
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +14,16 @@ import org.apache.commons.logging.LogFactory;
 
 import com.google.api.services.storage.Storage;
 import com.zeppamobile.smartfollow.StorageUtils;
+
+import edu.mit.jwi.item.IWord;
+import edu.mit.jwi.item.POS;
+import gnu.trove.map.TIntFloatMap;
+import gnu.trove.map.hash.TIntFloatHashMap;
+import it.uniroma1.lcl.adw.ADWConfiguration;
+import it.uniroma1.lcl.adw.ItemType;
+import it.uniroma1.lcl.adw.utils.GeneralUtils;
+import it.uniroma1.lcl.adw.utils.SemSigUtils;
+import it.uniroma1.lcl.adw.utils.WordNetUtils;
 
 /**
  * a class to work with {@link SemSig}s

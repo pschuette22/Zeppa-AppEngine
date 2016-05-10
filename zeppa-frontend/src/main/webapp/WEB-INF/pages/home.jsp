@@ -427,7 +427,7 @@
 			$("#upcomingEventTable tbody").append("<tr class=\"tableRow\" style=\"height:50px\"><td></td><td></td><td></td><td></td></tr>");
 		}
 		for(var i=0; i < (6 - pastCount); i++) {
-			$("#pastEventTable tbody").append("<tr class=\"tableRow\" style=\"height:50px\"></tr>");
+			$("#pastEventTable tbody").append("<tr class=\"tableRow\" style=\"height:50px\"><td></td><td></td><td></td><td></td></tr>");
 		}
 		$("#upcomingEventTable tbody").append("<tr class=\"tableRow\"><td align=\"center\" colspan=\"4\"><form action=\"/events\"><input style=\"margin: 5px;\" type=\"submit\" value=\"View All Events\"></form></td></tr>");
 		$("#pastEventTable tbody").append("<tr class=\"tableRow\"><td align=\"center\" colspan=\"4\"><form action=\"/events\"><input style=\"margin: 5px;\" type=\"submit\" value=\"View All Events\"></form></td></tr>");

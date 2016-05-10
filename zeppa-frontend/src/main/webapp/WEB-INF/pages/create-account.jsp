@@ -2,6 +2,8 @@
     pageEncoding="ISO-8859-1"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 <meta name="google-signin-client_id" content="<%= com.zeppamobile.common.UniversalConstants.WEB_CLIENT_ID %>">
@@ -49,6 +51,7 @@ function toggleAccountInfo(firstName, lastName, email)
 }
 
 function createAccount() {
+	var stateDDL = document.getElementById("ddlState");
     var firstName = document.getElementById("txtFirst").value,
     lastName = document.getElementById("txtLast").value,
     emailAddress = document.getElementById("txtEmail").value,
@@ -56,7 +59,7 @@ function createAccount() {
     addressLine1 = document.getElementById("txtAddressLine1").value,
     addressLine2 = document.getElementById("txtAddressLine2").value,
     city = document.getElementById("txtCity").value,
-    state = document.getElementById("ddlState").value,
+    state = stateDDL.options[stateDDL.selectedIndex].value,
     zipcode = document.getElementById("txtZipcode").value;
     //password1 = document.getElementById("txtPassword1").value,
     //password2 = document.getElementById("txtPassword2").value;
@@ -123,7 +126,16 @@ function createAccount() {
 	    	</tr>
 	    	 <tr>
 	    		<td><input type="text" id="txtCity" /></td>
-	    		<td><input type="select" id="ddlState" /></td>
+	    		<td><!--  <input type="select" id="ddlState" /> -->
+	    		<select name="stateLst" id="ddlState" style="width:181px; height:31px;">
+				    <option value=""></option>
+				        <c:forEach items="${stateList}" var="option">
+				                <option value="${option}">
+				                    <c:out value="${option}"></c:out>
+				                </option>
+				        </c:forEach>
+				</select>
+	    		</td>
 	    		<td><input type="text" id="txtZipcode" /></td> 
 	    	</tr>
 	   	  	<!--<tr>

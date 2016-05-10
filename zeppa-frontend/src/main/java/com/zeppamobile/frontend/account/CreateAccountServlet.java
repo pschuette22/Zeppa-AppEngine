@@ -7,7 +7,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -51,6 +54,10 @@ public class CreateAccountServlet extends HttpServlet {
 	    String email = request.getParameter("email");
 		request.setAttribute("token", token);
 		request.setAttribute("email", email);
+		
+		List<UniversalConstants.States> stateList = new ArrayList<UniversalConstants.States>( Arrays.asList(UniversalConstants.States.values() ));
+
+		request.setAttribute("stateList", stateList);
 		
 		request.getRequestDispatcher("WEB-INF/pages/create-account.jsp").forward(request, response);
 	}

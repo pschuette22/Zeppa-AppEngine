@@ -134,5 +134,73 @@ public class UniversalConstants {
 
 	
 	
+	public enum States
+	{
+		AL("ALABAMA"),
+		AK("ALASKA"),
+		AR("ARKANSAS"),
+		AZ("ARIZONA"),
+		CA("CALIFORNIA"),
+		CO("COLORADO"),
+		CT("CONNETICUT"),
+		DC("DISTRICT OF COLUMBIA"),
+		DE("DELAWARE"),
+		FL("FLORIDA"),
+		GA("GEORGIA"),
+		HI("HAWAII"),
+		IA("IOWA"),
+		ID("IDAHO"),
+		IL("ILLINOIS"),
+		IN("INDIANA"),
+		KS("KANSAS"),
+		KY("KENTUCKY"),
+		LA("LOUISIANA"),
+		MA("MASSACHUSETTS"),
+		MD("MARYLAND"),
+		ME("MAINE"),
+		MI("MICHIGAN"),
+		MN("MINNESOTA"),
+		MO("MISSOURI"),
+		MS("MISSISSIPPI"),
+		MT("MONTANA"),
+		NC("NORTH CAROLINA"),
+		ND("NORTH DAKOTA"),
+		NE("NEBRASKA"),
+		NH("NEW HAMPSHIRE"),
+		NJ("NEW JERSEY"),
+		NM("NEW MEXICO"),
+		NV("NEVADA"),
+		NY("NEW YORK"),
+		OH("OHIO"),
+		OK("OKLAHOMA"),
+		OR("OREGON"),		
+		PA("PENNSYLVANIA"),
+		PR("PUERTO RICO"),
+		RI("RHODE ISLAND"),
+		SC("SOUTH CAROLINA"),
+		SD("SOUTH DAKOTA"),
+		TN("TENNESSEE"),
+		TX("TEXAS"),
+		UT("UTAH"),
+		VA("VIRGINIA"),
+		VT("VERMONT"),
+		WA("WASHINGTON"),
+		WI("WISCONSIN"),
+		WV("WESTVIRGINIA"),
+		WY("WYOMING");
+		
+	   public String fullState;
+
+	    private States( String s )
+	    {
+	        fullState = s;
+	    }
+
+	    public String getState()
+	    {
+	        return fullState;
+	    }
+		
+	}
 	
 }

@@ -91,6 +91,15 @@
   <servlet-mapping>
     <servlet-name>individual-event</servlet-name>
     <url-pattern>/individual-event</url-pattern>
+  </servlet-mapping> 
+  
+  <servlet>
+    <servlet-name>smartfollow</servlet-name>
+    <servlet-class>com.zeppamobile.frontend.comparetags.CompareTagsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>smartfollow</servlet-name>
+    <url-pattern>/smartfollow</url-pattern>
   </servlet-mapping>  
 
   <servlet>

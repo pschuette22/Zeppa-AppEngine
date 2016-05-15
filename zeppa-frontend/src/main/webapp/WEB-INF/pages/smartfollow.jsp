@@ -23,7 +23,7 @@ function compareTags() {
     	 	document.getElementById("successDiv").innerHTML = resp;
     	}).fail(function() {
     	    console.log( "error" );
-    	    document.getElementById("errorDiv").innerHTML = "We were unable to comapre these tags";
+    	    document.getElementById("errorDiv").innerHTML = "We were unable to compare these tags";
     	});
 }
 </script>
@@ -36,7 +36,7 @@ function compareTags() {
 	</jsp:attribute>
 	
 	<jsp:body>
-		<h1>Comare Tags with Zeppa Smartfollow</h1>
+		<h1>Compare Tags with Zeppa Smartfollow</h1>
 		<div id="errorDiv" style="color:red; font-size:18px;"></div>
 		<div id="successDiv" style="color:green; font-size:18px;"></div><br/>
 		<form action="javascript:compareTags()">

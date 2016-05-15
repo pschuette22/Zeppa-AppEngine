@@ -152,9 +152,10 @@ public class Utils {
 	 * Convenience method to determine if string has content
 	 * @param s
 	 * @return true if s is not null or empty
+	 * TODO: put a size limit?
 	 */
 	public static boolean isWebSafe(String s) {
-		return !(s == null || s.isEmpty());
+		return (s != null && !s.isEmpty());
 	}
 
 	/**

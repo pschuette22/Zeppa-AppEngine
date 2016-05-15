@@ -28,10 +28,7 @@ import com.zeppamobile.smartfollow.comparewords.WordInfo;
  * 
  */
 public class CompareTagsTask extends SmartFollowTask {
-	// APPENGINE
-	private static String configDir = "zeppa-smartfollow-1.war/WEB-INF/config/";
-	// LOCAL
-	// private static String configDir = "src/main/webapp/WEB-INF/config/";
+	private static String configDir = "WEB-INF/config/";
 
 	// JLT
 	File jltConfig = new File(configDir, "jlt.properties");

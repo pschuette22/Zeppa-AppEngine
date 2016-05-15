@@ -1,6 +1,7 @@
 package com.zeppamobile.api.analytics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +51,12 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	public TagAnalyticsRequest(EventTag tag, DemographicsFilter filter) {
 		super(filter);
 		this.tag = tag;
+		this.metaTags = new ArrayList<MetaTag>();
 		// Do basic initialization
 		mappedUserInterest = new HashMap<Long, Double>();
 		// quickly calculate the total tag weight
 		this.totalTagWeight = 0;
+		System.out.println("---------REQ: "+tag.getTagText()+" ---- "+tag.getIndexedWords());
 		for (String wordId : tag.getIndexedWords()) {
 			totalTagWeight += TagUtility.getIndexWordWeight(wordId);
 		}
@@ -121,10 +124,14 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 						q.setFilter("isUserTag && entityKeys.contains(key) && userIds.contains(ownerId)");
 						double relativeWeight = TagUtility.getIndexWordWeight(metaTag.getIndexedWordId())
 								/ totalTagWeight;
-						q.setOrdering("Math.abs(" + relativeWeight + "- weightInTag) ASC");
+//						q.setOrdering("weightDifference ASC");
 						// execute the query
 						@SuppressWarnings("unchecked")
 						List<MetaTagEntity> tagEntities = (List<MetaTagEntity>) q.execute(entityKeys, userIds);
+						for(MetaTagEntity mte : tagEntities) {
+							mte.calculateWeightDifference(relativeWeight);
+						}
+						Collections.sort(tagEntities);
 						if (tagEntities!=null && !tagEntities.isEmpty()) {
 							List<Long> unmappedUserIds = new ArrayList<Long>();
 							unmappedUserIds.addAll(userIds);

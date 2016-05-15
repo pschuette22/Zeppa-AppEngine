@@ -23,6 +23,15 @@ public class CompareTagsServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		resp.setContentType("text/html");
+		
+		req.getRequestDispatcher("WEB-INF/pages/smartfollow.jsp").forward(req, resp);
+	}	
+	
 	/**
 	 * This is a simple servlet request to compare two tags
 	 * 
@@ -35,13 +44,11 @@ public class CompareTagsServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		String response = "SC_FOUND";
-		// TODO Auto-generated method stub
 		// Set status to found at first just in case uncaught error occurs
 		resp.setStatus(HttpServletResponse.SC_FOUND);
 		
 		// Logging stuff
 //		resp.getWriter().println("Posting to Compare Tags");
-
 		
 		/*
 		 * Get the tag text from parameters
@@ -65,7 +72,7 @@ public class CompareTagsServlet extends HttpServlet {
 //				resp.getWriter().println("Building Url: ");
 
 				URL url = ModuleUtils.getZeppaModuleUrl("zeppa-smartfollow",
-						"compare-tags", params);
+						"word-tagger", params);
 				
 //				resp.getWriter().print(url.toString() + "\n");
 

@@ -177,6 +177,10 @@ public class TagAnalyticsRequest extends AnalyticsRequest {
 	 */
 	@SuppressWarnings("unchecked")
 	private List<EventTagFollow> fetchEventTagFollows(List<Long> followerIds) {
+		if(followerIds.isEmpty()){
+			return null;
+		}
+		
 		PersistenceManager mgr = getPersistenceManager();
 		
 		try {

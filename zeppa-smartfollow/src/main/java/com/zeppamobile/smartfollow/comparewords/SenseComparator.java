@@ -59,6 +59,15 @@ public class SenseComparator {
 		// Determine what the appropriate senses are from cooked sentence
 		List<List<SemSig>> vectors = TextualSimilarity.getInstance().getSenseVectorsFromCookedSentence(cookedSentence,
 				LKB.WordNetGloss, 0);
+		
+		// Remove vectors that are empty
+		List<List<SemSig>> remove = new ArrayList<List<SemSig>>();
+		for(List<SemSig> l: vectors){
+			if(l.isEmpty()){
+				remove.add(l);
+			}
+		}
+		vectors.removeAll(remove);
 
 		if (!vectors.isEmpty()) {
 			SemSig[] semSigs = new SemSig[vectors.size()];

@@ -1,8 +1,6 @@
 package it.uniroma1.lcl.adw.utils;
 
 
-import it.uniroma1.lcl.adw.ADWConfiguration;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.HashMultimap;
-import com.zeppamobile.smartfollow.Constants;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
@@ -30,6 +27,7 @@ import edu.mit.jwi.item.POS;
 import edu.mit.jwi.item.SynsetID;
 import edu.mit.jwi.morph.IStemmer;
 import edu.mit.jwi.morph.WordnetStemmer;
+import it.uniroma1.lcl.adw.ADWConfiguration;
 
 public class WordNetUtils
 {

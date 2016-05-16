@@ -17,14 +17,13 @@ import it.uniroma1.lcl.adw.semsig.LKB;
 public class ADWConfiguration {
 	private org.apache.commons.configuration.PropertiesConfiguration config = null;
 	private static final Log log = LogFactory.getLog(ADWConfiguration.class);
-	private static ServletContext context;
 
 	private static ADWConfiguration instance = null;
 	// Local
 	// private static String CONFIG_DIR = "src/main/webapp/WEB-INF/config";
 	// AppEngine
-//	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config/";
-	private static String CONFIG_DIR = "WEB-INF/config/";
+	private static String CONFIG_DIR = "zeppa-smartfollow-1.war/WEB-INF/config/";
+//	private static String CONFIG_DIR = "WEB-INF/config/";
 
 	private static final String CONFIG_FILE = "adw.properties";
 
@@ -187,10 +186,6 @@ public class ADWConfiguration {
 
 	public static void setConfigDir(String path) {
 		CONFIG_DIR = path;
-	}
-	
-	public static void setServletContext(ServletContext servletContext) {
-		context = servletContext;
 	}
 
 	public boolean isAppEngine() {

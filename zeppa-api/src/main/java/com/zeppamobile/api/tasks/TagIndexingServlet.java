@@ -25,6 +25,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.mortbay.log.Log;
 
+import com.google.api.client.util.Lists;
 import com.google.appengine.api.datastore.Key;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.EventTag;
@@ -111,15 +112,13 @@ public class TagIndexingServlet extends HttpServlet {
 						JSONObject json = (JSONObject) parser.parse(responseString);
 
 						@SuppressWarnings("unchecked")
-						List<String> indexWords = (List<String>) json.get(UniversalConstants.kJSON_INDEX_WORD_LIST);
-						@SuppressWarnings("unchecked")
 						Map<String, List<String>> synsMap = (Map<String, List<String>>) json
 								.get(UniversalConstants.kJSON_INDEX_WORD_SYNS_MAP);
 
 						// TODO: Determine the weight based on word POS
 						double totalWeight = 0.0;
 
-						for (String indexWord : indexWords) {
+						for (String indexWord : synsMap.keySet()) {
 							totalWeight += getIndexWordWeight(indexWord);
 						}
 
@@ -127,7 +126,7 @@ public class TagIndexingServlet extends HttpServlet {
 						// into
 						// the datastore
 
-						for (String indexWord : indexWords) {
+						for (String indexWord : synsMap.keySet()) {
 
 							MetaTag metatag = null;
 							try {
@@ -166,7 +165,7 @@ public class TagIndexingServlet extends HttpServlet {
 						}
 
 						// Update the tag so it has index words for computation
-						tag.setIndexedWords(indexWords);
+						tag.setIndexedWords(Lists.newArrayList(synsMap.keySet()));
 						tag = mgr.makePersistent(tag);
 						
 						
@@ -217,16 +216,16 @@ public class TagIndexingServlet extends HttpServlet {
 	 * @return associated weight or 0;
 	 */
 	public static double getIndexWordWeight(String indexWord) {
-		if (indexWord.contains("-N-")) {
+		if (indexWord.endsWith("-n")) {
 			// noun
 			return UniversalConstants.WEIGHT_NOUN;
-		} else if (indexWord.contains("-V-")) {
+		} else if (indexWord.endsWith("-v")) {
 			// verb
 			return UniversalConstants.WEIGHT_VERB;
-		} else if (indexWord.contains("-R-")) {
+		} else if (indexWord.endsWith("-r")) {
 			// adverb
 			return UniversalConstants.WEIGHT_ADVERB;
-		} else if (indexWord.contains("-A-")) {
+		} else if (indexWord.endsWith("-a")) {
 			// adjective
 			return UniversalConstants.WEIGHT_ADJECTIVE;
 		} else {

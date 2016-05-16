@@ -10,6 +10,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Acl;
 import com.google.api.services.calendar.model.AclRule;
 import com.google.api.services.calendar.model.AclRule.Scope;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
@@ -40,7 +41,9 @@ public class GoogleCalendarService {
 	 */
 	public static ZeppaUser insertZeppaCalendar(ZeppaUser zeppaUser) throws IOException {
 
-		if (AppConfig.isTest()) {
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			zeppaUser.setZeppaCalendarId("local-calendar-id");
+		} else if (AppConfig.isTest()) {
 			// If this is a test, simulate that the calendar was inserted
 			zeppaUser.setZeppaCalendarId("test-calendar-id");
 		} else {
@@ -82,7 +85,9 @@ public class GoogleCalendarService {
 	 */
 	public static ZeppaEvent insertGCalEvent(ZeppaUser zeppaUser, ZeppaEvent event) throws IOException {
 
-		if (AppConfig.isTest()) {
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			zeppaUser.setZeppaCalendarId("local-event-id");
+		} else if (AppConfig.isTest()) {
 			// If this is a test, set the test ids
 			event.setGoogleCalendarId(zeppaUser.getZeppaCalendarId());
 			event.setGoogleCalendarEventId("test-calendar-event-id");
@@ -142,7 +147,9 @@ public class GoogleCalendarService {
 	 * @throws IOException
 	 */
 	public static void joinEvent(ZeppaEvent zeppaEvent, ZeppaUser zeppaUser) throws IOException {
-
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			return;
+		}
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils.makeCalendarServiceInstance();
 
 		Event calEvent = service.events().get(zeppaEvent.getGoogleCalendarId(), zeppaEvent.getGoogleCalendarEventId())
@@ -188,6 +195,10 @@ public class GoogleCalendarService {
 	 */
 	public static boolean leaveEvent(ZeppaEvent event, ZeppaUser zeppaUser) throws IOException {
 
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			return true;
+		}
+		
 		boolean success = false;
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils.makeCalendarServiceInstance();
 
@@ -218,6 +229,10 @@ public class GoogleCalendarService {
 	 */
 	public static void deleteCalendar(ZeppaUser zeppaUser) throws IOException {
 
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			return;
+		} 
+		
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils.makeCalendarServiceInstance();
 
 		// Delete all associated rules so calendar removes cleanly
@@ -240,6 +255,10 @@ public class GoogleCalendarService {
 	 * @throws IOException
 	 */
 	public static void deleteCalendarEvent(ZeppaEvent event) throws IOException {
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			return;
+		} 
+		
 
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils.makeCalendarServiceInstance();
 
@@ -258,27 +277,31 @@ public class GoogleCalendarService {
 	 *            - list of emails you desire to retrieve free/busy data for
 	 * @return ordered list of percentages of users for the given list who are
 	 *         free
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static FreeBusyResponse makeFreeBusyRequest(long startTimeMillis, long endTimeMillis,
 			List<String> userEmails) throws IOException {
 
+		if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Development) {
+			return null;
+		}
+		
 		// Build the calendar service
 		com.google.api.services.calendar.Calendar service = GoogleCalendarUtils.makeCalendarServiceInstance();
-		
+
 		FreeBusyRequest request = new FreeBusyRequest();
 		request.setTimeMin(new DateTime(startTimeMillis));
 		request.setTimeMax(new DateTime(endTimeMillis));
-		
+
 		// Build request items
 		List<FreeBusyRequestItem> requestItems = new ArrayList<FreeBusyRequestItem>();
-		for(String email: userEmails){
+		for (String email : userEmails) {
 			FreeBusyRequestItem item = new FreeBusyRequestItem();
 			item.setId(email);
 			requestItems.add(item);
 		}
 		request.setItems(requestItems);
-		
+
 		return service.freebusy().query(request).execute();
 	}
 

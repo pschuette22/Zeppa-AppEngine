@@ -14,6 +14,9 @@ import com.zeppamobile.api.datamodel.Address;
 import com.zeppamobile.api.datamodel.Employee;
 import com.zeppamobile.api.datamodel.EmployeeUserInfo;
 import com.zeppamobile.api.datamodel.EventTag;
+import com.zeppamobile.api.datamodel.EventTag.TagType;
+import com.zeppamobile.api.datamodel.EventTagFollow;
+import com.zeppamobile.api.datamodel.InviteGroup;
 import com.zeppamobile.api.datamodel.Vendor;
 import com.zeppamobile.api.datamodel.VendorEvent;
 import com.zeppamobile.api.datamodel.VendorEventRelationship;
@@ -23,9 +26,6 @@ import com.zeppamobile.api.datamodel.ZeppaUserInfo.Gender;
 import com.zeppamobile.api.endpoint.InviteGroupEndpoint;
 import com.zeppamobile.api.endpoint.ZeppaUserEndpoint;
 import com.zeppamobile.common.utils.TestUtils;
-import com.zeppamobile.api.datamodel.EventTag.TagType;
-import com.zeppamobile.api.datamodel.EventTagFollow;
-import com.zeppamobile.api.datamodel.InviteGroup;
 
 /**
  * Servlet implementation class StartupServlet

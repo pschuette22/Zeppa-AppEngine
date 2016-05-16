@@ -18,7 +18,7 @@ import com.google.appengine.api.utils.SystemProperty;
  */
 public class StorageUtils {
 	private static final String APPLICATION_NAME = "zeppa-cloud-1821";
-	private static String CREDENTIALS_PATH = "WEB-INF/config/serviceAccountCredentials.json";
+	private static String CREDENTIALS_PATH = "zeppa-smartfollow-1.war/WEB-INF/config/serviceAccountCredentials.json";
 
 	private static StorageUtils instance;
 	private static Storage storageService;

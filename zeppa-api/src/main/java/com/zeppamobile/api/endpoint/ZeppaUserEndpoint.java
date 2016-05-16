@@ -70,12 +70,12 @@ public class ZeppaUserEndpoint {
 		}
 		LOG.log(Level.WARNING, "User doesn't exist yet");
 
-		// // Get a list of invite groups
-		List<InviteGroup> groups = getInviteGroupsForUser(payload.getEmail());
-		// Throw Exception if user wasnt invited to use Zeppa
-		if (groups == null || groups.isEmpty()) {
-			throw new UnauthorizedException("Not invited yet");
-		}
+//		// // Get a list of invite groups
+//		List<InviteGroup> groups = getInviteGroupsForUser(payload.getEmail());
+//		// Throw Exception if user wasnt invited to use Zeppa
+//		if (groups == null || groups.isEmpty()) {
+//			throw new UnauthorizedException("Not invited yet");
+//		}
 
 		// Set entity information
 
@@ -124,71 +124,71 @@ public class ZeppaUserEndpoint {
 		} finally {
 			mgr.close();
 		}
-
-		/*
-		 * 
-		 * Create this users initial tags
-		 */
-		List<EventTag> tags = new ArrayList<EventTag>();
-		// Make the initial tags
-		for (String tagText : initialTags) {
-			EventTag tag = new EventTag(zeppaUser, tagText);
-			tags.add(tag);
-		}
-		// Persist
-		PersistenceManager tmgr = getPersistenceManager();
-		try {
-			tmgr.makePersistentAll(tags);
-		} finally {
-			tmgr.close();
-		}
-
-		/*
-		 * Find initial connections based on invite groups
-		 */
-		// Find initial connections based on other members invite groups
-		List<Key> initialConnectionKeys = new ArrayList<Key>();
-		for (InviteGroup group : groups) {
-			// Get all the keys of members
-			List<Key> members = group.getGroupMemberKeys();
-			// Quickly remove already existing members before they are added
-			// back again
-			initialConnectionKeys.removeAll(members);
-			initialConnectionKeys.addAll(members);
-			// Add this user to the group
-			group.addGroupMember(zeppaUser);
-		}
-
-		// If there are initial connections to be made, make them
-		if (!initialConnectionKeys.isEmpty()) {
-			// Schedule making initial mingling connections
-			PersistenceManager umgr = getPersistenceManager();
-			PersistenceManager rmgr = getPersistenceManager();
-			try {
-				for (Key k : initialConnectionKeys) {
-					try {
-						// Iterate through
-						ZeppaUser mingler = umgr.getObjectById(ZeppaUser.class,
-								k);
-
-						ZeppaUserToUserRelationship relationship = new ZeppaUserToUserRelationship(
-								zeppaUser, mingler,
-								UserRelationshipType.MINGLING);
-
-						relationship = rmgr.makePersistent(relationship);
-
-						TaskUtility.scheduleCreateEventRelationshipsForUsers(
-								zeppaUser.getId(), mingler.getId());
-						// TODO: schedule initial follows operation
-					} catch (JDOObjectNotFoundException e) {
-						// TODO: handle this
-					}
-				}
-			} finally {
-				umgr.close();
-				rmgr.close();
-			}
-		}
+//
+//		/*
+//		 * 
+//		 * Create this users initial tags
+//		 */
+//		List<EventTag> tags = new ArrayList<EventTag>();
+//		// Make the initial tags
+//		for (String tagText : initialTags) {
+//			EventTag tag = new EventTag(zeppaUser, tagText);
+//			tags.add(tag);
+//		}
+//		// Persist
+//		PersistenceManager tmgr = getPersistenceManager();
+//		try {
+//			tmgr.makePersistentAll(tags);
+//		} finally {
+//			tmgr.close();
+//		}
+//
+//		/*
+//		 * Find initial connections based on invite groups
+//		 */
+//		// Find initial connections based on other members invite groups
+//		List<Key> initialConnectionKeys = new ArrayList<Key>();
+//		for (InviteGroup group : groups) {
+//			// Get all the keys of members
+//			List<Key> members = group.getGroupMemberKeys();
+//			// Quickly remove already existing members before they are added
+//			// back again
+//			initialConnectionKeys.removeAll(members);
+//			initialConnectionKeys.addAll(members);
+//			// Add this user to the group
+//			group.addGroupMember(zeppaUser);
+//		}
+//
+//		// If there are initial connections to be made, make them
+//		if (!initialConnectionKeys.isEmpty()) {
+//			// Schedule making initial mingling connections
+//			PersistenceManager umgr = getPersistenceManager();
+//			PersistenceManager rmgr = getPersistenceManager();
+//			try {
+//				for (Key k : initialConnectionKeys) {
+//					try {
+//						// Iterate through
+//						ZeppaUser mingler = umgr.getObjectById(ZeppaUser.class,
+//								k);
+//
+//						ZeppaUserToUserRelationship relationship = new ZeppaUserToUserRelationship(
+//								zeppaUser, mingler,
+//								UserRelationshipType.MINGLING);
+//
+//						relationship = rmgr.makePersistent(relationship);
+//
+//						TaskUtility.scheduleCreateEventRelationshipsForUsers(
+//								zeppaUser.getId(), mingler.getId());
+//						// TODO: schedule initial follows operation
+//					} catch (JDOObjectNotFoundException e) {
+//						// TODO: handle this
+//					}
+//				}
+//			} finally {
+//				umgr.close();
+//				rmgr.close();
+//			}
+//		}
 
 		return zeppaUser;
 	}

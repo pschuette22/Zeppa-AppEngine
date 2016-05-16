@@ -1,18 +1,7 @@
 package com.zeppamobile.smartfollow;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.storage.Storage;
-import com.google.api.services.storage.StorageScopes;
-import com.google.appengine.tools.cloudstorage.GcsService;
 
 import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.data.PointerType;
@@ -25,72 +14,6 @@ public class Utils {
 	private Utils() {
 	}
 
-	/**
-	 * This utility method attempts to convert common slang to text recognizable
-	 * by the machine
-	 * 
-	 * This is not implemented yet. Perhaps add to library instead
-	 * 
-	 * @param slang
-	 * @return translation or null
-	 */
-	public static List<String> slangConverter(String slang) {
-
-		List<String> result = new ArrayList<String>();
-
-		// TODO: convert slang if needed
-
-		result.add(slang);
-
-		return result;
-	}
-
-	/**
-	 * Try to convert common multi-character strings to processable words
-	 * 
-	 * @param characterString
-	 * @return
-	 */
-	public static List<String> characterStringConverter(String characterString) {
-		List<String> result = new ArrayList<String>();
-		if (characterString.contains("$")) {
-			result.add("money");
-		} else if (characterString.contains(":)")
-				|| characterString.contains("=)")) {
-			result.add("makes");
-			result.add("me");
-			result.add("happy");
-		} else if (characterString.contains(":(")
-				|| characterString.contains("=(")) {
-			result.add("makes");
-			result.add("me");
-			result.add("sad");
-		} else if (characterString.contains("->")
-				|| characterString.contains("<-")) {
-			result.add("therefore");
-		} else if (characterString.contains("<3")) {
-			result.add("I");
-			result.add("love");
-		} else if (characterString.contains("</3")) {
-			result.add("breaks");
-			result.add("my");
-			result.add("heart");
-		} else if (characterString.contains("<")) {
-			// Things like "<<<<<"
-			result.add("is");
-			result.add("worse");
-			result.add("than");
-		} else if (characterString.contains(">")) {
-			// Things like ">>>>"
-			result.add("is");
-			result.add("better");
-			result.add("than");
-		} else { // didnt recognize it
-			// TODO: flag this to be deciphered later
-			result.add(characterString);
-		}
-		return result;
-	}
 
 	/**
 	 * Convert tag text to list of seperated words
@@ -361,6 +284,32 @@ public class Utils {
 		default:
 			return -1;
 		}
+	}
+	
+	/**
+	 * Identify the STANFORD word net pos from tag
+	 * @param tag
+	 * @return
+	 */
+	public static POS getPOSFromTag(String tag){
+		if(tag.toLowerCase().startsWith("n"))
+			return POS.NOUN;
+		
+		else
+			if(tag.toLowerCase().startsWith("v"))
+				return POS.VERB;
+		
+		else
+			if(tag.toLowerCase().startsWith("r") || tag.toLowerCase().startsWith("adv"))
+				return POS.ADVERB;
+			
+		else
+			if(tag.toLowerCase().startsWith("j") 
+					|| tag.toLowerCase().startsWith("adj") 
+					|| tag.toLowerCase().startsWith("a"))
+				return POS.ADJECTIVE;
+			
+		return null;
 	}
 
 	/**

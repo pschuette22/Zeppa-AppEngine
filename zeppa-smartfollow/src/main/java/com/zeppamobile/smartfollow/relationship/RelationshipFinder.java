@@ -31,7 +31,7 @@ import net.sf.extjwnl.data.relationship.SymmetricRelationship;
  */
 public class RelationshipFinder {
 
-	private static final int DEFAULT_ASYMMETRIC_SEARCH_DEPTH = Integer.MAX_VALUE;
+	private static final int DEFAULT_ASYMMETRIC_SEARCH_DEPTH = Integer.MAX_VALUE;// Integer.MAX_VALUE;
 	private static final int DEFAULT_SYMMETRIC_SEARCH_DEPTH = 2;
 
 	/**
@@ -70,7 +70,7 @@ public class RelationshipFinder {
 		Utils.sortDescending(clonedTypes);
 
 		Relationship path = null;
-		int pathLength = Integer.MAX_VALUE;
+		int pathLength = DEFAULT_ASYMMETRIC_SEARCH_DEPTH;
 		
 		for (PointerType type : clonedTypes) {
 			try {

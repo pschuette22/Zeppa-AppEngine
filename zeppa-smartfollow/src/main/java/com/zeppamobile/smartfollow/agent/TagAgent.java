@@ -205,13 +205,13 @@ public class TagAgent extends BaseAgent {
 			if (Character.isLetter(s.charAt(0))) {
 
 				// This is a slang word. Try to replace it
-				convertedTagWords.addAll(Utils.slangConverter(s));
+//				convertedTagWords.addAll(Utils.slangConverter(s));
 				// TODO: pick the word apart and add individual
 
 			} else if (!Character.isDigit(s.charAt(0)) && s.length() > 1) {
 				// String is not made of letters or digits and is multiple
 				// characters. Must be characters try to convert them
-				convertedTagWords.addAll(Utils.characterStringConverter(s));
+//				convertedTagWords.addAll(Utils.characterStringConverter(s));
 
 			} else { // is a number
 				convertedTagWords.add(s);

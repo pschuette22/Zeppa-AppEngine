@@ -117,6 +117,9 @@ public class PairSimilarity {
 				case SURFACE_TAGGED:
 					cookedSentence.add(item);
 					break;
+				default:
+					// Make that compiler happy!
+					break;
 
 				}
 

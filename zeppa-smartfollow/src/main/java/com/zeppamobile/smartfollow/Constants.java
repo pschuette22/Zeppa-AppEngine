@@ -1,7 +1,6 @@
 package com.zeppamobile.smartfollow;
 
 import net.sf.extjwnl.JWNLException;
-import net.sf.extjwnl.data.POS;
 import net.sf.extjwnl.dictionary.Dictionary;
 
 /**

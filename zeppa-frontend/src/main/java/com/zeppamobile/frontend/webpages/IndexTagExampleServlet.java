@@ -3,10 +3,7 @@ package com.zeppamobile.frontend.webpages;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +60,7 @@ public class IndexTagExampleServlet extends HttpServlet {
 
 		// Return the jsp file as is for simple get request
 		resp.sendRedirect("/index-tag-example.jsp");
-		resp.setStatus(HttpServletResponse.SC_OK);
+//		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	/**
@@ -92,12 +89,7 @@ public class IndexTagExampleServlet extends HttpServlet {
 
 		String tagTextParam = req.getParameter(UniversalConstants.kREQ_TAG_TEXT);
 		if (Utils.isWebSafe(tagTextParam)) {
-			// Append request params
-			builder.append("?");
-			builder.append(UniversalConstants.kREQ_TAG_TEXT);
-			builder.append("=");
-			builder.append(tagTextParam);
-			 
+			// Append request params			 
 			try {
 				// Attempt to index the tag
 				doIndexTag(tagTextParam, req, resp);
@@ -112,7 +104,7 @@ public class IndexTagExampleServlet extends HttpServlet {
 		}
 
 		// Return response
-		req.getRequestDispatcher(builder.toString()).forward(req, resp);
+		resp.sendRedirect(builder.toString());
 	}
 
 	/**
@@ -159,8 +151,8 @@ public class IndexTagExampleServlet extends HttpServlet {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setDoOutput(false);
 		connection.setRequestMethod("GET");
-		// request has 1 minute to execute
-		connection.setReadTimeout(60 * 1000);
+		// request has 10 seconds to execute
+		connection.setReadTimeout(10 * 1000);
 
 		// If success, read and report
 		if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {

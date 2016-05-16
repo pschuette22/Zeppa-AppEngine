@@ -19,6 +19,8 @@ import com.zeppamobile.common.utils.Utils;
 import com.zeppamobile.smartfollow.comparewords.WordInfo;
 import com.zeppamobile.smartfollow.task.CompareTagsTask;
 
+import edu.mit.jwi.item.ISynset;
+import edu.mit.jwi.item.ISynsetID;
 import edu.mit.jwi.item.IWord;
 import edu.mit.jwi.item.IWordID;
 import edu.mit.jwi.item.POS;
@@ -68,7 +70,7 @@ public class WordTaggerServlet extends HttpServlet {
 
 			// These will be the objects that are returned
 			List<String> indexedWords = new ArrayList<String>();
-			Map<String, List<String>> synsetMap = new HashMap<String, List<String>>();
+			Map<String, List<Integer>> synsetMap = new HashMap<String, List<Integer>>();
 			double totalTagWeight = 0;
 			
 			// If there are multiple words, find the ones closest to each other
@@ -94,15 +96,18 @@ public class WordTaggerServlet extends HttpServlet {
 							// word.getLemma()+"-"+word.getPOS().getTag()+"-"+word.getLexicalID();
 							String indexedWordId = formatIWordID(word.getID());
 							System.out.println("Indexed Word Id: " + indexedWordId);
+							System.out.println("Lemma: " + word.getLemma());
 							indexedWords.add(indexedWordId);
-							List<IWordID> relatedWords = word.getRelatedWords();
-							List<String> relatedWordIds = new ArrayList<String>();
-							for (IWordID relatedWord : relatedWords) {
+							List<ISynsetID> relatedSynsets = word.getSynset().getRelatedSynsets();
+							List<Integer> relatedSynsetIds = new ArrayList<Integer>();
+							for (ISynsetID relatedSynset : relatedSynsets) {
 								// String relatedWordId =
 								// relatedWord.getLemma()+"-"+relatedWord.getPOS().getTag()+"-"+relatedWord.getWordNumber();
-								String relatedWordId = formatIWordID(relatedWord);
-								System.out.println("Related WordId: " + relatedWordId);
-								relatedWordIds.add(relatedWordId);
+								int offset = relatedSynset.getOffset();
+								//System.out.println("Related WordId: " + relatedWordId);
+								//System.out.println("Related Word: " + relatedWord.getLemma());
+								System.out.println("Related synset offset: " + offset);
+								relatedSynsetIds.add(offset);
 							}
 
 							// List<ISynsetID> relatedSynsets =
@@ -114,7 +119,7 @@ public class WordTaggerServlet extends HttpServlet {
 							// relatedWordIds.add(relatedWordId);
 							// }
 
-							synsetMap.put(indexedWordId, relatedWordIds);
+							synsetMap.put(indexedWordId, relatedSynsetIds);
 							totalTagWeight+=getIndexWordWeight(indexedWordId);
 						}
 					}
@@ -124,18 +129,19 @@ public class WordTaggerServlet extends HttpServlet {
 						// word.getLemma()+"-"+word.getPOS().getTag()+"-"+word.getLexicalID();
 						String indexedWordId = formatIWordID(word.getID());
 						System.out.println("Indexed Word Id: " + indexedWordId);
+						System.out.println("Lemma: " + word.getLemma());
 						indexedWords.add(indexedWordId);
-						List<IWordID> relatedWords = word.getRelatedWords();
-						List<String> relatedWordIds = new ArrayList<String>();
-						for (IWordID relatedWord : relatedWords) {
+						List<ISynsetID> relatedSynsets = word.getSynset().getRelatedSynsets(); //getRelatedWords();
+						List<Integer> relatedSynsetIds = new ArrayList<Integer>();
+						for (ISynsetID relatedSynset : relatedSynsets) {
 							// String relatedWordId =
 							// relatedWord.getLemma()+"-"+relatedWord.getPOS().getTag()+"-"+relatedWord.getWordNumber();
-							String relatedWordId = formatIWordID(relatedWord);
-							System.out.println("Related WordId: " + relatedWordId);
+							int offset = relatedSynset.getOffset();
+							System.out.println("Related synset offset: " + offset);
 
-							relatedWordIds.add(relatedWordId);
+							relatedSynsetIds.add(offset);
 						}
-						synsetMap.put(indexedWordId, relatedWordIds);
+						synsetMap.put(indexedWordId, relatedSynsetIds);
 						totalTagWeight+=getIndexWordWeight(indexedWordId);
 					}
 				}

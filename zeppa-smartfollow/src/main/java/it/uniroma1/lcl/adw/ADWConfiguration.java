@@ -34,9 +34,6 @@ public class ADWConfiguration {
 	 * @throws ConfigurationException
 	 */
 	private ADWConfiguration() {
-//		InputStream resourceStream = Thread.currentThread().getContextClassLoader()
-//			    .getResourceAsStream(CONFIG_DIR+CONFIG_FILE);
-		
 		File configFile = new File(CONFIG_DIR+CONFIG_FILE);
 //		File configFile = new File(CONFIG_FILE);
 

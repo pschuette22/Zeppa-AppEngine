@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.utils.ModuleUtils;
 import com.zeppamobile.common.utils.Utils;
 
@@ -53,8 +54,9 @@ public class CompareTagsServlet extends HttpServlet {
 		/*
 		 * Get the tag text from parameters
 		 */
-		String tag1 = req.getParameter("tag1");
-		String tag2 = req.getParameter("tag2");
+//		String tag = req.getParameter(UniversalConstants.kREQ_TAG_TEXT);
+		String tag1 = req.getParameter("tagText1");
+		String tag2 = req.getParameter("tagText2");
 
 		if (Utils.isWebSafe(tag1) && Utils.isWebSafe(tag2)) {
 

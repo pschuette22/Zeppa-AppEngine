@@ -32,8 +32,9 @@ public class EventTagCerealWrapper extends CerealWrapper {
 	// True if tag was just created
 	private boolean isNewTag = false;
 	
-
-	
+	public EventTagCerealWrapper() {
+		// Empty constructor for demo/testing purposes
+	}
 	
 	public EventTagCerealWrapper(long tagId, String tagText, long ownerId,
 			List<Long> followerIds, boolean isNewTag) {

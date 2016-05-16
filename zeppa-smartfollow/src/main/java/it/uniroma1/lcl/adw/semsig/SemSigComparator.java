@@ -1,25 +1,19 @@
 package it.uniroma1.lcl.adw.semsig;
 
 
-import it.uniroma1.lcl.adw.ADWConfiguration;
+import java.util.HashMap;
+import java.util.List;
+
+import edu.mit.jwi.item.IWord;
+import edu.mit.jwi.item.POS;
+import gnu.trove.map.TIntFloatMap;
+import gnu.trove.map.hash.TIntFloatHashMap;
 import it.uniroma1.lcl.adw.comparison.KLDivergence;
 import it.uniroma1.lcl.adw.comparison.SignatureComparison;
 import it.uniroma1.lcl.adw.comparison.WeightedOverlap;
 import it.uniroma1.lcl.adw.utils.GeneralUtils;
 import it.uniroma1.lcl.adw.utils.SemSigUtils;
 import it.uniroma1.lcl.adw.utils.WordNetUtils;
-
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import edu.mit.jwi.item.IWord;
-import edu.mit.jwi.item.POS;
-
-import gnu.trove.map.TIntFloatMap;
-import gnu.trove.map.hash.TIntFloatHashMap;
 
 
 public class SemSigComparator

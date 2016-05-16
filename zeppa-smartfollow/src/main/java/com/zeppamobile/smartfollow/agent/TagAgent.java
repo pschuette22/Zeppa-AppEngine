@@ -45,6 +45,7 @@ public class TagAgent extends BaseAgent {
 	private List<String> convertedTagWords = new ArrayList<String>();
 	private String[] posTags;
 	private ServletContext context;
+	private POSModel model;
 
 	// Parse the tag
 	private List<WordInfo> parsedTagParts = new ArrayList<WordInfo>();
@@ -194,6 +195,7 @@ public class TagAgent extends BaseAgent {
 	 */
 	private void dissectText(ServletContext context, String text)
 			throws JWNLException {
+		System.out.println("Parsing text");
 		// First, compound text to list of words, numbers and character strings
 		List<String> stringList = Utils.convertTextToStringList(text);
 
@@ -235,8 +237,12 @@ public class TagAgent extends BaseAgent {
 		 * Try to get the model
 		 */
 		POSFactory factory = new POSFactory(context);
-		POSModel model = factory.buildPOSModel();
-
+		if (model == null) {
+			System.out.println("Building model");
+			model = factory.buildPOSModel();
+			System.out.println("completed");
+		}
+		
 		if (model == null) {
 			System.out.println("Model is null");
 		}

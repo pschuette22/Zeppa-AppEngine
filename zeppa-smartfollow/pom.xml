@@ -255,9 +255,33 @@
 						</webResources>
 					</configuration>
 				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<mainClass>com.javavids.main.Main</mainClass>
+							</manifest>
+						</archive>
+						<descriptorRefs>
+							<descriptorRef>jar-with-dependencies</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<!-- <plugins> <plugin> <groupId>com.google.appengine</groupId> <artifactId>appengine-maven-plugin</artifactId> 
 			</plugin> </plugins> -->
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/webapp/WEB-INF/resources/</directory>
+				<!-- <targetPath>/</targetPath> -->
+			</resource>
+			<resource>
+				<directory>${basedir}/lib/</directory>
+				<!-- <targetPath>/</targetPath> -->
+			</resource>
+		</resources>
 	</build>
 </project>

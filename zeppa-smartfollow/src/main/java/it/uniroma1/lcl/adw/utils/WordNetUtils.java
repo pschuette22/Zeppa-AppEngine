@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.google.common.collect.HashMultimap;
+import com.zeppamobile.smartfollow.Constants;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
@@ -60,6 +61,7 @@ public class WordNetUtils
 	{
 		try
 		{
+			
 			final String location = ADWConfiguration.getInstance().getWordNetData();
 			final Dictionary dict = new Dictionary(new URL("file", null, location));
 			dict.getCache().setMaximumCapacity(Integer.MAX_VALUE);

@@ -123,7 +123,7 @@ public class TextualSimilarity
 		{
 			 terms = sSentence.getTerms(TAGS, 
 					 Language.EN, 
-					 null, 
+//					 null, 
 					 MultiwordBelongingTo.WORDNET, 
 					 CompoundingParameter.ALLOW_MULTIWORD_EXPRESSIONS,
 					 CompoundingParameter.APPEND_POS);	 
@@ -329,6 +329,7 @@ public class TextualSimilarity
 		
 		for(String w : words)
 		{
+			System.out.println("Cooked word: " + w);
 			String word = w.split("#")[0];
 			String tag = w.split("#")[1];
 			

@@ -212,6 +212,7 @@ public class ADW
         //measure for comparing semantic signatures
         SignatureComparison measure = new WeightedOverlap(); 
 
+        
         double score1 = pipeLine.getPairSimilarity(
                 text1, text2,
                 disMethod, 

@@ -1,11 +1,9 @@
 package com.zeppamobile.smartfollow.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,16 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import com.zeppamobile.common.UniversalConstants;
-import com.zeppamobile.smartfollow.Constants;
-import com.zeppamobile.smartfollow.Utils;
 import com.zeppamobile.smartfollow.comparewords.SenseComparator;
-
-import edu.stanford.nlp.ling.WordLemmaTag;
-import it.uniroma1.lcl.adw.utils.SentenceProcessor;
-import net.sf.extjwnl.JWNLException;
-import net.sf.extjwnl.data.IndexWord;
-import net.sf.extjwnl.data.Synset;
-import net.sf.extjwnl.data.Word;
 
 /**
  * 
@@ -57,43 +46,28 @@ public class WordTaggerServlet extends HttpServlet {
 
 			// Split the words into a stack by removing white space
 			String tagWordSentence = builder.toString().trim();
-			List<WordLemmaTag> lemmaTags = SentenceProcessor.getInstance().processSentence(tagWordSentence, false);
-			Map<IndexWord, Synset> synsetMap = SenseComparator.formatSenses(lemmaTags);
+			Map<String, List<String>> indexedSynsMap = SenseComparator.doWordMapping(tagWordSentence);
 
 			// Find the senses that are closest to each other
-			List<String> indexedWords = new ArrayList<String>();
-			Map<String, List<String>> indexWordSynsMap = new HashMap<String, List<String>>();
 			Map<String, Double> weightMap = new HashMap<String, Double>();
 			double totalTagWeight = 0;
 
 			// Iterate through the senses formatting and mapping to syn sets
-			for (Entry<IndexWord, Synset> entry : synsetMap.entrySet()) {
-				String wordId = formatWordSense(entry.getKey().getLemma(), entry.getValue());
-
-				indexedWords.add(wordId);
-				List<String> indexWordSyns = new ArrayList<String>();
-				// Add all the synonym ids
-				for (Word synWord : entry.getValue().getWords()) {
-					if (!wordId.startsWith(synWord.getLemma())) {
-						indexWordSyns.add(formatWordSense(synWord.getLemma(), entry.getValue()));
-					}
-				}
-				indexWordSynsMap.put(wordId, indexWordSyns);
-
-				totalTagWeight += getIndexWordWeight(wordId);
+			for (String indexedWord: indexedSynsMap.keySet()) {
+				totalTagWeight += getIndexWordWeight(indexedWord);
 			}
 
+			// Map weighting
 			if (totalTagWeight > 0) {
 				// After doing all that jazz, figure relative weights
-				for (String wordId : indexedWords) {
+				for (String wordId : indexedSynsMap.keySet()) {
 					weightMap.put(wordId, getIndexWordWeight(wordId)/totalTagWeight);
 				}
 			}
 
 			// Put together a nice little json object and badaboom badabing
 			JSONObject json = new JSONObject();
-			json.put(UniversalConstants.kJSON_INDEX_WORD_LIST, indexedWords);
-			json.put(UniversalConstants.kJSON_INDEX_WORD_SYNS_MAP, indexWordSynsMap);
+			json.put(UniversalConstants.kJSON_INDEX_WORD_SYNS_MAP, indexedSynsMap);
 			json.put(UniversalConstants.kJSON_INDEX_WORD_WEIGHT_MAP, weightMap);
 			json.put(UniversalConstants.kJSON_TOTAL_WEIGHT, totalTagWeight);
 
@@ -108,15 +82,6 @@ public class WordTaggerServlet extends HttpServlet {
 
 	}
 
-	/**
-	 * Format a given iWordID into proper, unique format
-	 * 
-	 * @param iWordId
-	 * @return formatted string
-	 */
-	private String formatWordSense(String wordLemma, Synset sense) {
-		return wordLemma + "-" + sense.getPOS().getKey() + "-" + sense.getOffset();
-	}
 
 	/**
 	 * Get the tag word weight based on the part of speech
@@ -131,16 +96,16 @@ public class WordTaggerServlet extends HttpServlet {
 		 * This kinda smells to me, perhaps smartfollow should be passing around
 		 * tag weights
 		 */
-		if (indexWord.contains("-n-")) {
+		if (indexWord.endsWith("-n")) {
 			// noun
 			return UniversalConstants.WEIGHT_NOUN;
-		} else if (indexWord.contains("-v-")) {
+		} else if (indexWord.endsWith("-v")) {
 			// verb
 			return UniversalConstants.WEIGHT_VERB;
-		} else if (indexWord.contains("-r-")) {
+		} else if (indexWord.endsWith("-r")) {
 			// adverb
 			return UniversalConstants.WEIGHT_ADVERB;
-		} else if (indexWord.contains("-a-")) {
+		} else if (indexWord.endsWith("-a")) {
 			// adjective
 			return UniversalConstants.WEIGHT_ADJECTIVE;
 		} else {

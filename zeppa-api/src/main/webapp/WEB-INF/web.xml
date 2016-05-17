@@ -64,7 +64,7 @@
 		<servlet-name>StartupServlet</servlet-name>
 		<servlet-class>com.zeppamobile.api.endpoint.servlet.StartupServlet
 		</servlet-class>
-		<!-- <load-on-startup>0</load-on-startup> -->
+		<load-on-startup>0</load-on-startup>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>StartupServlet</servlet-name>

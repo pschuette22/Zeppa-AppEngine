@@ -262,38 +262,106 @@ public class StartupServlet extends HttpServlet {
 
 		// Create Users
 		AppConfig.setTestConfig();
-		String u1AuthEmail = "testuser1@example.com";
-		String u2AuthEmail = "testuser2@example.com";
-		String u3AuthEmail = "testuser3@example.com";
+		List<String> authEmails = new ArrayList<String>();
+		List<String> tokens = new ArrayList<String>();
+		List<String> givenNames = new ArrayList<String>();
+		List<String> familyNames = new ArrayList<String>();
+		for(int i=1; i <= 10; i++) {
+			String email = "testuser"+i+"@gmail.com";
+			authEmails.add(email);
+			tokens.add(TestUtils.buildTestAuthToken(email));
+			givenNames.add("Test"+i);
+			familyNames.add("User"+i);
+		}
+
 		List<String> initialTags = Arrays.asList("TestTag1", "TestTag2", "TestTag3", "TestTag4", "TestTag5",
 				"TestTag6");
-		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
-		ZeppaUserInfo ui = testUser.getUserInfo();
+		
+		// User 1
+		ZeppaUser testUser1 = new ZeppaUser(authEmails.get(0), givenNames.get(0), familyNames.get(0), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui = testUser1.getUserInfo();
 		// 1993
 		ui.setGender(Gender.MALE);
 		ui.setDateOfBirth(746232615000L);
-		testUser.setUserInfo(ui);
-		String testToken = TestUtils.buildTestAuthToken(u1AuthEmail);
+		testUser1.setUserInfo(ui);
+		String testToken = tokens.get(0);
 		
-		ZeppaUser testUser2 = new ZeppaUser(u2AuthEmail, "User2", "Test2", "19876543210", -1L, -1L, initialTags);
+		// User 2
+		ZeppaUser testUser2 = new ZeppaUser(authEmails.get(1), givenNames.get(1), familyNames.get(1), "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui2 = testUser2.getUserInfo();
 		ui2.setGender(Gender.FEMALE);
 		// 1983
 		ui2.setDateOfBirth(430613415000L);
 		testUser2.setUserInfo(ui2);
-		String testToken2 = TestUtils.buildTestAuthToken(u2AuthEmail);
+		String testToken2 = tokens.get(1);
 		
-		ZeppaUser testUser3 = new ZeppaUser(u3AuthEmail, "User3", "Test3", "19876543210", -1L, -1L, initialTags);
+		// User 3
+		ZeppaUser testUser3 = new ZeppaUser(authEmails.get(2), givenNames.get(2), familyNames.get(2), "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui3 = testUser3.getUserInfo();
 		ui3.setGender(Gender.FEMALE);
 		// 2003
 		ui3.setDateOfBirth(1061765415000L);
 		testUser3.setUserInfo(ui3);
-		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
+		
+		// User 4
+		ZeppaUser testUser4 = new ZeppaUser(authEmails.get(3), givenNames.get(3), familyNames.get(3), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui4 = testUser4.getUserInfo();
+		ui4.setGender(Gender.MALE);
+		// 2003
+		ui4.setDateOfBirth(1061765415000L);
+		testUser4.setUserInfo(ui4);
+
+		// User 5
+		ZeppaUser testUser5 = new ZeppaUser(authEmails.get(4), givenNames.get(4), familyNames.get(4), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui5 = testUser5.getUserInfo();
+		ui5.setGender(Gender.FEMALE);
+		// 2003
+		ui5.setDateOfBirth(1061765415000L);
+		testUser5.setUserInfo(ui5);
+	
+		// User 6
+		ZeppaUser testUser6 = new ZeppaUser(authEmails.get(5), givenNames.get(5), familyNames.get(5), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui6 = testUser6.getUserInfo();
+		ui5.setGender(Gender.MALE);
+		// 2003
+		ui5.setDateOfBirth(1061765415000L);
+		testUser5.setUserInfo(ui5);		
+		
+		// User 7
+		ZeppaUser testUser7 = new ZeppaUser(authEmails.get(6), givenNames.get(6), familyNames.get(6), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui7 = testUser7.getUserInfo();
+		ui7.setGender(Gender.FEMALE);
+		// 2003
+		ui7.setDateOfBirth(1061765415000L);
+		testUser7.setUserInfo(ui7);
+		
+		// User 8
+		ZeppaUser testUser8 = new ZeppaUser(authEmails.get(7), givenNames.get(7), familyNames.get(7), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui8 = testUser8.getUserInfo();
+		ui8.setGender(Gender.MALE);
+		// 2003
+		ui8.setDateOfBirth(1061765415000L);
+		testUser8.setUserInfo(ui8);		
+
+		// User 9
+		ZeppaUser testUser9 = new ZeppaUser(authEmails.get(8), givenNames.get(8), familyNames.get(8), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui9 = testUser9.getUserInfo();
+		ui9.setGender(Gender.FEMALE);
+		// 2003
+		ui9.setDateOfBirth(1061765415000L);
+		testUser9.setUserInfo(ui9);	
+
+		// User 10
+		ZeppaUser testUser10 = new ZeppaUser(authEmails.get(9), givenNames.get(9), familyNames.get(9), "19876543210", -1L, -1L, initialTags);
+		ZeppaUserInfo ui10 = testUser10.getUserInfo();
+		ui10.setGender(Gender.MALE);
+		// 2003
+		ui10.setDateOfBirth(1061765415000L);
+		testUser10.setUserInfo(ui10);			
 		
 		// Make sure this user is invited
 		InviteGroup group = new InviteGroup();
-		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail, u3AuthEmail));
+		group.setEmails(Arrays.asList(tokens.get(0), tokens.get(1), tokens.get(2)));
 		group.setSuggestedTags(Arrays.asList("TestTag1", "TestTag2",
 				"TestTag3", "TestTag4", "TestTag5", "TestTag6"));
 
@@ -303,14 +371,16 @@ public class StartupServlet extends HttpServlet {
 				.insertInviteGroup(group);
 		try {
 			// Insert and assert
-			testUser = (new ZeppaUserEndpoint()).insertZeppaUser(
-					testUser, testToken);
-
-			testUser2 = (new ZeppaUserEndpoint()).insertZeppaUser(
-					testUser2, testToken2);
-			
-			testUser3 = (new ZeppaUserEndpoint()).insertZeppaUser(
-					testUser3, testToken3);
+			testUser1 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser1, tokens.get(0));
+			testUser2 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser2, tokens.get(1));
+			testUser3 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser3, tokens.get(2));
+			testUser4 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser4, tokens.get(3));
+			testUser5 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser5, tokens.get(4));
+			testUser6 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser6, tokens.get(5));
+			testUser7 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser7, tokens.get(6));
+			testUser8 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser8, tokens.get(7));
+			testUser9 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser9, tokens.get(8));
+			testUser9 = (new ZeppaUserEndpoint()).insertZeppaUser(testUser10, tokens.get(9));
 		} catch (UnauthorizedException e) {
 			// Auth exception (probably didn't set to test)
 			e.printStackTrace();
@@ -320,16 +390,16 @@ public class StartupServlet extends HttpServlet {
 		}
 		
 		// Create user relationships to event
-		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, true, false, new ArrayList<Long>());
+		VendorEventRelationship ver = new VendorEventRelationship(testUser1.getId(), event.getId(), true, false, true, false, new ArrayList<Long>());
 		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver4 = new VendorEventRelationship(testUser1.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver6 = new VendorEventRelationship(testUser1.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver7 = new VendorEventRelationship(testUser1.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
 		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, true, false, new ArrayList<Long>());
-		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver9 = new VendorEventRelationship(testUser1.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+		VendorEventRelationship ver10 = new VendorEventRelationship(testUser1.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
 		
 		try {
 			VendorEventRelationshipServlet.insertEventRelationship(ver);
@@ -346,8 +416,8 @@ public class StartupServlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		
-		EventTagFollow etf1 = new EventTagFollow(tag, testUser.getId());
-		EventTagFollow etf2 = new EventTagFollow(tag2, testUser.getId());
+		EventTagFollow etf1 = new EventTagFollow(tag, testUser1.getId());
+		EventTagFollow etf2 = new EventTagFollow(tag2, testUser1.getId());
 		EventTagFollow etf3 = new EventTagFollow(tag, testUser2.getId());
 		EventTagFollow etf4 = new EventTagFollow(tag3, testUser2.getId());
 		EventTagFollow etf5 = new EventTagFollow(tag4, testUser2.getId());

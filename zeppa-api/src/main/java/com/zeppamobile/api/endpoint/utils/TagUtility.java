@@ -134,7 +134,7 @@ public class TagUtility {
 						// changed ASAP
 
 						MetaTagEntity entity = new MetaTagEntity(tag.getId(),
-								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()), isUserTag,
+								(isUserTag ? userOwner.getId() : vendorOwner.getKey().getId()),indexWord, isUserTag,
 								(getIndexWordWeight(indexWord) / totalWeight));
 						entity = mgr.makePersistent(entity);
 						List<Key> entities = metatag.getEntities();

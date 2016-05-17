@@ -24,6 +24,13 @@
 		<rate>100/s</rate>
 		<bucket-size>100</bucket-size>
 	</queue>
+	
+	<!-- Queue for automatically managing entity relationships -->
+	<queue>
+		<name>vendor-event-relationship-building</name>
+		<rate>100/s</rate>
+		<bucket-size>100</bucket-size>
+	</queue>
 
 	<!-- Queue dedicated to indexing tags -->
 	<queue>

@@ -19,6 +19,8 @@ public class TaskUtility {
 
 	private static final String TAG_INDEXING_SERVLET_URL = "/tasks/tag-indexing";
 
+	private static final String VENDOR_EVENT_RELATIONSHIP_BUILDING_SERVLET_URL = "/tasks/vendor-event-relationship-building";
+
 	private TaskUtility() {
 	}
 
@@ -38,6 +40,15 @@ public class TaskUtility {
 	 */
 	private static Queue getTagIndexingQueue() {
 		return QueueFactory.getQueue("tag-indexing");
+	}
+
+	/**
+	 * Get the queue responsible for indexing tags
+	 * 
+	 * @return
+	 */
+	private static Queue getVendorEventRelationshipQueue() {
+		return QueueFactory.getQueue("vendor-event-relationship-building");
 	}
 
 	// /**
@@ -146,9 +157,22 @@ public class TaskUtility {
 		Log.warn("Index Event Tag Host Header: " + hostHeader + " for tag: " + tag.getId());
 		getTagIndexingQueue().add(TaskOptions.Builder.withUrl(TAG_INDEXING_SERVLET_URL).method(Method.POST)
 				.param(UniversalConstants.PARAM_TAG_ID, String.valueOf(tag.getId()))
-				.param(UniversalConstants.PARAM_IS_USER_TAG, String.valueOf(isUserTag))
-				.header("Host", hostHeader));
+				.param(UniversalConstants.PARAM_IS_USER_TAG, String.valueOf(isUserTag)).header("Host", hostHeader));
 
+	}
+
+	/**
+	 * Schedule the build of relationships to vendor events
+	 * 
+	 * @param vendorEventId
+	 */
+	public static void scheduleVendorEventRelationshipBuilding(Long vendorEventId) {
+		System.out.println("Will build relationships to vendor event with ID: " + vendorEventId);
+		String hostHeader = ModulesServiceFactory.getModulesService().getVersionHostname("zeppa-api", "v1");
+		Log.warn("Index Event Tag Host Header: " + hostHeader + " for tag: " + vendorEventId);
+		getTagIndexingQueue()
+				.add(TaskOptions.Builder.withUrl(VENDOR_EVENT_RELATIONSHIP_BUILDING_SERVLET_URL).method(Method.POST)
+						.param("vendor-event-id", String.valueOf(vendorEventId)).header("Host", hostHeader));
 	}
 
 }

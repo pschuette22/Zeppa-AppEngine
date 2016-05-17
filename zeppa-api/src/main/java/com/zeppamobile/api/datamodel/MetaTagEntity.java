@@ -20,8 +20,8 @@ public class MetaTagEntity implements Comparable<MetaTagEntity> {
 	@Persistent
 	private Long ownerId;
 
-	// @Persistent // For bi-directional mapping
-	// private String indexedWordId;
+	@Persistent // For bi-directional mapping
+	private String indexedWordId;
 
 	/*
 	 * True if tag is owned by a user, false if owned by a vendor
@@ -34,16 +34,15 @@ public class MetaTagEntity implements Comparable<MetaTagEntity> {
 	 */
 	@Persistent
 	private Double weightInTag;
-	
+
 	@Persistent
 	private Double weightDifference;
 
-	
-	public MetaTagEntity(Long tagId, Long ownerId, Boolean isUserTag, Double weightInTag) {
+	public MetaTagEntity(Long tagId, Long ownerId, String indexedWordId, Boolean isUserTag, Double weightInTag) {
 		super();
 		this.tagId = tagId;
 		this.ownerId = ownerId;
-		// this.indexedWordId = indexedWordId;
+		this.indexedWordId = indexedWordId;
 		this.isUserTag = isUserTag;
 		this.weightInTag = weightInTag;
 	}
@@ -83,11 +82,11 @@ public class MetaTagEntity implements Comparable<MetaTagEntity> {
 	public Key getKey() {
 		return key;
 	}
-	
+
 	public Double getWeightDifference() {
 		return weightDifference;
 	}
-	
+
 	public void calculateWeightDifference(Double relativeWeight) {
 		weightDifference = Math.abs(relativeWeight - weightInTag);
 	}
@@ -97,5 +96,5 @@ public class MetaTagEntity implements Comparable<MetaTagEntity> {
 		Double result = (this.getWeightDifference() - tag.getWeightDifference());
 		return (int) Math.ceil(result);
 	}
-	
+
 }

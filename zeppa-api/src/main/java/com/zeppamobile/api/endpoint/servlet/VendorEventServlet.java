@@ -22,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.zeppamobile.api.PMF;
 import com.zeppamobile.api.datamodel.VendorEvent;
+import com.zeppamobile.api.endpoint.utils.TaskUtility;
 import com.zeppamobile.common.UniversalConstants;
 import com.zeppamobile.common.cerealwrapper.VendorEventWrapper;
 
@@ -286,6 +287,10 @@ public class VendorEventServlet extends HttpServlet {
 				event = null;
 			}
 			mgr.close();
+		}
+		
+		if(event!=null){
+			TaskUtility.scheduleVendorEventRelationshipBuilding(event.getId());
 		}
 
 		return event;

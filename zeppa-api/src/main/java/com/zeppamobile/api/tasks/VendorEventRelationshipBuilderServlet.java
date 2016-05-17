@@ -38,6 +38,7 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		System.out.println("Building vendor event relationships");
 		String eventIdString = req.getParameter("vendor-event-id");
 		if (Utils.isWebSafe(eventIdString)) {
 			Long eventId = Long.valueOf(eventIdString);
@@ -49,7 +50,7 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 
 				// Grab all the meta tag entities that are linked to this
 				Query q = mgr.newQuery(MetaTagEntity.class);
-				q.declareImports("import java.utils.List;");
+				q.declareImports("import java.util.List");
 				q.declareParameters("List tagIds");
 				q.setFilter("tagIds.contains(tagId)");
 				@SuppressWarnings("unchecked")
@@ -58,14 +59,17 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 				Map<Long, Double> calculatedInterest = new HashMap<Long, Double>();
 
 				if (entities != null && !entities.isEmpty()) {
+					System.out.println("Found relevant entities");
 					// Grab each metatag from it's child entity
 					for (MetaTagEntity entity : entities) {
 						Query mq = mgr.newQuery(MetaTag.class);
 						mq.setUnique(true);
+						mq.declareImports("import com.google.appengine.api.datastore.Key");
 						mq.declareParameters("Key key");
 						mq.setFilter("entities.contains(key)");
 						Key k = entity.getKey();
 						try {
+
 							MetaTag metatag = (MetaTag) mq.execute(k);
 
 							// Build the list of similar words
@@ -75,22 +79,22 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 
 							// Query for tag entities with the same meaning
 							Query eq = mgr.newQuery(MetaTagEntity.class);
-							eq.declareImports("import java.utils.List;");
+							eq.declareImports("import java.util.List");
 							eq.declareParameters("List indexedWordIds");
-							eq.setFilter("indexedWordIds.contains(indexedWordId) && isUserTag==TRUE");
+							eq.setFilter("indexedWordIds.contains(indexedWordId) && isUserTag=='TRUE'");
 
 							@SuppressWarnings("unchecked")
-							List<MetaTagEntity> similarEntities = (List<MetaTagEntity>) eq.execute();
+							List<MetaTagEntity> similarEntities = (List<MetaTagEntity>) eq.execute(indexIds);
 
 							// If there were relevant entities for this query...
 							if (similarEntities != null && !similarEntities.isEmpty()) {
-
+								System.out.println("Found relevant entities");
 								Map<Long, Double> entityInterest = new HashMap<Long, Double>();
 
 								for (MetaTagEntity entity2 : similarEntities) {
 
 									if (!entityInterest.containsKey(entity2.getOwnerId())) {
-
+										System.out.println("Adding entity interest");
 										entityInterest.put(entity2.getOwnerId(),
 												entity.getWeightInTag() * getSimilarityPercent(entity, entity2));
 									} else {
@@ -98,9 +102,12 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 										// represents higher interest in this
 										// metatag
 										// update if it does
+
 										double newSimilarity = entity.getWeightInTag()
 												* getSimilarityPercent(entity, entity2);
 										if (newSimilarity > entityInterest.get(entity2.getOwnerId())) {
+											// updated mapped interest
+											System.out.println("Updating entity interest");
 											entityInterest.put(entity2.getOwnerId(), newSimilarity);
 										}
 									}
@@ -109,18 +116,24 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 
 								// Iterate through the entries adding to the
 								// total interest
-								for (Entry<Long, Double> mapEntity : entityInterest.entrySet()) {
-									if (calculatedInterest.containsKey(mapEntity.getKey())) {
-										calculatedInterest.put(mapEntity.getKey(),
-												calculatedInterest.get(mapEntity.getKey()) + mapEntity.getValue());
-									} else {
-										calculatedInterest.put(mapEntity.getKey(), mapEntity.getValue());
+								if (entityInterest.isEmpty()) {
+									System.out.println("No interest in this entity");
+								} else {
+									for (Entry<Long, Double> mapEntity : entityInterest.entrySet()) {
+										if (calculatedInterest.containsKey(mapEntity.getKey())) {
+											System.out.println("Adding tag interest");
+											calculatedInterest.put(mapEntity.getKey(),
+													calculatedInterest.get(mapEntity.getKey()) + mapEntity.getValue());
+										} else {
+											System.out.println("Initializing tag interest");
+											calculatedInterest.put(mapEntity.getKey(), mapEntity.getValue());
+										}
 									}
 								}
 							}
 
 						} catch (JDOObjectNotFoundException e) {
-
+							e.printStackTrace();
 						}
 					}
 
@@ -129,9 +142,12 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 					List<VendorEventRelationship> relationships = new ArrayList<VendorEventRelationship>();
 					for (Entry<Long, Double> interestEntry : calculatedInterest.entrySet()) {
 
+						System.out.println("User: " + interestEntry.getKey() + ", Interest: " + interestEntry.getValue());
+						
 						// If there is a high interest, create a relationship to
 						// this vendor event
-						if (interestEntry.getValue() > .5) {
+						if (interestEntry.getValue() > 0) {
+							System.out.println("Adding relationship");
 							VendorEventRelationship relationship = new VendorEventRelationship(eventId,
 									interestEntry.getKey(), false, false, false, false, null);
 							relationships.add(relationship);
@@ -141,6 +157,7 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 					// If there are relevant relationships, make them all
 					// persistent
 					if (!relationships.isEmpty()) {
+						System.out.println("Persisting Relationships");
 						mgr.makePersistentAll(relationships);
 					}
 				}
@@ -148,7 +165,7 @@ public class VendorEventRelationshipBuilderServlet extends HttpServlet {
 				resp.setStatus(HttpServletResponse.SC_OK);
 
 			} catch (JDOObjectNotFoundException e) {
-
+				e.printStackTrace();
 			} finally {
 				mgr.close();
 			}

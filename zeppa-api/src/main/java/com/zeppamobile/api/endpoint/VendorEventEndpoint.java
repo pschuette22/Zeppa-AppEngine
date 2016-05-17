@@ -1,5 +1,6 @@
 package com.zeppamobile.api.endpoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class VendorEventEndpoint {
 			// Tight loop for fetching all entities from datastore and
 			// accomodate
 			// for lazy fetch.
+			List<VendorEvent> remove = new ArrayList<VendorEvent>();
 			for (VendorEvent obj : execute) {
 				Query rQuery = mgr.newQuery(VendorEventRelationship.class,
 						"userId==" + user.getId() + " && eventId==" + obj.getId());
@@ -111,11 +113,17 @@ public class VendorEventEndpoint {
 						r.isShared();
 
 						obj.setRelationship(r);
+					} else {
+						remove.add(obj);
 					}
 				} catch (JDOObjectNotFoundException e) {
-
+					remove.add(obj);
 				}
 			}
+			
+			// remove irrelevant vendor events
+			execute.removeAll(remove);
+			
 		} finally {
 			mgr.close();
 		}

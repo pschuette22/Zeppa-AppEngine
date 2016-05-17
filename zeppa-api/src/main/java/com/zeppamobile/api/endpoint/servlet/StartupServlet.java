@@ -81,6 +81,8 @@ public class StartupServlet extends HttpServlet {
     	employeeBrendan.setUserInfo(brendanUI);
     	employeeBrendan.setEmailAddress("bken123@gmail.com");
     	
+    	
+    	
     	// Eric Account
     	EmployeeUserInfo ericUI = new EmployeeUserInfo();
     	ericUI.setGivenName("Eric");
@@ -114,7 +116,7 @@ public class StartupServlet extends HttpServlet {
 //		vendor.setMasterUserId(Long.valueOf(employeeKevin.getKey().getId()));
 		
 		try {
-			vendor = VendorServlet.insertVendor(vendor, employeeKevin);
+			vendor = VendorServlet.insertVendor(vendor, employeePete);
 		} catch (UnauthorizedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -159,7 +161,7 @@ public class StartupServlet extends HttpServlet {
 		}
 		
 		Vendor vendor3 = new Vendor();
-		vendor3.setAddress(add3);
+//		vendor3.setAddress(add3);
 		vendor3.setCompanyName("Test Company 4");
 		
 		try {
@@ -171,7 +173,7 @@ public class StartupServlet extends HttpServlet {
 		}
 		
 		Vendor vendor4 = new Vendor();
-		vendor4.setAddress(add3);
+//		vendor4.setAddress(add3);
 		vendor4.setCompanyName("Test Company 5");
 		
 		try {
@@ -200,12 +202,12 @@ public class StartupServlet extends HttpServlet {
 		
 		EventTag tag4 = new EventTag();
 		tag4.setOwnerId(vendor.getKey().getId());
-		tag4.setTagText("PlayBasketball");
+		tag4.setTagText("PlayingBasketball");
 		tag4.setType(TagType.USER);
 		
 		EventTag tag5 = new EventTag();
 		tag5.setOwnerId(vendor.getKey().getId());
-		tag5.setTagText("WatchFootball");
+		tag5.setTagText("WatchingFootball");
 		tag5.setType(TagType.VENDOR);
 		
 		EventTag tag6 = new EventTag();
@@ -233,31 +235,7 @@ public class StartupServlet extends HttpServlet {
 		tagIds.add(tag4.getId());
 		tagIds.add(tag5.getId());
 		tagIds.add(tag6.getId());
-		VendorEvent event = new VendorEvent("Test Event", "test event description", (System.currentTimeMillis() + 80000000L), 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
-		String LongDescription = "Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
-		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, (System.currentTimeMillis() + 800000000L), 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
-		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
-		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
-		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
-		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
-				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
-
 		
-		try {
-			VendorEventServlet.insertEvent(event);
-			VendorEventServlet.insertEvent(event2);
-			VendorEventServlet.insertEvent(event3);
-			VendorEventServlet.insertEvent(event4);
-			VendorEventServlet.insertEvent(event5);
-			VendorEventServlet.insertEvent(event6);
-		} catch (UnauthorizedException | IOException e) {
-			e.printStackTrace();
-		}
 		
 
 		// Create Users
@@ -265,8 +243,8 @@ public class StartupServlet extends HttpServlet {
 		String u1AuthEmail = "testuser1@example.com";
 		String u2AuthEmail = "testuser2@example.com";
 		String u3AuthEmail = "testuser3@example.com";
-		List<String> initialTags = Arrays.asList("TestTag1", "TestTag2", "TestTag3", "TestTag4", "TestTag5",
-				"TestTag6");
+		List<String> initialTags = Arrays.asList("PlayFootball", "EatingDinner", "PublicSpeaking", "WatchingSoccer", "WineTasting",
+				"Poker");
 		ZeppaUser testUser = new ZeppaUser(u1AuthEmail, "User1", "Test", "19876543210", -1L, -1L, initialTags);
 		ZeppaUserInfo ui = testUser.getUserInfo();
 		// 1993
@@ -291,16 +269,16 @@ public class StartupServlet extends HttpServlet {
 		testUser3.setUserInfo(ui3);
 		String testToken3 = TestUtils.buildTestAuthToken(u3AuthEmail);
 		
-		// Make sure this user is invited
-		InviteGroup group = new InviteGroup();
-		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail, u3AuthEmail));
-		group.setSuggestedTags(Arrays.asList("TestTag1", "TestTag2",
-				"TestTag3", "TestTag4", "TestTag5", "TestTag6"));
-
-		// Insert the invite group to make sure this user is authorized to make
-		// an account
-		InviteGroup insertedGroup = (new InviteGroupEndpoint())
-				.insertInviteGroup(group);
+//		// Make sure this user is invited
+//		InviteGroup group = new InviteGroup();
+//		group.setEmails(Arrays.asList(u1AuthEmail, u2AuthEmail, u3AuthEmail));
+//		group.setSuggestedTags(Arrays.asList("TestTag1", "TestTag2",
+//				"TestTag3", "TestTag4", "TestTag5", "TestTag6"));
+//
+//		// Insert the invite group to make sure this user is authorized to make
+//		// an account
+//		InviteGroup insertedGroup = (new InviteGroupEndpoint())
+//				.insertInviteGroup(group);
 		try {
 			// Insert and assert
 			testUser = (new ZeppaUserEndpoint()).insertZeppaUser(
@@ -319,32 +297,59 @@ public class StartupServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		// Create user relationships to event
-		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, true, false, new ArrayList<Long>());
-		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, true, false, new ArrayList<Long>());
-		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
-		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+		
+		VendorEvent event = new VendorEvent("Test Event", "test event description", (System.currentTimeMillis() + 80000000L), 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Address Holder");
+		String LongDescription = "Long description Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin Long descriptioin ";
+		VendorEvent event2 = new VendorEvent("Test Event2", LongDescription, (System.currentTimeMillis() + 800000000L), 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University, Philadelphia PA");
+		VendorEvent event3 = new VendorEvent("Test Event3", LongDescription, 1459036800000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event4 = new VendorEvent("Test Event4", LongDescription, 1458950400000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event5 = new VendorEvent("Test Event5", LongDescription, 1459209600000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
+		VendorEvent event6 = new VendorEvent("Test Event6", LongDescription, 1459296000000L, 
+				(System.currentTimeMillis() + 10000), vendor.getKey().getId(), tagIds, "Drexel University");
+
 		
 		try {
-			VendorEventRelationshipServlet.insertEventRelationship(ver);
-			VendorEventRelationshipServlet.insertEventRelationship(ver2);
-			VendorEventRelationshipServlet.insertEventRelationship(ver3);
-			VendorEventRelationshipServlet.insertEventRelationship(ver4);
-			VendorEventRelationshipServlet.insertEventRelationship(ver5);
-			VendorEventRelationshipServlet.insertEventRelationship(ver6);
-			VendorEventRelationshipServlet.insertEventRelationship(ver7);
-			VendorEventRelationshipServlet.insertEventRelationship(ver8);
-			VendorEventRelationshipServlet.insertEventRelationship(ver9);
-			VendorEventRelationshipServlet.insertEventRelationship(ver10);
-		} catch (UnauthorizedException | IOException e1) {
-			e1.printStackTrace();
+			VendorEventServlet.insertEvent(event);
+			VendorEventServlet.insertEvent(event2);
+			VendorEventServlet.insertEvent(event3);
+			VendorEventServlet.insertEvent(event4);
+			VendorEventServlet.insertEvent(event5);
+			VendorEventServlet.insertEvent(event6);
+		} catch (UnauthorizedException | IOException e) {
+			e.printStackTrace();
 		}
+		
+//		// Create user relationships to event
+//		VendorEventRelationship ver = new VendorEventRelationship(testUser.getId(), event.getId(), true, false, true, false, new ArrayList<Long>());
+//		VendorEventRelationship ver2 = new VendorEventRelationship(testUser2.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver3 = new VendorEventRelationship(testUser3.getId(), event.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver4 = new VendorEventRelationship(testUser.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver5 = new VendorEventRelationship(testUser2.getId(), event2.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver6 = new VendorEventRelationship(testUser.getId(), event3.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver7 = new VendorEventRelationship(testUser.getId(), event4.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver8 = new VendorEventRelationship(testUser3.getId(), event5.getId(), true, false, true, false, new ArrayList<Long>());
+//		VendorEventRelationship ver9 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+//		VendorEventRelationship ver10 = new VendorEventRelationship(testUser.getId(), event6.getId(), true, false, false, false, new ArrayList<Long>());
+//		
+//		try {
+//			VendorEventRelationshipServlet.insertEventRelationship(ver);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver2);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver3);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver4);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver5);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver6);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver7);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver8);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver9);
+//			VendorEventRelationshipServlet.insertEventRelationship(ver10);
+//		} catch (UnauthorizedException | IOException e1) {
+//			e1.printStackTrace();
+//		}
 		
 		EventTagFollow etf1 = new EventTagFollow(tag, testUser.getId());
 		EventTagFollow etf2 = new EventTagFollow(tag2, testUser.getId());

@@ -106,6 +106,8 @@ public class SenseComparator {
 
 		return indexedSynsMap;
 	}
+	
+	
 
 	/**
 	 * given a list of word lemma tags, find the proper senses

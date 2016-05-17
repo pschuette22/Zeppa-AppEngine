@@ -97,12 +97,7 @@ public class VendorEventRelationshipEndpoint {
 			} else {
 				cursorString = cursor.toWebSafeString();
 			}
-
-			// Tight loop for fetching all entities from datastore and
-			// accomodate
-			// for lazy fetch.
-			for (VendorEventRelationship obj : execute)
-				;
+			
 		} finally {
 			mgr.close();
 		}
